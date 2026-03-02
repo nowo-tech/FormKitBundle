@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Translations (A2lix) - Form Kit Demo{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Translations (A2lix)</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+</div>
+<p class="text-secondary mb-4">A2lix TranslationFormBundle: translatable fields (title, description) per locale. Can be used as <code>translations</code> type in Form Kit’s FormTypeMap.</p>
+
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    {{ form_start(form) }}
+    {{ form_row(form.translations) }}
+    {% set form_buttons %}
+      <button type="submit" class="btn btn-primary">Save</button>
+    {% endset %}
+    <div class="form-kit-buttons">{{ form_buttons|raw }}</div>
+    {{ form_end(form, { render_rest: false }) }}
+  </div>
+</div>
+
+{% if submitted %}
+  <div class="alert alert-success mt-4 mb-0 shadow-sm">
+    <strong>Submitted:</strong>
+    <pre class="mb-0 small">{% for locale, t in submitted.translations %}{{ locale }}: {{ t.title }} — {{ t.description }}{{ "\n" }}{% endfor %}</pre>
+  </div>
+{% endif %}
+{% endblock %}

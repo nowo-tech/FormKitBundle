@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FormType Example - Form Kit Demo{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">FormType Example</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+</div>
+<p class="text-secondary mb-4">Form defined in <code>App\Form\DemoContactType</code> with <code>FormOptionsTrait</code>. Layout: sections and two-column grid to show how the same form can be structured for clarity.</p>
+
+{% set form_sections = [
+  { title: 'Contact', fields: ['full_name', 'email_address', 'message', '_notice_contact', '_sep_details'] },
+  { title: 'Details', fields: ['password', 'website', 'age', 'score', 'topic', '_sep_terms', '_terms_notice'] },
+  { title: 'Terms', fields: ['accept_terms'] }
+] %}
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    {% include 'form_demo/_form_sections_loop.html.twig' with { demo_form: form, sections: form_sections, submit_label: 'Submit'|trans } only %}
+  </div>
+</div>
+{% endblock %}

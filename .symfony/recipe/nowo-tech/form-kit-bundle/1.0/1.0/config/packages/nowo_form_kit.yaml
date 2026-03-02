@@ -1,0 +1,26 @@
+# Form Kit Bundle
+# https://github.com/nowo-tech/form-kit-bundle
+# Multiple configs can coexist; each has alias, translation_domain, defaults, field_types.
+# default_config is the name of the config used when a form does not specify one.
+# Optional: type_map (snake_case => FQCN) for custom or UX types (e.g. dropzone).
+
+nowo_form_kit:
+    default_config: default
+    configs:
+        default:
+            alias: default
+            translation_domain: messages
+            defaults:
+                attr:
+                    class: 'form-control'
+                row_attr:
+                    class: 'mb-3'
+            field_types: {}
+        # Example second config (e.g. for Bootstrap 5 or another theme):
+        # bootstrap:
+        #     alias: bootstrap
+        #     translation_domain: messages
+        #     defaults:
+        #         attr: { class: 'form-control form-control-lg' }
+        #         row_attr: { class: 'mb-3' }
+        #     field_types: {}

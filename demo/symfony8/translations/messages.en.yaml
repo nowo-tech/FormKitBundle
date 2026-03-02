@@ -1,0 +1,124 @@
+demo_contact:
+  notice_contact: 'Please fill in your contact details below. All fields in this section are used to get in touch.'
+  terms_notice: 'You must accept the terms to continue.'
+  full_name:
+    label: Full name
+    placeholder: Enter your full name
+    help: As shown on your ID.
+  email_address:
+    label: Email address
+    placeholder: you@example.com
+    help: We will not share it.
+  message:
+    label: Message
+    placeholder: Your message...
+    help: Optional.
+  password:
+    label: Password
+    placeholder: Enter password
+    help: At least 8 characters.
+  website:
+    label: Website
+    placeholder: https://example.com
+    help: Your personal or company URL.
+  age:
+    label: Age
+    placeholder: "0"
+    help: Your age in years.
+  score:
+    label: Score
+    placeholder: "0.0"
+    help: A number between 0 and 10.
+  accept_terms:
+    label: I accept the terms
+    placeholder: ""
+    help: Required to continue.
+  topic:
+    label: Topic
+    placeholder: Choose one
+    help: What is your request about?
+
+# Dropzone demo — keys: dropzone_demo.* (uses bundle + custom DropzoneFieldType)
+dropzone_demo:
+  document:
+    label: Upload a file
+    placeholder: Drag and drop a file or click to browse
+    help: Max size and allowed types depend on server config.
+
+# Search form — keys: search_form.*
+search_form:
+  q:
+    label: Search
+    placeholder: Type to search...
+    help: ""
+  category:
+    label: Category
+    placeholder: All categories
+    help: Filter by category.
+
+# Example form (card layout) — keys: example_form.*
+example_form:
+  name:
+    label: Your name
+    placeholder: John Doe
+    help: ""
+  email:
+    label: Email
+    placeholder: john@example.com
+    help: ""
+  subject:
+    label: Subject
+    placeholder: What is this about?
+    help: ""
+  message:
+    label: Message
+    placeholder: Your message...
+    help: ""
+
+# Form built in the controller (no FormType class) — keys: controller_contact.*
+controller_contact:
+  name:
+    label: Your name
+    placeholder: Enter your name
+    help: How we should call you.
+  email:
+    label: Email
+    placeholder: email@example.com
+    help: We will reply to this address.
+  message:
+    label: Message
+    placeholder: Write your message...
+    help: Optional.
+
+# Nested form demo — keys: nested_form_demo.* (field names in snake_case)
+nested_form_demo:
+  full_name:
+    label: Full name
+    placeholder: Your name
+    help: ""
+  email:
+    label: Email
+    placeholder: email@example.com
+    help: ""
+  address:
+    label: Address
+    placeholder: ""
+    help: Nested AddressType form.
+
+# Translations demo (A2lix TranslationsFormsType) — keys: translations_demo.*
+translations_demo:
+  translations:
+    label: Translations
+    placeholder: ""
+    help: ""
+
+# Translation item (per locale in A2lix TranslationsFormsType) — keys: translation_item.*
+translation_item:
+  title:
+    label: Title
+    placeholder: Title in this language
+    help: ""
+  description:
+    label: Description
+    placeholder: Description in this language
+    help: ""

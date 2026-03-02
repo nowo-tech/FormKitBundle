@@ -1,0 +1,8 @@
+/vendor/
+/.phpunit.cache/
+/coverage/
+coverage.xml
+.php-cs-fixer.cache
+.env
+.env.local
+*.log

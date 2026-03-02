@@ -1,0 +1,51 @@
+{#
+  Reusable form renderer: form_start, fields (or form_rest), optional buttons, form_end.
+
+  Buttons can be:
+  - Form children (SubmitType/ButtonType): pass form_button_names (array of field names) to render them in the buttons area.
+  - HTML: pass form_buttons (string) for custom markup.
+  - Both: form_button_names first, then form_buttons in the same .form-kit-buttons div.
+
+  Variables:
+    - form (required): the form view
+    - form_start_options: options for form_start() (default: {})
+    - form_button_names: optional array of form child names to render in the buttons area (e.g. ['save', 'cancel'])
+    - form_buttons: optional HTML for extra submit/button(s)
+
+  Usage (submit as form type):
+    {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'cancel'] }) }}
+
+  Usage (HTML buttons):
+    {% set form_buttons %}
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    {% endset %}
+    {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
+
+  Usage (both: form-type buttons + extra HTML link):
+    {% set form_buttons %}<a href="{{ path('app_list') }}" class="btn btn-link">Cancelar</a>{% endset %}
+    {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'save_and_new'], form_buttons: form_buttons }) }}
+#}
+{{ form_start(form, form_start_options|default({})) }}
+{% if form_button_names is defined and form_button_names is not empty %}
+  {% for child in form %}
+    {% if child.name not in form_button_names and not child.rendered %}
+      {{ form_row(child) }}
+    {% endif %}
+  {% endfor %}
+  <div class="form-kit-buttons">
+    {% for name in form_button_names %}
+      {% if form[name] is defined and not form[name].rendered %}
+        {{ form_row(form[name]) }}
+      {% endif %}
+    {% endfor %}
+    {% if form_buttons is defined and form_buttons is not empty %}
+      {{ form_buttons|raw }}
+    {% endif %}
+  </div>
+{% else %}
+  {{ form_rest(form) }}
+  {% if form_buttons is defined and form_buttons is not empty %}
+    <div class="form-kit-buttons">{{ form_buttons|raw }}</div>
+  {% endif %}
+{% endif %}
+{{ form_end(form, { render_rest: false }) }}

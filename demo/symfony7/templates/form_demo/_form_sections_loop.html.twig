@@ -1,0 +1,22 @@
+{# Renders form in sections; layout (col-*) comes from row_attr on each field in the FormType. #}
+{{ form_start(demo_form, form_start_options|default({})) }}
+{% for section in sections %}
+  <div class="form-section">
+    <h2 class="form-section-title">{{ section.title }}</h2>
+    <div class="row g-3">
+      {% for field_name in section.fields %}
+        {% if demo_form[field_name] is defined and not demo_form[field_name].rendered %}
+          {{ form_row(demo_form[field_name]) }}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+{% if submit_buttons is defined and submit_buttons is not empty %}
+  <div class="form-kit-buttons mt-3">{{ submit_buttons|raw }}</div>
+{% else %}
+  <div class="form-kit-buttons mt-3">
+    <button type="submit" class="{{ submit_class|default('btn btn-primary') }}">{{ submit_label|default('Submit') }}</button>
+  </div>
+{% endif %}
+{{ form_end(demo_form, { render_rest: false }) }}

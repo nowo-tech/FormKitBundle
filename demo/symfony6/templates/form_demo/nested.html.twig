@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nested Form - Form Kit Demo{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Nested Form</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+</div>
+<p class="text-secondary mb-4">Form with embedded nested form: contact (name, email) + address (street, number, floor, postal code, city, province). Same Form Kit conventions for parent and nested type.</p>
+
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    {{ form_start(form) }}
+    <div class="form-section">
+      <h2 class="form-section-title">Contact</h2>
+      <div class="row g-3">
+        <div class="col-12 col-md-6">{{ form_row(form.fullName) }}</div>
+        <div class="col-12 col-md-6">{{ form_row(form.email) }}</div>
+      </div>
+    </div>
+    <div class="form-section">
+      <h2 class="form-section-title">Address</h2>
+      <div class="row g-3">
+        <div class="col-12">{{ form_row(form.address.street) }}</div>
+        <div class="col-12 col-md-4">{{ form_row(form.address.number) }}</div>
+        <div class="col-12 col-md-4">{{ form_row(form.address.floor) }}</div>
+        <div class="col-12 col-md-4">{{ form_row(form.address.postalCode) }}</div>
+        <div class="col-12 col-md-6">{{ form_row(form.address.city) }}</div>
+        <div class="col-12 col-md-6">{{ form_row(form.address.province) }}</div>
+      </div>
+    </div>
+    {{ form_rest(form) }}
+    <div class="form-kit-buttons">
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+    {{ form_end(form, { render_rest: false }) }}
+  </div>
+</div>
+
+{% if submitted %}
+  <div class="alert alert-success mt-4 mb-0 shadow-sm">
+    <strong>Submitted:</strong>
+    {{ submitted.fullName }}, {{ submitted.email }} — {{ submitted.address.street }} {{ submitted.address.number }}, {{ submitted.address.postalCode }} {{ submitted.address.city }}, {{ submitted.address.province }}
+  </div>
+{% endif %}
+{% endblock %}

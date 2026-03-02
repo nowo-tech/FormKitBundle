@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cropper - Form Kit Demo{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Cropper (Symfony UX)</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+</div>
+<p class="text-secondary mb-4">Symfony UX Cropper.js: crop an image with a fixed aspect ratio. Usable as <code>cropper</code> type in Form Kit’s FormTypeMap when the package is installed.</p>
+
+{% if not sample_exists %}
+  <div class="alert alert-warning shadow-sm">
+    <strong>Sample image missing.</strong> Place an image at <code>public/images/demo-sample.jpg</code> to try the cropper (e.g. copy any JPG there or run <code>cp public/images/demo-sample.png public/images/demo-sample.jpg</code> if you have a PNG).
+  </div>
+  <p class="text-muted small">Expected path: <code>{{ image_path }}</code></p>
+{% else %}
+  <div class="card form-card shadow-sm">
+    <div class="card-body p-4">
+      {{ form_start(form) }}
+      {{ form_row(form.crop) }}
+      {% set form_buttons %}
+        <button type="submit" class="btn btn-primary">Crop</button>
+      {% endset %}
+      <div class="form-kit-buttons">{{ form_buttons|raw }}</div>
+      {{ form_end(form, { render_rest: false }) }}
+    </div>
+  </div>
+
+  {% if submitted %}
+    <div class="alert alert-success mt-4 mb-0 shadow-sm">
+      <strong>Crop submitted.</strong> In a real app you would save the cropped image via <code>$crop->getCroppedImage()</code> or <code>getCroppedThumbnail()</code>.
+    </div>
+  {% endif %}
+{% endif %}
+{% endblock %}

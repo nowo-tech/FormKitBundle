@@ -1,0 +1,53 @@
+{% extends "form_div_layout.html.twig" %}
+
+{% block form_label %}
+  {{ parent() }}{% if form.vars.required and form.vars.required_label_suffix is defined and form.vars.required_label_suffix is not same as('') %}{{ form.vars.required_label_suffix }}{% endif %}
+{% endblock %}
+
+{% block form_row %}
+  {% set prefix = form.vars.input_group_prefix is defined ? form.vars.input_group_prefix : null %}
+  {% set suffix = form.vars.input_group_suffix is defined ? form.vars.input_group_suffix : null %}
+  {% if prefix is not null and prefix is not same as('') %}
+    {% set row_attr = form.vars.row_attr|default({}) %}
+    <div{% for attrname, attrvalue in row_attr %}{% if attrvalue is not none and attrvalue != '' %} {{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}>
+      {{ form_label(form) }}
+      <div class="input-group">
+        <span class="input-group-text">{{ prefix|raw }}</span>
+        {{ form_widget(form) }}
+      </div>
+      {{ form_errors(form) }}
+      {{ form_help(form) }}
+    </div>
+  {% elseif suffix is not null and suffix is not same as('') %}
+    {% set row_attr = form.vars.row_attr|default({}) %}
+    <div{% for attrname, attrvalue in row_attr %}{% if attrvalue is not none and attrvalue != '' %} {{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}>
+      {{ form_label(form) }}
+      <div class="input-group">
+        {{ form_widget(form) }}
+        <span class="input-group-text">{{ suffix|raw }}</span>
+      </div>
+      {{ form_errors(form) }}
+      {{ form_help(form) }}
+    </div>
+  {% else %}
+    {{ parent() }}
+  {% endif %}
+{% endblock %}
+
+{% block static_separator_row %}
+  <hr class="my-3">
+{% endblock %}
+
+{% block static_alert_row %}
+  <div class="alert alert-{{ form.vars.alert_type|default('info') }}" role="alert">{{ form.vars.message|trans({}, form.vars.translation_domain) }}</div>
+{% endblock %}
+
+{% block checkbox_row %}
+  {% set row_attr = form.vars.row_attr|default({})|merge({ class: (form.vars.row_attr.class|default('mb-3') ~ ' form-check')|trim }) %}
+  <div{% for attrname, attrvalue in row_attr %}{% if attrvalue is not none and attrvalue != '' %} {{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}>
+    {{ form_widget(form, { attr: (form.vars.attr|default({})|merge({ class: 'form-check-input' })) }) }}
+    {{ form_label(form, null, { label_attr: { class: 'form-check-label' } }) }}
+    {{ form_errors(form) }}
+    {{ form_help(form) }}
+  </div>
+{% endblock %}

@@ -1,0 +1,12 @@
+framework:
+  secret: '%env(APP_SECRET)%'
+  http_method_override: false
+  default_locale: en
+  enabled_locales: ['en', 'es', 'fr']
+  php_errors:
+    log: true
+  session:
+    enabled: true
+  translator:
+    default_path: '%kernel.project_dir%/translations'
+    fallbacks: ['en', 'es', 'fr']

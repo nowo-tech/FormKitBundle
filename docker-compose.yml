@@ -1,0 +1,24 @@
+name: form-kit-bundle
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: form-kit-bundle-php
+    working_dir: /app
+    volumes:
+      - .:/app
+      - composer-cache:/root/.composer/cache
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1
+    command: ["tail", "-f", "/dev/null"]
+    networks:
+      - form-kit-bundle-network
+
+volumes:
+  composer-cache:
+    driver: local
+
+networks:
+  form-kit-bundle-network:
+    driver: bridge

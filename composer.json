@@ -1,0 +1,79 @@
+{
+  "name": "nowo-tech/form-kit-bundle",
+  "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global → field type → form → field). Symfony 6|7|8.",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "keywords": [
+    "symfony",
+    "bundle",
+    "form",
+    "form-type",
+    "options",
+    "translation",
+    "convention",
+    "label",
+    "placeholder",
+    "help"
+  ],
+  "homepage": "https://github.com/nowo-tech/form-kit-bundle",
+  "support": {
+    "issues": "https://github.com/nowo-tech/form-kit-bundle/issues",
+    "source": "https://github.com/nowo-tech/form-kit-bundle"
+  },
+  "authors": [
+    {
+      "name": "Héctor Franco Aceituno",
+      "email": "hectorfranco@nowo.tech",
+      "homepage": "https://github.com/HecFranco",
+      "role": "Developer"
+    },
+    {
+      "name": "Nowo.tech",
+      "homepage": "https://nowo.tech"
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "a2lix/translation-form-bundle": "^4.0",
+    "doctrine/collections": "^2.2",
+    "symfony/config": "^6.4 || ^7.0 || ^8.0",
+    "symfony/dependency-injection": "^6.4 || ^7.0 || ^8.0",
+    "symfony/form": "^6.4 || ^7.0 || ^8.0",
+    "symfony/http-kernel": "^6.4 || ^7.0 || ^8.0",
+    "symfony/translation": "^6.4 || ^7.0 || ^8.0",
+    "symfony/yaml": "^6.4 || ^7.0 || ^8.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "phpunit/phpunit": "^10.0 || ^11.0",
+    "symfony/framework-bundle": "^6.4 || ^7.0 || ^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nowo\\FormKitBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nowo\\FormKitBundle\\Tests\\": "tests/"
+    }
+  },
+  "archive": {
+    "exclude": ["/demo"]
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "test-coverage": "vendor/bin/phpunit --colors=always --coverage-html coverage --coverage-clover coverage.xml --coverage-text",
+    "cs-check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+    "cs-fix": "vendor/bin/php-cs-fixer fix",
+    "qa": ["@cs-check", "@test"]
+  }
+}

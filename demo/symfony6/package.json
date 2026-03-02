@@ -1,0 +1,14 @@
+{
+  "name": "form-kit-demo-symfony6",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.14.2",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Example Form - Form Kit Demo{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Example Form</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+</div>
+<p class="text-secondary mb-4">Card layout with grid: two columns for contact fields, full width for subject and message. Form Kit conventions (<code>example_form.*</code>).</p>
+
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    {% set submit_buttons %}
+      <button type="submit" name="action" value="send" class="btn btn-success">{{ 'Send'|trans }}</button>
+      <button type="submit" name="action" value="send_copy" class="btn btn-outline-secondary">{{ 'Send copy'|trans }}</button>
+    {% endset %}
+    {% include 'form_demo/_form_unrendered_loop.html.twig' with { demo_form: form, wrapper_class: 'row g-3', submit_buttons: submit_buttons } only %}
+  </div>
+</div>
+
+{% if submitted %}
+  <div class="alert alert-success mt-4 mb-0 shadow-sm">
+    <strong>Submitted:</strong> name = {{ submitted.name }}, email = {{ submitted.email }}, subject = {{ submitted.subject }}
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,13 @@
+nowo_form_kit:
+    default_config: default
+    configs:
+        default:
+            alias: default
+            translation_domain: messages
+            required_label_suffix: ' *'
+            defaults:
+                attr:
+                    class: 'form-control'
+                row_attr:
+                    class: 'mb-3'
+            field_types: {}

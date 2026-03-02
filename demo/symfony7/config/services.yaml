@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  # A2lix TranslationsType uses abstract args that the bundle does not bind
+  a2lix_translation_form.form.type.translations_type:
+    class: A2lix\TranslationFormBundle\Form\Type\TranslationsType
+    arguments:
+      $globalExcludedChildren: []
+      $globalEmbeddedChildren: []
+    tags: ['form.type']
+
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/Kernel.php'

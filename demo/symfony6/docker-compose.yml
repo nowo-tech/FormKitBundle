@@ -1,0 +1,28 @@
+name: form-kit-bundle-demo-symfony-6
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: form-kit-demo-symfony6-php
+    working_dir: /app
+    restart: unless-stopped
+    volumes:
+      - .:/app
+      - ../..:/var/form-kit-bundle
+      - composer-cache:/root/.composer/cache
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1
+      - APP_ENV=dev
+    ports:
+      - "${PORT:-8006}:80"
+    networks:
+      - form-kit-demo-network
+
+volumes:
+  composer-cache:
+    driver: local
+
+networks:
+  form-kit-demo-network:
+    driver: bridge

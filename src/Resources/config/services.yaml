@@ -1,0 +1,26 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Nowo\FormKitBundle\Form\FormOptionsMerger:
+    arguments:
+      $configs: '%nowo_form_kit.configs%'
+      $defaultConfigName: '%nowo_form_kit.default_config%'
+
+  Nowo\FormKitBundle\Form\FormTypeMap:
+    arguments:
+      $typeMap: '%nowo_form_kit.type_map%'
+
+  Nowo\FormKitBundle\Form\MultiStepFormBuilder: ~
+  Nowo\FormKitBundle\Form\MultiStepWizardSessionFactory: ~
+
+  Nowo\FormKitBundle\Form\Extension\InputGroupExtension:
+    tags: ['form.type_extension']
+
+  Nowo\FormKitBundle\Form\Extension\RequiredLabelSuffixExtension:
+    arguments:
+      $configs: '%nowo_form_kit.configs%'
+      $defaultConfigName: '%nowo_form_kit.default_config%'
+    tags: ['form.type_extension']

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FormType Example - Form Kit Demo{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">FormType Example</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+</div>
+<p class="text-secondary mb-4">Form defined in <code>App\Form\DemoContactType</code> with <code>FormOptionsTrait</code>. Layout: sections and two-column grid to show how the same form can be structured for clarity.</p>
+
+<div class="alert alert-light border mb-4">
+  <strong class="d-block mb-2">Bundle usage</strong>
+  <ul class="mb-0 small text-secondary">
+    <li><code>DemoContactType</code> uses <code>FormOptionsTrait</code> and <code>buildFormFromArray()</code>; <code>FormOptionsMerger</code> is injected by the bundle’s compiler pass.</li>
+    <li>Convention: labels, placeholders and help come from keys <code>demo_contact.field.label</code>, <code>.placeholder</code>, <code>.help</code> in the configured translation domain.</li>
+    <li>No need to configure each type by hand: one form type with the trait and translations handle the rest.</li>
+  </ul>
+</div>
+
+{% set form_sections = [
+  { title: 'Contact', fields: ['full_name', 'email_address', 'message', '_notice_contact', '_sep_details'] },
+  { title: 'Details', fields: ['password', 'website', 'age', 'score', 'topic', '_sep_terms', '_terms_notice'] },
+  { title: 'Terms', fields: ['accept_terms'] }
+] %}
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    {% include 'form_demo/_form_sections_loop.html.twig' with { demo_form: form, sections: form_sections, submit_label: 'Submit'|trans } only %}
+  </div>
+</div>
+{% endblock %}

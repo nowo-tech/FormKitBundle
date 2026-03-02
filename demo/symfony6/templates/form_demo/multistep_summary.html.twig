@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Multi-step Summary - Form Kit Demo{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Multi-step — Summary</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+</div>
+
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    <h2 class="h5 mb-3">Collected data</h2>
+    <dl class="row mb-0">
+      {% for key, value in wizard.collectedDataFlat %}
+        <dt class="col-sm-3 text-muted">{{ key }}</dt>
+        <dd class="col-sm-9">{{ value }}</dd>
+      {% endfor %}
+    </dl>
+    <hr class="my-4">
+    <a href="{{ path('form_demo_multistep', { reset: 1 }) }}" class="btn btn-outline-primary">Start over</a>
+  </div>
+</div>
+{% endblock %}

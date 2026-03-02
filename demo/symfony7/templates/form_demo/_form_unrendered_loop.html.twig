@@ -1,0 +1,21 @@
+{# Reusable renderer: prints only fields not rendered yet. Layout comes from row_attr on each field (FormType/controller). #}
+{{ form_start(demo_form, form_start_options|default({})) }}
+{% if wrapper_class|default('') != '' %}
+  <div class="{{ wrapper_class }}">
+{% endif %}
+  {% for child in demo_form %}
+    {% if not child.rendered %}
+      {{ form_row(child) }}
+    {% endif %}
+  {% endfor %}
+{% if wrapper_class|default('') != '' %}
+  </div>
+{% endif %}
+{% if submit_buttons is defined and submit_buttons is not empty %}
+  <div class="form-kit-buttons mt-3">{{ submit_buttons|raw }}</div>
+{% else %}
+  <div class="form-kit-buttons mt-3">
+    <button type="submit" class="{{ submit_class|default('btn btn-primary') }}">{{ submit_label|default('Submit') }}</button>
+  </div>
+{% endif %}
+{{ form_end(demo_form, { render_rest: false }) }}

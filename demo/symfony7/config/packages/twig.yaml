@@ -1,0 +1,3 @@
+twig:
+  form_themes:
+    - '@NowoFormKit/form/static_blocks.html.twig'

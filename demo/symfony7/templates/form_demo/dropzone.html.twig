@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dropzone - Form Kit Demo{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Dropzone (Symfony UX)</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+</div>
+<p class="text-secondary mb-4">Uses the bundle with a <strong>custom type layer</strong>: <code>DropzoneFieldType</code> extends <code>AbstractFormKitWrappedType</code> and wraps UX Dropzone. Label, placeholder and help come from convention (<code>dropzone_demo.document.*</code>).</p>
+
+{% if default_image_url %}
+  <div class="card form-card shadow-sm mb-4">
+    <div class="card-body p-4">
+      <h2 class="h6 text-muted mb-2">Default image (from <code>public/images/demo-sample.jpg</code>)</h2>
+      <img src="{{ default_image_url }}" alt="Demo sample" class="img-fluid rounded" style="max-height: 280px; object-fit: contain;">
+    </div>
+  </div>
+{% endif %}
+
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    {% set form_buttons %}
+      <button type="submit" class="btn btn-primary">{{ 'Upload'|trans }}</button>
+    {% endset %}
+    {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
+  </div>
+</div>
+
+{% if uploaded %}
+  <div class="alert alert-success mt-4 mb-0 shadow-sm">
+    <strong>Uploaded:</strong> <code>{{ uploaded }}</code>
+  </div>
+{% endif %}
+{% endblock %}
