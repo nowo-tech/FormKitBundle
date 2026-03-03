@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function is_array;
+
 /**
  * Form type for a single translation (title, description).
  * Used as form_type in A2lix TranslationsFormsType; uses buildFormFromArray and data_class.
@@ -25,9 +27,9 @@ class TranslationItemType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
             $data = $event->getData();
-            if (\is_array($data)) {
+            if (is_array($data)) {
                 $item = new DemoTranslationItem();
                 $item->setTitle($data['title'] ?? null);
                 $item->setDescription($data['description'] ?? null);
@@ -38,7 +40,7 @@ class TranslationItemType extends AbstractType
         $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
 
         $this->buildFormFromArray($builder, [
-            'title' => ['type' => TextType::class, ...$rowFull],
+            'title'       => ['type' => TextType::class, ...$rowFull],
             'description' => ['type' => TextareaType::class, ...$rowFull],
         ]);
     }

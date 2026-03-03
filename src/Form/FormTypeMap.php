@@ -28,14 +28,14 @@ final class FormTypeMap
     /** @var array<string, string> */
     private const BUILTIN = [
         'checkbox' => CheckboxType::class,
-        'choice' => ChoiceType::class,
-        'email' => EmailType::class,
-        'integer' => IntegerType::class,
-        'number' => NumberType::class,
+        'choice'   => ChoiceType::class,
+        'email'    => EmailType::class,
+        'integer'  => IntegerType::class,
+        'number'   => NumberType::class,
         'password' => PasswordType::class,
         'textarea' => TextareaType::class,
-        'text' => TextType::class,
-        'url' => UrlType::class,
+        'text'     => TextType::class,
+        'url'      => UrlType::class,
     ];
 
     /**
@@ -45,8 +45,8 @@ final class FormTypeMap
      * @var array<string, string>
      */
     private const OPTIONAL = [
-        'dropzone' => 'Symfony\UX\Dropzone\Form\DropzoneType',
-        'cropper' => 'Symfony\UX\Cropperjs\Form\CropperType',
+        'dropzone'     => 'Symfony\UX\Dropzone\Form\DropzoneType',
+        'cropper'      => 'Symfony\UX\Cropperjs\Form\CropperType',
         'translations' => 'A2lix\TranslationFormBundle\Form\Type\TranslationsType',
     ];
 

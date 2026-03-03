@@ -14,7 +14,7 @@ final class NowoFormKitBundleTest extends TestCase
     {
         $bundle = new NowoFormKitBundle();
 
-        $first = $bundle->getContainerExtension();
+        $first  = $bundle->getContainerExtension();
         $second = $bundle->getContainerExtension();
 
         self::assertInstanceOf(FormKitExtension::class, $first);

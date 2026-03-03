@@ -22,14 +22,14 @@ class SearchFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->buildFormFromArray($builder, [
-            'q' => TextType::class,
+            'q'        => TextType::class,
             'category' => [
-                'type' => ChoiceType::class,
+                'type'    => ChoiceType::class,
                 'choices' => [
-                    'All' => '',
+                    'All'      => '',
                     'Products' => 'products',
                     'Articles' => 'articles',
-                    'Support' => 'support',
+                    'Support'  => 'support',
                 ],
             ],
         ]);

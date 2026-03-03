@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use InvalidArgumentException;
 use Symfony\Component\Form\FormBuilderInterface;
+
+use function is_string;
+use function sprintf;
 
 /**
  * Trait for form types that want cascading option merge and add-by-type helpers.
@@ -42,6 +46,7 @@ trait FormKitTrait
      * Merge options in cascade and apply auto label/placeholder/help and attr/row_attr.
      *
      * @param array<string, mixed> $options Field-specific options
+     *
      * @return array<string, mixed> Merged options for FormBuilder::add()
      */
     protected function mergeFieldOptions(string $fieldName, string $fieldTypeSnake, array $options = []): array
@@ -59,13 +64,14 @@ trait FormKitTrait
      * Add a field by snake_case type name (must exist in type map). Options are merged in cascade.
      *
      * @param array<string, mixed> $options Field-specific options
-     * @throws \InvalidArgumentException When type is not in the map
+     *
+     * @throws InvalidArgumentException When type is not in the map
      */
     protected function addField(FormBuilderInterface $builder, string $name, string $typeSnakeCase, array $options = []): void
     {
         $fqcn = $this->formTypeMap->resolve($typeSnakeCase);
         if ($fqcn === null) {
-            throw new \InvalidArgumentException(sprintf('Unknown form type snake_case name "%s". Register it in nowo_form_kit.type_map or use a built-in type.', $typeSnakeCase));
+            throw new InvalidArgumentException(sprintf('Unknown form type snake_case name "%s". Register it in nowo_form_kit.type_map or use a built-in type.', $typeSnakeCase));
         }
         $builder->add($name, $fqcn, $this->mergeFieldOptions($name, $typeSnakeCase, $options));
     }
@@ -77,18 +83,17 @@ trait FormKitTrait
      * - A string: the snake_case type (e.g. 'text', 'email').
      * - An array with required key "type" (snake_case) and any other options for that field.
      *
-     * @param FormBuilderInterface $builder
-     * @param array<string, string|array{type: string, ...}> $fields e.g. ['full_name' => 'text', 'topic' => ['type' => 'choice', 'choices' => [...]]]
+     * @param array<string, array{type: string, ...}|string> $fields e.g. ['full_name' => 'text', 'topic' => ['type' => 'choice', 'choices' => [...]]]
      */
     protected function buildFormFromArray(FormBuilderInterface $builder, array $fields): void
     {
         foreach ($fields as $name => $definition) {
-            if (\is_string($definition)) {
+            if (is_string($definition)) {
                 $this->addField($builder, $name, $definition, []);
             } else {
                 $type = $definition['type'] ?? null;
                 if ($type === null || $type === '') {
-                    throw new \InvalidArgumentException(sprintf('Field "%s" must have a non-empty "type" key.', $name));
+                    throw new InvalidArgumentException(sprintf('Field "%s" must have a non-empty "type" key.', $name));
                 }
                 $options = $definition;
                 unset($options['type']);

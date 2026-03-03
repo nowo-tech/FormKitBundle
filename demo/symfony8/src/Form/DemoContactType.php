@@ -30,51 +30,51 @@ class DemoContactType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $rowHalf = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
+        $rowHalf  = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
         $rowThird = ['row_attr' => ['class' => 'col-12 col-md-4 mb-3']];
-        $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $rowFull  = ['row_attr' => ['class' => 'col-12 mb-3']];
 
         $this->buildFormFromArray($builder, [
-            'full_name' => ['type' => TextType::class, ...$rowHalf],
+            'full_name'     => ['type' => TextType::class, ...$rowHalf],
             'email_address' => [
-                'type' => EmailType::class,
+                'type'               => EmailType::class,
                 'input_group_prefix' => '@',
                 ...$rowHalf,
             ],
-            'message' => ['type' => TextareaType::class, ...$rowFull],
+            'message'         => ['type' => TextareaType::class, ...$rowFull],
             '_notice_contact' => [
-                'type' => StaticAlertType::class,
+                'type'    => StaticAlertType::class,
                 'message' => 'demo_contact.notice_contact',
-                'label' => false,
+                'label'   => false,
                 ...$rowFull,
             ],
             '_sep_details' => ['type' => StaticSeparatorType::class, 'label' => false, ...$rowFull],
-            'password' => [
-                'type' => PasswordType::class,
+            'password'     => [
+                'type'               => PasswordType::class,
                 'input_group_prefix' => '🔒',
                 ...$rowHalf,
             ],
             'website' => [
-                'type' => UrlType::class,
+                'type'               => UrlType::class,
                 'input_group_suffix' => '🔗',
                 ...$rowHalf,
             ],
-            'age' => ['type' => IntegerType::class, ...$rowThird],
+            'age'   => ['type' => IntegerType::class, ...$rowThird],
             'score' => ['type' => NumberType::class, ...$rowThird],
             'topic' => [
-                'type' => ChoiceType::class,
+                'type'    => ChoiceType::class,
                 'choices' => [
                     'Support' => 'support',
-                    'Sales' => 'sales',
-                    'Other' => 'other',
+                    'Sales'   => 'sales',
+                    'Other'   => 'other',
                 ],
                 ...$rowThird,
             ],
-            '_sep_terms' => ['type' => StaticSeparatorType::class, 'label' => false, ...$rowFull],
+            '_sep_terms'    => ['type' => StaticSeparatorType::class, 'label' => false, ...$rowFull],
             '_terms_notice' => [
-                'type' => StaticAlertType::class,
+                'type'    => StaticAlertType::class,
                 'message' => 'demo_contact.terms_notice',
-                'label' => false,
+                'label'   => false,
                 ...$rowFull,
             ],
             'accept_terms' => ['type' => CheckboxType::class, ...$rowFull],

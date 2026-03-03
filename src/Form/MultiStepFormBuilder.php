@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use InvalidArgumentException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+
+use function is_string;
+use function sprintf;
 
 /**
  * Builds a form for a single step of a multi-step wizard from an array of field definitions.
@@ -30,8 +34,8 @@ final class MultiStepFormBuilder
     /**
      * Creates a form containing only the fields for the given step.
      *
-     * @param array<string, string|array{type: string, ...}> $fieldsDefinition Same as buildFormFromArray (name => FQCN or name => ['type' => ..., ...])
-     * @param array<string, mixed>                          $data            Initial data for this step's fields
+     * @param array<string, array{type: string, ...}|string> $fieldsDefinition Same as buildFormFromArray (name => FQCN or name => ['type' => ..., ...])
+     * @param array<string, mixed> $data Initial data for this step's fields
      *
      * @return FormInterface Form with only this step's fields, ready for handleRequest
      */
@@ -43,17 +47,17 @@ final class MultiStepFormBuilder
         ?string $configName = null
     ): FormInterface {
         $formName = $wizardName . '_' . $stepKey;
-        $builder = $this->formFactory->createBuilder(\Symfony\Component\Form\Extension\Core\Type\FormType::class, $data, []);
+        $builder  = $this->formFactory->createBuilder(\Symfony\Component\Form\Extension\Core\Type\FormType::class, $data, []);
 
         foreach ($fieldsDefinition as $name => $definition) {
-            if (\is_string($definition)) {
-                $type = $definition;
+            if (is_string($definition)) {
+                $type    = $definition;
                 $options = $this->formOptionsMerger->resolve($formName, $name, $type, [], $configName);
                 $builder->add($name, $type, $options);
             } else {
                 $type = $definition['type'] ?? null;
                 if ($type === null || $type === '') {
-                    throw new \InvalidArgumentException(sprintf('Multi-step field "%s" must have a non-empty "type" key.', $name));
+                    throw new InvalidArgumentException(sprintf('Multi-step field "%s" must have a non-empty "type" key.', $name));
                 }
                 $fieldOptions = $definition;
                 unset($fieldOptions['type']);

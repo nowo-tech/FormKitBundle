@@ -24,19 +24,19 @@ final class StaticAlertType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $view->vars['message'] = $options['message'];
-        $view->vars['alert_type'] = $options['alert_type'];
+        $view->vars['message']            = $options['message'];
+        $view->vars['alert_type']         = $options['alert_type'];
         $view->vars['translation_domain'] = $options['translation_domain'];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'mapped' => false,
-            'label' => false,
-            'required' => false,
+            'mapped'             => false,
+            'label'              => false,
+            'required'           => false,
             'translation_domain' => null,
-            'alert_type' => 'info',
+            'alert_type'         => 'info',
         ]);
         $resolver->setRequired('message');
         $resolver->setAllowedValues('alert_type', ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark']);

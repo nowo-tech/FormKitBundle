@@ -26,8 +26,8 @@ class ExampleFormType extends AbstractType
         $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
 
         $this->buildFormFromArray($builder, [
-            'name' => ['type' => TextType::class, ...$rowHalf],
-            'email' => ['type' => EmailType::class, ...$rowHalf],
+            'name'    => ['type' => TextType::class, ...$rowHalf],
+            'email'   => ['type' => EmailType::class, ...$rowHalf],
             'subject' => ['type' => TextType::class, ...$rowFull],
             'message' => ['type' => TextareaType::class, ...$rowFull],
         ]);

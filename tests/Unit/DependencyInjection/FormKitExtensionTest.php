@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 
+use InvalidArgumentException;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -17,13 +18,13 @@ final class FormKitExtensionTest extends TestCase
 
         $extension->load([[
             'default_config' => 'bootstrap',
-            'type_map' => ['address' => 'App\Form\Type\AddressType'],
-            'configs' => [
+            'type_map'       => ['address' => 'App\Form\Type\AddressType'],
+            'configs'        => [
                 'bootstrap' => [
-                    'alias' => 'bootstrap',
+                    'alias'              => 'bootstrap',
                     'translation_domain' => 'forms',
-                    'defaults' => [
-                        'attr' => ['class' => 'form-control'],
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
                         'row_attr' => ['class' => 'mb-3'],
                     ],
                     'field_types' => [
@@ -48,8 +49,8 @@ final class FormKitExtensionTest extends TestCase
 
         $extension->load([[
             'translation_domain' => 'messages',
-            'defaults' => [
-                'attr' => ['class' => 'input'],
+            'defaults'           => [
+                'attr'     => ['class' => 'input'],
                 'row_attr' => ['class' => 'row'],
             ],
             'field_types' => [
@@ -69,17 +70,17 @@ final class FormKitExtensionTest extends TestCase
         $container = new ContainerBuilder();
         $extension = new FormKitExtension();
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('nowo_form_kit.default_config "missing" must be a key in nowo_form_kit.configs');
 
         $extension->load([[
             'default_config' => 'missing',
-            'configs' => [
+            'configs'        => [
                 'default' => [
-                    'alias' => 'default',
+                    'alias'              => 'default',
                     'translation_domain' => 'messages',
-                    'defaults' => [
-                        'attr' => [],
+                    'defaults'           => [
+                        'attr'     => [],
                         'row_attr' => [],
                     ],
                     'field_types' => [],

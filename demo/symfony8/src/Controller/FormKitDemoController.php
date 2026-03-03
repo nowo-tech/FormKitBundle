@@ -17,8 +17,8 @@ use Nowo\FormKitBundle\Form\MultiStepFormBuilder;
 use Nowo\FormKitBundle\Form\MultiStepWizardSessionFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,25 +33,25 @@ class FormKitDemoController extends AbstractController
 {
     private const MULTISTEP_DEFINITION = [
         'contact' => [
-            'label' => 'Contact',
+            'label'  => 'Contact',
             'fields' => [
                 'fullName' => TextType::class,
-                'email' => EmailType::class,
+                'email'    => EmailType::class,
             ],
         ],
         'address' => [
-            'label' => 'Address',
+            'label'  => 'Address',
             'fields' => [
-                'street' => TextType::class,
-                'number' => TextType::class,
-                'floor' => TextType::class,
+                'street'     => TextType::class,
+                'number'     => TextType::class,
+                'floor'      => TextType::class,
                 'postalCode' => TextType::class,
-                'city' => TextType::class,
-                'province' => TextType::class,
+                'city'       => TextType::class,
+                'province'   => TextType::class,
             ],
         ],
         'confirm' => [
-            'label' => 'Confirm',
+            'label'  => 'Confirm',
             'fields' => [],
         ],
     ];
@@ -114,7 +114,7 @@ class FormKitDemoController extends AbstractController
         }
 
         return $this->render('form_demo/search.html.twig', [
-            'form' => $form,
+            'form'      => $form,
             'submitted' => $submitted,
         ]);
     }
@@ -133,7 +133,7 @@ class FormKitDemoController extends AbstractController
         }
 
         return $this->render('form_demo/example_form.html.twig', [
-            'form' => $form,
+            'form'      => $form,
             'submitted' => $submitted,
         ]);
     }
@@ -145,9 +145,9 @@ class FormKitDemoController extends AbstractController
     #[Route(path: '/dropzone', name: 'form_demo_dropzone', methods: ['GET', 'POST'])]
     public function dropzoneDemo(Request $request): Response
     {
-        $projectDir = $this->getParameter('kernel.project_dir');
+        $projectDir       = $this->getParameter('kernel.project_dir');
         $defaultImagePath = $projectDir . '/public/images/demo-sample.jpg';
-        $defaultImageUrl = is_file($defaultImagePath) ? $request->getUriForPath('/images/demo-sample.jpg') : null;
+        $defaultImageUrl  = is_file($defaultImagePath) ? $request->getUriForPath('/images/demo-sample.jpg') : null;
 
         $form = $this->createForm(DropzoneDemoType::class);
         $form->handleRequest($request);
@@ -160,8 +160,8 @@ class FormKitDemoController extends AbstractController
         }
 
         return $this->render('form_demo/dropzone.html.twig', [
-            'form' => $form,
-            'uploaded' => $uploaded,
+            'form'              => $form,
+            'uploaded'          => $uploaded,
             'default_image_url' => $defaultImageUrl,
         ]);
     }
@@ -186,16 +186,16 @@ class FormKitDemoController extends AbstractController
         }
         $imageUrlPath = '/images/demo-sample.jpg';
         $sampleExists = $imagePath !== null;
-        $imageUrl = $request->getUriForPath($imageUrlPath);
+        $imageUrl     = $request->getUriForPath($imageUrlPath);
 
-        $form = null;
+        $form      = null;
         $submitted = null;
         if ($sampleExists) {
             $crop = $cropper->createCrop($imagePath);
             $crop->setCroppedMaxSize(800, 600);
             $form = $this->createFormBuilder(['crop' => $crop])
                 ->add('crop', CropperType::class, [
-                    'public_url' => $imageUrl,
+                    'public_url'      => $imageUrl,
                     'cropper_options' => ['aspectRatio' => 4 / 3],
                 ])
                 ->getForm();
@@ -206,10 +206,10 @@ class FormKitDemoController extends AbstractController
         }
 
         return $this->render('form_demo/cropper.html.twig', [
-            'form' => $form,
+            'form'          => $form,
             'sample_exists' => $sampleExists,
-            'image_path' => $imagePath ?? $candidates[0],
-            'submitted' => $submitted,
+            'image_path'    => $imagePath ?? $candidates[0],
+            'submitted'     => $submitted,
         ]);
     }
 
@@ -228,7 +228,7 @@ class FormKitDemoController extends AbstractController
         }
 
         return $this->render('form_demo/translations.html.twig', [
-            'form' => $form,
+            'form'      => $form,
             'submitted' => $submitted,
         ]);
     }
@@ -248,7 +248,7 @@ class FormKitDemoController extends AbstractController
         }
 
         return $this->render('form_demo/nested.html.twig', [
-            'form' => $form,
+            'form'      => $form,
             'submitted' => $submitted,
         ]);
     }
@@ -260,7 +260,7 @@ class FormKitDemoController extends AbstractController
     public function multistepFormDemo(Request $request): Response
     {
         $wizardName = 'demo_wizard';
-        $wizard = $this->wizardFactory->create(self::MULTISTEP_DEFINITION, $wizardName);
+        $wizard     = $this->wizardFactory->create(self::MULTISTEP_DEFINITION, $wizardName);
 
         if ($request->query->get('reset')) {
             $wizard->reset();
@@ -270,18 +270,18 @@ class FormKitDemoController extends AbstractController
 
         if ($wizard->isComplete()) {
             return $this->render('form_demo/multistep_summary.html.twig', [
-                'wizard' => $wizard,
+                'wizard'      => $wizard,
                 'wizard_name' => $wizardName,
             ]);
         }
 
-        $stepKey = $wizard->getCurrentStepKey();
+        $stepKey  = $wizard->getCurrentStepKey();
         $stepData = $wizard->getCollectedData()[$stepKey] ?? [];
-        $form = $this->multiStepFormBuilder->createStepForm(
+        $form     = $this->multiStepFormBuilder->createStepForm(
             $wizardName,
             $stepKey,
             $wizard->getStepFields($stepKey),
-            $stepData
+            $stepData,
         );
 
         $form->handleRequest($request);
@@ -293,7 +293,7 @@ class FormKitDemoController extends AbstractController
         }
 
         return $this->render('form_demo/multistep.html.twig', [
-            'form' => $form,
+            'form'   => $form,
             'wizard' => $wizard,
         ]);
     }
@@ -304,9 +304,9 @@ class FormKitDemoController extends AbstractController
     private function createControllerForm(): FormInterface
     {
         $formName = 'controller_contact';
-        $builder = $this->createFormBuilder();
-        $rowHalf = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
-        $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $builder  = $this->createFormBuilder();
+        $rowHalf  = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
+        $rowFull  = ['row_attr' => ['class' => 'col-12 mb-3']];
 
         $builder->add('name', TextType::class, $this->formOptionsMerger->resolve($formName, 'name', TextType::class, $rowHalf));
         $builder->add('email', EmailType::class, $this->formOptionsMerger->resolve($formName, 'email', EmailType::class, $rowHalf));
