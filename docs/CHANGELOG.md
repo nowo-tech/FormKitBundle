@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-03-03
+
 ### Added
 
 - **FormOptionsMerger** and **FormOptionsTrait**: convention-based label, placeholder, help keys (`form_snake.field_snake.*`), configurable `translation_domain`, `defaults.attr`, `defaults.row_attr`, and cascading merge (config → field type → field options).
@@ -20,3 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Legacy root-level `translation_domain`, `defaults`, `field_types` are normalized into a single `default` config when `configs` is not set.
+- **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
+- **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
+
+[1.0.0]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v1.0.0
