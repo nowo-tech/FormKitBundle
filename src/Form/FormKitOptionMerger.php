@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use function array_key_exists;
+use function is_array;
+
 final class FormKitOptionMerger
 {
     public function __construct(
@@ -22,15 +25,17 @@ final class FormKitOptionMerger
         $opts = $this->mergeCascade($formNameSnake, $fieldName, $fieldTypeSnake, $explicitOptions);
         $this->applyAutoTranslationKeys($formNameSnake, $fieldName, $opts);
         $this->applyAttrAndRowAttr($fieldTypeSnake, $opts);
+
         return $opts;
     }
 
     private function mergeCascade(string $formNameSnake, string $fieldName, string $fieldTypeSnake, array $explicitOptions): array
     {
         $minimum = $this->optionsConfig['minimum'] ?? [];
-        $byType = $this->optionsConfig['by_field_type'][$fieldTypeSnake] ?? [];
-        $byForm = $this->optionsConfig['by_form'][$formNameSnake] ?? [];
+        $byType  = $this->optionsConfig['by_field_type'][$fieldTypeSnake] ?? [];
+        $byForm  = $this->optionsConfig['by_form'][$formNameSnake] ?? [];
         $byField = $this->optionsConfig['by_field'][$formNameSnake][$fieldName] ?? [];
+
         return array_merge(
             is_array($minimum) ? $minimum : [],
             is_array($byType) ? $byType : [],
@@ -63,19 +68,19 @@ final class FormKitOptionMerger
     private function applyAttrAndRowAttr(string $fieldTypeSnake, array &$opts): void
     {
         $attrDefault = $this->attrConfig['default'] ?? [];
-        $attrByType = $this->attrConfig['by_type'][$fieldTypeSnake] ?? [];
+        $attrByType  = $this->attrConfig['by_type'][$fieldTypeSnake] ?? [];
         $attrClasses = array_merge(is_array($attrDefault) ? $attrDefault : [], is_array($attrByType) ? $attrByType : []);
         if ($attrClasses !== []) {
-            $opts['attr'] = $opts['attr'] ?? [];
-            $existing = isset($opts['attr']['class']) ? $opts['attr']['class'] . ' ' : '';
+            $opts['attr']          = $opts['attr'] ?? [];
+            $existing              = isset($opts['attr']['class']) ? $opts['attr']['class'] . ' ' : '';
             $opts['attr']['class'] = trim($existing . implode(' ', $attrClasses));
         }
         $rowDefault = $this->rowAttrConfig['default'] ?? [];
-        $rowByType = $this->rowAttrConfig['by_type'][$fieldTypeSnake] ?? [];
+        $rowByType  = $this->rowAttrConfig['by_type'][$fieldTypeSnake] ?? [];
         $rowClasses = array_merge(is_array($rowDefault) ? $rowDefault : [], is_array($rowByType) ? $rowByType : []);
         if ($rowClasses !== []) {
-            $opts['row_attr'] = $opts['row_attr'] ?? [];
-            $existing = isset($opts['row_attr']['class']) ? $opts['row_attr']['class'] . ' ' : '';
+            $opts['row_attr']          = $opts['row_attr'] ?? [];
+            $existing                  = isset($opts['row_attr']['class']) ? $opts['row_attr']['class'] . ' ' : '';
             $opts['row_attr']['class'] = trim($existing . implode(' ', $rowClasses));
         }
     }

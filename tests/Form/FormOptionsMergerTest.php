@@ -21,8 +21,8 @@ class FormOptionsMergerTest extends TestCase
             [
                 'default' => [
                     'translation_domain' => 'messages',
-                    'defaults' => [
-                        'attr' => ['class' => 'form-control'],
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
                         'row_attr' => ['class' => 'mb-3'],
                     ],
                     'field_types' => [
@@ -30,7 +30,7 @@ class FormOptionsMergerTest extends TestCase
                     ],
                 ],
             ],
-            'default'
+            'default',
         );
     }
 
@@ -58,9 +58,9 @@ class FormOptionsMergerTest extends TestCase
     public function testResolveFieldOptionsOverrideConvention(): void
     {
         $options = $this->merger->resolve('user_profile', 'email', 'Symfony\Component\Form\Extension\Core\Type\EmailType', [
-            'label' => 'Custom label',
+            'label'       => 'Custom label',
             'placeholder' => false,
-            'attr' => ['class' => 'custom-class'],
+            'attr'        => ['class' => 'custom-class'],
         ]);
 
         self::assertSame('Custom label', $options['label']);
@@ -81,13 +81,13 @@ class FormOptionsMergerTest extends TestCase
         $merger = new FormOptionsMerger(
             [
                 'default' => [
-                    'translation_domain' => 'messages',
+                    'translation_domain'    => 'messages',
                     'required_label_suffix' => ' *',
-                    'defaults' => ['attr' => [], 'row_attr' => []],
-                    'field_types' => [],
+                    'defaults'              => ['attr' => [], 'row_attr' => []],
+                    'field_types'           => [],
                 ],
             ],
-            'default'
+            'default',
         );
 
         $options = $merger->resolve('contact', 'name', 'text', []);

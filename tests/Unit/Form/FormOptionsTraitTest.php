@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
+use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use PHPUnit\Framework\TestCase;
@@ -19,8 +20,8 @@ final class FormOptionsTraitTest extends TestCase
             [
                 'default' => [
                     'translation_domain' => 'messages',
-                    'defaults' => [
-                        'attr' => ['class' => 'form-control'],
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
                         'row_attr' => ['class' => 'mb-3'],
                     ],
                     'field_types' => [
@@ -29,20 +30,20 @@ final class FormOptionsTraitTest extends TestCase
                 ],
                 'bootstrap' => [
                     'translation_domain' => 'forms',
-                    'defaults' => [
-                        'attr' => ['class' => 'form-control form-control-lg'],
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control form-control-lg'],
                         'row_attr' => ['class' => 'mb-4'],
                     ],
                     'field_types' => [],
                 ],
             ],
-            'default'
+            'default',
         );
     }
 
     public function testAddWithDefaultsUsesSelectedConfig(): void
     {
-        $type = new class () {
+        $type = new class {
             use FormOptionsTrait;
 
             public function getBlockPrefix(): string
@@ -71,7 +72,7 @@ final class FormOptionsTraitTest extends TestCase
                         && ($options['attr']['placeholder'] ?? null) === 'demo_form.name.placeholder'
                         && $options['help'] === 'demo_form.name.help'
                         && ($options['attr']['class'] ?? '') === 'form-control form-control-lg';
-                })
+                }),
             );
 
         $type->addField($builder);
@@ -79,7 +80,7 @@ final class FormOptionsTraitTest extends TestCase
 
     public function testBuildFormFromArraySupportsStringAndArrayDefinitions(): void
     {
-        $type = new class () {
+        $type = new class {
             use FormOptionsTrait;
 
             public function getBlockPrefix(): string
@@ -91,8 +92,8 @@ final class FormOptionsTraitTest extends TestCase
             {
                 $this->buildFormFromArray($builder, [
                     'full_name' => TextType::class,
-                    'topic' => [
-                        'type' => ChoiceType::class,
+                    'topic'     => [
+                        'type'    => ChoiceType::class,
                         'choices' => ['Support' => 'support'],
                     ],
                 ]);
@@ -107,7 +108,7 @@ final class FormOptionsTraitTest extends TestCase
             ->with(
                 self::logicalOr('full_name', 'topic'),
                 self::logicalOr(TextType::class, ChoiceType::class),
-                self::isType('array')
+                self::isType('array'),
             );
 
         $type->addFromArray($builder);
@@ -115,7 +116,7 @@ final class FormOptionsTraitTest extends TestCase
 
     public function testBuildFormFromArrayThrowsWhenTypeIsMissing(): void
     {
-        $type = new class () {
+        $type = new class {
             use FormOptionsTrait;
 
             public function getBlockPrefix(): string
@@ -135,7 +136,7 @@ final class FormOptionsTraitTest extends TestCase
 
         $builder = $this->createMock(FormBuilderInterface::class);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Field "broken" must have a non-empty "type" key.');
         $type->addInvalid($builder);
     }

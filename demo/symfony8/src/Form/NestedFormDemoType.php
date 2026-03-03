@@ -24,8 +24,8 @@ class NestedFormDemoType extends AbstractType
     {
         $this->buildFormFromArray($builder, [
             'fullName' => TextType::class,
-            'email' => EmailType::class,
-            'address' => AddressType::class,
+            'email'    => EmailType::class,
+            'address'  => AddressType::class,
         ]);
     }
 

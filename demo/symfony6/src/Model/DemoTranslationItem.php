@@ -6,7 +6,7 @@ namespace App\Model;
 
 class DemoTranslationItem
 {
-    public ?string $title = null;
+    public ?string $title       = null;
     public ?string $description = null;
 
     public function getTitle(): ?string

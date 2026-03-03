@@ -17,10 +17,10 @@ final class FormKitOptionMergerTest extends TestCase
             true,
             true,
             [
-                'minimum' => ['required' => false],
+                'minimum'       => ['required' => false],
                 'by_field_type' => ['text' => ['help' => 'type_help']],
-                'by_form' => ['contact_form' => ['label' => 'form_label']],
-                'by_field' => ['contact_form' => ['name' => ['help' => 'field_help']]],
+                'by_form'       => ['contact_form' => ['label' => 'form_label']],
+                'by_field'      => ['contact_form' => ['name' => ['help' => 'field_help']]],
             ],
             [
                 'default' => ['form-control'],
@@ -65,9 +65,9 @@ final class FormKitOptionMergerTest extends TestCase
 
         $options = $merger->merge('contact_form', 'email', 'text', [
             'label' => 'Email',
-            'help' => 'Explicit help',
-            'attr' => [
-                'class' => 'existing',
+            'help'  => 'Explicit help',
+            'attr'  => [
+                'class'       => 'existing',
                 'placeholder' => 'custom_placeholder',
             ],
             'row_attr' => [

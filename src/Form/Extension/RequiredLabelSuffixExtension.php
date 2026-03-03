@@ -29,7 +29,7 @@ final class RequiredLabelSuffixExtension extends AbstractTypeExtension
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $config = $this->configs[$this->defaultConfigName] ?? null;
+        $config                              = $this->configs[$this->defaultConfigName] ?? null;
         $view->vars['required_label_suffix'] = $config['required_label_suffix'] ?? null;
     }
 }

@@ -13,7 +13,7 @@ final class ConfigurationTest extends TestCase
 {
     public function testProcessesDefaultConfigValues(): void
     {
-        $processor = new Processor();
+        $processor     = new Processor();
         $configuration = new Configuration();
 
         $processed = $processor->processConfiguration($configuration, [[]]);
@@ -26,7 +26,7 @@ final class ConfigurationTest extends TestCase
 
     public function testRequiresAliasForNamedConfig(): void
     {
-        $processor = new Processor();
+        $processor     = new Processor();
         $configuration = new Configuration();
 
         $this->expectException(InvalidConfigurationException::class);
@@ -41,20 +41,20 @@ final class ConfigurationTest extends TestCase
 
     public function testProcessesTypeMapAndNamedConfig(): void
     {
-        $processor = new Processor();
+        $processor     = new Processor();
         $configuration = new Configuration();
 
         $processed = $processor->processConfiguration($configuration, [[
             'default_config' => 'bootstrap',
-            'type_map' => [
+            'type_map'       => [
                 'address' => 'App\Form\Type\AddressType',
             ],
             'configs' => [
                 'bootstrap' => [
-                    'alias' => 'bootstrap',
+                    'alias'              => 'bootstrap',
                     'translation_domain' => 'forms',
-                    'defaults' => [
-                        'attr' => ['class' => 'form-control'],
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
                         'row_attr' => ['class' => 'mb-3'],
                     ],
                     'field_types' => [

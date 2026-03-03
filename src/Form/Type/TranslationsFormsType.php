@@ -30,10 +30,10 @@ final class TranslationsFormsType extends A2lixTranslationsFormsType
         $resolver->setRequired('form_type');
         $resolver->setAllowedTypes('form_type', 'string');
         $resolver->setDefaults([
-            'form_options' => [],
-            'enabled_locales' => ['en', 'es', 'fr'],
-            'required_locales' => [],
-            'locale_labels' => null,
+            'form_options'        => [],
+            'enabled_locales'     => ['en', 'es', 'fr'],
+            'required_locales'    => [],
+            'locale_labels'       => null,
             'theming_granularity' => 'field',
         ]);
         $resolver->setAllowedTypes('form_options', 'array');
@@ -45,9 +45,9 @@ final class TranslationsFormsType extends A2lixTranslationsFormsType
         parent::configureOptions($resolver);
 
         $resolver->setDefined('data_class');
-        $resolver->setNormalizer('form_options', function (Options $options, $value): array {
+        $resolver->setNormalizer('form_options', static function (Options $options, $value): array {
             $dataClass = $options['data_class'] ?? null;
-            $base = $dataClass !== null ? ['data_class' => $dataClass] : [];
+            $base      = $dataClass !== null ? ['data_class' => $dataClass] : [];
 
             return array_merge($base, $value ?? []);
         });

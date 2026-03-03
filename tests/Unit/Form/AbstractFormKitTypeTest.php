@@ -7,8 +7,8 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 use Nowo\FormKitBundle\Form\AbstractFormKitType;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 final class AbstractFormKitTypeTest extends TestCase
 {
@@ -17,13 +17,13 @@ final class AbstractFormKitTypeTest extends TestCase
         $merger = new FormOptionsMerger([
             'default' => [
                 'translation_domain' => 'forms',
-                'defaults' => ['attr' => [], 'row_attr' => []],
-                'field_types' => [],
+                'defaults'           => ['attr' => [], 'row_attr' => []],
+                'field_types'        => [],
             ],
         ], 'default');
         $builder = $this->createMock(FormBuilderInterface::class);
 
-        $type = new class () extends AbstractFormKitType {
+        $type = new class extends AbstractFormKitType {
             public function wire(FormOptionsMerger $merger): void
             {
                 $this->setFormOptionsMerger($merger);
@@ -55,7 +55,7 @@ final class AbstractFormKitTypeTest extends TestCase
                     }
 
                     return str_ends_with((string) ($options['attr']['placeholder'] ?? ''), '.name.placeholder');
-                })
+                }),
             )
             ->willReturnSelf();
 

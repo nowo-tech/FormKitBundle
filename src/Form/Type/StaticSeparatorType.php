@@ -20,8 +20,8 @@ final class StaticSeparatorType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'mapped' => false,
-            'label' => false,
+            'mapped'   => false,
+            'label'    => false,
             'required' => false,
         ]);
     }

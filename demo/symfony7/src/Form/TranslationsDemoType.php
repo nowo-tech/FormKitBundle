@@ -18,16 +18,16 @@ class TranslationsDemoType extends AbstractType
     {
         $builder
             ->add('translations', TranslationsType::class, [
-                'locales' => ['en', 'es', 'fr'],
+                'locales'        => ['en', 'es', 'fr'],
                 'default_locale' => 'en',
-                'fields' => [
+                'fields'         => [
                     'title' => [
                         'field_type' => \Symfony\Component\Form\Extension\Core\Type\TextType::class,
-                        'label' => 'Title',
+                        'label'      => 'Title',
                     ],
                     'description' => [
                         'field_type' => \Symfony\Component\Form\Extension\Core\Type\TextareaType::class,
-                        'label' => 'Description',
+                        'label'      => 'Description',
                     ],
                 ],
                 'locale_labels' => [

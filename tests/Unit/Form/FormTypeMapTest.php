@@ -30,7 +30,7 @@ class FormTypeMapTest extends TestCase
 
     public function testTypeNamesReturnsKeys(): void
     {
-        $map = new FormTypeMap([]);
+        $map   = new FormTypeMap([]);
         $names = $map->typeNames();
         self::assertContains('text', $names);
         self::assertContains('email', $names);

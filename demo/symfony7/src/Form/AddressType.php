@@ -22,12 +22,12 @@ class AddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->buildFormFromArray($builder, [
-            'street' => TextType::class,
-            'number' => TextType::class,
-            'floor' => TextType::class,
+            'street'     => TextType::class,
+            'number'     => TextType::class,
+            'floor'      => TextType::class,
             'postalCode' => TextType::class,
-            'city' => TextType::class,
-            'province' => TextType::class,
+            'city'       => TextType::class,
+            'province'   => TextType::class,
         ]);
     }
 

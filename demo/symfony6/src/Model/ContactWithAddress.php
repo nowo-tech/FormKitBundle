@@ -10,7 +10,7 @@ namespace App\Model;
 class ContactWithAddress
 {
     public ?string $fullName = null;
-    public ?string $email = null;
+    public ?string $email    = null;
     public ?Address $address = null;
 
     public function __construct()

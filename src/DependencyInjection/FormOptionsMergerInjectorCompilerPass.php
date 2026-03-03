@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\DependencyInjection;
 
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use ReflectionClass;
+use ReflectionNamedType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use Throwable;
 
 /**
  * Injects FormOptionsMerger into all form types that have setFormOptionsMerger().
@@ -29,7 +32,7 @@ final class FormOptionsMergerInjectorCompilerPass implements CompilerPassInterfa
         $mergerRef = new Reference(self::MERGER_SERVICE_ID);
 
         foreach ($container->findTaggedServiceIds('form.type') as $id => $tags) {
-            $def = $container->getDefinition($id);
+            $def   = $container->getDefinition($id);
             $class = $def->getClass();
             if ($class === null) {
                 continue;
@@ -38,8 +41,8 @@ final class FormOptionsMergerInjectorCompilerPass implements CompilerPassInterfa
                 continue;
             }
             try {
-                $refl = new \ReflectionClass($class);
-            } catch (\Throwable) {
+                $refl = new ReflectionClass($class);
+            } catch (Throwable) {
                 continue;
             }
             if (!$refl->hasMethod('setFormOptionsMerger')) {
@@ -49,9 +52,9 @@ final class FormOptionsMergerInjectorCompilerPass implements CompilerPassInterfa
             if (!$method->isPublic() || $method->getNumberOfParameters() !== 1) {
                 continue;
             }
-            $params = $method->getParameters();
+            $params    = $method->getParameters();
             $paramType = $params[0]->getType();
-            if ($paramType instanceof \ReflectionNamedType && $paramType->getName() === FormOptionsMerger::class) {
+            if ($paramType instanceof ReflectionNamedType && $paramType->getName() === FormOptionsMerger::class) {
                 $def->addMethodCall('setFormOptionsMerger', [$mergerRef]);
             }
         }

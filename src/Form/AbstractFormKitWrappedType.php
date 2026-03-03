@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use ReflectionClass;
 use Symfony\Component\Form\AbstractType;
 
 /**
@@ -38,7 +39,7 @@ abstract class AbstractFormKitWrappedType extends AbstractType
 
     public function getBlockPrefix(): string
     {
-        $shortName = (new \ReflectionClass($this))->getShortName();
+        $shortName   = (new ReflectionClass($this))->getShortName();
         $withoutType = preg_replace('/Type$/', '', $shortName);
 
         return $this->camelCaseToSnakeCase($withoutType);

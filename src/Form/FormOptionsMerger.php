@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use InvalidArgumentException;
+
+use function array_key_exists;
+use function is_array;
+use function sprintf;
+
 /**
  * Merges form field options in cascade: global defaults → field type → form-level → field options.
  *
@@ -28,15 +34,15 @@ final class FormOptionsMerger
      */
     public function __construct(array $configs, string $defaultConfigName)
     {
-        $this->configs = $configs;
+        $this->configs           = $configs;
         $this->defaultConfigName = $defaultConfigName;
     }
 
     /**
      * Resolves final options for a form field with cascading merge and convention-based keys.
      *
-     * @param string|null           $configName Config name (key in configs); when null, default_config is used
-     * @param array<string, mixed>  $options    Field-specific options (override convention and defaults)
+     * @param string|null $configName Config name (key in configs); when null, default_config is used
+     * @param array<string, mixed> $options Field-specific options (override convention and defaults)
      *
      * @return array<string, mixed> Merged options ready for FormBuilder::add()
      */
@@ -49,29 +55,29 @@ final class FormOptionsMerger
     ): array {
         $name = $configName ?? $this->defaultConfigName;
         if (!isset($this->configs[$name])) {
-            throw new \InvalidArgumentException(sprintf('Unknown form kit config "%s". Available: %s.', $name, implode(', ', array_keys($this->configs))));
+            throw new InvalidArgumentException(sprintf('Unknown form kit config "%s". Available: %s.', $name, implode(', ', array_keys($this->configs))));
         }
-        $config = $this->configs[$name];
+        $config            = $this->configs[$name];
         $translationDomain = $config['translation_domain'];
-        $defaults = $config['defaults'];
-        $fieldTypes = $config['field_types'];
+        $defaults          = $config['defaults'];
+        $fieldTypes        = $config['field_types'];
 
         $fieldNameSnake = $this->camelCaseToSnakeCase($fieldName);
-        $baseKey = $formName . '.' . $fieldNameSnake;
+        $baseKey        = $formName . '.' . $fieldNameSnake;
 
         $base = [
             'translation_domain' => $translationDomain,
-            'label' => $baseKey . '.label',
-            'help' => $baseKey . '.help',
-            'attr' => array_merge(
+            'label'              => $baseKey . '.label',
+            'help'               => $baseKey . '.help',
+            'attr'               => array_merge(
                 ['placeholder' => $baseKey . '.placeholder'],
-                $defaults['attr'] ?? []
+                $defaults['attr'] ?? [],
             ),
             'row_attr' => $defaults['row_attr'] ?? [],
         ];
 
         $typeShortName = $this->typeToShortName($type);
-        $typeDefaults = $fieldTypes[$typeShortName] ?? $fieldTypes[$type] ?? [];
+        $typeDefaults  = $fieldTypes[$typeShortName] ?? $fieldTypes[$type] ?? [];
 
         $merged = $this->arrayReplaceRecursive($base, $typeDefaults);
         $merged = $this->arrayReplaceRecursive($merged, $options);
@@ -110,7 +116,7 @@ final class FormOptionsMerger
     private function arrayReplaceRecursive(array $base, array $replace): array
     {
         foreach ($replace as $k => $v) {
-            if (\is_array($v) && isset($base[$k]) && \is_array($base[$k])) {
+            if (is_array($v) && isset($base[$k]) && is_array($base[$k])) {
                 $base[$k] = $this->arrayReplaceRecursive($base[$k], $v);
             } else {
                 $base[$k] = $v;
@@ -132,13 +138,13 @@ final class FormOptionsMerger
     private function normalizePlaceholderToAttr(array $merged, array $options): array
     {
         $hasExplicitPlaceholder = array_key_exists('placeholder', $options);
-        $explicitPlaceholder = $hasExplicitPlaceholder ? $options['placeholder'] : null;
-        $placeholder = $merged['placeholder'] ?? null;
+        $explicitPlaceholder    = $hasExplicitPlaceholder ? $options['placeholder'] : null;
+        $placeholder            = $merged['placeholder'] ?? null;
 
         unset($merged['placeholder']);
 
         if ($hasExplicitPlaceholder && $explicitPlaceholder === false) {
-            if (isset($merged['attr']) && \is_array($merged['attr'])) {
+            if (isset($merged['attr']) && is_array($merged['attr'])) {
                 unset($merged['attr']['placeholder']);
             }
 
@@ -147,7 +153,7 @@ final class FormOptionsMerger
 
         $placeholderToApply = $hasExplicitPlaceholder ? $explicitPlaceholder : $placeholder;
         if ($placeholderToApply !== null && $placeholderToApply !== false) {
-            $merged['attr'] = (isset($merged['attr']) && \is_array($merged['attr'])) ? $merged['attr'] : [];
+            $merged['attr'] = (isset($merged['attr']) && is_array($merged['attr'])) ? $merged['attr'] : [];
             if (!array_key_exists('placeholder', $merged['attr'])) {
                 $merged['attr']['placeholder'] = $placeholderToApply;
             }

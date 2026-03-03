@@ -18,19 +18,19 @@ final class FormKitAbstractTypeTest extends TestCase
             [
                 'default' => [
                     'translation_domain' => 'messages',
-                    'defaults' => [
-                        'attr' => ['class' => 'form-control'],
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
                         'row_attr' => ['class' => 'mb-3'],
                     ],
                     'field_types' => [],
                 ],
             ],
-            'default'
+            'default',
         );
 
         $map = new FormTypeMap([]);
 
-        $type = new class ($merger, $map) extends FormKitAbstractType {
+        $type = new class($merger, $map) extends FormKitAbstractType {
             public function getBlockPrefix(): string
             {
                 return 'contact_form';
@@ -51,7 +51,7 @@ final class FormKitAbstractTypeTest extends TestCase
                 self::callback(static function (array $options): bool {
                     return $options['label'] === 'contact_form.name.label'
                         && ($options['attr']['class'] ?? '') === 'form-control';
-                })
+                }),
             );
 
         $type->buildDemoField($builder);

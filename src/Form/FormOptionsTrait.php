@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use InvalidArgumentException;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -14,6 +15,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
+
+use function is_string;
+use function sprintf;
 
 /**
  * Trait for form types that use FormOptionsMerger for convention-based options.
@@ -59,7 +63,7 @@ trait FormOptionsTrait
         array $options = []
     ): void {
         $formName = $this->getBlockPrefix();
-        $merged = $this->formOptionsMerger->resolve($formName, $name, $type, $options, $this->formKitConfigName);
+        $merged   = $this->formOptionsMerger->resolve($formName, $name, $type, $options, $this->formKitConfigName);
         $builder->add($name, $type, $merged);
     }
 
@@ -70,18 +74,17 @@ trait FormOptionsTrait
      * - A string: the form type FQCN (e.g. TextType::class).
      * - An array with required key "type" (FQCN) and any other options for that field.
      *
-     * @param FormBuilderInterface $builder
-     * @param array<string, string|array{type: string, ...}> $fields e.g. ['full_name' => TextType::class, 'topic' => ['type' => ChoiceType::class, 'choices' => [...]]]
+     * @param array<string, array{type: string, ...}|string> $fields e.g. ['full_name' => TextType::class, 'topic' => ['type' => ChoiceType::class, 'choices' => [...]]]
      */
     protected function buildFormFromArray(FormBuilderInterface $builder, array $fields): void
     {
         foreach ($fields as $name => $definition) {
-            if (\is_string($definition)) {
+            if (is_string($definition)) {
                 $this->addWithDefaults($builder, $name, $definition, []);
             } else {
                 $type = $definition['type'] ?? null;
                 if ($type === null || $type === '') {
-                    throw new \InvalidArgumentException(sprintf('Field "%s" must have a non-empty "type" key.', $name));
+                    throw new InvalidArgumentException(sprintf('Field "%s" must have a non-empty "type" key.', $name));
                 }
                 $options = $definition;
                 unset($options['type']);

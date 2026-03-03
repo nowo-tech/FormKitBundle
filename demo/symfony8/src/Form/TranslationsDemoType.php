@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Model\DemoTranslationItem;
 use App\Model\DemoTranslatableItem;
+use App\Model\DemoTranslationItem;
 use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use Symfony\Component\Form\AbstractType;
@@ -24,8 +24,8 @@ class TranslationsDemoType extends AbstractType
     {
         $this->buildFormFromArray($builder, [
             'translations' => [
-                'type' => TranslationsFormsType::class,
-                'form_type' => TranslationItemType::class,
+                'type'       => TranslationsFormsType::class,
+                'form_type'  => TranslationItemType::class,
                 'data_class' => DemoTranslationItem::class,
             ],
         ]);
