@@ -2,7 +2,8 @@
 # Development and QA targets run inside the Docker container
 #
 COMPOSE_FILE := docker-compose.yml
-COMPOSE := docker compose -f $(COMPOSE_FILE)
+COMPOSE_PROJECT_DIR := $(CURDIR)
+COMPOSE := docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_PROJECT_DIR)
 SERVICE_PHP := php
 RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 
@@ -10,7 +11,7 @@ COMPOSER ?= composer
 
 .PHONY: help install test test-coverage cs-check cs-fix qa clean ensure-up update validate assets release-check release-check-demos composer-sync
 .PHONY: demo-up-symfony6 demo-up-symfony7 demo-up-symfony8
-.PHONY: up down up-symfony6 up-symfony7 up-symfony8 build shell demo-install
+.PHONY: up down down-dev up-symfony6 up-symfony7 up-symfony8 build shell demo-install
 
 help:
 	@echo "Form Kit Bundle - Development Commands (Docker)"
@@ -45,6 +46,7 @@ help:
 	@echo "  build          Rebuild Docker image (no cache)"
 	@echo "  shell          Open shell in container"
 	@echo "  demo-install   Install Composer dependencies in demo"
+	@echo "  down-dev       Stop bundle dev container (run if /app lacks composer.json)"
 	@echo ""
 
 ensure-up:
@@ -112,6 +114,9 @@ up: up-symfony8
 
 down:
 	$(MAKE) -C demo/symfony8 down
+
+down-dev:
+	$(COMPOSE) down
 
 up-symfony6:
 	$(MAKE) -C demo/symfony6 up
