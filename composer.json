@@ -46,8 +46,8 @@
     "a2lix/translation-form-bundle": "For the optional \"translations\" type in FormTypeMap (^3.2 on PHP 8.2/Symfony 6|7, ^4.0 on PHP 8.4+/Symfony 7.4|8)"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.0",
-    "phpunit/phpunit": "^10.0 || ^11.0",
+    "friendsofphp/php-cs-fixer": "^3.0,<3.94",
+    "phpunit/phpunit": "^10.0",
     "symfony/framework-bundle": "^6.4 || ^7.0 || ^8.0"
   },
   "autoload": {
