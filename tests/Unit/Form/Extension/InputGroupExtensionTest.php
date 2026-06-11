@@ -27,8 +27,8 @@ final class InputGroupExtensionTest extends TestCase
         self::assertNull($resolved['input_group_prefix']);
         self::assertNull($resolved['input_group_suffix']);
 
-        $view  = new FormView();
-        $form  = $this->createMock(FormInterface::class);
+        $view = new FormView();
+        $form = $this->createMock(FormInterface::class);
         $ext->buildView($view, $form, [
             'input_group_prefix' => '@',
             'input_group_suffix' => '#',
@@ -38,4 +38,3 @@ final class InputGroupExtensionTest extends TestCase
         self::assertSame('#', $view->vars['input_group_suffix']);
     }
 }
-

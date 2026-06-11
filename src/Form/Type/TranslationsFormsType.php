@@ -32,7 +32,7 @@ final class TranslationsFormsType extends A2lixTranslationsFormsType
         $resolver->setDefaults([
             // Some FormOptionsTrait presets provide default_locale, even if the
             // underlying A2lix type mainly operates on enabled/required locales.
-            'default_locale'        => 'en',
+            'default_locale'      => 'en',
             'form_options'        => [],
             'enabled_locales'     => ['en', 'es', 'fr'],
             'required_locales'    => [],

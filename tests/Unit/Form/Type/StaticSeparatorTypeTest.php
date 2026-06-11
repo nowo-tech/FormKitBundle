@@ -12,7 +12,7 @@ final class StaticSeparatorTypeTest extends TestCase
 {
     public function testConfigureOptionsDefaultsAndBlockPrefix(): void
     {
-        $type = new StaticSeparatorType();
+        $type     = new StaticSeparatorType();
         $resolver = new OptionsResolver();
         $type->configureOptions($resolver);
 
@@ -24,4 +24,3 @@ final class StaticSeparatorTypeTest extends TestCase
         self::assertSame('static_separator', $type->getBlockPrefix());
     }
 }
-

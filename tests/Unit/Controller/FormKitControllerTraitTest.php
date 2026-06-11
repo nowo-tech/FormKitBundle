@@ -6,26 +6,28 @@ namespace Nowo\FormKitBundle\Tests\Unit\Controller;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Controller\FormKitControllerTrait;
+use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\CsvModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\JsonModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\MoneyModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\SwitchModelTransformer;
-use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+use function array_key_exists;
 
 final class FormKitControllerTraitTest extends TestCase
 {
@@ -86,7 +88,7 @@ final class FormKitControllerTraitTest extends TestCase
             ->with(
                 'name',
                 TextType::class,
-                self::callback(static fn(array $options): bool => $options['translation_domain'] === 'messages'
+                self::callback(static fn (array $options): bool => $options['translation_domain'] === 'messages'
                     && $options['label'] === 'controller_contact.name.label'
                     && $options['help'] === 'controller_contact.name.help'
                     && ($options['attr']['placeholder'] ?? null) === 'controller_contact.name.placeholder'
@@ -125,7 +127,7 @@ final class FormKitControllerTraitTest extends TestCase
             ->with(
                 'name',
                 TextType::class,
-                self::callback(static fn(array $options): bool => $options['label'] === 'other_form.name.label'),
+                self::callback(static fn (array $options): bool => $options['label'] === 'other_form.name.label'),
             );
 
         $subject->addTextField($builder, 'name', [], null, 'other_form');
@@ -244,16 +246,16 @@ final class FormKitControllerTraitTest extends TestCase
             public function addAny(FormBuilderInterface $builder, string $name, string $method): void
             {
                 match ($method) {
-                    'text' => $this->addTextType($builder, $name),
-                    'email' => $this->addEmailType($builder, $name),
+                    'text'     => $this->addTextType($builder, $name),
+                    'email'    => $this->addEmailType($builder, $name),
                     'textarea' => $this->addTextareaType($builder, $name),
                     'password' => $this->addPasswordType($builder, $name),
-                    'url' => $this->addUrlType($builder, $name),
-                    'integer' => $this->addIntegerType($builder, $name),
-                    'number' => $this->addNumberType($builder, $name),
+                    'url'      => $this->addUrlType($builder, $name),
+                    'integer'  => $this->addIntegerType($builder, $name),
+                    'number'   => $this->addNumberType($builder, $name),
                     'checkbox' => $this->addCheckboxType($builder, $name),
-                    'choice' => $this->addChoiceType($builder, $name),
-                    default => throw new \InvalidArgumentException('unknown'),
+                    'choice'   => $this->addChoiceType($builder, $name),
+                    default    => throw new InvalidArgumentException('unknown'),
                 };
             }
         };
@@ -261,7 +263,7 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->setFormKitFormName('controller_contact');
 
         $builder = $this->createMock(FormBuilderInterface::class);
-        $calls = [];
+        $calls   = [];
         $builder->expects(self::exactly(9))
             ->method('add')
             ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder) {
@@ -316,10 +318,10 @@ final class FormKitControllerTraitTest extends TestCase
 
         $subject->setFormKitFormName('controller_contact');
 
-        $builder = $this->createMock(FormBuilderInterface::class);
-        $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $builder      = $this->createMock(FormBuilderInterface::class);
+        $child        = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
         $transformers = [];
-        $adds = [];
+        $adds         = [];
 
         $child->expects(self::exactly(2))
             ->method('addModelTransformer')
@@ -343,12 +345,12 @@ final class FormKitControllerTraitTest extends TestCase
 
         $subject->addSwitchPublic($builder, 'isActive', [
             'label_position' => 'horizontal',
-            'switch_value' => 1,
+            'switch_value'   => 1,
         ]);
 
         $subject->addSwitchPublic($builder, 'isActive2', [
             'label_position' => 'vertical',
-            'switch_value' => 1,
+            'switch_value'   => 1,
         ]);
 
         self::assertCount(2, $adds);
@@ -359,7 +361,7 @@ final class FormKitControllerTraitTest extends TestCase
 
         self::assertSame('isActive2', $adds[1]['name']);
         self::assertSame(ChoiceType::class, $adds[1]['type']);
-        self::assertSame(false, $adds[1]['opts']['choice_label'] ?? null);
+        self::assertFalse($adds[1]['opts']['choice_label'] ?? null);
         self::assertArrayNotHasKey('label_position', $adds[1]['opts']);
 
         self::assertCount(2, $transformers);
@@ -404,12 +406,12 @@ final class FormKitControllerTraitTest extends TestCase
             ->with(
                 'payload',
                 TextareaType::class,
-                self::callback(static fn(array $opts): bool => !array_key_exists('json_pretty', $opts) && !array_key_exists('json_unescaped_unicode', $opts)),
+                self::callback(static fn (array $opts): bool => !array_key_exists('json_pretty', $opts) && !array_key_exists('json_unescaped_unicode', $opts)),
             )
             ->willReturn($builder);
 
         $subject->addJsonPublic($builder, 'payload', [
-            'json_pretty' => false,
+            'json_pretty'            => false,
             'json_unescaped_unicode' => false,
         ]);
     }
@@ -449,7 +451,7 @@ final class FormKitControllerTraitTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
 
-        $adds = [];
+        $adds         = [];
         $transformers = [];
 
         $builder->expects(self::exactly(3))
@@ -521,7 +523,7 @@ final class FormKitControllerTraitTest extends TestCase
             ->with(
                 'name',
                 TextType::class,
-                self::callback(static fn(array $opts): bool => ($opts['label'] ?? null) === 'block_prefix_form.name.label'),
+                self::callback(static fn (array $opts): bool => ($opts['label'] ?? null) === 'block_prefix_form.name.label'),
             );
 
         $subject->addTextPublic($builder, 'name');
@@ -579,7 +581,7 @@ final class FormKitControllerTraitTest extends TestCase
             protected function resolveFormKitTranslationsLocaleContext(array $options): array
             {
                 return [
-                    'default_locale' => 'es',
+                    'default_locale'  => 'es',
                     'enabled_locales' => ['es', 'en'],
                 ];
             }
@@ -596,7 +598,7 @@ final class FormKitControllerTraitTest extends TestCase
             ->with(
                 'translations',
                 TranslationsFormsType::class,
-                self::callback(static fn(array $opts): bool => $opts['form_type'] === 'App\\Form\\TranslationItemType'
+                self::callback(static fn (array $opts): bool => $opts['form_type'] === 'App\\Form\\TranslationItemType'
                     && $opts['default_locale'] === 'es'
                     && $opts['enabled_locales'] === ['es', 'en']
                     && $opts['required_locales'] === ['es']),

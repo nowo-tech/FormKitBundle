@@ -29,15 +29,15 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form\Type {
     {
         public function testConfigureOptionsNormalizesDataClassIntoFormOptions(): void
         {
-            $ref  = new \ReflectionClass(TranslationsFormsType::class);
-            $type = $ref->newInstanceWithoutConstructor();
+            $ref      = new \ReflectionClass(TranslationsFormsType::class);
+            $type     = $ref->newInstanceWithoutConstructor();
             $resolver = new OptionsResolver();
 
             $type->configureOptions($resolver);
 
             $resolved = $resolver->resolve([
-                'form_type' => 'App\\Form\\TranslationItemType',
-                'data_class' => 'App\\Model\\DemoTranslationItem',
+                'form_type'    => 'App\\Form\\TranslationItemType',
+                'data_class'   => 'App\\Model\\DemoTranslationItem',
                 'form_options' => [],
             ]);
 
@@ -50,4 +50,3 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form\Type {
         }
     }
 }
-

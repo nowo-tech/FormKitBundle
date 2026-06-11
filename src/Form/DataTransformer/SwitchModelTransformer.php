@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form\DataTransformer;
 
+use function is_array;
+use function is_int;
+use function is_string;
+
 /**
  * Transforms between a scalar "on/off" model value and the ChoiceType view array.
  *
@@ -28,6 +32,7 @@ final class SwitchModelTransformer implements DataTransformer
 
     /**
      * @param mixed $value Model value (usually int/bool|null)
+     *
      * @return list<int>
      */
     public function transform(mixed $value): array
@@ -49,6 +54,7 @@ final class SwitchModelTransformer implements DataTransformer
 
     /**
      * @param mixed $value View array (usually array of ints/strings)
+     *
      * @return int On/off value for the model
      */
     public function reverseTransform(mixed $value): int
@@ -67,4 +73,3 @@ final class SwitchModelTransformer implements DataTransformer
         return $this->offValue;
     }
 }
-

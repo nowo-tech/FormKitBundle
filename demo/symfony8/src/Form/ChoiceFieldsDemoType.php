@@ -38,7 +38,7 @@ final class ChoiceFieldsDemoType extends AbstractType
                 'symfony' => 'Symfony',
                 'twig'    => 'Twig',
             ],
-            'required' => false,
+            'required'   => false,
             'select_all' => true,
         ]));
 
@@ -56,7 +56,7 @@ final class ChoiceFieldsDemoType extends AbstractType
                 'api'  => 'API',
                 'ui'   => 'UI',
             ],
-            'required' => false,
+            'required'   => false,
             'select_all' => true,
         ]));
 

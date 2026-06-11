@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class          => ['all' => true],
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class         => ['all' => true],
     Symfony\Bundle\TwigBundle\TwigBundle::class                   => ['all' => true],
     Pentatrion\ViteBundle\PentatrionViteBundle::class             => ['all' => true],
@@ -14,8 +15,8 @@ return [
     Symfony\UX\Autocomplete\AutocompleteBundle::class             => ['all' => true],
     Symfony\UX\Dropzone\DropzoneBundle::class                     => ['all' => true],
     Symfony\UX\Cropperjs\CropperjsBundle::class                   => ['all' => true],
+    A2lix\AutoFormBundle\A2lixAutoFormBundle::class               => ['all' => true],
     A2lix\TranslationFormBundle\A2lixTranslationFormBundle::class => ['all' => true],
     Nowo\FormKitBundle\NowoFormKitBundle::class                   => ['all' => true],
-    Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle::class   => ['all' => true],
     FOS\CKEditorBundle\FOSCKEditorBundle::class                   => ['all' => true],
 ];

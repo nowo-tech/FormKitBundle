@@ -14,7 +14,7 @@ final class StaticAlertTypeTest extends TestCase
 {
     public function testConfigureOptionsAndBuildView(): void
     {
-        $type = new StaticAlertType();
+        $type     = new StaticAlertType();
         $resolver = new OptionsResolver();
         $type->configureOptions($resolver);
 
@@ -31,8 +31,8 @@ final class StaticAlertTypeTest extends TestCase
         $view = new FormView();
         $form = $this->createMock(FormInterface::class);
         $type->buildView($view, $form, [
-            'message' => 'Hello',
-            'alert_type' => 'warning',
+            'message'            => 'Hello',
+            'alert_type'         => 'warning',
             'translation_domain' => 'messages',
         ]);
 
@@ -43,4 +43,3 @@ final class StaticAlertTypeTest extends TestCase
         self::assertSame('static_alert', $type->getBlockPrefix());
     }
 }
-

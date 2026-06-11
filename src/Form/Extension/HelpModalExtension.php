@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Throwable;
 
 use function array_replace_recursive;
 use function is_array;
@@ -16,7 +17,8 @@ use function is_callable;
 use function is_string;
 use function json_encode;
 use function spl_object_hash;
-use Throwable;
+
+use const JSON_UNESCAPED_UNICODE;
 
 /**
  * Adds "help modal" support to any form field by injecting data attributes into the rendered label.
@@ -34,9 +36,9 @@ use Throwable;
 final class HelpModalExtension extends AbstractTypeExtension
 {
     /**
-     * @param array<string, array<string, mixed>> $configs     Merged Form Kit configuration (all named configs).
-     * @param string                               $defaultConfigName Key used when resolving `help_modal` defaults.
-     * @param object|null                          $iconRenderer      Optional; Symfony UX Icons renderer when the package is installed.
+     * @param array<string, array<string, mixed>> $configs merged Form Kit configuration (all named configs)
+     * @param string $defaultConfigName key used when resolving `help_modal` defaults
+     * @param object|null $iconRenderer optional; Symfony UX Icons renderer when the package is installed
      */
     public function __construct(
         private readonly array $configs,
@@ -91,15 +93,14 @@ final class HelpModalExtension extends AbstractTypeExtension
         $default = $this->configs[$this->defaultConfigName]['help_modal'] ?? [];
         $merged  = array_replace_recursive($default, $helpModal);
 
-        $framework = (string) ($merged['framework'] ?? 'bootstrap5');
+        $framework        = (string) ($merged['framework'] ?? 'bootstrap5');
         $fallbackIconHtml = (string) ($merged['icon_html'] ?? '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>');
 
-        $uxIcon = $merged['ux_icon'] ?? null;
+        $uxIcon  = $merged['ux_icon'] ?? null;
         $uxAttrs = isset($merged['ux_icon_attributes']) && is_array($merged['ux_icon_attributes'])
             ? $merged['ux_icon_attributes']
             : [];
-        /** @var array<string, string|bool> $uxAttrs */
-
+        /** @var array<string, bool|string> $uxAttrs */
         $iconHtml = is_string($uxIcon) && $uxIcon !== ''
             ? $this->renderUxIconHtml($uxIcon, $uxAttrs, $fallbackIconHtml)
             : $fallbackIconHtml;
@@ -132,14 +133,14 @@ final class HelpModalExtension extends AbstractTypeExtension
 
         $labelAttr['data-nowo-help-modal'] = json_encode(
             [
-                'id' => $modalId,
-                'framework' => $framework,
-                'icon_html' => $iconHtml,
+                'id'            => $modalId,
+                'framework'     => $framework,
+                'icon_html'     => $iconHtml,
                 'trigger_class' => $triggerClass,
-                'title' => $title,
-                'title_html' => $titleHtml,
-                'content' => $contentValue,
-                'aria_label' => $ariaLabel,
+                'title'         => $title,
+                'title_html'    => $titleHtml,
+                'content'       => $contentValue,
+                'aria_label'    => $ariaLabel,
             ],
             JSON_UNESCAPED_UNICODE,
         );
@@ -148,7 +149,7 @@ final class HelpModalExtension extends AbstractTypeExtension
     }
 
     /**
-     * @param array<string, string|bool> $attributes
+     * @param array<string, bool|string> $attributes
      */
     private function renderUxIconHtml(string $name, array $attributes, string $fallbackHtml): string
     {
@@ -158,7 +159,7 @@ final class HelpModalExtension extends AbstractTypeExtension
         }
 
         try {
-            /** @var callable(string, array<string, string|bool>): string $render */
+            /** @var callable(string, array<string, bool|string>): string $render */
             $render = [$renderer, 'renderIcon'];
 
             return $render($name, $attributes);
@@ -167,4 +168,3 @@ final class HelpModalExtension extends AbstractTypeExtension
         }
     }
 }
-

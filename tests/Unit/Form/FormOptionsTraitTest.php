@@ -5,23 +5,26 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
 use InvalidArgumentException;
+use LogicException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
-use Nowo\FormKitBundle\Form\FormOptionsMerger;
-use Nowo\FormKitBundle\Form\FormOptionsTrait;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\CsvModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\JsonModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\MoneyModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\SwitchModelTransformer;
+use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+use function array_key_exists;
 
 final class FormOptionsTraitTest extends TestCase
 {
@@ -78,7 +81,7 @@ final class FormOptionsTraitTest extends TestCase
             ->with(
                 'name',
                 TextType::class,
-                self::callback(static fn(array $options): bool => $options['translation_domain'] === 'forms'
+                self::callback(static fn (array $options): bool => $options['translation_domain'] === 'forms'
                     && $options['label'] === 'demo_form.name.label'
                     && ($options['attr']['placeholder'] ?? null) === 'demo_form.name.placeholder'
                     && $options['help'] === 'demo_form.name.help'
@@ -255,21 +258,21 @@ final class FormOptionsTraitTest extends TestCase
             ->method('add')
             ->with(
                 self::anything(),
-                \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class,
-                self::callback(static fn(array $opts): bool => !array_key_exists('label_position', $opts)),
+                ChoiceType::class,
+                self::callback(static fn (array $opts): bool => !array_key_exists('label_position', $opts)),
             );
 
         $subject->addSwitchPublic($builder, 'isActive', [
             'label_position' => 'horizontal',
-            'switch_value' => 1,
-            'row_attr' => ['class' => 'existing-row'],
+            'switch_value'   => 1,
+            'row_attr'       => ['class' => 'existing-row'],
         ]);
 
         $subject->addSwitchPublic($builder, 'isActive2', [
             'label_position' => 'vertical',
-            'switch_value' => 1,
-            'row_attr' => ['class' => 'existing-row-2'],
-            'attr' => ['class' => 'existing-switch-attr'],
+            'switch_value'   => 1,
+            'row_attr'       => ['class' => 'existing-row-2'],
+            'attr'           => ['class' => 'existing-switch-attr'],
         ]);
     }
 
@@ -287,7 +290,7 @@ final class FormOptionsTraitTest extends TestCase
             {
                 $this->buildFormFromArray($builder, [
                     'topic' => [
-                        'type' => ChoiceType::class,
+                        'type'    => ChoiceType::class,
                         'choices' => ['Support' => 'support'],
                     ],
                 ]);
@@ -358,14 +361,14 @@ final class FormOptionsTraitTest extends TestCase
 
         $child->expects(self::once())
             ->method('addModelTransformer')
-            ->with(self::callback(static fn($t) => $t instanceof JsonModelTransformer));
+            ->with(self::callback(static fn ($t) => $t instanceof JsonModelTransformer));
 
         $builder->expects(self::once())
             ->method('add')
             ->with(
                 'payload',
                 TextareaType::class,
-                self::callback(static fn(array $opts): bool => !array_key_exists('json_pretty', $opts) && !array_key_exists('json_unescaped_unicode', $opts)),
+                self::callback(static fn (array $opts): bool => !array_key_exists('json_pretty', $opts) && !array_key_exists('json_unescaped_unicode', $opts)),
             );
 
         $subject = new class($merger) {
@@ -389,7 +392,7 @@ final class FormOptionsTraitTest extends TestCase
         };
 
         $subject->addJsonPublic($builder, 'payload', [
-            'json_pretty' => false,
+            'json_pretty'            => false,
             'json_unescaped_unicode' => false,
         ]);
     }
@@ -467,7 +470,7 @@ final class FormOptionsTraitTest extends TestCase
             ->with(
                 'tags',
                 TextareaType::class,
-                self::callback(static fn(array $opts): bool => !array_key_exists('csv_separator', $opts)),
+                self::callback(static fn (array $opts): bool => !array_key_exists('csv_separator', $opts)),
             );
 
         $subject = new class($merger) {
@@ -491,8 +494,8 @@ final class FormOptionsTraitTest extends TestCase
         };
 
         $subject->addCsvPublic($builder, 'tags', [
-            'csv_separator' => ';',
-            'csv_trim_tokens' => false,
+            'csv_separator'          => ';',
+            'csv_trim_tokens'        => false,
             'csv_allow_empty_tokens' => true,
         ]);
     }
@@ -516,15 +519,50 @@ final class FormOptionsTraitTest extends TestCase
                 return 'demo_form';
             }
 
-            public function addTextPublic(FormBuilderInterface $b, string $name): void { $this->addText($b, $name); }
-            public function addEmailPublic(FormBuilderInterface $b, string $name): void { $this->addEmail($b, $name); }
-            public function addTextareaPublic(FormBuilderInterface $b, string $name): void { $this->addTextarea($b, $name); }
-            public function addPasswordPublic(FormBuilderInterface $b, string $name): void { $this->addPassword($b, $name); }
-            public function addUrlPublic(FormBuilderInterface $b, string $name): void { $this->addUrl($b, $name); }
-            public function addIntegerPublic(FormBuilderInterface $b, string $name): void { $this->addInteger($b, $name); }
-            public function addNumberPublic(FormBuilderInterface $b, string $name): void { $this->addNumber($b, $name); }
-            public function addCheckboxPublic(FormBuilderInterface $b, string $name): void { $this->addCheckbox($b, $name); }
-            public function addChoicePublic(FormBuilderInterface $b, string $name): void { $this->addChoice($b, $name); }
+            public function addTextPublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addText($b, $name);
+            }
+
+            public function addEmailPublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addEmail($b, $name);
+            }
+
+            public function addTextareaPublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addTextarea($b, $name);
+            }
+
+            public function addPasswordPublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addPassword($b, $name);
+            }
+
+            public function addUrlPublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addUrl($b, $name);
+            }
+
+            public function addIntegerPublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addInteger($b, $name);
+            }
+
+            public function addNumberPublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addNumber($b, $name);
+            }
+
+            public function addCheckboxPublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addCheckbox($b, $name);
+            }
+
+            public function addChoicePublic(FormBuilderInterface $b, string $name): void
+            {
+                $this->addChoice($b, $name);
+            }
         };
 
         $calls = [];
@@ -533,6 +571,7 @@ final class FormOptionsTraitTest extends TestCase
             ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder) {
                 self::assertIsArray($opts);
                 $calls[] = [$name, $type];
+
                 return $builder;
             });
 
@@ -573,7 +612,7 @@ final class FormOptionsTraitTest extends TestCase
             protected function resolveFormKitTranslationsLocaleContext(array $options): array
             {
                 return [
-                    'default_locale' => 'es',
+                    'default_locale'  => 'es',
                     'enabled_locales' => ['es', 'en'],
                 ];
             }
@@ -622,7 +661,7 @@ final class FormOptionsTraitTest extends TestCase
             public function addTranslationsField(FormBuilderInterface $builder): void
             {
                 $this->addTranslations($builder, [
-                    'form_type' => 'App\\Form\\TranslationItemType',
+                    'form_type'        => 'App\\Form\\TranslationItemType',
                     'required_locales' => ['fr'],
                 ]);
             }
@@ -631,7 +670,7 @@ final class FormOptionsTraitTest extends TestCase
         $type->setFormOptionsMerger($this->createMerger());
         $type->setFormKitTranslationsLocaleResolver(static function (array $options, object $subject): array {
             return [
-                'default_locale' => 'fr',
+                'default_locale'  => 'fr',
                 'enabled_locales' => ['fr', 'en'],
             ];
         });
@@ -642,7 +681,7 @@ final class FormOptionsTraitTest extends TestCase
             ->with(
                 'translations',
                 TranslationsFormsType::class,
-                self::callback(static fn(array $opts): bool => $opts['default_locale'] === 'fr'
+                self::callback(static fn (array $opts): bool => $opts['default_locale'] === 'fr'
                     && $opts['enabled_locales'] === ['fr', 'en']
                     && $opts['required_locales'] === ['fr']),
             );
@@ -671,7 +710,7 @@ final class FormOptionsTraitTest extends TestCase
 
         $type->setFormOptionsMerger($this->createMerger());
 
-        $calls = [];
+        $calls   = [];
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::exactly(4))
             ->method('add')
@@ -710,7 +749,7 @@ final class FormOptionsTraitTest extends TestCase
         $type->setFormOptionsMerger($this->createMerger());
         $builder = $this->createMock(FormBuilderInterface::class);
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $type->run($builder);
     }
 
@@ -733,7 +772,7 @@ final class FormOptionsTraitTest extends TestCase
         $type->setFormOptionsMerger($this->createMerger());
         $builder = $this->createMock(FormBuilderInterface::class);
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $type->run($builder);
     }
 

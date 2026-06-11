@@ -28,4 +28,3 @@ final class CsvModelTransformerTest extends TestCase
         self::assertSame([], $t->reverseTransform(null));
     }
 }
-

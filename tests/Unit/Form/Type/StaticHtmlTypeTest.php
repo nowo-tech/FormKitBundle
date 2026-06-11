@@ -12,7 +12,7 @@ final class StaticHtmlTypeTest extends TestCase
 {
     public function testConfigureOptionsDefaultsAndBlockPrefix(): void
     {
-        $type = new StaticHtmlType();
+        $type     = new StaticHtmlType();
         $resolver = new OptionsResolver();
         $type->configureOptions($resolver);
 

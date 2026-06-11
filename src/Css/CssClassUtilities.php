@@ -7,7 +7,11 @@ namespace Nowo\FormKitBundle\Css;
 use InvalidArgumentException;
 
 use function array_values;
+use function in_array;
 use function preg_split;
+use function sprintf;
+
+use const PREG_SPLIT_NO_EMPTY;
 
 /**
  * Dispatches column normalization and class ordering to the configured CSS framework
@@ -36,10 +40,10 @@ final class CssClassUtilities
     public function normalizeColumnClasses(array $classes): string
     {
         return match ($this->framework) {
-            CssFramework::Bootstrap->value => BootstrapCssClassUtilities::normalizeColumnClasses($classes),
-            CssFramework::Tailwind->value => TailwindCssClassUtilities::normalizeColumnClasses($classes),
+            CssFramework::Bootstrap->value  => BootstrapCssClassUtilities::normalizeColumnClasses($classes),
+            CssFramework::Tailwind->value   => TailwindCssClassUtilities::normalizeColumnClasses($classes),
             CssFramework::Foundation->value => FoundationCssClassUtilities::normalizeColumnClasses($classes),
-            CssFramework::None->value => NullCssClassUtilities::normalizeColumnClasses($classes),
+            CssFramework::None->value       => NullCssClassUtilities::normalizeColumnClasses($classes),
         };
     }
 
@@ -55,10 +59,10 @@ final class CssClassUtilities
     public function orderClasses(string $classString): string
     {
         return match ($this->framework) {
-            CssFramework::Bootstrap->value => BootstrapCssClassUtilities::orderClasses($classString),
-            CssFramework::Tailwind->value => TailwindCssClassUtilities::orderClasses($classString),
+            CssFramework::Bootstrap->value  => BootstrapCssClassUtilities::orderClasses($classString),
+            CssFramework::Tailwind->value   => TailwindCssClassUtilities::orderClasses($classString),
             CssFramework::Foundation->value => FoundationCssClassUtilities::orderClasses($classString),
-            CssFramework::None->value => NullCssClassUtilities::orderClasses($classString),
+            CssFramework::None->value       => NullCssClassUtilities::orderClasses($classString),
         };
     }
 }

@@ -6,6 +6,12 @@ namespace Nowo\FormKitBundle\Form\DataTransformer;
 
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
+use function is_string;
+
+use const JSON_ERROR_NONE;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_UNICODE;
+
 /**
  * Transforms JSON-compatible model values (array/object/null) to a pretty JSON string
  * for textarea widgets, and back to associative arrays on submit.
@@ -54,4 +60,3 @@ final class JsonModelTransformer implements DataTransformer
         return $decoded;
     }
 }
-

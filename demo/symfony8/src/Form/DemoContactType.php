@@ -41,7 +41,7 @@ class DemoContactType extends AbstractType
         $rowFull  = ['row_attr' => ['class' => 'col-12 mb-3']];
 
         $this->buildFormFromArray($builder, [
-            'full_name'     => [
+            'full_name' => [
                 'type'       => TextType::class,
                 'help_modal' => [
                     'title'   => $this->translator->trans('demo_contact.help_modal.full_name_title'),

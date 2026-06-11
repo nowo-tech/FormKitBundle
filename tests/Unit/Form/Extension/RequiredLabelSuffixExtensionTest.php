@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class RequiredLabelSuffixExtensionTest extends TestCase
 {
@@ -46,4 +45,3 @@ final class RequiredLabelSuffixExtensionTest extends TestCase
         self::assertNull($view->vars['required_label_suffix']);
     }
 }
-
