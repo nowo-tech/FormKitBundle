@@ -1,7 +1,11 @@
 {% extends "form_div_layout.html.twig" %}
 
-{% block form_label %}
-  {{ parent() }}{% if form.vars.required and form.vars.required_label_suffix is defined and form.vars.required_label_suffix is not same as('') %}{{ form.vars.required_label_suffix }}{% endif %}
+{# Required suffix must stay inside <label> so order is: label text → * → help trigger (JS appends trigger last). #}
+{% block form_label_content %}
+  {{- parent() -}}
+  {% if required and form.vars.required_label_suffix is defined and form.vars.required_label_suffix is not same as('') %}
+    {{- form.vars.required_label_suffix|raw -}}
+  {% endif %}
 {% endblock %}
 
 {% block form_row %}
@@ -36,6 +40,10 @@
 
 {% block static_separator_row %}
   <hr class="my-3">
+{% endblock %}
+
+{% block static_html_row %}
+  {{ form.vars.html|raw }}
 {% endblock %}
 
 {% block static_alert_row %}

@@ -1,26 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nested Form - Form Kit Demo{% endblock %}
+{% block title %}{{ 'demo_pages.nested.page_title'|trans }}{% endblock %}
 
 {% block body %}
+{% set locale = app.request.locale %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">Nested Form</h1>
-  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+  <h1 class="h3 mb-0">{{ 'demo_pages.nested.heading'|trans }}</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
 </div>
-<p class="text-secondary mb-4">Form with embedded nested form: contact (name, email) + address (street, number, floor, postal code, city, province). Same Form Kit conventions for parent and nested type.</p>
+<p class="text-secondary mb-4">{{ 'demo_pages.nested.intro'|trans|raw }}</p>
 
 <div class="card form-card shadow-sm">
   <div class="card-body p-4">
     {{ form_start(form) }}
     <div class="form-section">
-      <h2 class="form-section-title">Contact</h2>
+      <h2 class="form-section-title">{{ 'demo_pages.nested.section_contact'|trans }}</h2>
       <div class="row g-3">
         <div class="col-12 col-md-6">{{ form_row(form.fullName) }}</div>
         <div class="col-12 col-md-6">{{ form_row(form.email) }}</div>
       </div>
     </div>
     <div class="form-section">
-      <h2 class="form-section-title">Address</h2>
+      <h2 class="form-section-title">{{ 'demo_pages.nested.section_address'|trans }}</h2>
       <div class="row g-3">
         <div class="col-12">{{ form_row(form.address.street) }}</div>
         <div class="col-12 col-md-4">{{ form_row(form.address.number) }}</div>
@@ -32,7 +33,7 @@
     </div>
     {{ form_rest(form) }}
     <div class="form-kit-buttons">
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary">{{ 'demo_pages.common.save'|trans }}</button>
     </div>
     {{ form_end(form, { render_rest: false }) }}
   </div>
@@ -40,7 +41,7 @@
 
 {% if submitted %}
   <div class="alert alert-success mt-4 mb-0 shadow-sm">
-    <strong>Submitted:</strong>
+    <strong>{{ 'demo_pages.common.submitted'|trans }}:</strong>
     {{ submitted.fullName }}, {{ submitted.email }} — {{ submitted.address.street }} {{ submitted.address.number }}, {{ submitted.address.postalCode }} {{ submitted.address.city }}, {{ submitted.address.province }}
   </div>
 {% endif %}

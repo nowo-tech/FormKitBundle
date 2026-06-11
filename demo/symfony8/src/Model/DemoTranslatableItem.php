@@ -6,7 +6,7 @@ namespace App\Model;
 
 /**
  * Simple DTO for translations demo (no Doctrine).
- * Holds a collection of translations keyed by locale.
+ * Holds a collection of translations keyed by locale (subset chosen per session in the demo).
  */
 class DemoTranslatableItem
 {
@@ -15,9 +15,19 @@ class DemoTranslatableItem
 
     public function __construct()
     {
-        foreach (['en', 'es', 'fr'] as $locale) {
-            $this->translations[$locale] = new DemoTranslationItem();
+    }
+
+    /**
+     * @param list<string> $locales
+     */
+    public static function forLocales(array $locales): self
+    {
+        $item = new self();
+        foreach ($locales as $locale) {
+            $item->translations[$locale] = new DemoTranslationItem();
         }
+
+        return $item;
     }
 
     /** @return array<string, DemoTranslationItem> */

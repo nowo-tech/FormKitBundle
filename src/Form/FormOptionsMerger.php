@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
+use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 
 use function array_key_exists;
 use function is_array;
@@ -23,19 +24,13 @@ use function sprintf;
 final class FormOptionsMerger
 {
     /**
-     * @var array<string, array{translation_domain: string, required_label_suffix?: string|null, defaults: array{attr: array, row_attr: array}, field_types: array<string, mixed>}>
-     */
-    private array $configs;
-
-    private string $defaultConfigName;
-
-    /**
      * @param array<string, array{translation_domain: string, defaults: array{attr: array, row_attr: array}, field_types: array}> $configs
      */
-    public function __construct(array $configs, string $defaultConfigName)
-    {
-        $this->configs           = $configs;
-        $this->defaultConfigName = $defaultConfigName;
+    public function __construct(
+        private array $configs,
+        private readonly string $defaultConfigName,
+        private readonly ConstraintDefinitionFactory $constraintDefinitionFactory,
+    ) {
     }
 
     /**
@@ -79,11 +74,30 @@ final class FormOptionsMerger
         $typeShortName = $this->typeToShortName($type);
         $typeDefaults  = $fieldTypes[$typeShortName] ?? $fieldTypes[$type] ?? [];
 
+        $typeConstraintDefs = [];
+        if (isset($typeDefaults['constraints']) && is_array($typeDefaults['constraints'])) {
+            $typeConstraintDefs = $typeDefaults['constraints'];
+        }
+        unset($typeDefaults['constraints']);
+
+        $optionsConstraints = array_key_exists('constraints', $options) && is_array($options['constraints'])
+            ? $options['constraints']
+            : [];
+        $optionsForMerge = $options;
+        unset($optionsForMerge['constraints']);
+
         $merged = $this->arrayReplaceRecursive($base, $typeDefaults);
-        $merged = $this->arrayReplaceRecursive($merged, $options);
+        $merged = $this->arrayReplaceRecursive($merged, $optionsForMerge);
         $merged = $this->normalizePlaceholderToAttr($merged, $options);
 
-        return $this->removeExplicitFalseConventionKeys($merged, $options);
+        $merged = $this->removeExplicitFalseConventionKeys($merged, $options);
+
+        $constraintDefs = array_merge($typeConstraintDefs, $optionsConstraints);
+        if ($constraintDefs !== []) {
+            $merged['constraints'] = $this->constraintDefinitionFactory->create($constraintDefs);
+        }
+
+        return $merged;
     }
 
     /**
@@ -116,11 +130,7 @@ final class FormOptionsMerger
     private function arrayReplaceRecursive(array $base, array $replace): array
     {
         foreach ($replace as $k => $v) {
-            if (is_array($v) && isset($base[$k]) && is_array($base[$k])) {
-                $base[$k] = $this->arrayReplaceRecursive($base[$k], $v);
-            } else {
-                $base[$k] = $v;
-            }
+            $base[$k] = is_array($v) && isset($base[$k]) && is_array($base[$k]) ? $this->arrayReplaceRecursive($base[$k], $v) : $v;
         }
 
         return $base;

@@ -4,38 +4,32 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use A2lix\TranslationFormBundle\Form\Type\TranslationsType;
+use App\Demo\DemoTranslationLocales;
+use App\Model\DemoTranslatableItem;
+use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Demo form using A2lix TranslationsType for translatable fields.
+ * Demo form: translatable fields per locale via the bundle's TranslationsFormsType (wraps A2lix).
+ * Uses buildFormFromArray; TranslationItemType also uses buildFormFromArray for title/description.
  */
 class TranslationsDemoType extends AbstractType
 {
+    use FormOptionsTrait;
+
+    public function __construct(
+        private readonly RequestStack $requestStack,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('translations', TranslationsType::class, [
-                'locales'        => ['en', 'es', 'fr'],
-                'default_locale' => 'en',
-                'fields'         => [
-                    'title' => [
-                        'field_type' => \Symfony\Component\Form\Extension\Core\Type\TextType::class,
-                        'label'      => 'Title',
-                    ],
-                    'description' => [
-                        'field_type' => \Symfony\Component\Form\Extension\Core\Type\TextareaType::class,
-                        'label'      => 'Description',
-                    ],
-                ],
-                'locale_labels' => [
-                    'en' => 'English',
-                    'es' => 'Español',
-                    'fr' => 'Français',
-                ],
-            ]);
+        $this->addTranslations($builder, [
+            'form_type' => TranslationItemType::class,
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -43,5 +37,25 @@ class TranslationsDemoType extends AbstractType
         $resolver->setDefaults([
             'data_class' => DemoTranslatableItem::class,
         ]);
+    }
+
+    /**
+     * Aligns A2lix enabled_locales with the same random subset as {@see DemoTranslatableItem::forLocales()}.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array{default_locale: string, enabled_locales: list<string>}
+     */
+    protected function resolveFormKitTranslationsLocaleContext(array $options): array
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request === null || !$request->hasSession()) {
+            return [
+                'default_locale'  => 'en',
+                'enabled_locales' => ['en', 'es', 'fr', 'de'],
+            ];
+        }
+
+        return DemoTranslationLocales::forSession($request->getSession());
     }
 }

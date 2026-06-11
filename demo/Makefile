@@ -1,119 +1,162 @@
-# Makefile to manage Form Kit Bundle demos
-# From bundle root: make demo-up-symfony8 / make up-symfony8
-
-.PHONY: help up-all clean-all release-verify
-.PHONY: up-symfony6 up-symfony7 up-symfony8
-.PHONY: docker-up-symfony6 docker-up-symfony7 docker-up-symfony8 docker-down-symfony6 docker-down-symfony7 docker-down-symfony8
-.PHONY: docker-restart-symfony6 docker-restart-symfony7 docker-restart-symfony8 docker-build-symfony6 docker-build-symfony7 docker-build-symfony8
-.PHONY: docker-install-symfony6 docker-install-symfony7 docker-install-symfony8 docker-update-bundle-symfony6 docker-update-bundle-symfony7 docker-update-bundle-symfony8
+# Makefile for Form Kit Bundle demos
+# Standard targets: up-X, down-X, ... delegate to $(MAKE) -C <demo> <target>
 
 DEMOS := symfony6 symfony7 symfony8
 
+# Do not list up-symfony6-style names in .PHONY: GNU Make would treat them as empty
+# phony targets and skip pattern rules (up-%, assets-%, …).
+.PHONY: help clean test-all test-coverage-all verify-all release-verify assets-all
+.PHONY: up down restart build install update-bundle test test-coverage shell logs verify
+
 help:
 	@echo "Form Kit Bundle - Demos"
-	@echo "Demos: $(DEMOS)"
 	@echo ""
-	@echo "Without Docker:"
-	@echo "  up-symfony6  Install in demo/symfony6"
-	@echo "  up-symfony7  Install in demo/symfony7"
-	@echo "  up-symfony8  Install in demo/symfony8"
+	@echo "Usage: make <target>"
 	@echo ""
-	@echo "With Docker (from demo/ folder, e.g. cd symfony8 && make up):"
-	@echo "  docker-up-symfony6   Start container demo/symfony6"
-	@echo "  docker-up-symfony7  Start container demo/symfony7"
-	@echo "  docker-up-symfony8  Start container demo/symfony8"
-	@echo "  docker-restart-symfony6  Restart container"
-	@echo "  docker-restart-symfony7  Restart container"
-	@echo "  docker-restart-symfony8  Restart container"
-	@echo "  docker-build-symfony6    Rebuild image (no cache)"
-	@echo "  docker-build-symfony7   Rebuild image (no cache)"
-	@echo "  docker-build-symfony8   Rebuild image (no cache)"
-	@echo "  docker-install-symfony6  composer install in container"
-	@echo "  docker-update-bundle-symfony6  Update bundle from path repo"
-	@echo "  up-all       Install dependencies in all demos (no Docker)"
-	@echo "  clean-all    Remove vendor/ and var/ in all demos"
-	@echo "  release-verify  Start each demo, healthcheck (HTTP 200), then stop (for release-check)"
+	@echo "Per-demo targets (Demos: $(DEMOS)):"
+	@echo "  up-<demo>           Start demo containers (e.g. make up-symfony8)"
+	@echo "  down-<demo>         Stop demo containers"
+	@echo "  restart-<demo>      Restart demo containers"
+	@echo "  build-<demo>        Rebuild image (no cache)"
+	@echo "  install-<demo>      Install dependencies in container"
+	@echo "  update-bundle-<demo> Update bundle from path repo"
+	@echo "  shell-<demo>        Open shell in PHP container"
+	@echo "  logs-<demo>         Show container logs"
+	@echo "  test-<demo>         Run tests"
+	@echo "  test-coverage-<demo> Run tests with coverage"
+	@echo "  verify-<demo>       Ensure demo up and check HTTP 200"
+	@echo "  assets-<demo>       pnpm install + Vite build in that demo (host Node; needs pnpm)"
+	@echo "  assets-all          Run assets-symfony6, symfony7, symfony8"
+	@echo ""
+	@echo "Generic (use DEMO=<name>): make up DEMO=symfony8"
+	@echo "  up down restart build install update-bundle test test-coverage shell logs verify"
+	@echo ""
+	@echo "Aggregated:"
+	@echo "  test-all            Run tests for all demos"
+	@echo "  test-coverage-all   Run tests with coverage for all demos"
+	@echo "  verify-all         Verify all demos (up + HTTP 200)"
+	@echo "  release-verify     For each demo: up → healthcheck → down (for release-check)"
+	@echo "  clean              Remove vendor, var, cache from all demos"
 	@echo ""
 
-up-all:
-	@for d in $(DEMOS); do $(MAKE) -C .. demo-up-$$d; done
+# Delegate to each demo's Makefile
+up-%:
+	@$(MAKE) -C $* up
 
-clean-all:
-	@for d in $(DEMOS); do rm -rf $$d/vendor $$d/var; echo "Cleaned $$d"; done
+down-%:
+	@$(MAKE) -C $* down
+
+restart-%:
+	@$(MAKE) -C $* restart
+
+build-%:
+	@$(MAKE) -C $* build
+
+install-%:
+	@$(MAKE) -C $* install
+
+update-bundle-%:
+	@$(MAKE) -C $* update-bundle
+
+shell-%:
+	@$(MAKE) -C $* shell
+
+logs-%:
+	@$(MAKE) -C $* logs
+
+test-%:
+	@$(MAKE) -C $* test
+
+test-coverage-%:
+	@$(MAKE) -C $* test-coverage
+
+verify-%:
+	@$(MAKE) -C $* verify
+
+assets-%:
+	@$(MAKE) -C $* assets
+
+assets-all:
+	@for d in $(DEMOS); do $(MAKE) assets-$$d || exit 1; done
+	@echo "assets-all: Vite builds done for $(DEMOS)."
+
+# Generic commands (require DEMO=<name>)
+up:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make up DEMO=symfony6"; exit 1; fi
+	@$(MAKE) up-$(DEMO)
+
+down:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make down DEMO=symfony6"; exit 1; fi
+	@$(MAKE) down-$(DEMO)
+
+restart:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make restart DEMO=symfony6"; exit 1; fi
+	@$(MAKE) restart-$(DEMO)
+
+build:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make build DEMO=symfony6"; exit 1; fi
+	@$(MAKE) build-$(DEMO)
+
+install:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make install DEMO=symfony6"; exit 1; fi
+	@$(MAKE) install-$(DEMO)
+
+update-bundle:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make update-bundle DEMO=symfony6"; exit 1; fi
+	@$(MAKE) update-bundle-$(DEMO)
+
+test:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make test DEMO=symfony6"; exit 1; fi
+	@$(MAKE) test-$(DEMO)
+
+test-coverage:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make test-coverage DEMO=symfony6"; exit 1; fi
+	@$(MAKE) test-coverage-$(DEMO)
+
+shell:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make shell DEMO=symfony6"; exit 1; fi
+	@$(MAKE) shell-$(DEMO)
+
+logs:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make logs DEMO=symfony6"; exit 1; fi
+	@$(MAKE) logs-$(DEMO)
+
+verify:
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make verify DEMO=symfony6"; exit 1; fi
+	@$(MAKE) verify-$(DEMO)
+
+test-all:
+	@for d in $(DEMOS); do $(MAKE) test-$$d || exit 1; done
+	@echo "All demos passed tests."
+
+test-coverage-all:
+	@for d in $(DEMOS); do $(MAKE) test-coverage-$$d || exit 1; done
+	@echo "All demos coverage done."
+
+verify-all:
+	@for d in $(DEMOS); do $(MAKE) verify-$$d; $(MAKE) down-$$d || true; done
+	@echo "Verify-all done."
+
+release-check: test-coverage-all release-verify
+	@echo "All demos passed release-check."
 
 release-verify:
 	@for d in $(DEMOS); do \
 		port=$$(grep '^PORT=' $$d/.env 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
 		[ -z "$$port" ] && port=$$(case $$d in symfony6) echo 8006;; symfony7) echo 8007;; symfony8) echo 8008;; *) echo 8000;; esac); \
-		echo "🔍 Release verify: $$d (port $$port)..."; \
-		$(MAKE) docker-up-$$d; \
-		echo "⏳ Waiting for $$d to be ready..."; sleep 15; \
+		echo "Release verify: $$d (port $$port)..."; \
+		$(MAKE) up-$$d; sleep 15; \
 		code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$$port 2>/dev/null || echo "000"); \
-		$(MAKE) docker-down-$$d 2>/dev/null || true; \
-		if [ "$$code" != "200" ]; then echo "❌ $$d healthcheck failed (HTTP $$code)"; exit 1; fi; \
-		echo "✅ $$d OK (HTTP $$code)"; \
+		$(MAKE) down-$$d 2>/dev/null || true; \
+		if [ "$$code" != "200" ]; then echo "$$d healthcheck failed (HTTP $$code)"; exit 1; fi; \
+		echo "$$d OK"; \
 	done
-	@echo "✅ All demos passed release-verify."
+	@echo "All demos passed release-verify."
 
-up-symfony6:
-	$(MAKE) -C .. demo-up-symfony6
+clean:
+	@for d in $(DEMOS); do rm -rf $$d/vendor $$d/var $$d/.phpunit.cache; echo "Cleaned $$d"; done
+	@echo "Clean done."
 
-up-symfony7:
-	$(MAKE) -C .. demo-up-symfony7
-
-up-symfony8:
-	$(MAKE) -C .. demo-up-symfony8
-
-docker-up-symfony6:
-	$(MAKE) -C symfony6 up
-
-docker-up-symfony7:
-	$(MAKE) -C symfony7 up
-
-docker-up-symfony8:
-	$(MAKE) -C symfony8 up
-
-docker-down-symfony6:
-	$(MAKE) -C symfony6 down
-
-docker-down-symfony7:
-	$(MAKE) -C symfony7 down
-
-docker-down-symfony8:
-	$(MAKE) -C symfony8 down
-
-docker-restart-symfony6:
-	$(MAKE) -C symfony6 restart
-
-docker-restart-symfony7:
-	$(MAKE) -C symfony7 restart
-
-docker-restart-symfony8:
-	$(MAKE) -C symfony8 restart
-
-docker-build-symfony6:
-	$(MAKE) -C symfony6 build
-
-docker-build-symfony7:
-	$(MAKE) -C symfony7 build
-
-docker-build-symfony8:
-	$(MAKE) -C symfony8 build
-
-docker-install-symfony6:
-	$(MAKE) -C symfony6 install
-
-docker-install-symfony7:
-	$(MAKE) -C symfony7 install
-
-docker-install-symfony8:
-	$(MAKE) -C symfony8 install
-
-docker-update-bundle-symfony6:
-	$(MAKE) -C symfony6 update-bundle
-
-docker-update-bundle-symfony7:
-	$(MAKE) -C symfony7 update-bundle
-
-docker-update-bundle-symfony8:
-	$(MAKE) -C symfony8 update-bundle
+# REQ-MAKE-008: update-deps-all (REQ-MAKE-008)
+BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
+include $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../.scripts/Makefile.demo-aggregate-update-deps.mk

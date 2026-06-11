@@ -16,7 +16,7 @@ use function sprintf;
  * Loads FormKitBundle configuration and services.
  *
  * Normalizes config: if "configs" is empty, builds a single "default" config from root-level
- * translation_domain/defaults/field_types for backward compatibility.
+ * translation_domain, required_label_suffix, help_modal, defaults and field_types for backward compatibility.
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
@@ -35,6 +35,7 @@ class FormKitExtension extends Extension
                     'alias'                 => Configuration::DEFAULT_CONFIG_NAME,
                     'translation_domain'    => $config['translation_domain'],
                     'required_label_suffix' => $config['required_label_suffix'] ?? null,
+                    'help_modal'            => $config['help_modal'] ?? [],
                     'defaults'              => $config['defaults'],
                     'field_types'           => $config['field_types'],
                 ],
@@ -46,6 +47,7 @@ class FormKitExtension extends Extension
             $normalized[$name] = [
                 'translation_domain'    => $c['translation_domain'],
                 'required_label_suffix' => $c['required_label_suffix'] ?? null,
+                'help_modal'            => $c['help_modal'] ?? [],
                 'defaults'              => $c['defaults'],
                 'field_types'           => $c['field_types'],
             ];
@@ -59,6 +61,7 @@ class FormKitExtension extends Extension
         $container->setParameter('nowo_form_kit.configs', $normalized);
         $container->setParameter('nowo_form_kit.default_config', $defaultConfig);
         $container->setParameter('nowo_form_kit.type_map', $config['type_map'] ?? []);
+        $container->setParameter('nowo_form_kit.css_framework', $config['css_framework'] ?? 'bootstrap');
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');

@@ -1,0 +1,14 @@
+{# Tailwind — full inner tree (appended to div#id.nowo-help-modal-tailwind).
+   Override: templates/bundles/NowoFormKitBundle/help_modal/shell_tailwind.html.twig #}
+<div class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/50" data-help-modal-close="1"></div>
+    <div class="relative z-10 w-full max-w-lg mx-4 rounded-lg bg-white dark:bg-gray-900 shadow-lg">
+        <div class="flex items-start justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+            <div class="text-left">
+                <h3 class="text-lg font-semibold" data-nowo-help-modal-title></h3>
+            </div>
+            <button type="button" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800" data-help-modal-close="1" aria-label="Close">✕</button>
+        </div>
+        <div class="p-4" style="max-height:70vh; overflow:auto;" data-nowo-help-modal-body></div>
+    </div>
+</div>

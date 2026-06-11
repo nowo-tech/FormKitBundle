@@ -1,0 +1,14 @@
+framework:
+    asset_mapper:
+        paths:
+            - assets/
+        excluded_patterns:
+            - '*.d.ts'
+        missing_import_mode: warn
+
+when@prod:
+    framework:
+        asset_mapper:
+            excluded_patterns:
+                - '*.d.ts'
+            missing_import_mode: warn

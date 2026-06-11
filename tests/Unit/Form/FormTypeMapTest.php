@@ -12,8 +12,8 @@ class FormTypeMapTest extends TestCase
     public function testResolveReturnsFqcnForBuiltinType(): void
     {
         $map = new FormTypeMap([]);
-        self::assertSame('Symfony\Component\Form\Extension\Core\Type\TextType', $map->resolve('text'));
-        self::assertSame('Symfony\Component\Form\Extension\Core\Type\EmailType', $map->resolve('email'));
+        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\TextType::class, $map->resolve('text'));
+        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\EmailType::class, $map->resolve('email'));
     }
 
     public function testResolveReturnsNullForUnknownType(): void

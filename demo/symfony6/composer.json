@@ -5,22 +5,32 @@
   "license": "MIT",
   "require": {
     "php": ">=8.1,<8.6",
-    "a2lix/translation-form-bundle": "^4.0",
+    "a2lix/auto-form-bundle": "^0.4.0",
+    "a2lix/translation-form-bundle": "^3.2",
     "doctrine/collections": "^2.2",
+    "doctrine/doctrine-bundle": "^2.13",
+    "doctrine/orm": "^2.15",
+    "friendsofsymfony/ckeditor-bundle": "^2.5",
     "nowo-tech/form-kit-bundle": "@dev",
+    "pentatrion/vite-bundle": "^8.2",
+    "symfony/asset": "^6.4",
+    "symfony/asset-mapper": "6.4.*",
     "symfony/console": "^6.4",
     "symfony/dotenv": "^6.4",
-    "symfony/framework-bundle": "^6.4",
     "symfony/form": "^6.4",
+    "symfony/framework-bundle": "^6.4",
     "symfony/http-kernel": "^6.4",
     "symfony/runtime": "^6.4",
-    "symfony/stimulus-bundle": "^6.4",
+    "symfony/stimulus-bundle": "^2.9",
+    "symfony/ux-autocomplete": "^2.24",
     "symfony/twig-bundle": "^6.4",
     "symfony/ux-cropperjs": "^2.0",
     "symfony/ux-dropzone": "^2.0",
     "symfony/validator": "^6.4"
   },
   "require-dev": {
+    "sensiolabs/typescript-bundle": "^0.2.2",
+    "nowo-tech/twig-inspector-bundle": "^1.0",
     "symfony/debug-bundle": "6.4.*",
     "symfony/web-profiler-bundle": "6.4.*"
   },
@@ -39,11 +49,13 @@
   "replace": {
     "symfony/polyfill-ctype": "*",
     "symfony/polyfill-php80": "*",
-    "symfony/polyfill-php81": "*"
+    "symfony/polyfill-php81": "*",
+    "symfony/polyfill-php82": "*"
   },
   "scripts": {
     "auto-scripts": {
-      "cache:clear": "@php bin/console cache:clear"
+      "cache:clear": "@php bin/console cache:clear",
+      "ckeditor:install --clear=drop --no-progress-bar": "@php bin/console ckeditor:install --clear=drop --no-progress-bar --tag=4.22.1"
     },
     "post-install-cmd": ["@auto-scripts"],
     "post-update-cmd": ["@auto-scripts"]
@@ -53,7 +65,7 @@
   },
   "extra": {
     "symfony": {
-      "allow-contrib": false,
+      "allow-contrib": true,
       "require": "6.4.*"
     }
   },

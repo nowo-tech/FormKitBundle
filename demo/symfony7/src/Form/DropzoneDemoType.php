@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Dropzone demo using the bundle: FormOptionsTrait + custom type layer (DropzoneFieldType).
+ * Label, placeholder and help come from convention (dropzone_demo.document.*).
  */
 class DropzoneDemoType extends AbstractType
 {

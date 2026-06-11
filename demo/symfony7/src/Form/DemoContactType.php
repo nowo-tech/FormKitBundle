@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Demo form type: all Form Kit Phase 2 field types, defined via array.
@@ -28,6 +29,11 @@ class DemoContactType extends AbstractType
 {
     use FormOptionsTrait;
 
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $rowHalf  = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
@@ -35,7 +41,14 @@ class DemoContactType extends AbstractType
         $rowFull  = ['row_attr' => ['class' => 'col-12 mb-3']];
 
         $this->buildFormFromArray($builder, [
-            'full_name'     => ['type' => TextType::class, ...$rowHalf],
+            'full_name'     => [
+                'type'       => TextType::class,
+                'help_modal' => [
+                    'title'   => $this->translator->trans('demo_contact.help_modal.full_name_title'),
+                    'content' => $this->translator->trans('demo_contact.help_modal.full_name_content'),
+                ],
+                ...$rowHalf,
+            ],
             'email_address' => [
                 'type'               => EmailType::class,
                 'input_group_prefix' => '@',

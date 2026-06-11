@@ -1,8 +1,10 @@
 # Form Kit Bundle
 
+[![CI](https://github.com/nowo-tech/FormKitBundle/actions/workflows/ci.yml/badge.svg)](https://github.com/nowo-tech/FormKitBundle/actions/workflows/ci.yml) [![Packagist Version](https://img.shields.io/packagist/v/nowo-tech/form-kit-bundle.svg?style=flat)](https://packagist.org/packages/nowo-tech/form-kit-bundle) [![Packagist Downloads](https://img.shields.io/packagist/dt/nowo-tech/form-kit-bundle.svg)](https://packagist.org/packages/nowo-tech/form-kit-bundle) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php)](https://php.net) [![Symfony](https://img.shields.io/badge/Symfony-7.4%20%7C%208.0%20%7C%208.1-000000?logo=symfony)](https://symfony.com)
+
 Symfony bundle to reduce repetitive form field options: convention-based translation keys (`form_snake.field_snake.label`, `.placeholder`, `.help`), configurable defaults and multiple configs via YAML, and cascading option merge (global → field type → form → field).
 
-**Compatible with Symfony 6.4, 7.x and 8.x** (PHP 8.1+).
+**Compatible with Symfony 7.4, 8.0 and 8.1** (PHP 8.2+; Symfony 8 requires PHP 8.4+).
 
 ## Features
 
@@ -11,8 +13,12 @@ Symfony bundle to reduce repetitive form field options: convention-based transla
 - **Cascading merge:** Options are merged in order: config defaults → field type → field options. Explicit field options override.
 - **Trait or base class:** Use **FormOptionsTrait** with **FormOptionsMerger** (inject via service), or extend **FormKitAbstractType** for snake_case type names with **FormTypeMap** (same option-merging model via FormOptionsMerger).
 - **Phase 2 helpers:** `addText()`, `addEmail()`, `addTextarea()`, `addPassword()`, `addUrl()`, `addInteger()`, `addNumber()`, `addCheckbox()`, `addChoice()` — pass only field name and options.
+- **Choice presets:** `addSelect()`, `addMultiSelect()`, `addChoiceRadios()`, `addChoiceCheckboxes()`, plus `addMultiSelectSelectAll()` when **nowo-tech/select-all-choice-bundle** is installed (optional Composer **suggest**).
+- **FQCN helpers:** `addAutocompleteField()` for Symfony UX Autocomplete types, `addCKEditorField()` when **friendsofsymfony/ckeditor-bundle** is installed (CKEditor 4).
+- **Model transformers:** `addSwitchType()`, `addJsonType()`, `addBoolType()`, `addMoneyType()`, `addCsvType()` (same helpers on **FormKitControllerTrait** with `*Type` suffix).
 - **Build from array:** `buildFormFromArray($builder, $fields)` — define all fields in one array (type as FQCN with FormOptionsTrait, or snake_case with FormKitTrait).
 - **Optional types:** Built-in type map includes optional Symfony UX types (e.g. Dropzone, Cropper) and A2lix Translations when the corresponding package is installed. Extend via `type_map` in config.
+- **Form type extensions:** **InputGroupExtension** (`input_group_prefix` / `input_group_suffix`), **RequiredLabelSuffixExtension** (suffix for required labels from config), **HelpModalExtension** (optional `help_modal` on fields + bundled `help-modal.js`, Bootstrap 4/5, Tailwind, Foundation; optional Twig shell templates). See [Configuration](docs/CONFIGURATION.md) and [Usage](docs/USAGE.md#help-modal-optional).
 
 ## Installation
 
@@ -31,9 +37,9 @@ With Flex, the recipe creates `config/packages/nowo_form_kit.yaml`. Otherwise re
 ```yaml
 # config/services.yaml
 App\Form\UserProfileType:
-    tags: ['form.type']
-    calls:
-        - setFormOptionsMerger: ['@Nowo\FormKitBundle\Form\FormOptionsMerger']
+  tags: ['form.type']
+  calls:
+    - setFormOptionsMerger: ['@Nowo\FormKitBundle\Form\FormOptionsMerger']
 ```
 
 3. **Use the trait** in your form type (Phase 2 or array):
@@ -45,14 +51,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class UserProfileType extends AbstractType
 {
-    use FormOptionsTrait;
+  use FormOptionsTrait;
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $this->addText($builder, 'full_name', []);
-        $this->addEmail($builder, 'email_address', []);
-        // Or: $this->buildFormFromArray($builder, ['full_name' => TextType::class, 'email_address' => EmailType::class]);
-    }
+  public function buildForm(FormBuilderInterface $builder, array $options): void
+  {
+    $this->addText($builder, 'full_name', []);
+    $this->addEmail($builder, 'email_address', []);
+    // Or: $this->buildFormFromArray($builder, ['full_name' => TextType::class, 'email_address' => EmailType::class]);
+  }
 }
 ```
 
@@ -60,28 +66,40 @@ class UserProfileType extends AbstractType
 
 ## Demos
 
-The bundle includes demos (Symfony 6, 7, 8) with:
+The bundle includes demos (Symfony 7 and 8) that run with **FrankenPHP** (Caddy + PHP in Docker). **`docker-compose`** defaults to **`APP_ENV=dev`**, so the entrypoint uses **Caddyfile.dev** (no PHP worker), and Twig/PHP changes are visible on refresh. **Worker mode** applies to a production-style setup — see [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md). Each demo has:
 
-- FormType example (all field types, built from array).
-- Form built in the controller using `FormOptionsMerger::resolve()`.
-- **Search form** — inline/horizontal layout (search bar).
-- **Example form** — card/stacked layout.
+- **Locale in the URL** — routes are under `/{locale}/…` (`en`, `es`, `fr`, `de`); `/` redirects to the default locale.
+- **FormType** example (contact, `buildFormFromArray`), **help modal** sample (`help-modal.js` + `assets:install`; include `@NowoFormKit/help_modal/shells.html.twig` for overridable modal shells).
+- Form built in the **controller** (`FormKitControllerTrait` / `FormOptionsMerger::resolve()`).
+- **Search**, **example**, **Dropzone**, **Cropper**, **translations** (A2lix), **nested**, **data transformers**, **choice fields** (select / multiselect / radios / checkboxes; optional Select All Choice on Symfony 7/8 demos), **CKEditor** (FOSCKEditorBundle), **multi-step** wizard.
 
-Run a demo via Docker/Make from the bundle root; see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+Run a demo via Docker/Make from the bundle root; see [demo/README.md](demo/README.md) and [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 For CSS frameworks, see [docs/USAGE.md](docs/USAGE.md) for ready-to-use configuration examples for **Bootstrap 5** and **Tailwind CSS**.
 
 ## Documentation
 
+Developer-facing docs and comments (Markdown, PHPDoc, JSDoc) are **English only**; see [Contributing — Language policy](docs/CONTRIBUTING.md#language-policy).
+
+- [Demo with FrankenPHP (development and production)](docs/DEMO-FRANKENPHP.md)
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
 - [Usage](docs/USAGE.md)
-- [Changelog](docs/CHANGELOG.md)
-- [Roadmap](docs/ROADMAP.md)
-- [Upgrading](docs/UPGRADING.md)
-- [Release process](docs/RELEASE.md)
-- [Security](docs/SECURITY.md)
+- [Help modal (field option + frontend script)](docs/USAGE.md#help-modal-optional)
+- [Overriding bundle templates](docs/USAGE.md#overriding-bundle-templates)
 - [Contributing](docs/CONTRIBUTING.md)
+- [Changelog](docs/CHANGELOG.md)
+- [Upgrading](docs/UPGRADING.md)
+- [Release](docs/RELEASE.md)
+- [Security](docs/SECURITY.md)
+- [Engram](docs/ENGRAM.md)
+- [Spec-driven development](docs/SPEC-DRIVEN-DEVELOPMENT.md)
+- [Roadmap](docs/ROADMAP.md)
+
+## Tests and coverage
+
+- Tests: PHPUnit (PHP)
+- PHP: 100%
 
 ## License
 

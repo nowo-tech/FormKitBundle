@@ -31,7 +31,7 @@ final class FormOptionsMergerInjectorCompilerPass implements CompilerPassInterfa
 
         $mergerRef = new Reference(self::MERGER_SERVICE_ID);
 
-        foreach ($container->findTaggedServiceIds('form.type') as $id => $tags) {
+        foreach (array_keys($container->findTaggedServiceIds('form.type')) as $id) {
             $def   = $container->getDefinition($id);
             $class = $def->getClass();
             if ($class === null) {

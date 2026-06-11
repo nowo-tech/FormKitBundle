@@ -4,20 +4,30 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Demo\DemoTranslationLocales;
+use App\Form\AutocompleteDemoType;
+use App\Form\ChoiceFieldsDemoType;
+use App\Form\CkeditorDemoType;
+use App\Form\DataTransformersDemoType;
 use App\Form\DemoContactType;
 use App\Form\DropzoneDemoType;
 use App\Form\ExampleFormType;
 use App\Form\NestedFormDemoType;
 use App\Form\SearchFormType;
 use App\Form\TranslationsDemoType;
+use App\Model\AutocompleteDemoData;
+use App\Model\ChoiceFieldsDemoData;
+use App\Model\CkeditorDemoData;
 use App\Model\ContactWithAddress;
+use App\Model\DataTransformersDemoData;
 use App\Model\DemoTranslatableItem;
+use Nowo\FormKitBundle\Controller\FormKitControllerTrait;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\FormKitBundle\Form\MultiStepFormBuilder;
 use Nowo\FormKitBundle\Form\MultiStepWizardSessionFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,8 +39,11 @@ use Symfony\UX\Cropperjs\Form\CropperType;
 /**
  * Form Kit demo: FormType example and form built in controller example.
  */
+#[Route(path: '/{_locale}', requirements: ['_locale' => 'en|es|fr|de'], defaults: ['_locale' => 'en'])]
 class FormKitDemoController extends AbstractController
 {
+    use FormKitControllerTrait;
+
     private const MULTISTEP_DEFINITION = [
         'contact' => [
             'label'  => 'Contact',
@@ -58,9 +71,13 @@ class FormKitDemoController extends AbstractController
 
     public function __construct(
         private readonly FormOptionsMerger $formOptionsMerger,
+        private readonly FormTypeMap $formTypeMap,
         private readonly MultiStepFormBuilder $multiStepFormBuilder,
         private readonly MultiStepWizardSessionFactory $wizardFactory
     ) {
+        $this->setFormOptionsMerger($this->formOptionsMerger);
+        $this->setFormTypeMap($this->formTypeMap);
+        $this->setFormKitFormName('controller_contact');
     }
 
     /**
@@ -72,6 +89,9 @@ class FormKitDemoController extends AbstractController
         return $this->render('form_demo/index.html.twig');
     }
 
+    /**
+     * Example 1: FormType (DemoContactType) — form defined in a dedicated class.
+     */
     #[Route(path: '/form-type', name: 'form_demo_form_type', methods: ['GET', 'POST'])]
     public function formTypeExample(Request $request): Response
     {
@@ -83,6 +103,9 @@ class FormKitDemoController extends AbstractController
         ]);
     }
 
+    /**
+     * Example 2: Form created in the controller using FormOptionsMerger (no FormType class).
+     */
     #[Route(path: '/controller-form', name: 'form_demo_controller_form', methods: ['GET', 'POST'])]
     public function controllerFormExample(Request $request): Response
     {
@@ -94,6 +117,9 @@ class FormKitDemoController extends AbstractController
         ]);
     }
 
+    /**
+     * Search form — inline/horizontal layout (search bar).
+     */
     #[Route(path: '/search', name: 'form_demo_search', methods: ['GET'])]
     public function searchForm(Request $request): Response
     {
@@ -110,6 +136,9 @@ class FormKitDemoController extends AbstractController
         ]);
     }
 
+    /**
+     * Example form — card/stacked layout.
+     */
     #[Route(path: '/example-form', name: 'form_demo_example_form', methods: ['GET', 'POST'])]
     public function exampleForm(Request $request): Response
     {
@@ -126,6 +155,10 @@ class FormKitDemoController extends AbstractController
         ]);
     }
 
+    /**
+     * Dropzone demo — Symfony UX Dropzone (drag-and-drop file upload).
+     * Shows a default image from public/images when available.
+     */
     #[Route(path: '/dropzone', name: 'form_demo_dropzone', methods: ['GET', 'POST'])]
     public function dropzoneDemo(Request $request): Response
     {
@@ -150,16 +183,30 @@ class FormKitDemoController extends AbstractController
         ]);
     }
 
+    /**
+     * Cropper demo — Symfony UX Cropper.js (crop an image).
+     */
     #[Route(path: '/cropper', name: 'form_demo_cropper', methods: ['GET', 'POST'])]
     public function cropperDemo(Request $request, CropperInterface $cropper): Response
     {
-        $projectDir   = $this->getParameter('kernel.project_dir');
-        $imagePath    = $projectDir . '/public/images/demo-sample.jpg';
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $candidates = [
+            $projectDir . '/public/images/demo-sample.jpg',
+            $projectDir . '/images/demo-sample.jpg',
+        ];
+        $imagePath = null;
+        foreach ($candidates as $path) {
+            if (is_file($path)) {
+                $imagePath = $path;
+                break;
+            }
+        }
         $imageUrlPath = '/images/demo-sample.jpg';
-        $sampleExists = is_file($imagePath);
+        $sampleExists = $imagePath !== null;
         $imageUrl     = $request->getUriForPath($imageUrlPath);
-        $form         = null;
-        $submitted    = null;
+
+        $form      = null;
+        $submitted = null;
         if ($sampleExists) {
             $crop = $cropper->createCrop($imagePath);
             $crop->setCroppedMaxSize(800, 600);
@@ -178,25 +225,43 @@ class FormKitDemoController extends AbstractController
         return $this->render('form_demo/cropper.html.twig', [
             'form'          => $form,
             'sample_exists' => $sampleExists,
-            'image_path'    => $imagePath,
+            'image_path'    => $imagePath ?? $candidates[0],
             'submitted'     => $submitted,
         ]);
     }
 
+    /**
+     * Translations demo — translatable fields (title, description) per locale, form_class per locale.
+     */
     #[Route(path: '/translations', name: 'form_demo_translations', methods: ['GET', 'POST'])]
     public function translationsDemo(Request $request): Response
     {
-        $item = new DemoTranslatableItem();
-        $form = $this->createForm(TranslationsDemoType::class, $item);
+        $session = $request->getSession();
+        if ($request->query->get('reshuffle')) {
+            DemoTranslationLocales::clear($session);
+
+            return $this->redirectToRoute('form_demo_translations', ['_locale' => $request->getLocale()]);
+        }
+
+        $localeContext = DemoTranslationLocales::forSession($session);
+        $item          = DemoTranslatableItem::forLocales($localeContext['enabled_locales']);
+        $form          = $this->createForm(TranslationsDemoType::class, $item);
         $form->handleRequest($request);
         $submitted = null;
         if ($form->isSubmitted() && $form->isValid()) {
             $submitted = $form->getData();
         }
 
-        return $this->render('form_demo/translations.html.twig', ['form' => $form, 'submitted' => $submitted]);
+        return $this->render('form_demo/translations.html.twig', [
+            'form'                     => $form,
+            'submitted'                => $submitted,
+            'demo_translation_context' => $localeContext,
+        ]);
     }
 
+    /**
+     * Nested form demo — contact + embedded address (street, number, floor, postal code, city, province).
+     */
     #[Route(path: '/nested', name: 'form_demo_nested', methods: ['GET', 'POST'])]
     public function nestedFormDemo(Request $request): Response
     {
@@ -208,46 +273,161 @@ class FormKitDemoController extends AbstractController
             $submitted = $form->getData();
         }
 
-        return $this->render('form_demo/nested.html.twig', ['form' => $form, 'submitted' => $submitted]);
+        return $this->render('form_demo/nested.html.twig', [
+            'form'      => $form,
+            'submitted' => $submitted,
+        ]);
     }
 
+    /**
+     * Data transformers demo — money, JSON, CSV, bool, switch via FormOptionsTrait helpers.
+     */
+    #[Route(path: '/data-transformers', name: 'form_demo_data_transformers', methods: ['GET', 'POST'])]
+    public function dataTransformersDemo(Request $request): Response
+    {
+        $data = new DataTransformersDemoData();
+        $form = $this->createForm(DataTransformersDemoType::class, $data);
+        $form->handleRequest($request);
+        $submitted = null;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $submitted = $form->getData();
+        }
+
+        return $this->render('form_demo/data_transformers.html.twig', [
+            'form'      => $form,
+            'submitted' => $submitted,
+        ]);
+    }
+
+    /**
+     * Choice fields demo — select, multiselect, radios, checkboxes, select-all (SelectAllChoiceBundle), autocomplete helper.
+     */
+    #[Route(path: '/choice-fields', name: 'form_demo_choice_fields', methods: ['GET', 'POST'])]
+    public function choiceFieldsDemo(Request $request): Response
+    {
+        $data = new ChoiceFieldsDemoData();
+        $form = $this->createForm(ChoiceFieldsDemoType::class, $data);
+        $form->handleRequest($request);
+        $submitted = null;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $submitted = $form->getData();
+        }
+
+        return $this->render('form_demo/choice_fields.html.twig', [
+            'form'      => $form,
+            'submitted' => $submitted,
+        ]);
+    }
+
+    /**
+     * CKEditor demo — FOSCKEditorBundle (CKEditor 4) with addCKEditorField().
+     */
+    #[Route(path: '/ckeditor', name: 'form_demo_ckeditor', methods: ['GET', 'POST'])]
+    public function ckeditorDemo(Request $request): Response
+    {
+        $data = new CkeditorDemoData();
+        $form = $this->createForm(CkeditorDemoType::class, $data);
+        $form->handleRequest($request);
+        $submitted = null;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $submitted = $form->getData();
+        }
+
+        return $this->render('form_demo/ckeditor.html.twig', [
+            'form'      => $form,
+            'submitted' => $submitted,
+        ]);
+    }
+
+    /**
+     * UX Autocomplete demo — {@see ChoiceType} with {@code autocomplete => true} (Tom Select) and {@see FormOptionsTrait::addAutocompleteField()}.
+     */
+    #[Route(path: '/ux-autocomplete', name: 'form_demo_ux_autocomplete', methods: ['GET', 'POST'])]
+    public function uxAutocompleteDemo(Request $request): Response
+    {
+        $data = new AutocompleteDemoData();
+        $form = $this->createForm(AutocompleteDemoType::class, $data);
+        $form->handleRequest($request);
+        $submitted           = null;
+        $submittedNormalized = null;
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var AutocompleteDemoData $submitted */
+            $submitted           = $form->getData();
+            $submittedNormalized = [
+                'topic'  => $submitted->topic,
+                'skills' => $submitted->skills,
+            ];
+        }
+
+        return $this->render('form_demo/ux_autocomplete.html.twig', [
+            'form'                 => $form,
+            'submitted'            => $submitted,
+            'submitted_normalized' => $submittedNormalized,
+        ]);
+    }
+
+    /**
+     * Multi-step form demo — wizard built from array (contact → address → confirm).
+     */
     #[Route(path: '/multistep', name: 'form_demo_multistep', methods: ['GET', 'POST'])]
     public function multistepFormDemo(Request $request): Response
     {
         $wizardName = 'demo_wizard';
         $wizard     = $this->wizardFactory->create(self::MULTISTEP_DEFINITION, $wizardName);
+
         if ($request->query->get('reset')) {
             $wizard->reset();
 
-            return $this->redirectToRoute('form_demo_multistep');
+            return $this->redirectToRoute('form_demo_multistep', ['_locale' => $request->getLocale()]);
         }
+
         if ($wizard->isComplete()) {
-            return $this->render('form_demo/multistep_summary.html.twig', ['wizard' => $wizard, 'wizard_name' => $wizardName]);
+            return $this->render('form_demo/multistep_summary.html.twig', [
+                'wizard'      => $wizard,
+                'wizard_name' => $wizardName,
+            ]);
         }
+
         $stepKey  = $wizard->getCurrentStepKey();
         $stepData = $wizard->getCollectedData()[$stepKey] ?? [];
-        $form     = $this->multiStepFormBuilder->createStepForm($wizardName, $stepKey, $wizard->getStepFields($stepKey), $stepData);
+        $form     = $this->multiStepFormBuilder->createStepForm(
+            $wizardName,
+            $stepKey,
+            $wizard->getStepFields($stepKey),
+            $stepData,
+        );
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $wizard->setStepData($stepKey, $form->getData());
             $wizard->advance();
 
-            return $this->redirectToRoute('form_demo_multistep');
+            return $this->redirectToRoute('form_demo_multistep', ['_locale' => $request->getLocale()]);
         }
 
-        return $this->render('form_demo/multistep.html.twig', ['form' => $form, 'wizard' => $wizard]);
+        return $this->render('form_demo/multistep.html.twig', [
+            'form'   => $form,
+            'wizard' => $wizard,
+        ]);
     }
 
+    /**
+     * Builds a form in the controller with Form Kit convention (label/placeholder/help from config).
+     */
     private function createControllerForm(): FormInterface
     {
-        $formName = 'controller_contact';
-        $builder  = $this->createFormBuilder();
-        $rowHalf  = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
-        $rowFull  = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $builder = $this->createFormBuilder([
+            'notifySwitch' => 1,
+        ]);
+        $rowHalf = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
+        $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
 
-        $builder->add('name', TextType::class, $this->formOptionsMerger->resolve($formName, 'name', TextType::class, $rowHalf));
-        $builder->add('email', EmailType::class, $this->formOptionsMerger->resolve($formName, 'email', EmailType::class, $rowHalf));
-        $builder->add('message', TextareaType::class, $this->formOptionsMerger->resolve($formName, 'message', TextareaType::class, $rowFull));
+        $this->addTextType($builder, 'name', $rowHalf);
+        $this->addEmailType($builder, 'email', $rowHalf);
+        $this->addTextareaType($builder, 'message', $rowFull);
+        $this->addSwitchType($builder, 'notifySwitch', array_merge($rowHalf, [
+            'switch_value' => 1,
+        ]));
 
         return $builder->getForm();
     }

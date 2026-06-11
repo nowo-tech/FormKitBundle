@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'demo_pages.data_transformers.page_title'|trans }}{% endblock %}
+
+{% block body %}
+{% set locale = app.request.locale %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">{{ 'demo_pages.data_transformers.heading'|trans }}</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
+</div>
+<p class="text-secondary mb-2">{{ 'demo_pages.data_transformers.intro'|trans|raw }}</p>
+<ul class="small text-secondary mb-4">
+  <li>{{ 'demo_pages.data_transformers.usage_1'|trans|raw }}</li>
+  <li>{{ 'demo_pages.data_transformers.usage_2'|trans|raw }}</li>
+</ul>
+
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    {{ form_start(form) }}
+    <div class="row g-3">
+      <div class="col-12 col-md-6">{{ form_row(form.priceCents) }}</div>
+      <div class="col-12 col-md-6">{{ form_row(form.published) }}</div>
+      <div class="col-12">{{ form_row(form.metadata) }}</div>
+      <div class="col-12">{{ form_row(form.tags) }}</div>
+      <div class="col-12 col-md-6">{{ form_row(form.notifyOn) }}</div>
+    </div>
+    {{ form_rest(form) }}
+    <div class="form-kit-buttons mt-2">
+      <button type="submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
+    </div>
+    {{ form_end(form, { render_rest: false }) }}
+  </div>
+</div>
+
+{% if submitted %}
+  <div class="mt-4">
+    <p class="fw-semibold mb-2">{{ 'demo_pages.data_transformers.normalized_title'|trans }}</p>
+    <pre class="bg-light border rounded p-3 small mb-0 overflow-auto">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+  </div>
+{% endif %}
+{% endblock %}

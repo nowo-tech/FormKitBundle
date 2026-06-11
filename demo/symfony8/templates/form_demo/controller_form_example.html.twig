@@ -1,26 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Controller Form Example - Form Kit Demo{% endblock %}
+{% block title %}{{ 'demo_pages.controller_form.page_title'|trans }}{% endblock %}
 
 {% block body %}
+{% set locale = app.request.locale %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">Controller Form Example</h1>
-  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index') }}">Back</a>
+  <h1 class="h3 mb-0">{{ 'demo_pages.controller_form.heading'|trans }}</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
 </div>
-<p class="text-secondary mb-4">Form built in <code>FormKitDemoController::createControllerForm()</code> with <code>FormOptionsMerger::resolve()</code>. Same convention-based labels/placeholders; layout: two columns + full-width message.</p>
+<p class="text-secondary mb-4">{{ 'demo_pages.controller_form.intro'|trans|raw }}</p>
 
 <div class="alert alert-light border mb-4">
-  <strong class="d-block mb-2">Bundle usage</strong>
+  <strong class="d-block mb-2">{{ 'demo_pages.common.bundle_usage'|trans }}</strong>
   <ul class="mb-0 small text-secondary">
-    <li>The controller injects <code>FormOptionsMerger</code> and calls <code>$this->formOptionsMerger->resolve($formName, $fieldName, $type, $options)</code> for each field.</li>
-    <li>Convention: <code>controller_form.name</code>, <code>.email</code>, <code>.message</code> for label/placeholder/help.</li>
-    <li>Useful when the form is built in the controller (no FormType class) but you want the same bundle conventions.</li>
+    <li>{{ 'demo_pages.controller_form.usage_1'|trans|raw }}</li>
+    <li>{{ 'demo_pages.controller_form.usage_2'|trans|raw }}</li>
+    <li>{{ 'demo_pages.controller_form.usage_3'|trans|raw }}</li>
   </ul>
 </div>
 
 <div class="card form-card shadow-sm">
   <div class="card-body p-4">
-    {% include 'form_demo/_form_unrendered_loop.html.twig' with { demo_form: form, wrapper_class: 'row g-3', submit_label: 'Submit'|trans } only %}
+    {% include 'form_demo/_form_unrendered_loop.html.twig' with { demo_form: form, wrapper_class: 'row g-3', submit_label: 'demo_pages.common.submit'|trans } only %}
   </div>
 </div>
 {% endblock %}

@@ -21,27 +21,20 @@ use function is_array;
  */
 final class MultiStepWizardSession
 {
-    /** @var array<string, array{label: string, fields: array}> */
-    private array $steps;
+    private readonly SessionInterface $session;
 
-    private string $wizardName;
-
-    private SessionInterface $session;
-
-    private string $sessionKey;
+    private readonly string $sessionKey;
 
     /**
      * @param array<string, array{label: string, fields: array}> $steps Step key => [label, fields]
      */
     public function __construct(
-        array $steps,
-        string $wizardName,
+        private array $steps,
+        private readonly string $wizardName,
         RequestStack $requestStack
     ) {
-        $this->steps      = $steps;
-        $this->wizardName = $wizardName;
         $this->session    = $requestStack->getSession();
-        $this->sessionKey = 'nowo_form_kit_wizard_' . $wizardName;
+        $this->sessionKey = 'nowo_form_kit_wizard_' . $this->wizardName;
     }
 
     /** @return list<string> Step keys in order */

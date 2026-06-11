@@ -17,12 +17,12 @@
 
   Usage (HTML buttons):
     {% set form_buttons %}
-      <button type="submit" class="btn btn-primary">Guardar</button>
+      <button type="submit" class="btn btn-primary">Save</button>
     {% endset %}
     {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
 
   Usage (both: form-type buttons + extra HTML link):
-    {% set form_buttons %}<a href="{{ path('app_list') }}" class="btn btn-link">Cancelar</a>{% endset %}
+    {% set form_buttons %}<a href="{{ path('app_list') }}" class="btn btn-link">Cancel</a>{% endset %}
     {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'save_and_new'], form_buttons: form_buttons }) }}
 #}
 {{ form_start(form, form_start_options|default({})) }}

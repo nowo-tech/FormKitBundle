@@ -1,3 +1,11 @@
 twig:
+  globals:
+    demo_enabled_locales: '%kernel.enabled_locales%'
   form_themes:
+    # Bootstrap 5 layout allway use this theme for all forms
+    - 'bootstrap_5_layout.html.twig'
+    # NowoSelectAllChoiceBundle
+    - '@NowoSelectAllChoice/Form/select_all_choice_theme_bootstrap5.html.twig'
+    # NowoFormKitBundle
+    - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
     - '@NowoFormKit/form/static_blocks.html.twig'

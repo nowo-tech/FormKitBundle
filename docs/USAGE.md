@@ -10,6 +10,51 @@ The **FormOptionsMerger** resolves final options for each field with cascading m
 
 You can inject **FormOptionsMerger** and call `resolve($formName, $fieldName, $type, $options, $configName)` directly (e.g. when building a form in the controller without a FormType class).
 
+## Controller helpers (trait)
+
+If you build forms in controllers (without a Symfony `FormType`), you can use `Nowo\FormKitBundle\Controller\FormKitControllerTrait`.
+
+It provides helpers like `addTextType()`, `addEmailType()`, `addChoiceType()`, choice presets (`addSelectType`, `addMultiSelectType`, `addChoiceRadiosType`, `addChoiceCheckboxesType`, `addMultiSelectSelectAllType`), `addAutocompleteFieldType`, `addCKEditorFieldType`, plus transformer presets like:
+- `addSwitchType()` (model int/bool <-> ChoiceType switch)
+- `addJsonType()` (model array <-> JSON textarea)
+- `addBoolType()` (model 0/1 <-> CheckboxType)
+- `addMoneyType()` (model cents <-> decimal string)
+- `addCsvType()` (model array<string> <-> CSV textarea)
+Those:
+- resolve the Symfony FQCN for the field type via `FormTypeMap` (so you do not need to import `TextType`, `EmailType`, ...)
+- merge options via `FormOptionsMerger` (YAML defaults + convention-based label/placeholder/help)
+- support two ways to choose the `$formName` used for conventions:
+  - fix it once with `setFormKitFormName('controller_contact')`
+  - or pass `$formName` per call (last argument on `add*Type()` methods)
+
+Example:
+
+```php
+use Nowo\FormKitBundle\Controller\FormKitControllerTrait;
+use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use Nowo\FormKitBundle\Form\FormTypeMap;
+use Symfony\Component\Form\FormBuilderInterface;
+
+final class MyController
+{
+    use FormKitControllerTrait;
+
+    public function __construct(FormOptionsMerger $merger, FormTypeMap $typeMap)
+    {
+        $this->setFormOptionsMerger($merger);
+        $this->setFormTypeMap($typeMap);
+        $this->setFormKitFormName('controller_contact');
+    }
+
+    private function createForm(FormBuilderInterface $builder): void
+    {
+        $this->addTextType($builder, 'name');
+        $this->addEmailType($builder, 'email');
+        $this->addTextareaType($builder, 'message');
+    }
+}
+```
+
 ## Using FormOptionsTrait
 
 1. **Register your form type as a service** and inject the merger:
@@ -61,9 +106,19 @@ $this->buildFormFromArray($builder, [
 
 **Or** use `addWithDefaults($builder, $name, TextType::class, $options)` when you need a type not covered by the helpers or a custom type.
 
-Available Phase 2 helpers: `addText`, `addEmail`, `addTextarea`, `addPassword`, `addUrl`, `addInteger`, `addNumber`, `addCheckbox`, `addChoice`.
+**Available Phase 2 helpers (core):** `addText`, `addEmail`, `addTextarea`, `addPassword`, `addUrl`, `addInteger`, `addNumber`, `addCheckbox`, `addChoice`.
+
+**Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect`, `addMultiSelect`, `addChoiceRadios`, `addChoiceCheckboxes`. **`addMultiSelectSelectAll`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
+
+**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle** and runs `CKEditorType` through the same merge pipeline (install CKEditor assets with `bin/console ckeditor:install`; register the FOSCKEditor Twig form theme — see that bundle’s documentation).
+
+**Model transformers:** `addSwitchType`, `addJsonType`, `addBoolType`, `addMoneyType`, `addCsvType`.
+
+**Layout:** `addFieldBreak` inserts a full-width break in grid layouts (optional).
 
 The form block prefix (e.g. `user_profile` for `UserProfileType`) is used automatically. Field names are used as-is for the translation key segment (use snake_case for consistency: `full_name`, `email_address`).
+
+Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` suffix (e.g. `addSelectType`, `addCKEditorFieldType`).
 
 ## FormKitTrait and FormKitAbstractType (snake_case types)
 
@@ -206,6 +261,71 @@ $this->buildFormFromArray($builder, [
 ]);
 ```
 
+## Help modal (optional)
+
+**HelpModalExtension** adds an optional field option **`help_modal`**:
+
+- `false` or omitted — no help trigger (default).
+- `true` — use defaults from `configs.<name>.help_modal` in `nowo_form_kit` (see [Configuration](CONFIGURATION.md)).
+- `array` — merge with those defaults; keys include `id`, `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` when **symfony/ux-icons** is installed, `title`, `title_html`, `content` (HTML string for the modal body), `trigger_class`, `aria_label`.
+
+The extension sets `label_attr['data-nowo-help-modal']` to a JSON payload. The bundled script **`help-modal.js`** (built from TypeScript) scans `label[data-nowo-help-modal]`, injects the icon beside the label, and opens a modal. **Bootstrap 5** uses `window.bootstrap.Modal` when available; **Bootstrap 4** uses jQuery `.modal()`; **Tailwind** and **Foundation** use inline shells and `[data-help-modal-close]` buttons.
+
+**0. Optional: render modal shell templates** (lets you override markup per framework; the script clones from `<template id="nowo-formkit-help-modal-shell-*">` or falls back to built-in HTML):
+
+```twig
+{% include '@NowoFormKit/help_modal/shells.html.twig' %}
+```
+
+Override under `templates/bundles/NowoFormKitBundle/help_modal/shell_*.html.twig` if needed.
+
+**1. Install bundle public assets** (symlink or copy into `public/bundles/`):
+
+```bash
+php bin/console assets:install public --symlink
+```
+
+**2. Load the script after Bootstrap** (order matters: Bootstrap first, then this script):
+
+```twig
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ...></script>
+<script defer src="{{ asset('bundles/nowoformkit/help-modal.js') }}"></script>
+```
+
+**3. Enable on a field** (example with explicit title and HTML content):
+
+```php
+$this->addText($builder, 'full_name', [
+    'help_modal' => [
+        'title' => 'Full name',
+        'content' => '<p>Use your legal name.</p>',
+    ],
+]);
+```
+
+Or rely on config defaults only: `'help_modal' => true`.
+
+## Overriding bundle templates
+
+The bundle provides Twig templates under `src/Resources/views/`:
+
+- `components/form_renderer.html.twig` — helper include for rendering a form with buttons.
+- `form/static_blocks.html.twig` — form theme used by `StaticSeparatorType` and `StaticAlertType` (and helpers like input-group prefix/suffix).
+- `help_modal/shells.html.twig` — includes `<template>` fragments for help-modal shells (Bootstrap 4/5, Tailwind, Foundation); optional if you rely on the script’s built-in HTML fallbacks.
+
+You can override any Twig template provided by the bundle by placing a file with the **same path** inside your project’s `templates/bundles/` directory. Symfony will use your template instead of the bundle’s.
+
+**Important:** The directory name under `templates/bundles/` must match the bundle name returned by `Bundle::getName()`. With Symfony’s default behaviour, the `Bundle` suffix is removed from the bundle class short name. For this bundle the class is `NowoFormKitBundle`, so the name is **`NowoFormKit`**.
+
+| Bundle path (relative to `Resources/views/`) | Override in your project |
+|---------------------------------------------|--------------------------|
+| `components/form_renderer.html.twig` | `templates/bundles/NowoFormKit/components/form_renderer.html.twig` |
+| `form/static_blocks.html.twig` | `templates/bundles/NowoFormKit/form/static_blocks.html.twig` |
+| `help_modal/shells.html.twig` | `templates/bundles/NowoFormKit/help_modal/shells.html.twig` |
+| `help_modal/shell_bootstrap5.html.twig` (and `shell_bootstrap4`, `shell_tailwind`, `shell_foundation`) | Same path under `templates/bundles/NowoFormKit/help_modal/` |
+
+After adding or changing overrides, clear the Twig cache if needed: `php bin/console cache:clear`.
+
 ## Multi-step forms (array-based wizard)
 
 You can define a multi-step wizard as an array and use **MultiStepFormBuilder** plus **MultiStepWizardSessionFactory** to build the form for the current step with the same convention-based options (label, placeholder, help). Each step’s form name for conventions is `{wizardName}_{stepKey}` (e.g. `demo_wizard_contact`, `demo_wizard_address`).
@@ -315,17 +435,17 @@ The bundle provides a reusable Twig component that outputs `form_start`, all unr
 
 ```twig
 {% set form_buttons %}
-  <button type="submit" name="action" value="save" class="btn btn-primary">Guardar</button>
-  <button type="submit" name="action" value="save_and_new" class="btn btn-outline-secondary">Guardar y nuevo</button>
-  <a href="{{ path('app_list') }}" class="btn btn-link">Cancelar</a>
+  <button type="submit" name="action" value="save" class="btn btn-primary">Save</button>
+  <button type="submit" name="action" value="save_and_new" class="btn btn-outline-secondary">Save and new</button>
+  <a href="{{ path('app_list') }}" class="btn btn-link">Cancel</a>
 {% endset %}
 {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
 ```
 
-**Form-type buttons plus extra HTML (e.g. Cancel link):**
+**Form-type buttons plus extra HTML (e.g. cancel link):**
 
 ```twig
-{% set form_buttons %}<a href="{{ path('app_list') }}" class="btn btn-link">Cancelar</a>{% endset %}
+{% set form_buttons %}<a href="{{ path('app_list') }}" class="btn btn-link">Cancel</a>{% endset %}
 {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'save_and_new'], form_buttons: form_buttons }) }}
 ```
 

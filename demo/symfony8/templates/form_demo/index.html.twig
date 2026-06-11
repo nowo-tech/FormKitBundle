@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Form Kit Bundle Demo{% endblock %}
+{% block title %}{{ 'demo_pages.index.title'|trans }}{% endblock %}
 
 {% macro demo_card(title, description, url, button_text) %}
   <div class="col-12 col-md-6 col-lg-4">
@@ -15,26 +15,36 @@
 {% endmacro %}
 
 {% block body %}
+{% set locale = app.request.locale %}
 <div class="mb-4">
-  <h1 class="h3 mb-2">Form Kit Bundle Demo</h1>
-  <p class="text-secondary mb-0">Convention-based form options with flexible layouts. Each card links to a dedicated page with the form and an explanation of how it is built with the bundle.</p>
+  <h1 class="h3 mb-2">{{ 'demo_pages.index.title'|trans }}</h1>
+  <p class="text-secondary mb-0">{{ 'demo_pages.index.intro'|trans }}</p>
 </div>
 
 {% set cards = [
-  { title: 'FormType', description: '<code>DemoContactType</code> with <code>FormOptionsTrait</code>. Sections and grid layout.', route: 'form_demo_form_type', button: 'Open FormType' },
-  { title: 'Controller Form', description: 'Built in controller with <code>FormOptionsMerger::resolve()</code>. Two-column layout.', route: 'form_demo_controller_form', button: 'Open Controller Form' },
-  { title: 'Search Form', description: 'Inline search bar: query + category filter. Convention <code>search_form.*</code>.', route: 'form_demo_search', button: 'Open Search' },
-  { title: 'Example Form', description: 'Card with grid: name, email, subject, message and submit actions.', route: 'form_demo_example_form', button: 'Open Example' },
-  { title: 'Dropzone (UX)', description: 'Symfony UX Dropzone: drag-and-drop file upload.', route: 'form_demo_dropzone', button: 'Open Dropzone' },
-  { title: 'Cropper (UX)', description: 'Symfony UX Cropper.js: crop an image with fixed aspect ratio.', route: 'form_demo_cropper', button: 'Open Cropper' },
-  { title: 'Translations', description: 'Translatable fields per locale with tabs. One form_class per locale.', route: 'form_demo_translations', button: 'Open Translations' },
-  { title: 'Nested Form', description: 'Contact + embedded address. Form Kit conventions for nested types.', route: 'form_demo_nested', button: 'Open Nested' },
-  { title: 'Multi-step', description: 'Wizard from array: contact → address → confirm. Session-based steps.', route: 'form_demo_multistep', button: 'Open Multi-step' },
+  { id: 'form_type', route: 'form_demo_form_type' },
+  { id: 'controller_form', route: 'form_demo_controller_form' },
+  { id: 'search', route: 'form_demo_search' },
+  { id: 'example_form', route: 'form_demo_example_form' },
+  { id: 'dropzone', route: 'form_demo_dropzone' },
+  { id: 'cropper', route: 'form_demo_cropper' },
+  { id: 'translations', route: 'form_demo_translations' },
+  { id: 'nested', route: 'form_demo_nested' },
+  { id: 'data_transformers', route: 'form_demo_data_transformers' },
+  { id: 'choice_fields', route: 'form_demo_choice_fields' },
+  { id: 'ckeditor', route: 'form_demo_ckeditor' },
+  { id: 'ux_autocomplete', route: 'form_demo_ux_autocomplete' },
+  { id: 'multistep', route: 'form_demo_multistep' },
 ] %}
 
 <div class="row g-4">
-  {% for card in cards %}
-    {{ _self.demo_card(card.title, card.description, path(card.route), card.button) }}
+  {% for c in cards %}
+    {{ _self.demo_card(
+      ('demo_pages.index_cards.' ~ c.id ~ '.title')|trans,
+      ('demo_pages.index_cards.' ~ c.id ~ '.description')|trans|raw,
+      path(c.route, {_locale: locale}),
+      ('demo_pages.index_cards.' ~ c.id ~ '.button')|trans
+    ) }}
   {% endfor %}
 </div>
 {% endblock %}

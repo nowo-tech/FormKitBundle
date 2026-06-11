@@ -7,23 +7,30 @@
     "php": ">=8.2,<8.6",
     "a2lix/translation-form-bundle": "^4.0",
     "doctrine/collections": "^2.2",
+    "friendsofsymfony/ckeditor-bundle": "^2.5",
     "nowo-tech/form-kit-bundle": "@dev",
-    "symfony/asset": "^7.0",
-    "symfony/console": "^7.0",
-    "symfony/dotenv": "^7.0",
-    "symfony/form": "^7.0",
-    "symfony/framework-bundle": "^7.0",
-    "symfony/http-kernel": "^7.0",
-    "symfony/runtime": "^7.0",
+    "nowo-tech/select-all-choice-bundle": "^1.0",
+    "pentatrion/vite-bundle": "^8.2",
+    "symfony/asset": "^7.4",
+    "symfony/asset-mapper": "7.4.*",
+    "symfony/console": "^7.4",
+    "symfony/dotenv": "^7.4",
+    "symfony/form": "^7.4",
+    "symfony/framework-bundle": "^7.4",
+    "symfony/http-kernel": "^7.4",
+    "symfony/runtime": "^7.4",
     "symfony/stimulus-bundle": "^2.9",
-    "symfony/twig-bundle": "^7.0",
+    "symfony/ux-autocomplete": "^2.24",
+    "symfony/twig-bundle": "^7.4",
     "symfony/ux-cropperjs": "^2.0",
     "symfony/ux-dropzone": "^2.0",
-    "symfony/validator": "^7.0"
+    "symfony/validator": "^7.4"
   },
   "require-dev": {
-    "symfony/debug-bundle": "7.0.*",
-    "symfony/web-profiler-bundle": "7.0.*"
+    "sensiolabs/typescript-bundle": "^0.2.2",
+    "nowo-tech/twig-inspector-bundle": "^1.0",
+    "symfony/debug-bundle": "7.4.*",
+    "symfony/web-profiler-bundle": "7.4.*"
   },
   "config": {
     "allow-plugins": {
@@ -45,7 +52,8 @@
   },
   "scripts": {
     "auto-scripts": {
-      "cache:clear": "@php bin/console cache:clear"
+      "cache:clear": "@php bin/console cache:clear",
+      "ckeditor:install --clear=drop --no-progress-bar": "@php bin/console ckeditor:install --clear=drop --no-progress-bar --tag=4.22.1"
     },
     "post-install-cmd": ["@auto-scripts"],
     "post-update-cmd": ["@auto-scripts"]
@@ -55,8 +63,8 @@
   },
   "extra": {
     "symfony": {
-      "allow-contrib": false,
-      "require": "7.0.*"
+      "allow-contrib": true,
+      "require": "7.4.*"
     }
   },
   "repositories": [

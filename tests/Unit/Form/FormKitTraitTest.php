@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
 use InvalidArgumentException;
+use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormKitTrait;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
@@ -35,6 +36,7 @@ final class FormKitTraitTest extends TestCase
                 ],
             ],
             'default',
+            new ConstraintDefinitionFactory(),
         );
     }
 
@@ -72,12 +74,10 @@ final class FormKitTraitTest extends TestCase
             ->method('add')
             ->with(
                 'q',
-                'Symfony\Component\Form\Extension\Core\Type\TextType',
-                self::callback(static function (array $options): bool {
-                    return $options['translation_domain'] === 'compact_forms'
-                        && $options['label'] === 'search_form.q.label'
-                        && ($options['attr']['class'] ?? '') === 'form-control-sm';
-                }),
+                \Symfony\Component\Form\Extension\Core\Type\TextType::class,
+                self::callback(static fn(array $options): bool => $options['translation_domain'] === 'compact_forms'
+                    && $options['label'] === 'search_form.q.label'
+                    && ($options['attr']['class'] ?? '') === 'form-control-sm'),
             );
 
         $type->addSnakeField($builder, 'q', 'text');
@@ -108,8 +108,8 @@ final class FormKitTraitTest extends TestCase
             ->with(
                 self::logicalOr('q', 'topic'),
                 self::logicalOr(
-                    'Symfony\Component\Form\Extension\Core\Type\TextType',
-                    'Symfony\Component\Form\Extension\Core\Type\ChoiceType',
+                    \Symfony\Component\Form\Extension\Core\Type\TextType::class,
+                    \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class,
                 ),
                 self::isType('array'),
             );

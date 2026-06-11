@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
+use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormKitAbstractType;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
@@ -26,6 +27,7 @@ final class FormKitAbstractTypeTest extends TestCase
                 ],
             ],
             'default',
+            new ConstraintDefinitionFactory(),
         );
 
         $map = new FormTypeMap([]);
@@ -47,11 +49,9 @@ final class FormKitAbstractTypeTest extends TestCase
             ->method('add')
             ->with(
                 'name',
-                'Symfony\Component\Form\Extension\Core\Type\TextType',
-                self::callback(static function (array $options): bool {
-                    return $options['label'] === 'contact_form.name.label'
-                        && ($options['attr']['class'] ?? '') === 'form-control';
-                }),
+                \Symfony\Component\Form\Extension\Core\Type\TextType::class,
+                self::callback(static fn(array $options): bool => $options['label'] === 'contact_form.name.label'
+                    && ($options['attr']['class'] ?? '') === 'form-control'),
             );
 
         $type->buildDemoField($builder);

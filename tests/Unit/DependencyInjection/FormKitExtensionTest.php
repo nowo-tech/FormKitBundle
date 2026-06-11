@@ -36,10 +36,11 @@ final class FormKitExtensionTest extends TestCase
 
         $configs = $container->getParameter('nowo_form_kit.configs');
         self::assertSame('bootstrap', $container->getParameter('nowo_form_kit.default_config'));
+        self::assertSame('bootstrap', $container->getParameter('nowo_form_kit.css_framework'));
         self::assertSame(['address' => 'App\Form\Type\AddressType'], $container->getParameter('nowo_form_kit.type_map'));
         self::assertSame('forms', $configs['bootstrap']['translation_domain']);
-        self::assertTrue($container->hasDefinition('Nowo\FormKitBundle\Form\FormOptionsMerger'));
-        self::assertTrue($container->hasDefinition('Nowo\FormKitBundle\Form\FormTypeMap'));
+        self::assertTrue($container->hasDefinition(\Nowo\FormKitBundle\Form\FormOptionsMerger::class));
+        self::assertTrue($container->hasDefinition(\Nowo\FormKitBundle\Form\FormTypeMap::class));
     }
 
     public function testLoadBuildsLegacyDefaultConfigWhenConfigsAreMissing(): void
@@ -63,6 +64,29 @@ final class FormKitExtensionTest extends TestCase
         self::assertSame('messages', $configs['default']['translation_domain']);
         self::assertSame('input', $configs['default']['defaults']['attr']['class']);
         self::assertSame('legacy_help', $configs['default']['field_types']['text']['help']);
+    }
+
+    public function testLoadSetsCssFrameworkParameter(): void
+    {
+        $container = new ContainerBuilder();
+        $extension = new FormKitExtension();
+
+        $extension->load([[
+            'css_framework' => 'tailwind',
+            'configs'       => [
+                'default' => [
+                    'alias'              => 'default',
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
+                        'attr'     => [],
+                        'row_attr' => [],
+                    ],
+                    'field_types' => [],
+                ],
+            ],
+        ]], $container);
+
+        self::assertSame('tailwind', $container->getParameter('nowo_form_kit.css_framework'));
     }
 
     public function testLoadThrowsWhenDefaultConfigIsUnknown(): void

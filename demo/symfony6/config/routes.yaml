@@ -1,3 +1,6 @@
 controllers:
   resource: ../src/Controller/
   type: attribute
+
+ux_autocomplete:
+  resource: routes/ux_autocomplete.yaml

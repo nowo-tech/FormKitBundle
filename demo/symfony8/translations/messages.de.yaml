@@ -1,0 +1,453 @@
+# UI (navbar, etc.) — German UI locale
+demo_nav:
+  brand: 'Form Kit Demo'
+  form_type: FormType
+  controller_form: 'Formular im Controller'
+  search: Suche
+  example: Beispiel
+  dropzone: Dropzone
+  cropper: Zuschneiden
+  translations: Übersetzungen
+  nested: Verschachtelt
+  data_transformers: Datentransformatoren
+  choice_fields: Auswahlfelder
+  ckeditor: CKEditor
+  ux_autocomplete: Autocomplete
+  multi_step: 'Mehrstufig'
+  locale: Sprache
+
+demo_contact:
+  notice_contact: 'Please fill in your contact details below. All fields in this section are used to get in touch.'
+  terms_notice: 'You must accept the terms to continue.'
+  full_name:
+    label: Full name
+    placeholder: Enter your full name
+    help: As shown on your ID.
+  email_address:
+    label: Email address
+    placeholder: you@example.com
+    help: We will not share it.
+  message:
+    label: Message
+    placeholder: Your message...
+    help: Optional.
+  password:
+    label: Password
+    placeholder: Enter password
+    help: At least 8 characters.
+  website:
+    label: Website
+    placeholder: https://example.com
+    help: Your personal or company URL.
+  age:
+    label: Age
+    placeholder: "0"
+    help: Your age in years.
+  score:
+    label: Score
+    placeholder: "0.0"
+    help: A number between 0 and 10.
+  accept_terms:
+    label: I accept the terms
+    placeholder: ""
+    help: Required to continue.
+  topic:
+    label: Topic
+    placeholder: Choose one
+    help: What is your request about?
+  help_modal:
+    full_name_title: 'Full name'
+    full_name_content: '<p>Use your legal name as it appears on your ID or passport. The help icon next to the label opens this modal.</p>'
+
+# Dropzone demo — keys: dropzone_demo.*
+dropzone_demo:
+  document:
+    label: Upload a file
+    placeholder: Drag and drop a file or click to browse
+    help: Max size and allowed types depend on server config.
+
+# Search form — keys: search_form.*
+search_form:
+  q:
+    label: Search
+    placeholder: Type to search...
+    help: ""
+  category:
+    label: Category
+    placeholder: All categories
+    help: Filter by category.
+
+# Example form (card layout) — keys: example_form.*
+example_form:
+  name:
+    label: Your name
+    placeholder: John Doe
+    help: ""
+  email:
+    label: Email
+    placeholder: john@example.com
+    help: ""
+  subject:
+    label: Subject
+    placeholder: What is this about?
+    help: ""
+  message:
+    label: Message
+    placeholder: Your message...
+    help: ""
+
+# Form built in the controller — keys: controller_contact.*
+controller_contact:
+  name:
+    label: Your name
+    placeholder: Enter your name
+    help: How we should call you.
+  email:
+    label: Email
+    placeholder: email@example.com
+    help: We will reply to this address.
+  message:
+    label: Message
+    placeholder: Write your message...
+    help: Optional.
+  notify_switch:
+    label: E-Mail-Benachrichtigungen
+    placeholder: ""
+    help: 'Bootstrap <code>form-switch</code> via <code>FormKitControllerTrait::addSwitchType()</code> (gleiche Voreinstellung wie <code>FormOptionsTrait::addSwitchType()</code> auf der Seite Datentransformatoren).'
+
+# Nested form demo — keys: nested_form_demo.*
+nested_form_demo:
+  full_name:
+    label: Full name
+    placeholder: Your name
+    help: ""
+  email:
+    label: Email
+    placeholder: email@example.com
+    help: ""
+  address:
+    label: Address
+    placeholder: ""
+    help: Nested AddressType form.
+
+# Data transformers demo — keys: data_transformers_demo.*
+data_transformers_demo:
+  price_cents:
+    label: 'Preis (in Cent gespeichert)'
+    placeholder: '19.99'
+    help: 'Modell: Ganzzahl in Cent. Ansicht: Dezimalstring (<code>MoneyModelTransformer</code>).'
+  metadata:
+    label: 'Metadaten (JSON)'
+    placeholder: ""
+    help: 'Modell: Array. Ansicht: JSON-Text (<code>JsonModelTransformer</code>).'
+  tags:
+    label: Schlagwörter
+    placeholder: 'php, symfony, form'
+    help: 'Modell: Liste von Strings. Ansicht: CSV (<code>CsvModelTransformer</code>).'
+  published:
+    label: Veröffentlicht
+    placeholder: ""
+    help: 'Modell: 1/0. Ansicht: Kontrollkästchen (<code>BoolModelTransformer</code>).'
+  notify_on:
+    label: E-Mail-Benachrichtigungen
+    placeholder: ""
+    help: 'Modell: 1/0. Ansicht: Schalter (<code>SwitchModelTransformer</code>).'
+
+choice_fields_demo:
+  country:
+    label: Land
+    placeholder: ""
+    help: '<code>addSelect()</code> — einfaches Dropdown.'
+  hobbies:
+    label: Hobbys
+    placeholder: ""
+    help: '<code>addMultiSelect()</code> — &lt;select multiple&gt;.'
+  priority:
+    label: Priorität
+    placeholder: ""
+    help: '<code>addChoiceRadios()</code> — Radio-Buttons.'
+  tags:
+    label: Schlagwörter
+    placeholder: ""
+    help: '<code>addChoiceCheckboxes()</code> — mehrere Kontrollkästchen.'
+  agree:
+    label: 'Ich akzeptiere die Demo-Bedingungen'
+    placeholder: ""
+    help: '<code>addCheckbox()</code>.'
+  permissions:
+    label: Berechtigungen
+    placeholder: ""
+    help: '<code>addMultiSelectSelectAll()</code> mit <strong>nowo-tech/select-all-choice-bundle</strong>, sonst <code>addMultiSelect()</code>.'
+
+ckeditor_demo:
+  body:
+    label: Artikeltext
+    placeholder: ""
+    help: 'Standard-FOS-Konfiguration (<code>standard</code>-Toolbar) mit <code>addCKEditorField()</code>.'
+  excerpt:
+    label: Kurzfassung
+    placeholder: ""
+    help: 'Benannte Konfiguration <code>minimal</code> mit <code>basic</code>-Toolbar (Option <code>config_name</code>).'
+
+# Embedded AddressType — keys: address.*
+address:
+  street:
+    label: Street
+    placeholder: Street name
+    help: ""
+  number:
+    label: Number
+    placeholder: "123"
+    help: ""
+  floor:
+    label: Floor
+    placeholder: Floor or door
+    help: ""
+  postal_code:
+    label: Postal code
+    placeholder: "01001"
+    help: ""
+  city:
+    label: City
+    placeholder: City name
+    help: ""
+  province:
+    label: Province
+    placeholder: Province or state
+    help: ""
+
+# Multi-step wizard — keys: demo_wizard_<step>.* (see MultiStepFormBuilder)
+demo_wizard_contact:
+  full_name:
+    label: Full name
+    placeholder: Your name
+    help: ""
+  email:
+    label: Email
+    placeholder: email@example.com
+    help: ""
+
+demo_wizard_address:
+  street:
+    label: Street
+    placeholder: Street name
+    help: ""
+  number:
+    label: Number
+    placeholder: "123"
+    help: ""
+  floor:
+    label: Floor
+    placeholder: Floor or door
+    help: ""
+  postal_code:
+    label: Postal code
+    placeholder: "01001"
+    help: ""
+  city:
+    label: City
+    placeholder: City name
+    help: ""
+  province:
+    label: Province
+    placeholder: Province or state
+    help: ""
+
+# Translations demo (A2lix) — keys: translations_demo.*
+translations_demo:
+  translations:
+    label: Translations
+    placeholder: ""
+    help: ""
+
+# Translation item — keys: translation_item.*
+translation_item:
+  title:
+    label: Title
+    placeholder: Title in this language
+    help: ""
+  description:
+    label: Description
+    placeholder: Description in this language
+    help: ""
+
+demo_wizard_nav:
+  contact: Contact
+  address: Address
+  confirm: Confirm
+
+demo_pages:
+  layout:
+    default_title: 'Form Kit Bundle Demo'
+  common:
+    back: Back
+    submit: Submit
+    save: Save
+    submitted: Submitted
+    finish: Finish
+    next: Next
+    start_over: Start over
+    collected_data: 'Collected data'
+    bundle_usage: 'Bundle usage'
+    crop: Crop
+  index:
+    title: 'Form Kit Bundle Demo'
+    intro: 'Convention-based form options with flexible layouts. Each card links to a dedicated page with the form and an explanation of how it is built with the bundle.'
+  index_cards:
+    form_type:
+      title: FormType
+      description: '<code>DemoContactType</code> with <code>FormOptionsTrait</code>. Sections and grid layout.'
+      button: 'Open FormType'
+    controller_form:
+      title: 'Controller Form'
+      description: 'Built in the controller with <code>FormKitControllerTrait</code> (text, email, textarea, <strong>switch</strong>). Two-column layout.'
+      button: 'Open Controller Form'
+    search:
+      title: 'Search Form'
+      description: 'Inline search bar: query + category filter. Convention <code>search_form.*</code>.'
+      button: 'Open Search'
+    example_form:
+      title: 'Example Form'
+      description: 'Card with grid: name, email, subject, message and submit actions.'
+      button: 'Open Example'
+    dropzone:
+      title: 'Dropzone (UX)'
+      description: 'Symfony UX Dropzone: drag-and-drop file upload.'
+      button: 'Open Dropzone'
+    cropper:
+      title: 'Cropper (UX)'
+      description: 'Symfony UX Cropper.js: crop an image with fixed aspect ratio.'
+      button: 'Open Cropper'
+    translations:
+      title: Translations
+      description: 'Translatable fields per locale with tabs. One form_class per locale.'
+      button: 'Open Translations'
+    nested:
+      title: 'Nested Form'
+      description: 'Contact + embedded address. Form Kit conventions for nested types.'
+      button: 'Open Nested'
+    data_transformers:
+      title: Datentransformatoren
+      description: 'Geld, JSON, CSV, Bool und Schalter über Modell-Transformer von <code>FormOptionsTrait</code>.'
+      button: Transformatoren öffnen
+    choice_fields:
+      title: Auswahlfelder
+      description: 'Select, Mehrfachauswahl, Radio, Checkboxen, optional „Alle auswählen“ mit <code>nowo-tech/select-all-choice-bundle</code>, Autocomplete-FQCN-Hilfe.'
+      button: Auswahlfelder öffnen
+    ckeditor:
+      title: CKEditor
+      description: 'FOSCKEditorBundle (CKEditor 4): Rich-Text mit <code>addCKEditorField()</code> und benannten Toolbar-Konfigurationen.'
+      button: CKEditor öffnen
+    ux_autocomplete:
+      title: Autocomplete
+      description: '<strong>Symfony UX Autocomplete</strong> (Tom Select): <code>ChoiceType</code> mit <code>autocomplete =&gt; true</code> und <code>addAutocompleteField()</code>.'
+      button: Autocomplete öffnen
+    multistep:
+      title: Multi-step
+      description: 'Wizard from array: contact → address → confirm. Session-based steps.'
+      button: 'Open Multi-step'
+  form_type:
+    page_title: 'FormType Example - Form Kit Demo'
+    heading: 'FormType Example'
+    intro: 'Form defined in <code>App\Form\DemoContactType</code> with <code>FormOptionsTrait</code>. Layout: sections and two-column grid to show how the same form can be structured for clarity.'
+    usage_1: '<code>DemoContactType</code> uses <code>FormOptionsTrait</code> and <code>buildFormFromArray()</code>; <code>FormOptionsMerger</code> is injected by the bundle’s compiler pass.'
+    usage_2: 'Convention: labels, placeholders and help come from keys <code>demo_contact.field.label</code>, <code>.placeholder</code>, <code>.help</code> in the configured translation domain.'
+    usage_3: 'No need to configure each type by hand: one form type with the trait and translations handle the rest.'
+  controller_form:
+    page_title: 'Controller Form Example - Form Kit Demo'
+    heading: 'Controller Form Example'
+    intro: 'Form built in <code>FormKitDemoController::createControllerForm()</code> with <code>FormKitControllerTrait</code> helpers (<code>addTextType</code>, …, <code>addSwitchType</code>). Same convention-based labels/placeholders; layout: two columns + full-width message + switch.'
+    usage_1: 'The controller injects <code>FormOptionsMerger</code> and <code>FormTypeMap</code> and calls <code>add*Type()</code> helpers (same merge as FormTypes with the trait).'
+    usage_2: 'Convention: keys <code>controller_contact.name</code>, <code>.email</code>, <code>.message</code>, <code>.notify_switch.*</code> for label/placeholder/help.'
+    usage_3: 'Useful when the form is built in the controller (no FormType class) but you want the same bundle conventions.'
+  search:
+    page_title: 'Search Form - Form Kit Demo'
+    heading: 'Search Form'
+    intro: 'Inline search bar using Form Kit conventions (<code>search_form.*</code>). Same form, different layout: single bar with filter and action.'
+    in_word: in
+    aria_query: 'Search query'
+    aria_category: Category
+    button_submit: Search
+  example:
+    page_title: 'Example Form - Form Kit Demo'
+    heading: 'Example Form'
+    intro: 'Card layout with grid: two columns for contact fields, full width for subject and message. Form Kit conventions (<code>example_form.*</code>).'
+    send: Send
+    send_copy: 'Send copy'
+    submitted_line: 'name = %name%, email = %email%, subject = %subject%'
+  dropzone:
+    page_title: 'Dropzone - Form Kit Demo'
+    heading: 'Dropzone (Symfony UX)'
+    intro: 'Uses the bundle with a <strong>custom type layer</strong>: <code>DropzoneFieldType</code> extends <code>AbstractFormKitWrappedType</code> and wraps UX Dropzone. Label, placeholder and help come from convention (<code>dropzone_demo.document.*</code>).'
+    default_image_heading: 'Default image (from public/images/demo-sample.jpg)'
+    demo_sample_alt: 'Demo sample'
+    upload_button: Upload
+    uploaded_prefix: Uploaded
+  cropper:
+    page_title: 'Cropper - Form Kit Demo'
+    heading: 'Cropper (Symfony UX)'
+    intro: 'Symfony UX Cropper.js: crop an image with a fixed aspect ratio. Usable as <code>cropper</code> type in Form Kit’s FormTypeMap when the package is installed.'
+    sample_missing_title: 'Sample image missing.'
+    sample_missing_body: 'Place an image at <code>public/images/demo-sample.jpg</code> to try the cropper (e.g. copy any JPG there or run <code>cp public/images/demo-sample.png public/images/demo-sample.jpg</code> if you have a PNG).'
+    expected_path: 'Expected path:'
+    crop_submitted_title: 'Crop submitted.'
+    crop_submitted_body: 'In a real app you would save the cropped image via <code>$crop->getCroppedImage()</code> or <code>getCroppedThumbnail()</code>.'
+  translations:
+    page_title: 'Übersetzungen - Form Kit Demo'
+    heading: Übersetzungen
+    intro: 'A2lix <code>TranslationsFormsType</code> mit <code>form_type</code> = TranslationItemType. <code>TranslationsDemoType</code> implementiert <code>resolveFormKitTranslationsLocaleContext()</code> und nutzt <code>DemoTranslationLocales::forSession()</code>: eine <strong>zufällige Teilmenge</strong> der Sprachen (<code>en</code>, <code>es</code>, <code>fr</code>, <code>de</code>) wird in der Session gespeichert, damit sich die Tab-Anzahl zwischen Sessions ändert, GET/POST aber konsistent bleiben. <code>DemoTranslatableItem::forLocales()</code> entspricht diesen Schlüsseln.'
+    locale_pool_hint: 'Aktive Sprachen in dieser Session: %pool%.'
+    reshuffle: 'Neue zufällige Auswahl'
+  nested:
+    page_title: 'Nested Form - Form Kit Demo'
+    heading: 'Nested Form'
+    intro: 'Form with embedded nested form: contact (name, email) + address (street, number, floor, postal code, city, province). Same Form Kit conventions for parent and nested type.'
+    section_contact: Contact
+    section_address: Address
+  data_transformers:
+    page_title: 'Datentransformatoren - Form Kit Demo'
+    heading: Datentransformatoren
+    intro: 'Jedes Feld nutzt einen <strong>Modell-Transformer</strong>: PHP behält speicherfreundliche Werte (Cent, Arrays, 1/0), die Oberfläche zeigt lesbare Werte (Dezimal, JSON, CSV, Checkbox, Schalter).'
+    usage_1: '<code>DataTransformersDemoType</code> ruft <code>addMoneyType()</code>, <code>addJsonType()</code>, <code>addCsvType()</code>, <code>addBoolType()</code> und <code>addSwitchType()</code> aus <code>FormOptionsTrait</code> auf.'
+    usage_2: 'Nach gültigem Submit entspricht das normalisierte <code>DataTransformersDemoData</code> unten dem, was Sie persistieren würden (ohne String-Parsing im Controller).'
+    normalized_title: 'Normalisiertes Modell (gesendete Daten)'
+  choice_fields:
+    page_title: 'Auswahlfelder - Form Kit Demo'
+    heading: Auswahlfelder
+    intro: 'Hilfsmethoden in <code>FormOptionsTrait</code> und <code>FormKitControllerTrait</code> für <code>ChoiceType</code> (Select, Multiselect, Radios, Checkbox-Gruppe) und <code>addMultiSelectSelectAll()</code> mit <strong>nowo-tech/select-all-choice-bundle</strong>.'
+    usage_1: '<code>addSelect()</code>, <code>addMultiSelect()</code>, <code>addChoiceRadios()</code>, <code>addChoiceCheckboxes()</code>, <code>addCheckbox()</code>.'
+    usage_2: 'Optional <code>addMultiSelectSelectAll()</code> aktiviert die <code>select_all</code>-UI (Demos Symfony 7/8; <code>select-all-choice.js</code> im Layout).'
+    usage_3: 'Für Symfony UX Autocomplete: <code>addAutocompleteField()</code> / <code>addAutocompleteFieldType()</code> mit dem FQCN Ihres FormTypes.'
+    normalized_title: 'Gesendete Daten (normalisiert)'
+  ckeditor:
+    page_title: 'CKEditor - Form Kit Demo'
+    heading: CKEditor
+    intro: 'Rich-Text mit <strong>FOSCKEditorBundle</strong> (CKEditor 4). Nutzen Sie <code>addCKEditorField()</code> / <code>addCKEditorFieldType()</code> für dieselben Form-Kit-Konventionen. Ausführen: <code>composer require friendsofsymfony/ckeditor-bundle</code> und <code>bin/console ckeditor:install</code>.'
+    usage_1: 'Zwei Felder: Standardkonfiguration (<code>standard</code>-Toolbar) und zweite Konfiguration (<code>minimal</code> → <code>basic</code>-Toolbar) über <code>config_name</code>.'
+    usage_2: 'CKEditor-Assets liegen unter <code>public/bundles/fosckeditor/</code> nach Installation und <code>assets:install</code>.'
+    normalized_title: 'Gesendete Daten (normalisiert)'
+  ux_autocomplete:
+    page_title: 'UX Autocomplete - Form Kit Demo'
+    heading: 'UX Autocomplete'
+    intro: 'Live-<strong>Symfony UX Autocomplete</strong> (Tom Select) auf <code>ChoiceType</code>: lokale Auswahlmöglichkeiten mit Suche. Form Kit nutzt <code>addAutocompleteField($builder, ''name'', ChoiceType::class, [''autocomplete'' =&gt; true, …])</code> mit denselben Label-/Hilfe-Konventionen.'
+    usage_1: 'Feld <code>topic</code> (optional): eine Auswahl aus einer kurzen Liste.'
+    usage_2: 'Feld <code>skills</code>: Mehrfachauswahl mit <code>multiple =&gt; true</code> und <code>autocomplete =&gt; true</code>.'
+    usage_3: 'Für Ajax-Entity-Suche: Doctrine installieren und einen Typ mit <code>BaseEntityAutocompleteType</code> (<a href="https://symfony.com/bundles/ux-autocomplete/current/index.html" rel="noopener">Doku</a>); FQCN an <code>addAutocompleteField()</code> übergeben.'
+    normalized_title: 'Gesendete Daten (normalisiert)'
+  multistep:
+    page_title: 'Multi-step Form - Form Kit Demo'
+    heading: 'Multi-step Form'
+    intro: 'Wizard built from an array: contact → address → confirm. Same Form Kit conventions per step (<code>demo_wizard_contact.*</code>, <code>demo_wizard_address.*</code>).'
+  multistep_summary:
+    page_title: 'Multi-step Summary - Form Kit Demo'
+    heading: 'Multi-step — Summary'
+
+autocomplete_demo:
+  topic:
+    label: Thema
+    placeholder: Thema suchen oder wählen…
+    help: Einzelauswahl; Tom Select filtert im Browser (kein Ajax in dieser Demo).
+  skills:
+    label: Fähigkeiten
+    placeholder: Eine oder mehrere Fähigkeiten hinzufügen…
+    help: Mehrfachauswahl mit demselben Autocomplete-Widget.

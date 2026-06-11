@@ -4,19 +4,19 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 
 ---
 
-## Current state (v1.x)
+## Current state (v2.x)
 
 - **FormOptionsTrait** + **FormOptionsMerger**: primary path; convention-based labels/placeholder/help; multiple configs; Phase 2 helpers; `buildFormFromArray()` with FQCN types.
 - **FormKitTrait** + **FormTypeMap**: snake_case type names; optional UX/A2lix types (dropzone, cropper, translations); `type_map` config; `buildFormFromArray()` with string types.
 - **FormKitAbstractType**: base type using FormKitTrait; uses FormOptionsMerger + FormTypeMap for snake_case types with the same config model (`configs` / `default_config`).
-- **Demos**: Symfony 6, 7, 8 with FormType, controller form, Search form (inline layout), Example form (card layout).
+- **FormKitControllerTrait**, choice presets, model transformers, help modal (JS + Twig shells), optional FQCN helpers (Autocomplete, CKEditor).
+- **Demos**: Symfony 7.4 and 8.x with FormType, controller form, Search, Example, Dropzone, Cropper, translations, nested form, data transformers, choice fields (Select All Choice), CKEditor (FOS), multi-step wizard; locales `en` / `es` / `fr` / `de`.
 
 ---
 
 ## Short term
 
-- **Stabilise 1.0**
-  - Finalise docs and changelog; release 1.0.0.
+- **Stabilise 2.x**
   - Submit recipe to [symfony/recipes-contrib](https://github.com/symfony/recipes-contrib) when the package is on Packagist.
 - **FormKit path hardening**
   - Add dedicated examples/tests for FormKitAbstractType + FormTypeMap (snake_case types) to ensure long-term parity with FormOptionsTrait.
@@ -47,7 +47,7 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 - **Symfony UX Live**
   - Ensure compatibility and, if useful, small examples for forms used with Live Components (e.g. re-validation, form options merge with dynamic fields).
 - **Backward compatibility**
-  - Keep supporting Symfony 6.4 as long as feasible; document supported versions and upgrade path in UPGRADING.md when dropping a major Symfony version.
+  - Document supported Symfony versions and upgrade path in UPGRADING.md when dropping a major Symfony version.
 
 ---
 

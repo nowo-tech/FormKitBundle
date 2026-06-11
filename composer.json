@@ -1,6 +1,6 @@
 {
   "name": "nowo-tech/form-kit-bundle",
-  "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global → field type → form → field). Symfony 6|7|8.",
+  "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global → field type → form → field). Symfony 7.4|8.",
   "type": "symfony-bundle",
   "license": "MIT",
   "keywords": [
@@ -33,22 +33,32 @@
     }
   ],
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.2 <8.6",
     "doctrine/collections": "^2.2",
-    "symfony/config": "^6.4 || ^7.0 || ^8.0",
-    "symfony/dependency-injection": "^6.4 || ^7.0 || ^8.0",
-    "symfony/form": "^6.4 || ^7.0 || ^8.0",
-    "symfony/http-kernel": "^6.4 || ^7.0 || ^8.0",
-    "symfony/translation": "^6.4 || ^7.0 || ^8.0",
-    "symfony/yaml": "^6.4 || ^7.0 || ^8.0"
+    "symfony/config": "^7.4 || ^8.0",
+    "symfony/dependency-injection": "^7.4 || ^8.0",
+    "symfony/form": "^7.4 || ^8.0",
+    "symfony/http-kernel": "^7.4 || ^8.0",
+    "symfony/translation": "^7.4 || ^8.0",
+    "symfony/validator": "^7.4 || ^8.0",
+    "symfony/yaml": "^7.4 || ^8.0"
   },
   "suggest": {
-    "a2lix/translation-form-bundle": "For the optional \"translations\" type in FormTypeMap (^3.2 on PHP 8.2/Symfony 6|7, ^4.0 on PHP 8.4+/Symfony 7.4|8)"
+    "a2lix/translation-form-bundle": "For the optional \"translations\" type in FormTypeMap (^3.2 on PHP 8.2/Symfony 7.4, ^4.0 on PHP 8.4+/Symfony 7.4|8)",
+    "nowo-tech/select-all-choice-bundle": "For addMultiSelectSelectAll() / addMultiSelectSelectAllType() (\"Select all\" on ChoiceType multiple)",
+    "friendsofsymfony/ckeditor-bundle": "For addCKEditorField() / addCKEditorFieldType() (CKEditor 4 in forms)",
+    "symfony/ux-autocomplete": "Entity autocomplete fields; use addAutocompleteField() / addAutocompleteFieldType() with your autocomplete FormType FQCN",
+    "symfony/ux-icons": "For help_modal.ux_icon (IconRendererInterface) instead of icon_html only"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.0,<3.94",
+    "phpstan/extension-installer": "^1.2",
+    "phpstan/phpstan": "^2.0",
+    "phpstan/phpstan-phpunit": "^2.0",
+    "phpstan/phpstan-symfony": "^2.0",
     "phpunit/phpunit": "^10.0",
-    "symfony/framework-bundle": "^6.4 || ^7.0 || ^8.0"
+    "rector/rector": "^2.0",
+    "symfony/framework-bundle": "^7.4 || ^8.0"
   },
   "autoload": {
     "psr-4": {
@@ -61,12 +71,13 @@
     }
   },
   "archive": {
-    "exclude": ["/demo"]
+    "exclude": ["/demo", "/.cursor"]
   },
   "config": {
     "sort-packages": true,
     "allow-plugins": {
-      "composer/package-versions-deprecated": true
+      "composer/package-versions-deprecated": true,
+      "phpstan/extension-installer": true
     }
   },
   "minimum-stability": "stable",
@@ -76,6 +87,19 @@
     "test-coverage": "vendor/bin/phpunit --colors=always --coverage-html coverage --coverage-clover coverage.xml --coverage-text",
     "cs-check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
     "cs-fix": "vendor/bin/php-cs-fixer fix",
+    "phpstan": "phpstan analyse --memory-limit=512M",
+    "rector": "rector process",
+    "rector-dry": "rector process --dry-run --no-progress-bar",
     "qa": ["@cs-check", "@test"]
+  },
+  "scripts-descriptions": {
+    "test": "Run PHPUnit tests",
+    "test-coverage": "Run PHPUnit tests with code coverage",
+    "cs-check": "Check code style with PHP-CS-Fixer",
+    "cs-fix": "Fix code style with PHP-CS-Fixer",
+    "phpstan": "Run PHPStan static analysis",
+    "rector": "Apply Rector refactoring",
+    "rector-dry": "Run Rector in dry-run mode",
+    "qa": "Run all quality assurance checks"
   }
 }

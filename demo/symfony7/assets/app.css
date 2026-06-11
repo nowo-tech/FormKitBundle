@@ -1,6 +1,19 @@
 body {
   background: #f8f9fa;
 }
+
+/* Help modal trigger next to field labels (Form Kit HelpModalExtension) */
+.nowo-help-modal-icon {
+  cursor: pointer;
+  margin-left: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  opacity: 0.75;
+}
+.nowo-help-modal-icon:hover {
+  opacity: 1;
+}
 .demo-navbar-brand {
   font-weight: 600;
 }

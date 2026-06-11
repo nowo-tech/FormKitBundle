@@ -1,3 +1,3 @@
 a2lix_translation_form:
-    enabled_locales: ['en', 'es', 'fr']
+    enabled_locales: ['en', 'es', 'fr', 'de']
     default_locale: 'en'

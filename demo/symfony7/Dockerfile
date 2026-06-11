@@ -1,7 +1,10 @@
 # FrankenPHP + PHP 8.4 for Form Kit Bundle Demo (Symfony 7)
 FROM dunglas/frankenphp:1-php8.4-alpine
 
-RUN apk add --no-cache git unzip bash
+# Node + npm; pnpm via npm -g (Alpine nodejs often ships without corepack on PATH).
+RUN apk add --no-cache git unzip bash nodejs npm \
+	&& npm install -g pnpm@9.14.2 \
+	&& pnpm --version
 
 RUN install-php-extensions zip intl
 
@@ -17,6 +20,7 @@ ENV PATH="/app/vendor/bin:${PATH}"
 ENV SERVER_NAME=:80
 
 COPY docker/frankenphp/Caddyfile /etc/frankenphp/Caddyfile
+COPY docker/frankenphp/Caddyfile.dev /etc/frankenphp/Caddyfile.dev
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

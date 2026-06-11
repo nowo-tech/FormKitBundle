@@ -52,7 +52,7 @@ final class FormKitOptionMerger
             $opts['label'] = $prefix . 'label';
         }
         if ($this->autoPlaceholder) {
-            $opts['attr'] = $opts['attr'] ?? [];
+            $opts['attr'] ??= [];
             if (!array_key_exists('placeholder', $opts['attr'])) {
                 $opts['attr']['placeholder'] = $prefix . 'placeholder';
             }
@@ -71,7 +71,7 @@ final class FormKitOptionMerger
         $attrByType  = $this->attrConfig['by_type'][$fieldTypeSnake] ?? [];
         $attrClasses = array_merge(is_array($attrDefault) ? $attrDefault : [], is_array($attrByType) ? $attrByType : []);
         if ($attrClasses !== []) {
-            $opts['attr']          = $opts['attr'] ?? [];
+            $opts['attr'] ??= [];
             $existing              = isset($opts['attr']['class']) ? $opts['attr']['class'] . ' ' : '';
             $opts['attr']['class'] = trim($existing . implode(' ', $attrClasses));
         }
@@ -79,7 +79,7 @@ final class FormKitOptionMerger
         $rowByType  = $this->rowAttrConfig['by_type'][$fieldTypeSnake] ?? [];
         $rowClasses = array_merge(is_array($rowDefault) ? $rowDefault : [], is_array($rowByType) ? $rowByType : []);
         if ($rowClasses !== []) {
-            $opts['row_attr']          = $opts['row_attr'] ?? [];
+            $opts['row_attr'] ??= [];
             $existing                  = isset($opts['row_attr']['class']) ? $opts['row_attr']['class'] . ' ' : '';
             $opts['row_attr']['class'] = trim($existing . implode(' ', $rowClasses));
         }

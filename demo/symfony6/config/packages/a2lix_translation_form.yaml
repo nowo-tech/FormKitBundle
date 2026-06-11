@@ -1,0 +1,4 @@
+# A2lix Translation Form v3 uses `locales` (v4+ uses `enabled_locales`).
+a2lix_translation_form:
+    locales: ['en', 'es', 'fr', 'de']
+    default_locale: 'en'

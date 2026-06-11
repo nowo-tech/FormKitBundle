@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
 use Nowo\FormKitBundle\Form\AbstractFormKitType;
+use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,7 +21,7 @@ final class AbstractFormKitTypeTest extends TestCase
                 'defaults'           => ['attr' => [], 'row_attr' => []],
                 'field_types'        => [],
             ],
-        ], 'default');
+        ], 'default', new ConstraintDefinitionFactory());
         $builder = $this->createMock(FormBuilderInterface::class);
 
         $type = new class extends AbstractFormKitType {

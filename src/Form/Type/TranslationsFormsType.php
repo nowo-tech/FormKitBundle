@@ -30,12 +30,16 @@ final class TranslationsFormsType extends A2lixTranslationsFormsType
         $resolver->setRequired('form_type');
         $resolver->setAllowedTypes('form_type', 'string');
         $resolver->setDefaults([
+            // Some FormOptionsTrait presets provide default_locale, even if the
+            // underlying A2lix type mainly operates on enabled/required locales.
+            'default_locale'        => 'en',
             'form_options'        => [],
             'enabled_locales'     => ['en', 'es', 'fr'],
             'required_locales'    => [],
             'locale_labels'       => null,
             'theming_granularity' => 'field',
         ]);
+        $resolver->setAllowedTypes('default_locale', 'string');
         $resolver->setAllowedTypes('form_options', 'array');
         $resolver->setAllowedTypes('enabled_locales', 'array');
         $resolver->setAllowedTypes('required_locales', 'array');

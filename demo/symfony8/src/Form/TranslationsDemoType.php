@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Demo\DemoTranslationLocales;
 use App\Model\DemoTranslatableItem;
-use App\Model\DemoTranslationItem;
 use Nowo\FormKitBundle\Form\FormOptionsTrait;
-use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -20,14 +20,15 @@ class TranslationsDemoType extends AbstractType
 {
     use FormOptionsTrait;
 
+    public function __construct(
+        private readonly RequestStack $requestStack,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $this->buildFormFromArray($builder, [
-            'translations' => [
-                'type'       => TranslationsFormsType::class,
-                'form_type'  => TranslationItemType::class,
-                'data_class' => DemoTranslationItem::class,
-            ],
+        $this->addTranslations($builder, [
+            'form_type' => TranslationItemType::class,
         ]);
     }
 
@@ -36,5 +37,25 @@ class TranslationsDemoType extends AbstractType
         $resolver->setDefaults([
             'data_class' => DemoTranslatableItem::class,
         ]);
+    }
+
+    /**
+     * Aligns A2lix enabled_locales with the same random subset as {@see DemoTranslatableItem::forLocales()}.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array{default_locale: string, enabled_locales: list<string>}
+     */
+    protected function resolveFormKitTranslationsLocaleContext(array $options): array
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request === null || !$request->hasSession()) {
+            return [
+                'default_locale'  => 'en',
+                'enabled_locales' => ['en', 'es', 'fr', 'de'],
+            ];
+        }
+
+        return DemoTranslationLocales::forSession($request->getSession());
     }
 }

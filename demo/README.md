@@ -1,9 +1,16 @@
 # Form Kit Bundle — Demos
 
-Demos for Symfony 6, 7 and 8. Each demo runs with Docker (FrankenPHP) and shows a form using Form Kit convention-based options.
+Demos for Symfony 7 and 8. Each demo runs with Docker (**FrankenPHP**). Default **`APP_ENV=dev`** uses **Caddyfile.dev** (no PHP worker); see [docs/DEMO-FRANKENPHP.md](../docs/DEMO-FRANKENPHP.md) for production (worker) vs development. Each demo shows forms using Form Kit convention-based options.
 
-- **symfony6** — PHP 8.1+, Symfony 6.4. Run: `cd symfony6 && make up` → http://localhost:8006
-- **symfony7** — PHP 8.2+, Symfony 7. Run: `cd symfony7 && make up` → http://localhost:8007
-- **symfony8** — PHP 8.2+, Symfony 8. Run: `cd symfony8 && make up` → http://localhost:8008
+- **symfony7** — PHP 8.2+, Symfony 7.4. Run: `cd symfony7 && make up` → http://localhost:8007
+- **symfony8** — PHP 8.2+ (Symfony 8 requires PHP 8.4+), Symfony 8.1. Run: `cd symfony8 && make up` → http://localhost:8008
 
-From the bundle root you can run `make demo-up-symfony6`, `make demo-up-symfony7`, `make demo-up-symfony8` (Composer install without Docker) or `make up-symfony6`, `make up-symfony7`, `make up-symfony8` (Docker).
+**Legacy:** `symfony6` remains in the repository for reference only (Symfony 6.4 / PHP 8.1). It targets **form-kit-bundle 1.x** and is not compatible with current bundle requirements.
+
+From the bundle root you can run `make demo-up-symfony7`, `make demo-up-symfony8` (Composer install without Docker) or `make up-symfony7`, `make up-symfony8` (Docker).
+
+## Locale (demo apps)
+
+The top bar includes a **Language** dropdown (**EN, ES, FR, DE**). Routes use a **locale prefix**: `/{locale}/…` (e.g. `/en/form-type`, `/de/ckeditor`). The root URL `/` redirects to the default locale home. The demo subscriber also accepts a legacy `?_locale=` query parameter and syncs the session. Form labels use the `messages` domain and files under `translations/messages.{locale}.yaml`. All three demos share the same base layout (Bootstrap 5.3.3). Front-end layout assets use **[Pentatrion Vite](https://symfony-vite.pentatrion.com/)** — Composer package `pentatrion/vite-bundle` (Twig helpers `vite_entry_link_tags` / `vite_entry_script_tags`) and `vite-plugin-symfony` in **Vite 6** + **TypeScript** (`assets/app.ts` imports `assets/app.css`). **Use pnpm only** for JavaScript dependencies (`npm` / `yarn` are blocked via `preinstall`); `pnpm install && pnpm run build` (or `make assets` inside each demo) writes hashed files under `public/build/` plus `.vite/manifest.json` / `entrypoints.json`. The Docker image includes Node and **pnpm** (Corepack); the **entrypoint runs `pnpm install` + `pnpm run build`** after Composer so the demo works without a separate host build. Symfony UX (Tom Select, etc.) still uses the **Asset Mapper** importmap (`importmap('ux')` in the base layout) alongside Pentatrion. **Bundle assets in `public/bundles/`** — Without Docker you need, inside each demo: `php bin/console ckeditor:install` **then** `php bin/console assets:install public --symlink` (FOSCKEditor [docs](https://symfony.com/bundles/FOSCKEditorBundle/current/installation.html): CKEditor first, then install assets). If `ckeditor.js`, `select-all-choice.js`, or `help-modal.js` return **404**, those commands were not run or your mount hid `public/bundles/`. The Docker entrypoint runs both. Layout uses **root-relative** `asset()` URLs (`/build/...`, `/bundles/...`) so scripts are not requested under `/{locale}/bundles/...`.
+
+Demo pages (paths are under `/{locale}`): home index, FormType, controller form, search, example, Dropzone, Cropper, translations, nested form, **data transformers**, **choice fields**, **CKEditor** (FOSCKEditorBundle), multi-step wizard. Symfony **7** and **8** demos include **nowo-tech/select-all-choice-bundle** for the choice-fields page.

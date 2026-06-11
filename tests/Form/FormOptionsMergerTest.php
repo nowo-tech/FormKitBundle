@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Form;
 
+use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
@@ -31,12 +36,13 @@ class FormOptionsMergerTest extends TestCase
                 ],
             ],
             'default',
+            new ConstraintDefinitionFactory(),
         );
     }
 
     public function testResolveUsesConventionForLabelPlaceholderHelp(): void
     {
-        $options = $this->merger->resolve('user_profile', 'email_address', 'Symfony\Component\Form\Extension\Core\Type\TextType', []);
+        $options = $this->merger->resolve('user_profile', 'email_address', \Symfony\Component\Form\Extension\Core\Type\TextType::class, []);
 
         self::assertSame('user_profile.email_address.label', $options['label']);
         self::assertSame('user_profile.email_address.placeholder', $options['attr']['placeholder']);
@@ -57,7 +63,7 @@ class FormOptionsMergerTest extends TestCase
 
     public function testResolveFieldOptionsOverrideConvention(): void
     {
-        $options = $this->merger->resolve('user_profile', 'email', 'Symfony\Component\Form\Extension\Core\Type\EmailType', [
+        $options = $this->merger->resolve('user_profile', 'email', \Symfony\Component\Form\Extension\Core\Type\EmailType::class, [
             'label'       => 'Custom label',
             'placeholder' => false,
             'attr'        => ['class' => 'custom-class'],
@@ -88,10 +94,78 @@ class FormOptionsMergerTest extends TestCase
                 ],
             ],
             'default',
+            new ConstraintDefinitionFactory(),
         );
 
         $options = $merger->resolve('contact', 'name', 'text', []);
 
         self::assertArrayNotHasKey('required_label_suffix', $options, 'required_label_suffix must not be passed to the form type; it is injected into the view from config.');
+    }
+
+    public function testResolveBuildsConstraintsFromFieldTypesEmail(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
+                        'row_attr' => ['class' => 'mb-3'],
+                    ],
+                    'field_types' => [
+                        'email' => [
+                            'constraints' => [
+                                'NotBlank',
+                                'Email',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $options = $merger->resolve('contact', 'userEmail', EmailType::class, []);
+
+        self::assertArrayHasKey('constraints', $options);
+        self::assertCount(2, $options['constraints']);
+        self::assertInstanceOf(NotBlank::class, $options['constraints'][0]);
+        self::assertInstanceOf(EmailConstraint::class, $options['constraints'][1]);
+    }
+
+    public function testResolveMergesFieldConstraintsAfterFieldTypeDefaults(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults' => [
+                        'attr' => ['class' => 'form-control'],
+                        'row_attr' => ['class' => 'mb-3'],
+                    ],
+                    'field_types' => [
+                        'email' => [
+                            'constraints' => [
+                                'NotBlank',
+                                'Email',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $options = $merger->resolve('contact', 'userEmail', EmailType::class, [
+            'constraints' => [
+                ['type' => 'Length', 'options' => ['max' => 255]],
+            ],
+        ]);
+
+        self::assertCount(3, $options['constraints']);
+        self::assertInstanceOf(Length::class, $options['constraints'][2]);
+        self::assertSame(255, $options['constraints'][2]->max);
     }
 }

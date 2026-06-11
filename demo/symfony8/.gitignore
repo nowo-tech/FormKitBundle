@@ -1,6 +1,18 @@
-/vendor/
-/.env
+# Local environment (do not version secrets)
+.env
 .env.local
-/var/
+.env.*.local
+.env.dev
+
+# Dependencies & build artifacts
+/vendor
+/node_modules
+/.pnpm-store
+/public/build
+/public/bundles
+
+# Logs & runtime caches
 *.log
-/node_modules/
+
+# Temporary data & var (e.g. Symfony cache, uploads)
+/var

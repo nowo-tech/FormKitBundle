@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+/**
+ * Single translation for DemoTranslatableItem (title, description per locale).
+ */
 class DemoTranslationItem
 {
     public ?string $title       = null;

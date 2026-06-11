@@ -3,7 +3,27 @@ services:
     autowire: true
     autoconfigure: true
 
+  # A2lix TranslationsType (v3): explicit constructor args in this demo.
+  a2lix_translation_form.form.type.translations_type:
+    class: A2lix\TranslationFormBundle\Form\Type\TranslationsType
+    arguments:
+      $translationsListener: '@a2lix_translation_form.form.event_listener.translations_listener'
+      $localeProvider: '@a2lix_translation_form.locale.simple_provider'
+    tags: ['form.type']
+
+  # Wrapper around A2lix TranslationsFormsType: must be constructed via DI (A2lix requires 2 constructor args).
+  Nowo\FormKitBundle\Form\Type\TranslationsFormsType:
+    tags: ['form.type']
+    arguments:
+      $translationsFormsListener: '@a2lix_translation_form.form.event_listener.translations_form_listener'
+      $localeProvider: '@a2lix_translation_form.locale.simple_provider'
+
   App\:
     resource: '../src/'
     exclude:
       - '../src/Kernel.php'
+
+  # Must be after App\: import — otherwise PSR-4 discovery overwrites this and $enabledLocales is lost.
+  App\EventSubscriber\LocaleSubscriber:
+    arguments:
+      $enabledLocales: '%kernel.enabled_locales%'

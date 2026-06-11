@@ -1,4 +1,6 @@
-# Form Kit Bundle Demo — Symfony 8
+# Form Kit Bundle Demo — Symfony 8.1
+
+Requires **PHP 8.4+** (Symfony 8 platform requirement). The demo pins Symfony **8.1.\*** components.
 
 Run with Docker (from this directory):
 

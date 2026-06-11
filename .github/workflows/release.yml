@@ -1,23 +1,22 @@
-# Create GitHub Release when pushing a tag v* (e.g. v1.0.0).
 name: Create Release
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*'  # Se dispara cuando se sube un tag que empieza con 'v'
 
 jobs:
   release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write  # Necesario para crear releases
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Necesario para obtener el historial completo y el mensaje del tag
 
       - name: Get tag name
         id: tag
@@ -38,6 +37,7 @@ jobs:
         id: version
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
+          # Remover el prefijo 'v' si existe
           VERSION=${TAG_NAME#v}
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
@@ -45,12 +45,13 @@ jobs:
         id: changelog
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
+          # Escapar puntos para usar versión en regex (ej. 1.0.10 -> 1\.0\.10)
           VERSION_RE=$(echo "$VERSION" | sed 's/\./\\./g')
           CHANGELOG_FILE="docs/CHANGELOG.md"
-
+          
           if [ -f "$CHANGELOG_FILE" ]; then
             CHANGELOG_ENTRY=$(awk "/^## \\[?${VERSION_RE}\\]?/ {flag=1; next} /^## \\[?[0-9]/ {flag=0} flag" "$CHANGELOG_FILE" 2>/dev/null || echo "")
-
+            
             if [ -n "$CHANGELOG_ENTRY" ]; then
               echo "HAS_CHANGELOG=true" >> $GITHUB_OUTPUT
               DELIM="EOF_CL_$(openssl rand -hex 8)"
@@ -84,4 +85,9 @@ jobs:
           body: ${{ steps.body.outputs.content }}
           draft: false
           prerelease: ${{ contains(steps.tag.outputs.TAG_NAME, '-alpha') || contains(steps.tag.outputs.TAG_NAME, '-beta') || contains(steps.tag.outputs.TAG_NAME, '-rc') }}
-          generate_release_notes: true
+          generate_release_notes: true  # GitHub generará notas automáticas basadas en los commits
+
+# Maintainer: Héctor Franco Aceituno (@HecFranco)
+# Organization: nowo-tech (https://github.com/nowo-tech)
+
+

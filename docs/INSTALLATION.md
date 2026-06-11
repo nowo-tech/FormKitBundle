@@ -4,10 +4,20 @@ This guide covers installing Form Kit Bundle in a Symfony application.
 
 ## Requirements
 
-- **PHP** >= 8.1
-- **Symfony** ^6.4 || ^7.0 || ^8.0
+- **PHP** >= 8.2
+- **Symfony** ^7.4 || ^8.0 (7.4, 8.0, 8.1)
 - **symfony/form** (included in framework-bundle)
 - **symfony/translation** (included in framework-bundle)
+
+### PHP and Symfony matrix
+
+| Symfony | Minimum PHP (bundle) | Minimum PHP (Symfony) |
+|---------|----------------------|------------------------|
+| 7.4     | 8.2                  | 8.2                    |
+| 8.0     | 8.4                  | 8.4                    |
+| 8.1     | 8.4                  | 8.4                    |
+
+Symfony 8.x requires PHP 8.4 or higher. On PHP 8.2–8.3, use Symfony 7.4.
 
 ## Install with Composer
 
@@ -15,7 +25,7 @@ This guide covers installing Form Kit Bundle in a Symfony application.
 composer require nowo-tech/form-kit-bundle
 ```
 
-Use a constraint such as `^1.0` to stay on the current major version.
+Use a constraint such as `^2.0` to stay on the current major version.
 
 ## Register the bundle
 
@@ -50,10 +60,13 @@ nowo_form_kit:
                     class: 'form-control'
                 row_attr:
                     class: 'mb-3'
+            help_modal:
+                framework: bootstrap5
+                icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>'
             field_types: {}
 ```
 
-If omitted, the bundle uses a single default config with `translation_domain: messages` and empty attr/row_attr. See [Configuration](CONFIGURATION.md).
+If omitted, the bundle uses a single default config with `translation_domain: messages` and empty attr/row_attr. See [Configuration](CONFIGURATION.md). To use **help modal** in the browser, install bundle assets and load `bundles/nowoformkit/help-modal.js` after Bootstrap; see [Usage — Help modal](USAGE.md#help-modal-optional).
 
 ## Using in form types
 

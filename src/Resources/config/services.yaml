@@ -4,6 +4,8 @@ services:
     autoconfigure: true
     public: false
 
+  Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory: ~
+
   Nowo\FormKitBundle\Form\FormOptionsMerger:
     arguments:
       $configs: '%nowo_form_kit.configs%'
@@ -12,6 +14,10 @@ services:
   Nowo\FormKitBundle\Form\FormTypeMap:
     arguments:
       $typeMap: '%nowo_form_kit.type_map%'
+
+  Nowo\FormKitBundle\Css\CssClassUtilities:
+    arguments:
+      $framework: '%nowo_form_kit.css_framework%'
 
   Nowo\FormKitBundle\Form\MultiStepFormBuilder: ~
   Nowo\FormKitBundle\Form\MultiStepWizardSessionFactory: ~
@@ -23,4 +29,11 @@ services:
     arguments:
       $configs: '%nowo_form_kit.configs%'
       $defaultConfigName: '%nowo_form_kit.default_config%'
+    tags: ['form.type_extension']
+
+  Nowo\FormKitBundle\Form\Extension\HelpModalExtension:
+    arguments:
+      $configs: '%nowo_form_kit.configs%'
+      $defaultConfigName: '%nowo_form_kit.default_config%'
+      $iconRenderer: '@?Symfony\UX\Icons\IconRendererInterface'
     tags: ['form.type_extension']
