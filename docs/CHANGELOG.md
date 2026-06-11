@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-06-11
+
+### Fixed
+
+- **demo/symfony7** — Web Profiler dev routes use `wdt.php` / `profiler.php` instead of removed XML routes (Symfony 7.4+); fixes `cache:clear` and demo startup after `composer update`.
+- **demo/symfony7 / symfony8 Makefiles** — Missing `)` in `update-deps` include broke `make up` and other targets.
+- **demo/Makefile** — Same missing `)` in `update-deps-all` include.
+
+### Changed
+
+- **Demo Docker entrypoints** — Run `importmap:install` after Composer so Asset Mapper vendor assets (e.g. `@hotwired/stimulus`) are present; avoids HTTP 500 on demo home after dependency updates.
+- **demo/symfony7 / symfony8** — `composer.lock` and `config/reference.php` synced with Symfony **7.4.*** / **8.1.*** pins.
+- **Demo `.gitignore`** — Ignore generated `assets/vendor/` (importmap vendors).
+
+### Documentation
+
+- **demo/README**, **DEMO-FRANKENPHP**, **UPGRADING** — Document demo `update-deps` behaviour and importmap setup.
+
 ## [2.0.1] - 2026-06-11
 
 ### Removed
@@ -69,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.2]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v2.0.2
 [2.0.1]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v2.0.1
 [2.0.0]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v2.0.0
 [1.0.0]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v1.0.0

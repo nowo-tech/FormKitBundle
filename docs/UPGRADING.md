@@ -31,6 +31,14 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.2 (2026-06-11)
+
+Repository-only (demos / Makefiles; no Composer package or bundle API change):
+
+- **Web Profiler (symfony7 demo)** — Dev routes updated for Symfony 7.4+ (`*.php` instead of `*.xml`).
+- **`make up` / `make update-deps`** — Fixed Makefile `include` syntax in demo Makefiles; `make update-deps` from the bundle root updates dependencies and **starts** symfony7/symfony8 demos (shared `.scripts` Makefile).
+- **Importmap** — Demo entrypoints run `importmap:install` so Stimulus / Asset Mapper vendors are installed after `composer update` (avoids HTTP 500 on `/en/`).
+
 ### 2.0.1 (2026-06-11)
 
 Repository-only: **demo/symfony6** removed. `make update-deps` and demo Makefiles target **symfony7** / **symfony8** only. No change to the published Composer package or bundle API.

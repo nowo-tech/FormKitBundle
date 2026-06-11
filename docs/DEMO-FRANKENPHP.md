@@ -97,6 +97,8 @@ Each demo's **docker-compose.yml** sets `APP_ENV=dev` and `APP_DEBUG=1`, and mou
 
 From the bundle root: `make -C demo/symfony8 up` or `make -C demo/symfony7 up`. Or from the demo directory: `make up`.
 
+To update Composer dependencies for the bundle and all demos, run **`make update-deps`** from the bundle root. Each demo is updated in a one-off container (avoids FrankenPHP restart loops), then the persistent demo container is started and warmed (`importmap:install`, cache clear, assets install).
+
 ---
 
 ## Production configuration
@@ -123,5 +125,6 @@ See [FormKitBundle DEMO-FRANKENPHP](https://github.com/nowo-tech/FormKitBundle/b
 ## Troubleshooting
 
 - **Changes not visible:** Ensure worker mode is off in dev (Caddyfile.dev has no `worker`), add dev twig.yaml and php-dev.ini, restart container, hard-refresh browser.
-- **Web Profiler not visible:** Check `APP_ENV=dev` and `APP_DEBUG=1`, and that WebProfilerBundle is enabled for `dev` in bundles.php.
+- **HTTP 500 / missing `@hotwired/stimulus`:** Run `php bin/console importmap:install` inside the demo (the Docker entrypoint and `make update-deps` do this automatically). Generated files live under `assets/vendor/` (gitignored).
+- **Web Profiler not visible:** Check `APP_ENV=dev` and `APP_DEBUG=1`, and that WebProfilerBundle is enabled for `dev` in bundles.php. Symfony 7.4+ uses PHP routing files (`wdt.php`, `profiler.php`) in `config/routes/dev/web_profiler.yaml`.
 - **Demo times out:** Check port is free, container logs (`docker-compose logs php`), and required env vars (e.g. APP_SECRET).

@@ -10,6 +10,7 @@
 /.pnpm-store
 /public/build
 /public/bundles
+/assets/vendor
 
 # Logs & runtime caches
 *.log
