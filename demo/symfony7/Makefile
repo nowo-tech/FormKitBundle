@@ -91,4 +91,4 @@ assets:
 	pnpm install && pnpm run build
 
 # REQ-MAKE-008: update-deps (REQ-MAKE-008)
-include $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../../.scripts/Makefile.demo-update-deps.mk
+include $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../../.scripts/Makefile.demo-update-deps.mk)

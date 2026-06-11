@@ -19,6 +19,7 @@ if [ -f bin/console ]; then
 	# FOSCKEditorBundle: CKEditor first, then symlink bundles (nowoselectallchoice, nowoformkit, …).
 	# CKEditor 4.23+ (LTS) exige licencia comercial; fijamos 4.22.1 (OSS).
 	php bin/console ckeditor:install --no-interaction --no-progress-bar --clear=drop --tag=4.22.1 2>/dev/null || true
+	php bin/console importmap:install --no-interaction 2>/dev/null || true
 	php bin/console assets:install public --symlink --no-interaction 2>/dev/null || true
 	php bin/console typescript:build --no-interaction 2>/dev/null || true
 fi
