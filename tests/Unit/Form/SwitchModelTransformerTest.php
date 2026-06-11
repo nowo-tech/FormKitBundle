@@ -33,4 +33,3 @@ final class SwitchModelTransformerTest extends TestCase
         self::assertSame(0, $t->reverseTransform(null));
     }
 }
-

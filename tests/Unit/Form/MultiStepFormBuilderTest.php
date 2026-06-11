@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
+use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
-use Nowo\FormKitBundle\Form\MultiStepFormBuilder;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use Nowo\FormKitBundle\Form\MultiStepFormBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormBuilderInterface;
 
 final class MultiStepFormBuilderTest extends TestCase
 {
@@ -21,12 +22,12 @@ final class MultiStepFormBuilderTest extends TestCase
             [
                 'default' => [
                     'translation_domain' => 'messages',
-                    'defaults' => [
-                        'attr' => ['class' => 'form-control'],
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
                         'row_attr' => ['class' => 'mb-3'],
                     ],
                     'field_types' => [
-                        'text' => ['attr' => ['class' => 'text-class']],
+                        'text'   => ['attr' => ['class' => 'text-class']],
                         'choice' => ['attr' => ['class' => 'choice-class']],
                     ],
                 ],
@@ -36,7 +37,7 @@ final class MultiStepFormBuilderTest extends TestCase
         );
         $factory = $this->createMock(FormFactoryInterface::class);
         $builder = $this->createMock(FormBuilderInterface::class);
-        $form = $this->createMock(FormInterface::class);
+        $form    = $this->createMock(FormInterface::class);
 
         $factory->expects(self::once())
             ->method('createBuilder')
@@ -64,8 +65,8 @@ final class MultiStepFormBuilderTest extends TestCase
             stepKey: 'step1',
             fieldsDefinition: [
                 'full_name' => 'text',
-                'topic' => [
-                    'type' => 'choice',
+                'topic'     => [
+                    'type'    => 'choice',
                     'choices' => ['Support' => 'support'],
                 ],
             ],
@@ -86,8 +87,8 @@ final class MultiStepFormBuilderTest extends TestCase
             [
                 'default' => [
                     'translation_domain' => 'messages',
-                    'defaults' => [
-                        'attr' => ['class' => 'form-control'],
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
                         'row_attr' => ['class' => 'mb-3'],
                     ],
                     'field_types' => [],
@@ -100,7 +101,7 @@ final class MultiStepFormBuilderTest extends TestCase
 
         $subject = new MultiStepFormBuilder($factory, $merger);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Multi-step field "broken" must have a non-empty "type" key.');
 
         $subject->createStepForm(
@@ -114,4 +115,3 @@ final class MultiStepFormBuilderTest extends TestCase
         );
     }
 }
-

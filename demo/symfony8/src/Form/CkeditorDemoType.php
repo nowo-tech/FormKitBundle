@@ -26,7 +26,7 @@ final class CkeditorDemoType extends AbstractType
         ]));
 
         $this->addCKEditorField($builder, 'excerpt', array_merge($rowFull, [
-            'required' => false,
+            'required'    => false,
             'config_name' => 'minimal',
         ]));
     }

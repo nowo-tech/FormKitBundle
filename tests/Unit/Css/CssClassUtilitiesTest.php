@@ -12,7 +12,7 @@ final class CssClassUtilitiesTest extends TestCase
 {
     public function testTailwindNormalizeColumnClasses(): void
     {
-        $u = new CssClassUtilities('tailwind');
+        $u   = new CssClassUtilities('tailwind');
         $out = $u->normalizeColumnClasses(['md:col-span-3', 'md:col-span-6', 'p-4']);
 
         self::assertStringContainsString('md:col-span-6', $out);
@@ -22,7 +22,7 @@ final class CssClassUtilitiesTest extends TestCase
 
     public function testNoneFrameworkDoesNotMergeColumns(): void
     {
-        $u = new CssClassUtilities('none');
+        $u   = new CssClassUtilities('none');
         $out = $u->normalizeColumnClasses(['col-md-3', 'col-md-6']);
 
         self::assertSame('col-md-3 col-md-6', $out);
@@ -30,8 +30,8 @@ final class CssClassUtilitiesTest extends TestCase
 
     public function testNormalizeColumnClassesFromStringSplitsWhitespace(): void
     {
-        $u = new CssClassUtilities('bootstrap');
-        $out = $u->normalizeColumnClassesFromString("  col-6   col-md-12  ");
+        $u   = new CssClassUtilities('bootstrap');
+        $out = $u->normalizeColumnClassesFromString('  col-6   col-md-12  ');
 
         self::assertStringContainsString('col-6', $out);
         self::assertStringContainsString('col-md-12', $out);

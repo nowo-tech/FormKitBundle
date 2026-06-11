@@ -22,9 +22,11 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 
+use function array_key_exists;
+use function is_array;
 use function is_string;
 use function sprintf;
 
@@ -56,7 +58,7 @@ trait FormOptionsTrait
      *
      * @var callable|null
      */
-    private $formKitTranslationsLocaleResolver = null;
+    private $formKitTranslationsLocaleResolver;
 
     public function setFormOptionsMerger(FormOptionsMerger $formOptionsMerger): void
     {
@@ -118,7 +120,7 @@ trait FormOptionsTrait
      * Removes keys from a resolved field options array (e.g. after FormOptionsMerger::resolve()).
      *
      * @param array<string, mixed> $fieldConfiguration
-     * @param list<string>         $keys
+     * @param list<string> $keys
      *
      * @return array<string, mixed>
      */
@@ -155,7 +157,6 @@ trait FormOptionsTrait
      * 2) protected method resolveFormKitTranslationsLocaleContext(array $options): array (if exists)
      * 3) fallback defaults: default_locale = "en", enabled_locales = ["en"]
      *
-     * @param FormBuilderInterface|FormInterface $builder
      * @param array<string, mixed> $options
      *
      * @throws InvalidArgumentException
@@ -183,7 +184,7 @@ trait FormOptionsTrait
             'row_attr'         => ['class' => 'col-12 mb-1'],
             'form_options'     => [],
             // Keep null by default to avoid strict data_class issues in intermediate A2lix view data.
-            'data_class'       => null,
+            'data_class' => null,
         ], $this->formKitTranslationsDefaults);
 
         $finalOptions = array_replace_recursive($defaultOptions, $options);
@@ -198,16 +199,17 @@ trait FormOptionsTrait
             $finalOptions['form_options']['attr'] = [];
         }
 
-        $rowClass = trim((string) ($finalOptions['form_options']['row_attr']['class'] ?? '') . ' row');
-        $attrClass = trim((string) ($finalOptions['form_options']['attr']['class'] ?? '') . ' row');
+        $rowClass                                          = trim((string) ($finalOptions['form_options']['row_attr']['class'] ?? '') . ' row');
+        $attrClass                                         = trim((string) ($finalOptions['form_options']['attr']['class'] ?? '') . ' row');
         $finalOptions['form_options']['row_attr']['class'] = $rowClass;
-        $finalOptions['form_options']['attr']['class'] = $attrClass;
+        $finalOptions['form_options']['attr']['class']     = $attrClass;
 
         return $builder->add('translations', TranslationsFormsType::class, $finalOptions);
     }
 
     /**
      * @param array<string, mixed> $options
+     *
      * @return array{default_locale?: string, enabled_locales?: array<int, string>, required_locales?: array<int, string>}
      */
     private function resolveTranslationsLocaleContext(array $options): array
@@ -349,19 +351,17 @@ trait FormOptionsTrait
      *
      * @param array<string, mixed> $options
      *
-     * @throws \LogicException when the Select All Choice bundle is not installed
+     * @throws LogicException when the Select All Choice bundle is not installed
      */
     protected function addMultiSelectSelectAll(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         if (!class_exists('Nowo\\SelectAllChoiceBundle\\NowoSelectAllChoiceBundle')) {
-            throw new \LogicException(
-                'addMultiSelectSelectAll() requires nowo-tech/select-all-choice-bundle. Install it or use addMultiSelect() and pass select_all in options manually after installing the bundle.',
-            );
+            throw new LogicException('addMultiSelectSelectAll() requires nowo-tech/select-all-choice-bundle. Install it or use addMultiSelect() and pass select_all in options manually after installing the bundle.');
         }
 
         $options = array_merge([
-            'expanded' => false,
-            'multiple' => true,
+            'expanded'   => false,
+            'multiple'   => true,
             'select_all' => true,
         ], $options);
         $this->addWithDefaults($builder, $name, ChoiceType::class, $options);
@@ -420,9 +420,7 @@ trait FormOptionsTrait
     protected function addCKEditorField(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         if (!class_exists('FOS\\CKEditorBundle\\Form\\Type\\CKEditorType')) {
-            throw new LogicException(
-                'addCKEditorField() requires friendsofsymfony/ckeditor-bundle. Install it and run bin/console ckeditor:install.',
-            );
+            throw new LogicException('addCKEditorField() requires friendsofsymfony/ckeditor-bundle. Install it and run bin/console ckeditor:install.');
         }
 
         $this->addWithDefaults($builder, $name, 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType', $options);
@@ -441,9 +439,9 @@ trait FormOptionsTrait
         string $fieldName,
         array $fieldConfiguration = [],
     ): void {
-        $formName   = $this->getBlockPrefix();
+        $formName    = $this->getBlockPrefix();
         $switchValue = (int) ($fieldConfiguration['switch_value'] ?? 1);
-        $options = $this->fieldSwitchConfiguration($fieldName, $fieldConfiguration, $formName, $switchValue);
+        $options     = $this->fieldSwitchConfiguration($fieldName, $fieldConfiguration, $formName, $switchValue);
 
         // Resolve options via merger so translation_domain/label/help conventions are applied.
         $merged = $this->formOptionsMerger->resolve(
@@ -472,6 +470,7 @@ trait FormOptionsTrait
      * - Does NOT apply label/placeholder/help conventions: those are handled by FormOptionsMerger.
      *
      * @param array<string, mixed> $fieldConfiguration
+     *
      * @return array<string, mixed>
      */
     private function fieldSwitchConfiguration(string $fieldName, array $fieldConfiguration, string $formName, int $switchValue): array
@@ -480,15 +479,15 @@ trait FormOptionsTrait
 
         // Build default label key following FormOptionsMerger conventions.
         $fieldNameSnake = $this->camelCaseToSnakeCase($fieldName);
-        $labelKey        = $formName . '.' . $fieldNameSnake . '.label';
+        $labelKey       = $formName . '.' . $fieldNameSnake . '.label';
 
         // Merge row/attr classes by concatenation (FormOptionsMerger does not concatenate scalars).
-        $existingRowAttr = $fieldConfiguration['row_attr'] ?? [];
-        $existingAttr    = $fieldConfiguration['attr'] ?? [];
+        $existingRowAttr   = $fieldConfiguration['row_attr'] ?? [];
+        $existingAttr      = $fieldConfiguration['attr'] ?? [];
         $existingLabelAttr = $fieldConfiguration['label_attr'] ?? [];
 
-        $rowAttrBase = ['class' => 'pt-1', 'style' => 'top:8px'];
-        $attrBase    = ['class' => 'form-check form-switch ms-2 ps-0'];
+        $rowAttrBase   = ['class' => 'pt-1', 'style' => 'top:8px'];
+        $attrBase      = ['class' => 'form-check form-switch ms-2 ps-0'];
         $labelAttrBase = ['class' => 'form-label'];
 
         if ($labelPosition === 'horizontal') {
@@ -511,17 +510,17 @@ trait FormOptionsTrait
         }
 
         // Concatenate classes.
-        $rowClass = trim(($existingRowAttr['class'] ?? '') . ' ' . ($rowAttrBase['class'] ?? ''));
-        $attrClass = trim(($existingAttr['class'] ?? '') . ' ' . ($attrBase['class'] ?? ''));
+        $rowClass   = trim(($existingRowAttr['class'] ?? '') . ' ' . ($rowAttrBase['class'] ?? ''));
+        $attrClass  = trim(($existingAttr['class'] ?? '') . ' ' . ($attrBase['class'] ?? ''));
         $labelClass = trim(($existingLabelAttr['class'] ?? '') . ' ' . ($labelAttrBase['class'] ?? ''));
 
-        $fieldConfiguration['row_attr'] = array_merge($rowAttrBase, $existingRowAttr);
+        $fieldConfiguration['row_attr']          = array_merge($rowAttrBase, $existingRowAttr);
         $fieldConfiguration['row_attr']['class'] = $rowClass;
 
-        $fieldConfiguration['attr'] = array_merge($attrBase, $existingAttr);
+        $fieldConfiguration['attr']          = array_merge($attrBase, $existingAttr);
         $fieldConfiguration['attr']['class'] = $attrClass;
 
-        $fieldConfiguration['label_attr'] = array_merge($labelAttrBase, $existingLabelAttr);
+        $fieldConfiguration['label_attr']          = array_merge($labelAttrBase, $existingLabelAttr);
         $fieldConfiguration['label_attr']['class'] = $labelClass;
 
         // switch always: expanded + multiple, label_position is only for preset choice/row behavior.
@@ -553,8 +552,8 @@ trait FormOptionsTrait
             return;
         }
 
-        $form = $formOrBuilder;
-        $child = $form->get($fieldName);
+        $form    = $formOrBuilder;
+        $child   = $form->get($fieldName);
         $options = $child->getConfig()->getOptions();
 
         $form->remove($fieldName);
@@ -621,7 +620,7 @@ trait FormOptionsTrait
     ): void {
         $formName = $this->getBlockPrefix();
 
-        $onValue = (int) ($fieldConfiguration['on_value'] ?? 1);
+        $onValue  = (int) ($fieldConfiguration['on_value'] ?? 1);
         $offValue = (int) ($fieldConfiguration['off_value'] ?? 0);
 
         unset($fieldConfiguration['on_value'], $fieldConfiguration['off_value']);
@@ -699,8 +698,8 @@ trait FormOptionsTrait
     ): void {
         $formName = $this->getBlockPrefix();
 
-        $separator = (string) ($fieldConfiguration['csv_separator'] ?? ',');
-        $trimTokens = (bool) ($fieldConfiguration['csv_trim_tokens'] ?? true);
+        $separator        = (string) ($fieldConfiguration['csv_separator'] ?? ',');
+        $trimTokens       = (bool) ($fieldConfiguration['csv_trim_tokens'] ?? true);
         $allowEmptyTokens = (bool) ($fieldConfiguration['csv_allow_empty_tokens'] ?? false);
 
         unset($fieldConfiguration['csv_separator'], $fieldConfiguration['csv_trim_tokens'], $fieldConfiguration['csv_allow_empty_tokens']);

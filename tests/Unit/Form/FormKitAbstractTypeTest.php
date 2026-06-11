@@ -50,7 +50,7 @@ final class FormKitAbstractTypeTest extends TestCase
             ->with(
                 'name',
                 \Symfony\Component\Form\Extension\Core\Type\TextType::class,
-                self::callback(static fn(array $options): bool => $options['label'] === 'contact_form.name.label'
+                self::callback(static fn (array $options): bool => $options['label'] === 'contact_form.name.label'
                     && ($options['attr']['class'] ?? '') === 'form-control'),
             );
 

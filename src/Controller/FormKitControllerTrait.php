@@ -16,10 +16,12 @@ use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
+use function array_key_exists;
+use function is_array;
 use function is_string;
 use function sprintf;
 use function str_contains;
@@ -60,7 +62,7 @@ trait FormKitControllerTrait
     private ?string $formKitFormName = null;
 
     /** @var callable|null */
-    private $formKitTranslationsLocaleResolver = null;
+    private $formKitTranslationsLocaleResolver;
 
     /** @var array<string, mixed> */
     private array $formKitTranslationsDefaults = [];
@@ -144,7 +146,7 @@ trait FormKitControllerTrait
      * @see FormOptionsTrait::removeFieldOptionKeys()
      *
      * @param array<string, mixed> $fieldConfiguration
-     * @param list<string>         $keys
+     * @param list<string> $keys
      *
      * @return array<string, mixed>
      */
@@ -262,14 +264,12 @@ trait FormKitControllerTrait
     protected function addMultiSelectSelectAllType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
         if (!class_exists('Nowo\\SelectAllChoiceBundle\\NowoSelectAllChoiceBundle')) {
-            throw new LogicException(
-                'addMultiSelectSelectAllType() requires nowo-tech/select-all-choice-bundle. Use addMultiSelectType() or install the bundle.',
-            );
+            throw new LogicException('addMultiSelectSelectAllType() requires nowo-tech/select-all-choice-bundle. Use addMultiSelectType() or install the bundle.');
         }
 
         $options = array_merge([
-            'expanded' => false,
-            'multiple' => true,
+            'expanded'   => false,
+            'multiple'   => true,
             'select_all' => true,
         ], $options);
         $this->addFieldType($builder, $fieldName, 'choice', $options, $configName, $formName);
@@ -326,9 +326,7 @@ trait FormKitControllerTrait
     protected function addCKEditorFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
         if (!class_exists('FOS\\CKEditorBundle\\Form\\Type\\CKEditorType')) {
-            throw new LogicException(
-                'addCKEditorFieldType() requires friendsofsymfony/ckeditor-bundle. Install it and run bin/console ckeditor:install.',
-            );
+            throw new LogicException('addCKEditorFieldType() requires friendsofsymfony/ckeditor-bundle. Install it and run bin/console ckeditor:install.');
         }
 
         $this->addFieldType($builder, $fieldName, 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType', $options, $configName, $formName);
@@ -337,7 +335,6 @@ trait FormKitControllerTrait
     /**
      * Adds A2lix translations field with defaults and optional locale resolver.
      *
-     * @param FormBuilderInterface|FormInterface $builder
      * @param array<string, mixed> $options
      */
     protected function addTranslations(
@@ -375,7 +372,7 @@ trait FormKitControllerTrait
         }
 
         $finalOptions['form_options']['row_attr']['class'] = trim((string) ($finalOptions['form_options']['row_attr']['class'] ?? '') . ' row');
-        $finalOptions['form_options']['attr']['class'] = trim((string) ($finalOptions['form_options']['attr']['class'] ?? '') . ' row');
+        $finalOptions['form_options']['attr']['class']     = trim((string) ($finalOptions['form_options']['attr']['class'] ?? '') . ' row');
 
         return $builder->add('translations', TranslationsFormsType::class, $finalOptions);
     }
@@ -398,8 +395,8 @@ trait FormKitControllerTrait
         ?string $formName = null,
     ): void {
         $resolvedFormName = $this->resolveFormName($formName);
-        $switchValue = (int) ($fieldConfiguration['switch_value'] ?? 1);
-        $labelPosition = $fieldConfiguration['label_position'] ?? 'horizontal';
+        $switchValue      = (int) ($fieldConfiguration['switch_value'] ?? 1);
+        $labelPosition    = $fieldConfiguration['label_position'] ?? 'horizontal';
 
         $mergedSwitchOptions = $this->fieldSwitchConfiguration($fieldName, $fieldConfiguration, $resolvedFormName, $switchValue, $labelPosition);
 
@@ -484,7 +481,7 @@ trait FormKitControllerTrait
     ): void {
         $resolvedFormName = $this->resolveFormName($formName);
 
-        $onValue = (int) ($fieldConfiguration['on_value'] ?? 1);
+        $onValue  = (int) ($fieldConfiguration['on_value'] ?? 1);
         $offValue = (int) ($fieldConfiguration['off_value'] ?? 0);
 
         unset($fieldConfiguration['on_value'], $fieldConfiguration['off_value']);
@@ -492,7 +489,7 @@ trait FormKitControllerTrait
         $resolvedConfigName = $configName ?? $this->formKitConfigName;
 
         $checkboxType = \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class;
-        $merger = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
+        $merger       = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
 
         $mergedOptions = $merger->resolve(
             $resolvedFormName,
@@ -528,7 +525,7 @@ trait FormKitControllerTrait
         $resolvedConfigName = $configName ?? $this->formKitConfigName;
 
         $textType = \Symfony\Component\Form\Extension\Core\Type\TextType::class;
-        $merger = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
+        $merger   = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
 
         $mergedOptions = $merger->resolve(
             $resolvedFormName,
@@ -556,8 +553,8 @@ trait FormKitControllerTrait
     ): void {
         $resolvedFormName = $this->resolveFormName($formName);
 
-        $separator = (string) ($fieldConfiguration['csv_separator'] ?? ',');
-        $trimTokens = (bool) ($fieldConfiguration['csv_trim_tokens'] ?? true);
+        $separator        = (string) ($fieldConfiguration['csv_separator'] ?? ',');
+        $trimTokens       = (bool) ($fieldConfiguration['csv_trim_tokens'] ?? true);
         $allowEmptyTokens = (bool) ($fieldConfiguration['csv_allow_empty_tokens'] ?? false);
 
         unset(
@@ -569,7 +566,7 @@ trait FormKitControllerTrait
         $resolvedConfigName = $configName ?? $this->formKitConfigName;
 
         $textareaType = \Symfony\Component\Form\Extension\Core\Type\TextareaType::class;
-        $merger = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
+        $merger       = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
 
         $mergedOptions = $merger->resolve(
             $resolvedFormName,
@@ -585,19 +582,20 @@ trait FormKitControllerTrait
 
     /**
      * @param array<string, mixed> $fieldConfiguration
+     *
      * @return array<string, mixed>
      */
     private function fieldSwitchConfiguration(string $fieldName, array $fieldConfiguration, string $formName, int $switchValue, string $labelPosition): array
     {
         $fieldNameSnake = $this->camelCaseToSnakeCase($fieldName);
-        $labelKey = $formName . '.' . $fieldNameSnake . '.label';
+        $labelKey       = $formName . '.' . $fieldNameSnake . '.label';
 
-        $existingRowAttr = $fieldConfiguration['row_attr'] ?? [];
-        $existingAttr = $fieldConfiguration['attr'] ?? [];
+        $existingRowAttr   = $fieldConfiguration['row_attr'] ?? [];
+        $existingAttr      = $fieldConfiguration['attr'] ?? [];
         $existingLabelAttr = $fieldConfiguration['label_attr'] ?? [];
 
-        $rowAttrBase = ['class' => 'pt-1', 'style' => 'top:8px'];
-        $attrBase = ['class' => 'form-check form-switch ms-2 ps-0'];
+        $rowAttrBase   = ['class' => 'pt-1', 'style' => 'top:8px'];
+        $attrBase      = ['class' => 'form-check form-switch ms-2 ps-0'];
         $labelAttrBase = ['class' => 'form-label'];
 
         if ($labelPosition === 'horizontal') {
@@ -608,24 +606,24 @@ trait FormKitControllerTrait
         }
 
         if ($labelPosition === 'vertical') {
-            $rowAttrBase = ['class' => 'd-flex flex-column'];
+            $rowAttrBase                        = ['class' => 'd-flex flex-column'];
             $fieldConfiguration['choice_label'] = $fieldConfiguration['choice_label'] ?? false;
             if (!array_key_exists('choices', $fieldConfiguration)) {
                 $fieldConfiguration['choices'] = ['active' => $switchValue];
             }
         }
 
-        $rowClass = trim(($existingRowAttr['class'] ?? '') . ' ' . ($rowAttrBase['class'] ?? ''));
-        $attrClass = trim(($existingAttr['class'] ?? '') . ' ' . ($attrBase['class'] ?? ''));
+        $rowClass   = trim(($existingRowAttr['class'] ?? '') . ' ' . ($rowAttrBase['class'] ?? ''));
+        $attrClass  = trim(($existingAttr['class'] ?? '') . ' ' . ($attrBase['class'] ?? ''));
         $labelClass = trim(($existingLabelAttr['class'] ?? '') . ' ' . ($labelAttrBase['class'] ?? ''));
 
-        $fieldConfiguration['row_attr'] = array_merge($rowAttrBase, $existingRowAttr);
+        $fieldConfiguration['row_attr']          = array_merge($rowAttrBase, $existingRowAttr);
         $fieldConfiguration['row_attr']['class'] = $rowClass;
 
-        $fieldConfiguration['attr'] = array_merge($attrBase, $existingAttr);
+        $fieldConfiguration['attr']          = array_merge($attrBase, $existingAttr);
         $fieldConfiguration['attr']['class'] = $attrClass;
 
-        $fieldConfiguration['label_attr'] = array_merge($labelAttrBase, $existingLabelAttr);
+        $fieldConfiguration['label_attr']          = array_merge($labelAttrBase, $existingLabelAttr);
         $fieldConfiguration['label_attr']['class'] = $labelClass;
 
         $fieldConfiguration['expanded'] = $fieldConfiguration['expanded'] ?? true;
@@ -643,6 +641,7 @@ trait FormKitControllerTrait
 
     /**
      * @param array<string, mixed> $options
+     *
      * @return array{default_locale?: string, enabled_locales?: array<int, string>, required_locales?: array<int, string>}
      */
     private function resolveTranslationsLocaleContext(array $options): array

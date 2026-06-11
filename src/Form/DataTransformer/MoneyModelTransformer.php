@@ -4,7 +4,15 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form\DataTransformer;
 
+use InvalidArgumentException;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+
+use function is_float;
+use function is_int;
+use function is_string;
+use function strlen;
+
+use const STR_PAD_LEFT;
 
 /**
  * Transforms between a model "integer cents" scalar and a decimal string for a text input.
@@ -21,7 +29,7 @@ final class MoneyModelTransformer implements DataTransformer
         private readonly int $scale = 2,
     ) {
         if ($this->scale < 0) {
-            throw new \InvalidArgumentException('scale must be >= 0');
+            throw new InvalidArgumentException('scale must be >= 0');
         }
     }
 
@@ -36,15 +44,15 @@ final class MoneyModelTransformer implements DataTransformer
             return (string) $cents;
         }
 
-        $divisor = $this->divisor();
+        $divisor  = $this->divisor();
         $negative = $cents < 0;
-        $abs = abs($cents);
+        $abs      = abs($cents);
 
-        $intPart = intdiv($abs, $divisor);
+        $intPart  = intdiv($abs, $divisor);
         $fracPart = $abs % $divisor;
 
         $fraction = str_pad((string) $fracPart, $this->scale, '0', STR_PAD_LEFT);
-        $out = $intPart . '.' . $fraction;
+        $out      = $intPart . '.' . $fraction;
 
         return $negative ? '-' . $out : $out;
     }
@@ -79,8 +87,8 @@ final class MoneyModelTransformer implements DataTransformer
         $negative = str_starts_with($normalized, '-');
         $unsigned = $negative ? substr($normalized, 1) : $normalized;
 
-        $parts = explode('.', $unsigned, 2);
-        $whole = $parts[0] === '' ? 0 : (int) $parts[0];
+        $parts      = explode('.', $unsigned, 2);
+        $whole      = $parts[0] === '' ? 0 : (int) $parts[0];
         $fracDigits = $parts[1] ?? '';
 
         $divisor = $this->divisor();
@@ -93,19 +101,19 @@ final class MoneyModelTransformer implements DataTransformer
 
         $roundUp = false;
         if (strlen($fracDigits) > $this->scale) {
-            $nextDigit = $fracDigits[$this->scale] ?? '0';
-            $roundUp = ((int) $nextDigit) >= 5;
+            $nextDigit  = $fracDigits[$this->scale] ?? '0';
+            $roundUp    = ((int) $nextDigit) >= 5;
             $fracDigits = substr($fracDigits, 0, $this->scale);
         }
 
         $fracDigits = str_pad($fracDigits, $this->scale, '0');
-        $frac = (int) $fracDigits;
+        $frac       = (int) $fracDigits;
 
         if ($roundUp) {
-            $frac++;
+            ++$frac;
             if ($frac >= $divisor) {
                 $frac %= $divisor;
-                $whole++;
+                ++$whole;
             }
         }
 
@@ -117,7 +125,7 @@ final class MoneyModelTransformer implements DataTransformer
     private function divisor(): int
     {
         $d = 1;
-        for ($i = 0; $i < $this->scale; $i++) {
+        for ($i = 0; $i < $this->scale; ++$i) {
             $d *= 10;
         }
 
@@ -164,4 +172,3 @@ final class MoneyModelTransformer implements DataTransformer
         throw new TransformationFailedException('Invalid money model type.');
     }
 }
-

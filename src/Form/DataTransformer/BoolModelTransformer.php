@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form\DataTransformer;
 
+use function is_int;
+use function is_string;
+
 /**
  * Converts model values (0/1, 1/0, "1"/"0", true/false) into a boolean view value
  * for CheckboxType, and back to the model "on/off" scalar.
@@ -84,4 +87,3 @@ final class BoolModelTransformer implements DataTransformer
         return $this->offValue;
     }
 }
-

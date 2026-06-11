@@ -7,10 +7,10 @@ namespace App\Form;
 use App\Model\DemoTranslationItem;
 use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function is_array;
@@ -37,14 +37,14 @@ class TranslationItemType extends AbstractType
             {
                 if ($value instanceof DemoTranslationItem) {
                     return [
-                        'title' => $value->getTitle(),
+                        'title'       => $value->getTitle(),
                         'description' => $value->getDescription(),
                     ];
                 }
 
                 if (is_array($value)) {
                     return [
-                        'title' => $value['title'] ?? null,
+                        'title'       => $value['title'] ?? null,
                         'description' => $value['description'] ?? null,
                     ];
                 }

@@ -39,4 +39,3 @@ final class BoolModelTransformerTest extends TestCase
         self::assertSame(0, $t->reverseTransform(null));
     }
 }
-

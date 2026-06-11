@@ -75,7 +75,7 @@ final class FormKitTraitTest extends TestCase
             ->with(
                 'q',
                 \Symfony\Component\Form\Extension\Core\Type\TextType::class,
-                self::callback(static fn(array $options): bool => $options['translation_domain'] === 'compact_forms'
+                self::callback(static fn (array $options): bool => $options['translation_domain'] === 'compact_forms'
                     && $options['label'] === 'search_form.q.label'
                     && ($options['attr']['class'] ?? '') === 'form-control-sm'),
             );

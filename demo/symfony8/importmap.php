@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Returns the importmap for this application.
  *
@@ -13,7 +15,7 @@
  */
 return [
     'ux' => [
-        'path' => './assets/ux-entry.ts',
+        'path'       => './assets/ux-entry.ts',
         'entrypoint' => true,
     ],
     '@hotwired/stimulus' => [
@@ -33,18 +35,18 @@ return [
     ],
     'tom-select/dist/css/tom-select.default.min.css' => [
         'version' => '2.5.2',
-        'type' => 'css',
+        'type'    => 'css',
     ],
     'tom-select/dist/css/tom-select.default.css' => [
         'version' => '2.5.2',
-        'type' => 'css',
+        'type'    => 'css',
     ],
     'tom-select/dist/css/tom-select.bootstrap4.css' => [
         'version' => '2.5.2',
-        'type' => 'css',
+        'type'    => 'css',
     ],
     'tom-select/dist/css/tom-select.bootstrap5.css' => [
         'version' => '2.5.2',
-        'type' => 'css',
+        'type'    => 'css',
     ],
 ];

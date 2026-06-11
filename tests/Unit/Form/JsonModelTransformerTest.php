@@ -28,4 +28,3 @@ final class JsonModelTransformerTest extends TestCase
         self::assertSame([], $t->reverseTransform(null));
     }
 }
-

@@ -118,7 +118,7 @@ final class MultiStepWizardSessionTest extends TestCase
             's2' => ['label' => 'S2', 'fields' => []],
         ];
 
-        $bag = ['index' => 2, 'data' => []];
+        $bag     = ['index' => 2, 'data' => []];
         $session = $this->createSession($bag);
 
         $requestStack = $this->createMock(RequestStack::class);
@@ -128,4 +128,3 @@ final class MultiStepWizardSessionTest extends TestCase
         self::assertTrue($subject->isComplete());
     }
 }
-

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Css;
 
+use function in_array;
+
 /**
  * No framework: deduplicate tokens only (no column merge, no category ordering).
  *

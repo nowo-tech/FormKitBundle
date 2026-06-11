@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+use const JSON_THROW_ON_ERROR;
+
 final class HelpModalExtensionTest extends TestCase
 {
     public function testExtendsFormTypeLikeOtherBundleExtensions(): void
@@ -31,7 +33,7 @@ final class HelpModalExtensionTest extends TestCase
             defaultConfigName: 'default',
         );
 
-        $view = new FormView();
+        $view                     = new FormView();
         $view->vars['label_attr'] = ['class' => 'x'];
 
         $form = $this->createMock(FormInterface::class);
@@ -57,15 +59,15 @@ final class HelpModalExtensionTest extends TestCase
             defaultConfigName: 'default',
         );
 
-        $view = new FormView();
-        $view->vars['id'] = 'field_id_1';
+        $view                     = new FormView();
+        $view->vars['id']         = 'field_id_1';
         $view->vars['label_attr'] = ['class' => 'my-label'];
 
         $form = $this->createMock(FormInterface::class);
 
         $ext->buildView($view, $form, [
             'help_modal' => [
-                'title' => 'Help title',
+                'title'   => 'Help title',
                 'content' => '<p>Help content</p>',
             ],
         ]);
@@ -99,8 +101,8 @@ final class HelpModalExtensionTest extends TestCase
             defaultConfigName: 'default',
         );
 
-        $view = new FormView();
-        $view->vars['id'] = 'field_id_2';
+        $view                     = new FormView();
+        $view->vars['id']         = 'field_id_2';
         $view->vars['label_attr'] = [];
 
         $form = $this->createMock(FormInterface::class);
@@ -142,15 +144,15 @@ final class HelpModalExtensionTest extends TestCase
             iconRenderer: $renderer,
         );
 
-        $view = new FormView();
-        $view->vars['id'] = 'field_id_ux';
+        $view                     = new FormView();
+        $view->vars['id']         = 'field_id_ux';
         $view->vars['label_attr'] = [];
 
         $form = $this->createMock(FormInterface::class);
 
         $ext->buildView($view, $form, [
             'help_modal' => [
-                'ux_icon' => 'lucide:circle-help',
+                'ux_icon'            => 'lucide:circle-help',
                 'ux_icon_attributes' => ['class' => 'nowo-help-modal-icon'],
             ],
         ]);
@@ -177,8 +179,8 @@ final class HelpModalExtensionTest extends TestCase
             iconRenderer: null,
         );
 
-        $view = new FormView();
-        $view->vars['id'] = 'field_id_fb';
+        $view                     = new FormView();
+        $view->vars['id']         = 'field_id_fb';
         $view->vars['label_attr'] = [];
 
         $form = $this->createMock(FormInterface::class);
@@ -195,4 +197,3 @@ final class HelpModalExtensionTest extends TestCase
         self::assertStringContainsString('fallback', $data['icon_html']);
     }
 }
-

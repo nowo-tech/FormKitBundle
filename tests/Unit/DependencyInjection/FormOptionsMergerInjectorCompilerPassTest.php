@@ -8,7 +8,6 @@ use Nowo\FormKitBundle\DependencyInjection\FormOptionsMergerInjectorCompilerPass
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -32,7 +31,7 @@ final class FormOptionsMergerInjectorCompilerPassTest extends TestCase
         $pass->process($container);
 
         $defWithSetter = $container->getDefinition('dummy.form_type');
-        $calls          = $defWithSetter->getMethodCalls();
+        $calls         = $defWithSetter->getMethodCalls();
 
         self::assertNotEmpty($calls, 'Expected at least one method call');
         self::assertSame('setFormOptionsMerger', $calls[0][0]);
@@ -54,4 +53,3 @@ final class DummyFormTypeWithSetter
 final class DummyFormTypeWithoutSetter
 {
 }
-

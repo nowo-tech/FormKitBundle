@@ -26,4 +26,3 @@ final class DemoWrappedFieldType extends AbstractFormKitWrappedType
         return TextType::class;
     }
 }
-

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use function is_array;
+
 /**
  * Small helpers for field option arrays (merge defaults, strip keys after resolve).
  *
@@ -30,7 +32,7 @@ final class FormFieldOptionsHelper
 
     /**
      * @param array<string, mixed> $fieldConfiguration
-     * @param list<string>         $keys
+     * @param list<string> $keys
      *
      * @return array<string, mixed>
      */

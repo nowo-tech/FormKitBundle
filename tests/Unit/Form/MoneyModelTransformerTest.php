@@ -37,4 +37,3 @@ final class MoneyModelTransformerTest extends TestCase
         self::assertSame(1234, $t->reverseTransform('12.344'));
     }
 }
-

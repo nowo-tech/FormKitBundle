@@ -26,4 +26,3 @@ final class MultiStepWizardSessionFactoryTest extends TestCase
         self::assertSame(['s1', 's2'], $session->getStepKeys());
     }
 }
-

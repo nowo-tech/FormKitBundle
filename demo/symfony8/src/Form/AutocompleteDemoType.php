@@ -27,12 +27,12 @@ final class AutocompleteDemoType extends AbstractType
         $this->addAutocompleteField($builder, 'topic', ChoiceType::class, array_merge($rowHalf, [
             'required' => false,
             'choices'  => [
-                'Symfony'       => 'symfony',
-                'API Platform'  => 'api_platform',
-                'Doctrine ORM'  => 'doctrine',
-                'Twig'          => 'twig',
-                'Webpack Encore'=> 'encore',
-                'Asset Mapper'  => 'asset_mapper',
+                'Symfony'        => 'symfony',
+                'API Platform'   => 'api_platform',
+                'Doctrine ORM'   => 'doctrine',
+                'Twig'           => 'twig',
+                'Webpack Encore' => 'encore',
+                'Asset Mapper'   => 'asset_mapper',
             ],
             'autocomplete' => true,
         ]));

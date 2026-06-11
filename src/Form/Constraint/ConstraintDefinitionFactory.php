@@ -7,7 +7,6 @@ namespace Nowo\FormKitBundle\Form\Constraint;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Constraint;
 
-use function array_key_exists;
 use function array_key_first;
 use function class_exists;
 use function count;
@@ -75,7 +74,7 @@ final class ConstraintDefinitionFactory
 
         if (count($item) === 1) {
             $name = (string) array_key_first($item);
-            $opts   = $item[$name];
+            $opts = $item[$name];
             $opts = $opts === null ? [] : (is_array($opts) ? $opts : []);
 
             return [$this->instantiate($this->resolveClass($name), $opts)];

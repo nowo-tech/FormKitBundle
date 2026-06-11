@@ -15,4 +15,3 @@ use Symfony\Component\Form\DataTransformerInterface;
 interface DataTransformer extends DataTransformerInterface
 {
 }
-
