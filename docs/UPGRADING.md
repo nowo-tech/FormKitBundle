@@ -29,6 +29,12 @@ If your project runs on PHP 8.1 or Symfony 6.4 / 7.0–7.3, stay on **form-kit-b
 
 No configuration key renames are required for existing YAML; public services and extension points remain compatible where the platform allows installation.
 
+## 2.0.x patch releases
+
+### 2.0.1 (2026-06-11)
+
+Repository-only: **demo/symfony6** removed. `make update-deps` and demo Makefiles target **symfony7** / **symfony8** only. No change to the published Composer package or bundle API.
+
 ## 1.x
 
 ### 1.0.0 (2025-03-03)

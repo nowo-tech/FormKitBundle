@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-06-11
+
+### Removed
+
+- **demo/symfony6** — Symfony 6 demo removed from the repository (bundle 2.x requires Symfony 7.4+). Use **demo/symfony7** or **demo/symfony8**. Does not affect the Composer package (`demo/` is excluded from the archive).
+
+### Changed
+
+- **Make / update-deps** — Demo dependency updates run only for **symfony7** and **symfony8**; root and demo Makefiles no longer reference symfony6.
+
+### Documentation
+
+- **demo/README**, **DEMO-FRANKENPHP**, root **Dockerfile** comment — Aligned with Symfony 7.4 / 8.x demos only.
+
 ## [2.0.0] - 2026-06-11
 
 ### Added
@@ -22,14 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **StaticHtmlType**, **FormFieldOptionsHelper**, expanded static block types.
 - **Frontend tests** — Vitest coverage for `help-modal.js` (logger, modal behaviour).
 - **QA tooling** — PHPStan, Rector, Scrutinizer config; expanded PHPUnit suite.
-- **Demos** — FrankenPHP Docker setup (dev Caddyfile vs production worker), Symfony **7.4** and **8.1** demos, locale routing (`en` / `es` / `fr` / `de`), pages for data transformers, choice fields, CKEditor, UX Autocomplete, Dropzone, Cropper, translations, multi-step wizard.
+- **Demos** — FrankenPHP Docker setup (dev Caddyfile vs production worker), Symfony **7.4** and **8.1** demos; locale routing (`en` / `es` / `fr` / `de`), pages for data transformers, choice fields, CKEditor, UX Autocomplete, Dropzone, Cropper, translations, multi-step wizard.
 
 ### Changed
 
 - **Platform requirements:** PHP **>= 8.2** (was 8.1). Symfony **^7.4 || ^8.0** only (7.4, 8.0, 8.1). Symfony 6.x and 7.0–7.3 are no longer supported.
 - **CI** — Matrix: PHP 8.2–8.5 × Symfony 7.4, 8.0, 8.1 (Symfony 8 requires PHP 8.4+).
 - **a2lix/translation-form-bundle** moved from `require` to Composer **suggest** (optional `translations` type).
-- **Demos** — Active demos target Symfony 7.4 and 8.x; `demo/symfony6` kept as legacy reference for bundle 1.x.
 - **Rector** — PHP set raised to 8.2.
 
 ### Documentation
@@ -56,5 +69,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.1]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v2.0.1
 [2.0.0]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v2.0.0
 [1.0.0]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v1.0.0

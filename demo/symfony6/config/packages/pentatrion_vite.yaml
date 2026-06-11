@@ -1,4 +1,0 @@
-pentatrion_vite:
-    # Defaults match vite-plugin-symfony: outDir public/build, base /build/
-    public_directory: public
-    build_directory: build

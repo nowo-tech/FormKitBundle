@@ -10,8 +10,8 @@ RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 COMPOSER ?= composer
 
 .PHONY: help install test test-coverage coverage-php-percent test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos composer-sync rector rector-dry phpstan
-.PHONY: demo-up-symfony6 demo-up-symfony7 demo-up-symfony8
-.PHONY: up down down-dev up-symfony6 up-symfony7 up-symfony8 build shell demo-install demo-down
+.PHONY: demo-up-symfony7 demo-up-symfony8
+.PHONY: up down down-dev up-symfony7 up-symfony8 build shell demo-install demo-down
 
 help:
 	@echo "Form Kit Bundle - Development Commands (Docker)"
@@ -48,10 +48,8 @@ help:
 	@echo "  demo-install   Install Composer dependencies in demo"
 	@echo "  demo-up-symfony7   Install deps in demo/symfony7 (Symfony 7.4)"
 	@echo "  demo-up-symfony8   Install deps in demo/symfony8 (Symfony 8.1)"
-	@echo "  demo-up-symfony6   Legacy: demo/symfony6 (bundle 1.x only)"
 	@echo "  up-symfony7    Start demo symfony7 (http://localhost:8007)"
 	@echo "  up-symfony8    Start demo symfony8 (http://localhost:8008)"
-	@echo "  up-symfony6    Legacy: demo symfony6 (http://localhost:8006)"
 	@echo "  demo-down      Stop demo containers"
 	@echo ""
 
@@ -144,16 +142,6 @@ test-ts:
 
 assets-test: test-ts
 
-demo-up-symfony6:
-	@echo "Installing demo symfony6..."
-	cd demo/symfony6 && $(COMPOSER) install --no-interaction
-	@if command -v pnpm >/dev/null 2>&1; then \
-		cd demo/symfony6 && pnpm install && pnpm run build; \
-	else \
-		echo "pnpm not found; skip demo Vite build (cd demo/symfony6 && pnpm install && pnpm run build)."; \
-	fi
-	@echo "✅ demo/symfony6 ready"
-
 demo-up-symfony7:
 	@echo "Installing demo symfony7..."
 	cd demo/symfony7 && $(COMPOSER) install --no-interaction
@@ -195,9 +183,6 @@ build:
 	$(COMPOSE) build --no-cache
 
 # Demos with Docker
-up-symfony6:
-	$(MAKE) -C demo/symfony6 up
-
 up-symfony7:
 	$(MAKE) -C demo/symfony7 up
 

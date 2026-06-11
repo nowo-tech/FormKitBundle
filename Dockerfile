@@ -1,4 +1,4 @@
-# PHP 8.2+ for Form Kit Bundle (Symfony 6|7|8)
+# PHP 8.2+ for Form Kit Bundle (Symfony 7.4|8)
 FROM php:8.2-cli-alpine
 
 RUN apk add --no-cache \

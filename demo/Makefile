@@ -1,9 +1,10 @@
 # Makefile for Form Kit Bundle demos
 # Standard targets: up-X, down-X, ... delegate to $(MAKE) -C <demo> <target>
 
-DEMOS := symfony6 symfony7 symfony8
+# Demos: Symfony 7.4 and 8.x (bundle 2.x).
+DEMOS := symfony7 symfony8
 
-# Do not list up-symfony6-style names in .PHONY: GNU Make would treat them as empty
+# Do not list up-symfony7-style names in .PHONY: GNU Make would treat them as empty
 # phony targets and skip pattern rules (up-%, assets-%, …).
 .PHONY: help clean test-all test-coverage-all verify-all release-verify assets-all
 .PHONY: up down restart build install update-bundle test test-coverage shell logs verify
@@ -26,16 +27,16 @@ help:
 	@echo "  test-coverage-<demo> Run tests with coverage"
 	@echo "  verify-<demo>       Ensure demo up and check HTTP 200"
 	@echo "  assets-<demo>       pnpm install + Vite build in that demo (host Node; needs pnpm)"
-	@echo "  assets-all          Run assets-symfony6, symfony7, symfony8"
+	@echo "  assets-all          Run assets for active demos ($(DEMOS))"
 	@echo ""
 	@echo "Generic (use DEMO=<name>): make up DEMO=symfony8"
 	@echo "  up down restart build install update-bundle test test-coverage shell logs verify"
 	@echo ""
 	@echo "Aggregated:"
-	@echo "  test-all            Run tests for all demos"
-	@echo "  test-coverage-all   Run tests with coverage for all demos"
-	@echo "  verify-all         Verify all demos (up + HTTP 200)"
-	@echo "  release-verify     For each demo: up → healthcheck → down (for release-check)"
+	@echo "  test-all            Run tests for active demos ($(DEMOS))"
+	@echo "  test-coverage-all   Run tests with coverage for active demos"
+	@echo "  verify-all         Verify active demos (up + HTTP 200)"
+	@echo "  release-verify     For each active demo: up → healthcheck → down (for release-check)"
 	@echo "  clean              Remove vendor, var, cache from all demos"
 	@echo ""
 
@@ -82,47 +83,47 @@ assets-all:
 
 # Generic commands (require DEMO=<name>)
 up:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make up DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make up DEMO=symfony7"; exit 1; fi
 	@$(MAKE) up-$(DEMO)
 
 down:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make down DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make down DEMO=symfony7"; exit 1; fi
 	@$(MAKE) down-$(DEMO)
 
 restart:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make restart DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make restart DEMO=symfony7"; exit 1; fi
 	@$(MAKE) restart-$(DEMO)
 
 build:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make build DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make build DEMO=symfony7"; exit 1; fi
 	@$(MAKE) build-$(DEMO)
 
 install:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make install DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make install DEMO=symfony7"; exit 1; fi
 	@$(MAKE) install-$(DEMO)
 
 update-bundle:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make update-bundle DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make update-bundle DEMO=symfony7"; exit 1; fi
 	@$(MAKE) update-bundle-$(DEMO)
 
 test:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make test DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make test DEMO=symfony7"; exit 1; fi
 	@$(MAKE) test-$(DEMO)
 
 test-coverage:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make test-coverage DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make test-coverage DEMO=symfony7"; exit 1; fi
 	@$(MAKE) test-coverage-$(DEMO)
 
 shell:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make shell DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make shell DEMO=symfony7"; exit 1; fi
 	@$(MAKE) shell-$(DEMO)
 
 logs:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make logs DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make logs DEMO=symfony7"; exit 1; fi
 	@$(MAKE) logs-$(DEMO)
 
 verify:
-	@if [ -z "$(DEMO)" ]; then echo "Error: use make verify DEMO=symfony6"; exit 1; fi
+	@if [ -z "$(DEMO)" ]; then echo "Error: use make verify DEMO=symfony7"; exit 1; fi
 	@$(MAKE) verify-$(DEMO)
 
 test-all:
@@ -143,7 +144,7 @@ release-check: test-coverage-all release-verify
 release-verify:
 	@for d in $(DEMOS); do \
 		port=$$(grep '^PORT=' $$d/.env 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
-		[ -z "$$port" ] && port=$$(case $$d in symfony6) echo 8006;; symfony7) echo 8007;; symfony8) echo 8008;; *) echo 8000;; esac); \
+		[ -z "$$port" ] && port=$$(case $$d in symfony7) echo 8007;; symfony8) echo 8008;; *) echo 8000;; esac); \
 		echo "Release verify: $$d (port $$port)..."; \
 		$(MAKE) up-$$d; sleep 15; \
 		code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$$port 2>/dev/null || echo "000"); \
