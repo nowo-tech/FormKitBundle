@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.5] - 2026-07-03
+
+### Fixed
+
+- **`static_blocks.html.twig`** — Use Twig `{% use %}` instead of `{% extends form_div_layout %}` so only bundle-defined blocks are registered. When this theme was listed after Bootstrap 5, inherited `form_div` radio/checkbox widgets overrode Bootstrap 5 and broke expanded choice fields (missing labels / `form-check` markup).
+- **`FormOptionsTrait`** — `addChoiceRadios()` and `addChoiceCheckboxes()` disable `placeholder` and clear default `attr.class` (`form-control`) on the widget root so expanded choices and checkbox groups render correctly with Bootstrap 5.
+
+### Changed
+
+- **Demos (symfony7 / symfony8)** — **Choice fields** and **Nowo special fields** layout: `twig.form_themes` order (`static_blocks` and `@NowoPhoneInputBundle/Form/phone_input_widget.html.twig` before Bootstrap 5), `field_types` for `checkbox` / `choice`, demo CSS (OTP horizontal layout, password-strength markers), password-toggle CSS, icon-selector form theme workaround, and widget translations (password-strength labels, editor placeholders).
+- **demo Makefiles** — Consistent `DOCKER_COMPOSE` / `SHELL` usage (fixes `docker: Permission denied` when `COMPOSE` env collides with the Make variable).
+
+### Documentation
+
+- **USAGE** — Form theme ordering with Bootstrap 5 and expanded choice fields.
+- **UPGRADING** — Notes for 2.0.5.
+- **demo/README** — Twig form themes and Nowo widget assets for special-fields demo.
+
 ## [2.0.4] - 2026-07-03
 
 ### Fixed
@@ -121,6 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.5]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.5
 [2.0.4]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.4
 [2.0.3]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.3
 [2.0.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.2
