@@ -130,7 +130,7 @@ $this->buildFormFromArray($builder, [
 
 **Available Phase 2 helpers (core):** `addText`, `addEmail`, `addTextarea`, `addPassword`, `addUrl`, `addInteger`, `addNumber`, `addCheckbox`, `addChoice`.
 
-**Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect`, `addMultiSelect`, `addChoiceRadios`, `addChoiceCheckboxes`. **`addMultiSelectSelectAll`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
+**Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect`, `addMultiSelect`, `addChoiceRadios`, `addChoiceCheckboxes`. Radios and checkbox groups clear the global `form-control` class on the widget root and disable `placeholder` by default so Bootstrap 5 `form-check` markup renders correctly. **`addMultiSelectSelectAll`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
 
 **FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle** and runs `CKEditorType` through the same merge pipeline (install CKEditor assets with `bin/console ckeditor:install`; register the FOSCKEditor Twig form theme — see that bundle’s documentation).
 
@@ -225,13 +225,15 @@ When rendering forms with the form_renderer loop (or any `form_row` loop), you c
 - **StaticSeparatorType** – Renders an `<hr>` in the form flow. Add it like any other field; it is not mapped and has no label.
 - **StaticAlertType** – Renders a Bootstrap-style alert with a translatable message. Options: `message` (required, translation key), `alert_type` (e.g. `info`, `warning`, `success`), `translation_domain`.
 
-**1. Register the form theme** so Twig knows how to render these types:
+**1. Register the form theme** so Twig knows how to render these types. List **`@NowoFormKit/form/static_blocks.html.twig` first** (lowest priority), then your CSS framework layout (e.g. Bootstrap 5). If static blocks is registered *after* Bootstrap 5, Symfony may inherit bare `form_div` radio/checkbox widgets from the theme chain and break expanded choices (`addChoiceRadios`, `addChoiceCheckboxes`, Select All Choice checkboxes).
 
 ```yaml
 # config/packages/twig.yaml
 twig:
   form_themes:
     - '@NowoFormKit/form/static_blocks.html.twig'
+    - 'bootstrap_5_layout.html.twig'
+    # Other bundle themes (Select All Choice, CKEditor, …) after Bootstrap 5
 ```
 
 **2. Add the types to your form** (e.g. in `buildFormFromArray` or with `addWithDefaults`):
