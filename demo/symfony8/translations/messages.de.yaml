@@ -485,6 +485,27 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Rich Text mit <code>nowo-tech/ckeditor5-editor-bundle</code> (GPL-OSS-Build).'
 
+tiptap_placeholder: 'Schreiben Sie los…'
+ckeditor5_placeholder: 'Seiteninhalt eingeben…'
+requirement.min_length: 'Mindestens 8 Zeichen'
+requirement.max_length: 'Höchstens %max% Zeichen'
+requirement.lowercase: 'Mindestens ein Kleinbuchstabe'
+requirement.uppercase: 'Mindestens ein Großbuchstabe'
+requirement.digit: 'Mindestens eine Ziffer'
+requirement.special: 'Mindestens ein Sonderzeichen'
+requirement.no_whitespace: 'Darf keine Leerzeichen enthalten'
+requirement.not_contain: 'Darf keinen verbotenen Text enthalten'
+requirement.min_unique_chars: 'Mindestens %count% eindeutige Zeichen'
+requirement.regex: 'Muss dem erforderlichen Muster entsprechen'
+generator.button: 'Passwort generieren'
+generator.modal_title: 'Generierte Passwörter'
+generator.modal_hint: 'Wählen Sie ein Passwort oder kopieren Sie es in die Zwischenablage.'
+generator.copy: 'Kopieren'
+generator.copied: 'Kopiert!'
+generator.use_password: 'Dieses Passwort verwenden'
+generator.close: 'Schließen'
+generator.failed: 'Passwörter konnten nicht generiert werden'
+
 autocomplete_demo:
   topic:
     label: Thema

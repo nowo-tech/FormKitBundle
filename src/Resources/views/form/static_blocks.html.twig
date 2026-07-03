@@ -1,4 +1,6 @@
-{% extends "form_div_layout.html.twig" %}
+{# Use (not extends) so only the blocks below are registered in the theme chain.
+   Extending form_div_layout would register bare radio/checkbox widgets and override Bootstrap 5. #}
+{% use "form_div_layout.html.twig" %}
 
 {# Required suffix must stay inside <label> so order is: label text → * → help trigger (JS appends trigger last). #}
 {% block form_label_content %}

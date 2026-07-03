@@ -375,8 +375,10 @@ trait FormOptionsTrait
     protected function addChoiceRadios(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $options = array_merge([
-            'expanded' => true,
-            'multiple' => false,
+            'expanded'    => true,
+            'multiple'    => false,
+            'placeholder' => false,
+            'attr'        => ['class' => ''],
         ], $options);
         $this->addWithDefaults($builder, $name, ChoiceType::class, $options);
     }
@@ -389,8 +391,10 @@ trait FormOptionsTrait
     protected function addChoiceCheckboxes(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $options = array_merge([
-            'expanded' => true,
-            'multiple' => true,
+            'expanded'    => true,
+            'multiple'    => true,
+            'placeholder' => false,
+            'attr'        => ['class' => ''],
         ], $options);
         $this->addWithDefaults($builder, $name, ChoiceType::class, $options);
     }

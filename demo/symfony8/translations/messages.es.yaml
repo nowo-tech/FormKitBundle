@@ -474,6 +474,27 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Texto enriquecido con <code>nowo-tech/ckeditor5-editor-bundle</code> (build OSS GPL).'
 
+tiptap_placeholder: 'Empieza a escribir…'
+ckeditor5_placeholder: 'Escribe el contenido de la página…'
+requirement.min_length: 'Al menos 8 caracteres'
+requirement.max_length: 'Como máximo %max% caracteres'
+requirement.lowercase: 'Al menos una letra minúscula'
+requirement.uppercase: 'Al menos una letra mayúscula'
+requirement.digit: 'Al menos un dígito'
+requirement.special: 'Al menos un carácter especial'
+requirement.no_whitespace: 'No debe contener espacios'
+requirement.not_contain: 'No debe contener texto prohibido'
+requirement.min_unique_chars: 'Al menos %count% caracteres únicos'
+requirement.regex: 'Debe coincidir con el patrón requerido'
+generator.button: 'Generar contraseña'
+generator.modal_title: 'Contraseñas generadas'
+generator.modal_hint: 'Elige una contraseña o cópiala al portapapeles.'
+generator.copy: 'Copiar'
+generator.copied: '¡Copiado!'
+generator.use_password: 'Usar esta contraseña'
+generator.close: 'Cerrar'
+generator.failed: 'No se pudieron generar contraseñas'
+
 autocomplete_demo:
   topic:
     label: Tema

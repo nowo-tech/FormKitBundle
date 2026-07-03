@@ -32,16 +32,16 @@ nowo_form_kit:
                 icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>'
 
             # Per field type: attr, row_attr, label, placeholder, help, translation_domain (see CONFIGURATION.md).
-            field_types: {}
-            # Example overrides:
-            # field_types:
-            #     text:
-            #         attr: { class: 'form-control' }
-            #     checkbox:
-            #         attr: { class: 'form-check-input' }
-            #         row_attr: { class: 'form-check mb-3' }
-            #     choice:
-            #         attr: { class: 'form-select' }
+            field_types:
+                checkbox:
+                    attr:
+                        class: 'form-check-input'
+                    row_attr:
+                        class: 'form-check mb-3'
+                choice:
+                    placeholder: false
+                    attr:
+                        class: ''
 
         # Optional second profile — wire via setFormKitConfigName('bootstrap') on the form type service.
         # bootstrap:

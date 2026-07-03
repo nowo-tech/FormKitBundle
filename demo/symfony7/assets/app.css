@@ -74,3 +74,33 @@ body {
 .search-bar-card .btn-search-attach {
   border-radius: 0;
 }
+
+/* OTP input (nowo-tech/otp-input-bundle) — bundle ships JS only; layout in demo CSS */
+.nowo-otp-input__gap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.nowo-otp-input__digit {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0.375rem;
+  text-align: center;
+  font-size: 1.125rem;
+  line-height: 1.25;
+}
+
+/* Compound Nowo widgets: never style the Symfony widget root like a text input */
+.icon-selector-widget .icon-selector-input {
+  width: 100%;
+}
+.icon-selector-picker .ts-wrapper {
+  width: 100%;
+}
+.password-strength-requirement--met::marker {
+  content: '✓ ';
+}
+.password-strength-requirement--unmet::marker {
+  content: '○ ';
+}
