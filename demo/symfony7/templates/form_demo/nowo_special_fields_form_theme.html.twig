@@ -1,0 +1,16 @@
+{# Fixes icon_selector_widget duplicate id/name when Form Kit merges attr onto the widget root. #}
+{% block icon_selector_widget %}
+{% set attr = attr|merge({
+    'data-controller': (attr['data-controller']|default('') ~ ' icon-selector')|trim,
+    'data-icon-selector-mode-value': form.vars.mode|default('direct'),
+    'data-icon-selector-icons-url-value': form.vars.icons_api_path|default('/api/icon-selector/icons'),
+}) %}
+<div class="icon-selector-widget">
+    <input type="text"
+           data-icon-selector-target="input"
+           autocomplete="off"
+           class="icon-selector-input form-control"
+           {{ block('widget_attributes') }} />
+    <div data-icon-selector-target="picker" class="icon-selector-picker mt-2" aria-hidden="true"></div>
+</div>
+{% endblock %}

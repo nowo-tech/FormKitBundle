@@ -487,6 +487,28 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Rich text with <code>nowo-tech/ckeditor5-editor-bundle</code> (GPL OSS build).'
 
+# Keys consumed by Nowo widget bundles (translation_domain: messages)
+tiptap_placeholder: 'Start writing…'
+ckeditor5_placeholder: 'Write page content…'
+requirement.min_length: 'At least 8 characters'
+requirement.max_length: 'At most %max% characters'
+requirement.lowercase: 'At least one lowercase letter'
+requirement.uppercase: 'At least one uppercase letter'
+requirement.digit: 'At least one digit'
+requirement.special: 'At least one special character'
+requirement.no_whitespace: 'Must not contain whitespace'
+requirement.not_contain: 'Must not contain forbidden text'
+requirement.min_unique_chars: 'At least %count% unique characters'
+requirement.regex: 'Must match the required pattern'
+generator.button: 'Generate password'
+generator.modal_title: 'Generated passwords'
+generator.modal_hint: 'Pick a password or copy one to the clipboard.'
+generator.copy: 'Copy'
+generator.copied: 'Copied!'
+generator.use_password: 'Use this password'
+generator.close: 'Close'
+generator.failed: 'Could not generate passwords'
+
 autocomplete_demo:
   topic:
     label: Topic

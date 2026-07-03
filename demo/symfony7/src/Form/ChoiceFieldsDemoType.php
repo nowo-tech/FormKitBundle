@@ -25,35 +25,35 @@ final class ChoiceFieldsDemoType extends AbstractType
 
         $this->addSelect($builder, 'country', array_merge($rowHalf, [
             'choices' => [
-                'es' => 'Spain',
-                'fr' => 'France',
-                'de' => 'Germany',
+                'Spain'   => 'es',
+                'France'  => 'fr',
+                'Germany' => 'de',
             ],
             'required' => false,
         ]));
 
         $this->addMultiSelect($builder, 'hobbies', array_merge($rowFull, [
             'choices' => [
-                'php'     => 'PHP',
-                'symfony' => 'Symfony',
-                'twig'    => 'Twig',
+                'PHP'     => 'php',
+                'Symfony' => 'symfony',
+                'Twig'    => 'twig',
             ],
             'required' => false,
         ]));
 
         $this->addChoiceRadios($builder, 'priority', array_merge($rowHalf, [
             'choices' => [
-                'low'    => 'Low',
-                'normal' => 'Normal',
-                'high'   => 'High',
+                'Low'    => 'low',
+                'Normal' => 'normal',
+                'High'   => 'high',
             ],
         ]));
 
         $this->addChoiceCheckboxes($builder, 'tags', array_merge($rowFull, [
             'choices' => [
-                'docs' => 'Documentation',
-                'api'  => 'API',
-                'ui'   => 'UI',
+                'Documentation' => 'docs',
+                'API'           => 'api',
+                'UI'            => 'ui',
             ],
             'required' => false,
         ]));
@@ -64,9 +64,9 @@ final class ChoiceFieldsDemoType extends AbstractType
 
         $permissionsOptions = array_merge($rowFull, [
             'choices' => [
-                'read'   => 'Read',
-                'write'  => 'Write',
-                'delete' => 'Delete',
+                'Read'   => 'read',
+                'Write'  => 'write',
+                'Delete' => 'delete',
             ],
             'required' => false,
         ]);
