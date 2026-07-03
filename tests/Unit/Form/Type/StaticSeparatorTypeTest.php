@@ -23,4 +23,13 @@ final class StaticSeparatorTypeTest extends TestCase
 
         self::assertSame('static_separator', $type->getBlockPrefix());
     }
+
+    public function testBuildFormIsNoOp(): void
+    {
+        $type    = new StaticSeparatorType();
+        $builder = $this->createMock(\Symfony\Component\Form\FormBuilderInterface::class);
+        $builder->expects(self::never())->method('add');
+
+        $type->buildForm($builder, []);
+    }
 }

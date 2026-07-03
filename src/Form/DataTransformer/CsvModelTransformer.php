@@ -19,12 +19,12 @@ use function trim;
  * View:
  * - string like "a,b,c"
  */
-final class CsvModelTransformer implements DataTransformer
+final readonly class CsvModelTransformer implements DataTransformer
 {
     public function __construct(
-        private readonly string $separator = ',',
-        private readonly bool $trimTokens = true,
-        private readonly bool $allowEmptyTokens = false,
+        private string $separator = ',',
+        private bool $trimTokens = true,
+        private bool $allowEmptyTokens = false,
     ) {
     }
 
@@ -94,7 +94,7 @@ final class CsvModelTransformer implements DataTransformer
                 continue;
             }
 
-            $out[] = (string) $token;
+            $out[] = $token;
         }
 
         return $out;

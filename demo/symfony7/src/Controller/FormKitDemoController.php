@@ -13,6 +13,7 @@ use App\Form\DemoContactType;
 use App\Form\DropzoneDemoType;
 use App\Form\ExampleFormType;
 use App\Form\NestedFormDemoType;
+use App\Form\NowoSpecialFieldsDemoType;
 use App\Form\SearchFormType;
 use App\Form\TranslationsDemoType;
 use App\Model\AutocompleteDemoData;
@@ -21,6 +22,7 @@ use App\Model\CkeditorDemoData;
 use App\Model\ContactWithAddress;
 use App\Model\DataTransformersDemoData;
 use App\Model\DemoTranslatableItem;
+use App\Model\NowoSpecialFieldsDemoData;
 use Nowo\FormKitBundle\Controller\FormKitControllerTrait;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
@@ -256,6 +258,26 @@ class FormKitDemoController extends AbstractController
             'form'                     => $form,
             'submitted'                => $submitted,
             'demo_translation_context' => $localeContext,
+        ]);
+    }
+
+    /**
+     * Nowo special fields — OTP, phone, password toggle/strength, icon selector, Tiptap, CKEditor 5.
+     */
+    #[Route(path: '/nowo-special-fields', name: 'form_demo_nowo_special_fields', methods: ['GET', 'POST'])]
+    public function nowoSpecialFieldsDemo(Request $request): Response
+    {
+        $data = new NowoSpecialFieldsDemoData();
+        $form = $this->createForm(NowoSpecialFieldsDemoType::class, $data);
+        $form->handleRequest($request);
+        $submitted = null;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $submitted = $form->getData();
+        }
+
+        return $this->render('form_demo/nowo_special_fields.html.twig', [
+            'form'      => $form,
+            'submitted' => $submitted,
         ]);
     }
 

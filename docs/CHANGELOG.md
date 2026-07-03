@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.3] - 2026-07-03
+
+### Added
+
+- **Demos (symfony7 / symfony8)** — **Nowo special fields** page (`/{locale}/nowo-special-fields`): OTP, phone, password toggle/strength, icon selector, Tiptap, and CKEditor 5 widgets from sibling **nowo-tech** path repos, integrated via `FormOptionsTrait::addWithDefaults()` and demo translations (EN, ES, FR, DE).
+- **PHPUnit** — Expanded unit tests (CSS utilities, model transformers, DI, static types, controller trait); PHP line coverage **99.59%** (TS/JS remains **100%**).
+
+### Changed
+
+- **Platform wording** — README and **INSTALLATION** state minimum **PHP 8.2** and **Symfony 7.4**; Symfony 8.0 / 8.1 documented as requiring PHP 8.4+.
+- **demo/symfony7** — Docker image targets **PHP 8.2**; **a2lix/translation-form-bundle** pinned to **^3.2** (PHP 8.2–compatible); `docker-compose` mounts parent `bundles/` at `/var/nowo-bundles` for Nowo path repos.
+- **demo/symfony8** — `composer.json` requires **PHP >= 8.4**; same `/var/nowo-bundles` volume for Nowo path repos.
+- **composer.json** — `homepage` / `support` URLs aligned with GitHub repo **FormKitBundle**.
+- **Rector** — `readonly` classes and minor cleanups in transformers and related code (no behaviour change); `tests/Stubs` excluded from Rector dead-code rules.
+
+### Fixed
+
+- **demo/symfony7** — A2lix 3.x bundle config uses `locales` instead of `enabled_locales` (fixes HTTP 500 after `composer update`).
+
+### Documentation
+
+- **README** — Stars and coverage badges, “Found this useful?” line, documentation section reordered with **Additional documentation** subsection; demos list updated.
+- **docs/USAGE.md**, **docs/ENGRAM.md**, **docs/DEMO-FRANKENPHP.md** — Table of contents for long pages.
+- **demo/README** — Minimum PHP/Symfony per demo, Nowo special fields page and path-repo setup.
+- **docs/CHANGELOG** — Release compare links use `nowo-tech/FormKitBundle`.
+- Removed duplicate **docs/README.md** (content lives under root README and linked docs).
+
 ## [2.0.2] - 2026-06-11
 
 ### Fixed
@@ -87,7 +114,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
-[2.0.2]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v2.0.2
-[2.0.1]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v2.0.1
-[2.0.0]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v2.0.0
-[1.0.0]: https://github.com/nowo-tech/form-kit-bundle/releases/tag/v1.0.0
+[2.0.3]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.3
+[2.0.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.2
+[2.0.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.1
+[2.0.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.0
+[1.0.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v1.0.0

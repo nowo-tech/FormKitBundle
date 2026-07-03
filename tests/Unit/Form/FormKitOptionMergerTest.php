@@ -83,4 +83,22 @@ final class FormKitOptionMergerTest extends TestCase
         self::assertSame('existing-row base-row', $options['row_attr']['class']);
         self::assertArrayNotHasKey('translation_domain', $options);
     }
+
+    public function testMergeAppliesAutoLabelAndHelpWhenNotProvided(): void
+    {
+        $merger = new FormKitOptionMerger(
+            'forms',
+            true,
+            true,
+            true,
+            ['minimum' => []],
+            ['default' => []],
+            ['default' => []],
+        );
+
+        $options = $merger->merge('contact_form', 'name', 'text');
+
+        self::assertSame('contact_form.name.label', $options['label']);
+        self::assertSame('contact_form.name.help', $options['help']);
+    }
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 // This file is auto-generated and is for apps only. Bundles SHOULD NOT rely on its content.
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
@@ -80,7 +78,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     tags?: TagsType,
  *     resource_tags?: TagsType,
  *     decorates?: string,
- *     decorates_tag?: string,
  *     decoration_inner_name?: string,
  *     decoration_priority?: int,
  *     decoration_on_invalid?: 'exception'|'ignore'|null,
@@ -121,15 +118,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     stack: list<DefinitionType|AliasType|PrototypeType|array<class-string, ArgumentsType|null>>,
  *     public?: bool,
  *     deprecated?: DeprecationType,
- *     decorates?: string,
- *     decorates_tag?: string,
- *     decoration_inner_name?: string,
- *     decoration_priority?: int,
- *     decoration_on_invalid?: 'exception'|'ignore'|null,
  * }
  * @psalm-type ServicesConfig = array{
  *     _defaults?: DefaultsType,
- *     _instanceof?: InstanceofType,
+ *     _instanceof?: array<class-string, InstanceofType>,
  *     ...<string, DefinitionType|AliasType|PrototypeType|StackType|ArgumentsType|null>
  * }
  * @psalm-type ExtensionType = array<string, mixed>
@@ -802,11 +794,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     controllers_json?: scalar|Param|null, // Default: "%kernel.project_dir%/assets/controllers.json"
  * }
  * @psalm-type A2lixTranslationFormConfig = array{
- *     locale_provider?: scalar|Param|null, // Set your own LocaleProvider service identifier if required // Default: "a2lix_translation_form.locale_provider.simple_locale_provider"
- *     default_locale?: scalar|Param|null, // Set your own default locale if different from the default framework.default_locale. eg: en // Default: null
- *     enabled_locales?: list<scalar|Param|null>,
- *     required_locales?: list<scalar|Param|null>,
- *     templating?: scalar|Param|null, // Set your own template path if required // Default: "@A2lixTranslationForm/native_layout.html.twig"
+ *     locale_provider?: scalar|Param|null, // Set your own LocaleProvider service identifier if required // Default: "default"
+ *     default_locale?: scalar|Param|null, // Set your own default locale if different from the SymfonyFramework locale. eg: en // Default: null
+ *     locales?: string|list<scalar|Param|null>,
+ *     required_locales?: string|list<scalar|Param|null>,
+ *     templating?: scalar|Param|null, // Set your own template path if required // Default: "@A2lixTranslationForm/bootstrap_4_layout.html.twig"
  * }
  * @psalm-type NowoFormKitConfig = array{
  *     type_map?: array<string, scalar|Param|null>,
@@ -914,6 +906,106 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         items?: array<string, list<mixed>>,
  *     },
  * }
+ * @psalm-type NowoOtpInputConfig = array{
+ *     length?: int|Param, // Default: 6
+ *     numeric_only?: bool|Param, // Default: true
+ *     uppercase?: bool|Param, // Default: true
+ *     form_theme?: scalar|Param|null, // Default: "form_div_layout.html.twig"
+ * }
+ * @psalm-type NowoPhoneInputConfig = array{
+ *     country_prefix_selector?: bool|Param, // Enable country prefix selector by default // Default: true
+ *     default_country?: scalar|Param|null, // Default ISO 3166-1 alpha-2 country code // Default: "ES"
+ *     preferred_countries?: list<scalar|Param|null>,
+ *     allowed_countries?: list<scalar|Param|null>,
+ *     excluded_countries?: list<scalar|Param|null>,
+ *     value_format?: "CONCATENATED"|"SEPARATED"|"OBJECT"|Param, // Default model value format // Default: "CONCATENATED"
+ *     prefix_display?: "FULL"|"PREFIX_ONLY"|"FLAG_ONLY"|"FLAG_AND_PREFIX"|"ISO_AND_PREFIX"|Param, // How country prefixes are displayed in the selector // Default: "FLAG_AND_PREFIX"
+ *     show_flag?: bool|Param, // Show country flags in the prefix selector (set false for prefix-only UI) // Default: true
+ *     prefix_search?: bool|Param, // Show a search box in the visual prefix dropdown // Default: true
+ *     flag_display?: "EMOJI"|"CSS_ICON"|"UX_ICON"|"NONE"|Param, // How country flags are rendered in the prefix selector // Default: "CSS_ICON"
+ *     container_classes?: list<scalar|Param|null>,
+ *     prefix_selector_classes?: list<scalar|Param|null>,
+ *     national_number_classes?: list<scalar|Param|null>,
+ *     use_phone_form_theme?: bool|Param, // Use the bundle form theme for rendering // Default: true
+ *     trim?: bool|Param, // Trim whitespace from national number input // Default: true
+ *     invalid_message?: scalar|Param|null, // Default: "The phone number is invalid."
+ *     phone_validation?: "COUNTRY"|"PREFIX"|"NONE"|Param, // Validate national numbers using country ISO (COUNTRY), dial prefix (PREFIX) or disable (NONE) // Default: "COUNTRY"
+ *     use_libphonenumber?: bool|Param, // Use giggsey/libphonenumber-for-php when installed for validation // Default: true
+ * }
+ * @psalm-type NowoPasswordToggleConfig = array{
+ *     toggle?: bool|Param, // Enable/disable toggle functionality by default // Default: true
+ *     visible_icon?: scalar|Param|null, // Icon when password is hidden (default) // Default: "tabler:eye-off"
+ *     hidden_icon?: scalar|Param|null, // Icon when password is visible (default) // Default: "tabler:eye"
+ *     visible_label?: scalar|Param|null, // Label when password is hidden (default) // Default: "Show"
+ *     hidden_label?: scalar|Param|null, // Label when password is visible (default) // Default: "Hide"
+ *     button_classes?: list<scalar|Param|null>,
+ *     toggle_container_classes?: list<scalar|Param|null>,
+ *     use_toggle_form_theme?: bool|Param, // Use the bundle's form theme for rendering (default) // Default: true
+ *     always_empty?: bool|Param, // Always render empty value (default) // Default: true
+ *     trim?: bool|Param, // Trim whitespace (default) // Default: false
+ *     invalid_message?: scalar|Param|null, // Invalid message (default) // Default: "The password is invalid."
+ * }
+ * @psalm-type NowoPasswordStrengthConfig = array{
+ *     form_theme?: scalar|Param|null, // Base Symfony form layout (must match twig.form_themes in the app). // Default: "form_div_layout.html.twig"
+ *     feedback_position?: "above"|"below"|Param, // Default: "below"
+ *     show_requirements?: bool|Param, // Default: true
+ *     live_feedback?: bool|Param, // Default: true
+ *     default_level?: scalar|Param|null, // Default: "medium"
+ *     generator_mode?: "off"|"input"|"modal"|Param, // Default password generator: off, fill input (visible), or modal with copy. // Default: "off"
+ *     generator_count?: int|Param, // Number of suggestions in modal mode. // Default: 3
+ *     use_password_toggle?: bool|Param, // When true, use PasswordToggleBundle as parent if installed; ignored when parent_form_type is set explicitly. // Default: true
+ *     parent_form_type?: scalar|Param|null, // Parent form type FQCN. null = auto: Symfony PasswordType, or PasswordToggleBundle PasswordType when installed and use_password_toggle is true. // Default: null
+ *     levels?: array<string, mixed>,
+ * }
+ * @psalm-type NowoIconSelectorConfig = array{
+ *     icon_sets?: list<scalar|Param|null>,
+ *     use_iconify_collection?: bool|Param, // When true, fetch the full icon list from api.iconify.design/collection for each icon_sets entry (requires symfony/http-client). When false, use the bundle static list. // Default: false
+ *     icons_api_path?: scalar|Param|null, // Path for the JSON API that returns available icons. Used by the frontend to fetch the list. // Default: "/api/icon-selector/icons"
+ *     form_theme?: scalar|Param|null, // Base form layout so the icon selector theme matches your app (e.g. form_div_layout.html.twig, bootstrap_5_layout.html.twig). Must match twig.form_themes. // Default: "form_div_layout.html.twig"
+ *     debug?: bool|Param, // When true, the frontend logs all debug/info/warn messages to the console. When false, only the initial "script loaded" message is shown. // Default: false
+ * }
+ * @psalm-type UxIconsConfig = array{
+ *     icon_dir?: scalar|Param|null, // The local directory where icons are stored. // Default: "%kernel.project_dir%/assets/icons"
+ *     default_icon_attributes?: array<string, scalar|Param|null>,
+ *     icon_sets?: array<string, array{ // the icon set prefix (e.g. "acme") // Default: []
+ *         path?: scalar|Param|null, // The local icon set directory path. (cannot be used with 'alias')
+ *         alias?: scalar|Param|null, // The remote icon set identifier. (cannot be used with 'path')
+ *         icon_attributes?: array<string, scalar|Param|null>,
+ *         suffixes?: array<string, array{ // The suffix name (e.g. "solid", "20-solid") // Default: []
+ *             icon_attributes?: array<string, scalar|Param|null>,
+ *         }>,
+ *     }>,
+ *     aliases?: array<string, string|Param>,
+ *     iconify?: bool|array{ // Configuration for the remote icon service.
+ *         enabled?: bool|Param, // Default: true
+ *         on_demand?: bool|Param, // Whether to download icons "on demand". // Default: true
+ *         endpoint?: scalar|Param|null, // The endpoint for the Iconify icons API. // Default: "https://api.iconify.design"
+ *     },
+ *     ignore_not_found?: bool|Param, // Ignore error when an icon is not found. Set to 'true' to fail silently. // Default: false
+ * }
+ * @psalm-type NowoTiptapEditorConfig = array{
+ *     default_config?: scalar|Param|null, // Profile name used when the form field omits the "config" option. // Default: "default"
+ *     configs?: array<string, array{ // Default: []
+ *         toolbar?: bool|Param, // When true, the frontend shows a compact formatting toolbar (bold, lists, undo, etc.). // Default: true
+ *         min_height?: scalar|Param|null, // Default CSS min-height for the editor surface (e.g. 240px, 12rem). // Default: "240px"
+ *         form_theme?: scalar|Param|null, // Base Symfony form layout (must match twig.form_themes in your app). // Default: "form_div_layout.html.twig"
+ *         debug?: bool|Param, // When true, the browser console receives detailed logs from the bundle script. // Default: false
+ *         variant?: scalar|Param|null, // Editor UX preset: default, simple, notion, agent, headless (see EditorVariant). // Default: "default"
+ *         theme?: scalar|Param|null, // Chrome palette: light, dark, or auto (follows prefers-color-scheme). // Default: "light"
+ *     }>,
+ * }
+ * @psalm-type NowoCkeditor5EditorConfig = array{
+ *     default_config?: scalar|Param|null, // Profile name used when the form field omits the "config" option. // Default: "default"
+ *     configs?: array<string, array{ // Default: []
+ *         toolbar?: bool|Param, // When true, CKEditor shows its toolbar (preset still controls which buttons are available). // Default: true
+ *         min_height?: scalar|Param|null, // Default CSS min-height for the editable region wrapper (e.g. 240px, 12rem). // Default: "240px"
+ *         form_theme?: scalar|Param|null, // Base Symfony form layout (must match twig.form_themes in your app). // Default: "form_div_layout.html.twig"
+ *         debug?: bool|Param, // When true, the browser console receives detailed logs from the bundle script. // Default: false
+ *         preset?: scalar|Param|null, // Editor feature preset: standard, simple, minimal, emoji, typography, variables (plugins + toolbar). Use upload_url with preset standard for server-side image uploads. // Default: "standard"
+ *         theme?: scalar|Param|null, // Chrome palette for the demo/widget wrapper: light, dark, or auto. // Default: "light"
+ *         upload_url?: scalar|Param|null, // POST endpoint URL for image uploads (CKEditor SimpleUploadAdapter). Empty disables uploads. // Default: null
+ *     }>,
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -926,6 +1018,14 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     nowo_form_kit?: NowoFormKitConfig,
  *     nowo_select_all_choice?: NowoSelectAllChoiceConfig,
  *     fos_ck_editor?: FosCkEditorConfig,
+ *     nowo_otp_input?: NowoOtpInputConfig,
+ *     nowo_phone_input?: NowoPhoneInputConfig,
+ *     nowo_password_toggle?: NowoPasswordToggleConfig,
+ *     nowo_password_strength?: NowoPasswordStrengthConfig,
+ *     nowo_icon_selector?: NowoIconSelectorConfig,
+ *     ux_icons?: UxIconsConfig,
+ *     nowo_tiptap_editor?: NowoTiptapEditorConfig,
+ *     nowo_ckeditor5_editor?: NowoCkeditor5EditorConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -942,6 +1042,14 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         nowo_form_kit?: NowoFormKitConfig,
  *         nowo_select_all_choice?: NowoSelectAllChoiceConfig,
  *         fos_ck_editor?: FosCkEditorConfig,
+ *         nowo_otp_input?: NowoOtpInputConfig,
+ *         nowo_phone_input?: NowoPhoneInputConfig,
+ *         nowo_password_toggle?: NowoPasswordToggleConfig,
+ *         nowo_password_strength?: NowoPasswordStrengthConfig,
+ *         nowo_icon_selector?: NowoIconSelectorConfig,
+ *         ux_icons?: UxIconsConfig,
+ *         nowo_tiptap_editor?: NowoTiptapEditorConfig,
+ *         nowo_ckeditor5_editor?: NowoCkeditor5EditorConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -955,6 +1063,14 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         nowo_form_kit?: NowoFormKitConfig,
  *         nowo_select_all_choice?: NowoSelectAllChoiceConfig,
  *         fos_ck_editor?: FosCkEditorConfig,
+ *         nowo_otp_input?: NowoOtpInputConfig,
+ *         nowo_phone_input?: NowoPhoneInputConfig,
+ *         nowo_password_toggle?: NowoPasswordToggleConfig,
+ *         nowo_password_strength?: NowoPasswordStrengthConfig,
+ *         nowo_icon_selector?: NowoIconSelectorConfig,
+ *         ux_icons?: UxIconsConfig,
+ *         nowo_tiptap_editor?: NowoTiptapEditorConfig,
+ *         nowo_ckeditor5_editor?: NowoCkeditor5EditorConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -972,6 +1088,14 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         nowo_form_kit?: NowoFormKitConfig,
  *         nowo_select_all_choice?: NowoSelectAllChoiceConfig,
  *         fos_ck_editor?: FosCkEditorConfig,
+ *         nowo_otp_input?: NowoOtpInputConfig,
+ *         nowo_phone_input?: NowoPhoneInputConfig,
+ *         nowo_password_toggle?: NowoPasswordToggleConfig,
+ *         nowo_password_strength?: NowoPasswordStrengthConfig,
+ *         nowo_icon_selector?: NowoIconSelectorConfig,
+ *         ux_icons?: UxIconsConfig,
+ *         nowo_tiptap_editor?: NowoTiptapEditorConfig,
+ *         nowo_ckeditor5_editor?: NowoCkeditor5EditorConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

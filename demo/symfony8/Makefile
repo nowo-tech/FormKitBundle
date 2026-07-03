@@ -93,5 +93,7 @@ assets:
 	@rm -rf public/build/.vite public/build/assets 2>/dev/null || true
 	pnpm install && pnpm run build
 
+
 # REQ-MAKE-008: update-deps (REQ-MAKE-008)
-include $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../../.scripts/Makefile.demo-update-deps.mk)
+BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../..)
+include $(BUNDLE_ROOT)/../.scripts/Makefile.demo-update-deps.mk

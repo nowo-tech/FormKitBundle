@@ -5,11 +5,20 @@
   "license": "MIT",
   "require": {
     "php": ">=8.2,<8.6",
-    "a2lix/translation-form-bundle": "^4.0",
+    "a2lix/translation-form-bundle": "^3.2",
     "doctrine/collections": "^2.2",
     "friendsofsymfony/ckeditor-bundle": "^2.5",
     "nowo-tech/form-kit-bundle": "@dev",
     "nowo-tech/select-all-choice-bundle": "^1.0",
+    "nowo-tech/otp-input-bundle": "@dev",
+    "nowo-tech/phone-input-bundle": "@dev",
+    "nowo-tech/password-toggle-bundle": "@dev",
+    "nowo-tech/password-strength-bundle": "@dev",
+    "nowo-tech/icon-selector-bundle": "@dev",
+    "nowo-tech/tiptap-editor-bundle": "@dev",
+    "nowo-tech/ckeditor5-editor-bundle": "@dev",
+    "symfony/http-client": "^7.4",
+    "symfony/ux-icons": "^2.9",
     "pentatrion/vite-bundle": "^8.2",
     "symfony/asset": "^7.4",
     "symfony/asset-mapper": "7.4.*",
@@ -74,7 +83,14 @@
       "options": {
         "symlink": true
       }
-    }
+    },
+    { "type": "path", "url": "/var/nowo-bundles/OtpInputBundle" },
+    { "type": "path", "url": "/var/nowo-bundles/PhoneInputBundle" },
+    { "type": "path", "url": "/var/nowo-bundles/PasswordToggleBundle" },
+    { "type": "path", "url": "/var/nowo-bundles/PasswordStrengthBundle" },
+    { "type": "path", "url": "/var/nowo-bundles/IconSelectorBundle" },
+    { "type": "path", "url": "/var/nowo-bundles/TiptapEditorBundle" },
+    { "type": "path", "url": "/var/nowo-bundles/Ckeditor5EditorBundle" }
   ],
   "minimum-stability": "dev"
 }

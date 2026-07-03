@@ -42,4 +42,24 @@ final class CssClassUtilitiesTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         new CssClassUtilities('bulma');
     }
+
+    public function testGetFrameworkReturnsConfiguredValue(): void
+    {
+        $u = new CssClassUtilities('foundation');
+
+        self::assertSame('foundation', $u->getFramework());
+    }
+
+    public function testOrderClassesDispatchesToFrameworkImplementation(): void
+    {
+        $bootstrap  = new CssClassUtilities('bootstrap');
+        $tailwind   = new CssClassUtilities('tailwind');
+        $foundation = new CssClassUtilities('foundation');
+        $none       = new CssClassUtilities('none');
+
+        self::assertSame('d-flex col-6', $bootstrap->orderClasses('col-6 d-flex'));
+        self::assertStringContainsString('flex', $tailwind->orderClasses('mb-2 flex'));
+        self::assertStringContainsString('grid-x', $foundation->orderClasses('grid-x margin-1'));
+        self::assertSame('alpha beta', $none->orderClasses('alpha beta alpha'));
+    }
 }

@@ -20,4 +20,23 @@ final class NowoFormKitBundleTest extends TestCase
         self::assertInstanceOf(FormKitExtension::class, $first);
         self::assertSame($first, $second);
     }
+
+    public function testBuildRegistersFormOptionsMergerInjectorCompilerPass(): void
+    {
+        $bundle    = new NowoFormKitBundle();
+        $container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
+
+        $bundle->build($container);
+
+        $passes = $container->getCompilerPassConfig()->getPasses();
+        $found  = false;
+        foreach ($passes as $pass) {
+            if ($pass instanceof \Nowo\FormKitBundle\DependencyInjection\FormOptionsMergerInjectorCompilerPass) {
+                $found = true;
+                break;
+            }
+        }
+
+        self::assertTrue($found);
+    }
 }

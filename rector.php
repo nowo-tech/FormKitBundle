@@ -11,6 +11,7 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         __DIR__ . '/demo',
+        __DIR__ . '/tests/Stubs',
     ])
     ->withPhpSets(php82: true)
     ->withPreparedSets(

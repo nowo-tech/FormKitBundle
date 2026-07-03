@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'demo_pages.nowo_special_fields.page_title'|trans }}{% endblock %}
+
+{% block body %}
+{% set locale = app.request.locale %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">{{ 'demo_pages.nowo_special_fields.heading'|trans }}</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
+</div>
+<p class="text-secondary mb-2">{{ 'demo_pages.nowo_special_fields.intro'|trans|raw }}</p>
+<ul class="small text-secondary mb-4">
+  <li>{{ 'demo_pages.nowo_special_fields.usage_1'|trans|raw }}</li>
+  <li>{{ 'demo_pages.nowo_special_fields.usage_2'|trans|raw }}</li>
+  <li>{{ 'demo_pages.nowo_special_fields.usage_3'|trans|raw }}</li>
+</ul>
+
+<div class="card form-card shadow-sm">
+  <div class="card-body p-4">
+    {{ form_start(form) }}
+    <div class="row g-3">
+      <div class="col-12 col-md-6">{{ form_row(form.verificationCode) }}</div>
+      <div class="col-12 col-md-6">{{ form_row(form.mobilePhone) }}</div>
+      <div class="col-12 col-md-6">{{ form_row(form.secretPassword) }}</div>
+      <div class="col-12">{{ form_row(form.accountPassword) }}</div>
+      <div class="col-12">{{ form_row(form.appIcon) }}</div>
+      <div class="col-12">{{ form_row(form.articleBody) }}</div>
+      <div class="col-12">{{ form_row(form.pageContent) }}</div>
+    </div>
+    {{ form_rest(form) }}
+    <div class="form-kit-buttons mt-2">
+      <button type="submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
+    </div>
+    {{ form_end(form, { render_rest: false }) }}
+  </div>
+</div>
+
+{% if submitted %}
+  <div class="mt-4">
+    <p class="fw-semibold mb-2">{{ 'demo_pages.nowo_special_fields.normalized_title'|trans }}</p>
+    <pre class="bg-light border rounded p-3 small mb-0 overflow-auto">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+  </div>
+{% endif %}
+
+<link rel="stylesheet" href="{{ asset('/bundles/nowophoneinput/css/flag-icons.min.css') }}">
+<link rel="stylesheet" href="{{ asset('/bundles/nowophoneinput/css/phone_input.css') }}">
+<script defer src="{{ asset('/bundles/nowootpinput/otp-input.js') }}"></script>
+<script defer src="{{ asset(nowo_icon_selector_asset_path('icon-selector.js')) }}"></script>
+<script defer src="{{ asset(nowo_tiptap_editor_asset_path('tiptap-editor.js')) }}"></script>
+<script defer src="{{ asset(nowo_ckeditor5_editor_asset_path('ckeditor5-editor.js')) }}"></script>
+<script defer src="{{ asset('bundles/passwordstrength/password-strength.js') }}"></script>
+{% endblock %}

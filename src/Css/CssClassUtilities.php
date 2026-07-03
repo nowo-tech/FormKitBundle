@@ -20,9 +20,9 @@ use const PREG_SPLIT_NO_EMPTY;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final class CssClassUtilities
+final readonly class CssClassUtilities
 {
-    public function __construct(private readonly string $framework)
+    public function __construct(private string $framework)
     {
         if (!in_array($framework, CssFramework::values(), true)) {
             throw new InvalidArgumentException(sprintf('Unknown css_framework "%s". Allowed: %s.', $framework, implode(', ', CssFramework::values())));

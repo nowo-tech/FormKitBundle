@@ -42,4 +42,13 @@ final class StaticAlertTypeTest extends TestCase
 
         self::assertSame('static_alert', $type->getBlockPrefix());
     }
+
+    public function testBuildFormIsNoOp(): void
+    {
+        $type    = new StaticAlertType();
+        $builder = $this->createMock(\Symfony\Component\Form\FormBuilderInterface::class);
+        $builder->expects(self::never())->method('add');
+
+        $type->buildForm($builder, ['message' => 'Hello']);
+    }
 }

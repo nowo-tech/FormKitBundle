@@ -1,0 +1,6 @@
+nowo_phone_input:
+    country_prefix_selector: true
+    default_country: ES
+    preferred_countries: [ES, FR, PT, GB, US]
+    value_format: CONCATENATED
+    use_phone_form_theme: true

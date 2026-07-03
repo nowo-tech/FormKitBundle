@@ -4,8 +4,8 @@ This guide covers installing Form Kit Bundle in a Symfony application.
 
 ## Requirements
 
-- **PHP** >= 8.2
-- **Symfony** ^7.4 || ^8.0 (7.4, 8.0, 8.1)
+- **PHP** >= 8.2 (minimum)
+- **Symfony** ^7.4 || ^8.0 — minimum supported line is **Symfony 7.4**; Symfony 8.0 and 8.1 are also supported
 - **symfony/form** (included in framework-bundle)
 - **symfony/translation** (included in framework-bundle)
 

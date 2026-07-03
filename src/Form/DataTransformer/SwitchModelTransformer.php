@@ -22,11 +22,11 @@ use function is_string;
  * Intended for ChoiceType configured as expanded + multiple, with a single choice
  * like ['some.label.key' => 1].
  */
-final class SwitchModelTransformer implements DataTransformer
+final readonly class SwitchModelTransformer implements DataTransformer
 {
     public function __construct(
-        private readonly int $switchValue = 1,
-        private readonly int $offValue = 0,
+        private int $switchValue = 1,
+        private int $offValue = 0,
     ) {
     }
 

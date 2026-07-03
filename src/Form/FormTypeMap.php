@@ -45,7 +45,7 @@ final class FormTypeMap
      * @var array<string, string>
      */
     private const OPTIONAL = [
-        'dropzone'     => 'Symfony\UX\Dropzone\Form\DropzoneType',
+        'dropzone'     => \Symfony\UX\Dropzone\Form\DropzoneType::class,
         'cropper'      => 'Symfony\UX\Cropperjs\Form\CropperType',
         'translations' => 'A2lix\TranslationFormBundle\Form\Type\TranslationsType',
     ];

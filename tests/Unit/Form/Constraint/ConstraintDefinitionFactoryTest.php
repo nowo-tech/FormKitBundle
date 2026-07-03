@@ -46,9 +46,52 @@ final class ConstraintDefinitionFactoryTest extends TestCase
         self::assertSame(10, $c[0]->max);
     }
 
+    public function testPassesThroughConstraintInstances(): void
+    {
+        $constraint = new NotBlank(['message' => 'required']);
+        $created    = (new ConstraintDefinitionFactory())->create([$constraint]);
+
+        self::assertSame($constraint, $created[0]);
+    }
+
+    public function testRejectsInvalidDefinitionType(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        (new ConstraintDefinitionFactory())->create([123]);
+    }
+
+    public function testRejectsInvalidMultiKeyDefinition(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        (new ConstraintDefinitionFactory())->create([['NotBlank' => [], 'Email' => []]]);
+    }
+
+    public function testRejectsUnknownConstraintShortName(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        (new ConstraintDefinitionFactory())->create(['DoesNotExistConstraint']);
+    }
+
     public function testRejectsFqcnOutsideValidatorPrefix(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        (new ConstraintDefinitionFactory())->create(['stdClass']);
+        (new ConstraintDefinitionFactory())->create(['App\\Validator\\NotAConstraint']);
+    }
+
+    public function testCreatesFromValidatorFqcn(): void
+    {
+        $created = (new ConstraintDefinitionFactory())->create([
+            NotBlank::class,
+        ]);
+
+        self::assertInstanceOf(NotBlank::class, $created[0]);
+    }
+
+    public function testRejectsMissingValidatorFqcn(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        (new ConstraintDefinitionFactory())->create([
+            'Symfony\\Component\\Validator\\Constraints\\TotallyMissingConstraint',
+        ]);
     }
 }

@@ -112,4 +112,9 @@ final class FormKitExtensionTest extends TestCase
             ],
         ]], $container);
     }
+
+    public function testGetAliasReturnsConfigurationAlias(): void
+    {
+        self::assertSame('nowo_form_kit', (new FormKitExtension())->getAlias());
+    }
 }

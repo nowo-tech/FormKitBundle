@@ -1,0 +1,10 @@
+nowo_tiptap_editor:
+    default_config: simple
+    configs:
+        simple:
+            variant: simple
+            toolbar: true
+            min_height: 200px
+            form_theme: bootstrap_5_layout.html.twig
+            debug: false
+            theme: light

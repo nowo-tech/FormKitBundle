@@ -23,10 +23,10 @@ use const STR_PAD_LEFT;
  * View:
  * - string like "12.34" (comma accepted as decimal separator)
  */
-final class MoneyModelTransformer implements DataTransformer
+final readonly class MoneyModelTransformer implements DataTransformer
 {
     public function __construct(
-        private readonly int $scale = 2,
+        private int $scale = 2,
     ) {
         if ($this->scale < 0) {
             throw new InvalidArgumentException('scale must be >= 0');

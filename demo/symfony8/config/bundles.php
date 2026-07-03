@@ -18,4 +18,12 @@ return [
     Nowo\FormKitBundle\NowoFormKitBundle::class                   => ['all' => true],
     Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle::class   => ['all' => true],
     FOS\CKEditorBundle\FOSCKEditorBundle::class                   => ['all' => true],
+    Nowo\OtpInputBundle\NowoOtpInputBundle::class                 => ['all' => true],
+    Nowo\PhoneInputBundle\NowoPhoneInputBundle::class             => ['all' => true],
+    Nowo\PasswordToggleBundle\NowoPasswordToggleBundle::class     => ['all' => true],
+    Nowo\PasswordStrengthBundle\PasswordStrengthBundle::class     => ['all' => true],
+    Nowo\IconSelectorBundle\NowoIconSelectorBundle::class         => ['all' => true],
+    Symfony\UX\Icons\UXIconsBundle::class                         => ['all' => true],
+    Nowo\TiptapEditorBundle\NowoTiptapEditorBundle::class         => ['all' => true],
+    Nowo\Ckeditor5EditorBundle\NowoCkeditor5EditorBundle::class   => ['all' => true],
 ];

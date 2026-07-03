@@ -1,5 +1,27 @@
 # Usage
 
+## Table of contents
+
+- [FormOptionsMerger service](#formoptionsmerger-service)
+- [Controller helpers (trait)](#controller-helpers-trait)
+- [Using FormOptionsTrait](#using-formoptionstrait)
+- [FormKitTrait and FormKitAbstractType (snake_case types)](#formkittrait-and-formkitabstracttype-snake_case-types)
+- [Custom type layer (wrapping third-party types)](#custom-type-layer-wrapping-third-party-types)
+- [Translations](#translations)
+- [Disabling convention for a key](#disabling-convention-for-a-key)
+- [Custom static blocks in the form (HR, alert)](#custom-static-blocks-in-the-form-hr-alert)
+- [Input group (icon at start or end)](#input-group-icon-at-start-or-end)
+- [Help modal (optional)](#help-modal-optional)
+- [Overriding bundle templates](#overriding-bundle-templates)
+- [Multi-step forms (array-based wizard)](#multi-step-forms-array-based-wizard)
+  - [Steps definition](#steps-definition)
+  - [Services](#services)
+  - [Controller example](#controller-example)
+- [Form renderer component (Twig)](#form-renderer-component-twig)
+- [Layout examples (Bootstrap and Tailwind)](#layout-examples-bootstrap-and-tailwind)
+  - [Bootstrap 5 example](#bootstrap-5-example)
+  - [Tailwind CSS example](#tailwind-css-example)
+
 ## FormOptionsMerger service
 
 The **FormOptionsMerger** resolves final options for each field with cascading merge. It uses the configured `configs` and `default_config`: the selected config (or the one passed to `resolve()`) provides `translation_domain`, `defaults`, and `field_types`.

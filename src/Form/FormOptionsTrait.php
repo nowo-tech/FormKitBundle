@@ -199,8 +199,8 @@ trait FormOptionsTrait
             $finalOptions['form_options']['attr'] = [];
         }
 
-        $rowClass                                          = trim((string) ($finalOptions['form_options']['row_attr']['class'] ?? '') . ' row');
-        $attrClass                                         = trim((string) ($finalOptions['form_options']['attr']['class'] ?? '') . ' row');
+        $rowClass                                          = trim(($finalOptions['form_options']['row_attr']['class'] ?? '') . ' row');
+        $attrClass                                         = trim(($finalOptions['form_options']['attr']['class'] ?? '') . ' row');
         $finalOptions['form_options']['row_attr']['class'] = $rowClass;
         $finalOptions['form_options']['attr']['class']     = $attrClass;
 
@@ -355,7 +355,7 @@ trait FormOptionsTrait
      */
     protected function addMultiSelectSelectAll(FormBuilderInterface $builder, string $name, array $options = []): void
     {
-        if (!class_exists('Nowo\\SelectAllChoiceBundle\\NowoSelectAllChoiceBundle')) {
+        if (!class_exists(\Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle::class)) {
             throw new LogicException('addMultiSelectSelectAll() requires nowo-tech/select-all-choice-bundle. Install it or use addMultiSelect() and pass select_all in options manually after installing the bundle.');
         }
 
@@ -419,11 +419,11 @@ trait FormOptionsTrait
      */
     protected function addCKEditorField(FormBuilderInterface $builder, string $name, array $options = []): void
     {
-        if (!class_exists('FOS\\CKEditorBundle\\Form\\Type\\CKEditorType')) {
+        if (!class_exists(\FOS\CKEditorBundle\Form\Type\CKEditorType::class)) {
             throw new LogicException('addCKEditorField() requires friendsofsymfony/ckeditor-bundle. Install it and run bin/console ckeditor:install.');
         }
 
-        $this->addWithDefaults($builder, $name, 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType', $options);
+        $this->addWithDefaults($builder, $name, \FOS\CKEditorBundle\Form\Type\CKEditorType::class, $options);
     }
 
     /**
@@ -491,7 +491,7 @@ trait FormOptionsTrait
         $labelAttrBase = ['class' => 'form-label'];
 
         if ($labelPosition === 'horizontal') {
-            $fieldConfiguration['label'] = $fieldConfiguration['label'] ?? false;
+            $fieldConfiguration['label'] ??= false;
 
             if (!array_key_exists('choices', $fieldConfiguration)) {
                 $fieldConfiguration['choices'] = [$labelKey => $switchValue];
@@ -502,7 +502,7 @@ trait FormOptionsTrait
             $rowAttrBase = ['class' => 'd-flex flex-column'];
 
             // Same semantics as horizontal layout: hide the choice label and use a single active choice.
-            $fieldConfiguration['choice_label'] = $fieldConfiguration['choice_label'] ?? false;
+            $fieldConfiguration['choice_label'] ??= false;
 
             if (!array_key_exists('choices', $fieldConfiguration)) {
                 $fieldConfiguration['choices'] = ['active' => $switchValue];
@@ -524,8 +524,8 @@ trait FormOptionsTrait
         $fieldConfiguration['label_attr']['class'] = $labelClass;
 
         // switch always: expanded + multiple, label_position is only for preset choice/row behavior.
-        $fieldConfiguration['expanded'] = $fieldConfiguration['expanded'] ?? true;
-        $fieldConfiguration['multiple'] = $fieldConfiguration['multiple'] ?? true;
+        $fieldConfiguration['expanded'] ??= true;
+        $fieldConfiguration['multiple'] ??= true;
 
         unset($fieldConfiguration['label_position'], $fieldConfiguration['switch_value']);
 

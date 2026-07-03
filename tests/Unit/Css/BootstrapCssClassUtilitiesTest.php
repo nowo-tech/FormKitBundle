@@ -30,4 +30,40 @@ final class BootstrapCssClassUtilitiesTest extends TestCase
 
         self::assertSame('d-flex mb-3 col-6 row', $out);
     }
+
+    public function testOrderClassesCoversRemainingCategories(): void
+    {
+        $out = BootstrapCssClassUtilities::orderClasses(
+            'col-6 row btn-primary overflow-hidden custom-x position-relative top-0 mb-2 w-100 fs-6 bg-light border rounded shadow',
+        );
+
+        self::assertStringStartsWith('position-relative top-0', $out);
+        self::assertStringContainsString('mb-2', $out);
+        self::assertStringContainsString('w-100', $out);
+        self::assertStringContainsString('fs-6', $out);
+        self::assertStringContainsString('bg-light', $out);
+        self::assertStringContainsString('border', $out);
+        self::assertStringContainsString('col-6', $out);
+        self::assertStringContainsString('row', $out);
+        self::assertStringContainsString('btn-primary', $out);
+        self::assertStringContainsString('overflow-hidden', $out);
+        self::assertStringContainsString('custom-x', $out);
+    }
+
+    public function testOrderClassesReturnsEmptyStringForBlankInput(): void
+    {
+        self::assertSame('', BootstrapCssClassUtilities::orderClasses(''));
+    }
+
+    public function testNormalizeColumnClassesIgnoresEmptyTokens(): void
+    {
+        self::assertSame('col-6', BootstrapCssClassUtilities::normalizeColumnClasses(['', 'col-6']));
+    }
+
+    public function testOrderClassesBucketsFlexUtilities(): void
+    {
+        $out = BootstrapCssClassUtilities::orderClasses('align-items-center col-6');
+
+        self::assertSame('align-items-center col-6', $out);
+    }
 }

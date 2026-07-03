@@ -14,9 +14,7 @@ final class MultiStepWizardSessionTest extends TestCase
     private function createSession(array $bag): SessionInterface
     {
         $session = $this->createMock(SessionInterface::class);
-        $session->method('get')->willReturnCallback(static function (string $key, mixed $default) use ($bag) {
-            return $bag;
-        });
+        $session->method('get')->willReturnCallback(static fn (string $key, mixed $default): array => $bag);
 
         return $session;
     }
@@ -85,12 +83,12 @@ final class MultiStepWizardSessionTest extends TestCase
         $bag = ['index' => 0, 'data' => ['s1' => ['x' => 1]]];
 
         $session = $this->createMock(SessionInterface::class);
-        $session->method('get')->willReturnCallback(static function (string $key, mixed $default) use (&$bag) {
+        $session->method('get')->willReturnCallback(static function (string $key, mixed $default) use (&$bag): array {
             return $bag;
         });
         $session->expects(self::exactly(3))
             ->method('set')
-            ->willReturnCallback(static function (string $key, mixed $value) use (&$bag) {
+            ->willReturnCallback(static function (string $key, mixed $value) use (&$bag): void {
                 // Symfony session bag is an array.
                 $bag = $value;
             });

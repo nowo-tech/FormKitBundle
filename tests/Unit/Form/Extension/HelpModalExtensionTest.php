@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form\Extension;
 
 use Nowo\FormKitBundle\Form\Extension\HelpModalExtension;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -127,7 +128,7 @@ final class HelpModalExtensionTest extends TestCase
         $renderer = new class {
             public function renderIcon(string $name, array $attributes = []): string
             {
-                return '<svg data-test-icon="' . $name . '" class="' . (string) ($attributes['class'] ?? '') . '"></svg>';
+                return '<svg data-test-icon="' . $name . '" class="' . ($attributes['class'] ?? '') . '"></svg>';
             }
         };
 
@@ -176,7 +177,6 @@ final class HelpModalExtensionTest extends TestCase
                 ],
             ],
             defaultConfigName: 'default',
-            iconRenderer: null,
         );
 
         $view                     = new FormView();
@@ -195,5 +195,84 @@ final class HelpModalExtensionTest extends TestCase
         self::assertIsString($json);
         $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         self::assertStringContainsString('fallback', $data['icon_html']);
+    }
+
+    public function testConfigureOptionsAllowsNullBooleanOrArray(): void
+    {
+        $ext      = new HelpModalExtension([], 'default');
+        $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
+        $ext->configureOptions($resolver);
+
+        self::assertNull($resolver->resolve([])['help_modal']);
+        self::assertTrue($resolver->resolve(['help_modal' => true])['help_modal']);
+        self::assertSame(['title' => 'x'], $resolver->resolve(['help_modal' => ['title' => 'x']])['help_modal']);
+    }
+
+    public function testBuildViewIgnoresNonArrayHelpModalValue(): void
+    {
+        $ext = new HelpModalExtension(
+            configs: ['default' => ['help_modal' => ['framework' => 'bootstrap5']]],
+            defaultConfigName: 'default',
+        );
+
+        $view = new FormView();
+        $form = $this->createMock(FormInterface::class);
+
+        $ext->buildView($view, $form, ['help_modal' => 123]);
+
+        self::assertArrayNotHasKey('data-nowo-help-modal', $view->vars['label_attr'] ?? []);
+    }
+
+    public function testBuildViewUsesCustomModalIdAndNormalizesNonArrayLabelAttr(): void
+    {
+        $ext = new HelpModalExtension(
+            configs: ['default' => ['help_modal' => ['framework' => 'bootstrap5', 'icon_html' => '?']]],
+            defaultConfigName: 'default',
+        );
+
+        $view                     = new FormView();
+        $view->vars['id']         = 'ignored';
+        $view->vars['label_attr'] = 'invalid';
+
+        $form = $this->createMock(FormInterface::class);
+
+        $ext->buildView($view, $form, [
+            'help_modal' => [
+                'id'      => 'custom-modal-id',
+                'content' => 'Body',
+            ],
+        ]);
+
+        $data = json_decode((string) $view->vars['label_attr']['data-nowo-help-modal'], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('custom-modal-id', $data['id']);
+    }
+
+    public function testBuildViewFallsBackWhenUxIconRendererThrows(): void
+    {
+        $renderer = new class {
+            public function renderIcon(string $name, array $attributes = []): string
+            {
+                throw new RuntimeException('icon failure');
+            }
+        };
+
+        $ext = new HelpModalExtension(
+            configs: ['default' => ['help_modal' => ['icon_html' => '<span>fallback</span>']]],
+            defaultConfigName: 'default',
+            iconRenderer: $renderer,
+        );
+
+        $view                     = new FormView();
+        $view->vars['id']         = 'field_throw';
+        $view->vars['label_attr'] = [];
+
+        $form = $this->createMock(FormInterface::class);
+
+        $ext->buildView($view, $form, [
+            'help_modal' => ['ux_icon' => 'lucide:help'],
+        ]);
+
+        $data = json_decode((string) $view->vars['label_attr']['data-nowo-help-modal'], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('<span>fallback</span>', $data['icon_html']);
     }
 }

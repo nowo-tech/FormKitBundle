@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Tests\Unit\Controller;
 
 use InvalidArgumentException;
+use LogicException;
 use Nowo\FormKitBundle\Controller\FormKitControllerTrait;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
@@ -14,6 +15,7 @@ use Nowo\FormKitBundle\Form\DataTransformer\MoneyModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\SwitchModelTransformer;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
+use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -28,6 +30,8 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use function array_key_exists;
+use function dirname;
+use function is_array;
 
 final class FormKitControllerTraitTest extends TestCase
 {
@@ -266,7 +270,7 @@ final class FormKitControllerTraitTest extends TestCase
         $calls   = [];
         $builder->expects(self::exactly(9))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder) {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
                 self::assertIsArray($opts);
                 $calls[] = [$name, $type];
 
@@ -325,7 +329,7 @@ final class FormKitControllerTraitTest extends TestCase
 
         $child->expects(self::exactly(2))
             ->method('addModelTransformer')
-            ->willReturnCallback(static function ($t) use (&$transformers, $child) {
+            ->willReturnCallback(static function ($t) use (&$transformers, $child): \PHPUnit\Framework\MockObject\MockObject {
                 $transformers[] = $t;
 
                 return $child;
@@ -337,7 +341,7 @@ final class FormKitControllerTraitTest extends TestCase
 
         $builder->expects(self::exactly(2))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$adds, $builder) {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$adds, $builder): \PHPUnit\Framework\MockObject\MockObject {
                 $adds[] = ['name' => $name, 'type' => $type, 'opts' => $opts];
 
                 return $builder;
@@ -460,7 +464,7 @@ final class FormKitControllerTraitTest extends TestCase
 
         $child->expects(self::exactly(3))
             ->method('addModelTransformer')
-            ->willReturnCallback(static function ($t) use (&$transformers, $child) {
+            ->willReturnCallback(static function ($t) use (&$transformers, $child): \PHPUnit\Framework\MockObject\MockObject {
                 $transformers[] = $t;
 
                 return $child;
@@ -468,7 +472,7 @@ final class FormKitControllerTraitTest extends TestCase
 
         $builder->expects(self::exactly(3))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$adds, $builder) {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$adds, $builder): \PHPUnit\Framework\MockObject\MockObject {
                 $adds[] = [$name, $type];
                 self::assertIsArray($opts);
 
@@ -608,5 +612,447 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->addTranslationsPublic($builder, [
             'form_type' => 'App\\Form\\TranslationItemType',
         ]);
+    }
+
+    public function testSettersStoreConfiguration(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+        };
+
+        $subject->setFormKitConfigName('compact');
+        $subject->setFormKitFormName('stored_form');
+        $subject->setFormKitTranslationsDefaults(['row_attr' => ['class' => 'row']]);
+        $subject->setFormKitTranslationsLocaleResolver(static fn (): array => ['default_locale' => 'de', 'enabled_locales' => ['de']]);
+
+        self::assertTrue(true);
+    }
+
+    public function testMergeSubFormAndRemoveFieldOptionKeysDelegateToHelper(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function merge(array $cfg): array
+            {
+                return $this->mergeSubFormFieldOptions($cfg);
+            }
+
+            public function remove(array $cfg, array $keys): array
+            {
+                return $this->removeFieldOptionKeys($cfg, $keys);
+            }
+        };
+
+        $merged = $subject->merge(['row_attr' => ['class' => 'extra']]);
+        self::assertArrayHasKey('row_attr', $merged);
+
+        $stripped = $subject->remove(['label' => 'x', 'help' => 'y'], ['help']);
+        self::assertSame(['label' => 'x'], $stripped);
+    }
+
+    public function testAddFieldBreakUsesStaticHtmlTypeWithDefaults(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function addBreak(FormBuilderInterface $builder): void
+            {
+                $this->addFieldBreak($builder, 'break_one', '<hr />');
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'break_one',
+                StaticHtmlType::class,
+                self::callback(static fn (array $opts): bool => $opts['html'] === '<hr />'
+                    && (!array_key_exists('label', $opts) || $opts['label'] === false)),
+            );
+
+        $subject->addBreak($builder);
+    }
+
+    public function testChoicePresetHelpersMergeExpandedAndMultipleFlags(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addSelectType($builder, 'country', ['choices' => ['es' => 'ES']]);
+                $this->addMultiSelectType($builder, 'tags', ['choices' => ['a' => 'A']]);
+                $this->addChoiceRadiosType($builder, 'priority', ['choices' => ['n' => 'N']]);
+                $this->addChoiceCheckboxesType($builder, 'roles', ['choices' => ['r' => 'R']]);
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+
+        $calls   = [];
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::exactly(4))
+            ->method('add')
+            ->willReturnCallback(static function ($name, $type, array $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
+                $calls[] = [$name, $opts['expanded'] ?? null, $opts['multiple'] ?? null];
+
+                return $builder;
+            });
+
+        $subject->run($builder);
+
+        self::assertSame([
+            ['country', false, false],
+            ['tags', false, true],
+            ['priority', true, false],
+            ['roles', true, true],
+        ], $calls);
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testAddMultiSelectSelectAllTypeUsesChoiceWhenBundleInstalled(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function addSelectAll(FormBuilderInterface $builder): void
+            {
+                $this->addMultiSelectSelectAllType($builder, 'roles', ['choices' => ['r' => 'R']]);
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'roles',
+                ChoiceType::class,
+                self::callback(static fn (array $opts): bool => ($opts['multiple'] ?? false) === true
+                    && ($opts['select_all'] ?? false) === true),
+            );
+
+        $subject->addSelectAll($builder);
+    }
+
+    public function testAddAutocompleteFieldTypeDelegatesToAddFieldType(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function addAutocomplete(FormBuilderInterface $builder): void
+            {
+                $this->addAutocompleteFieldType($builder, 'user', TextType::class, ['attr' => ['data-autocomplete' => '1']]);
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'user',
+                TextType::class,
+                self::callback(static fn (array $opts): bool => ($opts['attr']['data-autocomplete'] ?? null) === '1'),
+            );
+
+        $subject->addAutocomplete($builder);
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testAddCKEditorFieldTypeAddsFieldWhenBundleInstalled(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function addEditor(FormBuilderInterface $builder): void
+            {
+                $this->addCKEditorFieldType($builder, 'body');
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'body',
+                \FOS\CKEditorBundle\Form\Type\CKEditorType::class,
+                self::isType('array'),
+            );
+
+        $subject->addEditor($builder);
+    }
+
+    public function testAddTranslationsUsesFallbackLocaleContext(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function addTranslationsPublic(FormBuilderInterface $builder): void
+            {
+                $this->addTranslations($builder, [
+                    'form_type'    => 'App\\Form\\TranslationItemType',
+                    'form_options' => 'invalid',
+                ]);
+            }
+        };
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'translations',
+                TranslationsFormsType::class,
+                self::callback(static fn (array $opts): bool => $opts['default_locale'] === 'en'
+                    && $opts['enabled_locales'] === ['en']
+                    && is_array($opts['form_options'])
+                    && str_contains((string) ($opts['form_options']['row_attr']['class'] ?? ''), 'row')),
+            )
+            ->willReturn($builder);
+
+        $subject->addTranslationsPublic($builder);
+    }
+
+    public function testBuildFormFromArrayThrowsWhenTypeMissing(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function build(FormBuilderInterface $builder): void
+            {
+                $this->buildFormFromArray($builder, [
+                    'broken' => ['choices' => ['a' => 'A']],
+                ]);
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Field "broken" must have a non-empty "type" key.');
+
+        $subject->build($builder);
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testAddMultiSelectSelectAllTypeThrowsWhenBundleMissing(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function addSelectAll(FormBuilderInterface $builder): void
+            {
+                $this->addMultiSelectSelectAllType($builder, 'roles');
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(LogicException::class);
+        $subject->addSelectAll($builder);
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testAddCKEditorFieldTypeThrowsWhenBundleMissing(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function addEditor(FormBuilderInterface $builder): void
+            {
+                $this->addCKEditorFieldType($builder, 'body');
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(LogicException::class);
+        $subject->addEditor($builder);
+    }
+
+    public function testAddTranslationsThrowsWhenFormTypeMissing(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            public function addTranslationsPublic(FormBuilderInterface $builder): void
+            {
+                $this->addTranslations($builder, []);
+            }
+        };
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $subject->addTranslationsPublic($builder);
+    }
+
+    public function testAddTranslationsIgnoresCallableResolverWhenItDoesNotReturnArray(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+                $this->setFormKitTranslationsLocaleResolver(static fn (): string => 'invalid');
+            }
+
+            public function addTranslationsPublic(FormBuilderInterface $builder): void
+            {
+                $this->addTranslations($builder, ['form_type' => 'App\\Form\\TranslationItemType']);
+            }
+        };
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'translations',
+                TranslationsFormsType::class,
+                self::callback(static fn (array $opts): bool => $opts['default_locale'] === 'en'),
+            )
+            ->willReturn($builder);
+
+        $subject->addTranslationsPublic($builder);
+    }
+
+    public function testAddTranslationsUsesCallableLocaleResolverWhenItReturnsArray(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+                $this->setFormKitTranslationsLocaleResolver(static fn (): array => [
+                    'default_locale'  => 'fr',
+                    'enabled_locales' => ['fr', 'en'],
+                ]);
+            }
+
+            public function addTranslationsPublic(FormBuilderInterface $builder): void
+            {
+                $this->addTranslations($builder, ['form_type' => 'App\\Form\\TranslationItemType']);
+            }
+        };
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'translations',
+                TranslationsFormsType::class,
+                self::callback(static fn (array $opts): bool => $opts['default_locale'] === 'fr'
+                    && $opts['enabled_locales'] === ['fr', 'en']),
+            )
+            ->willReturn($builder);
+
+        $subject->addTranslationsPublic($builder);
     }
 }
