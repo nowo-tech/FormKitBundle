@@ -88,7 +88,7 @@ final class ConstraintDefinitionFactory
      */
     private function instantiate(string $class, array $options): Constraint
     {
-        return new $class($options);
+        return new $class(...$options);
     }
 
     private function resolveClass(string $name): string
