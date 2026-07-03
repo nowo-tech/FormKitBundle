@@ -48,7 +48,7 @@ final class ConstraintDefinitionFactoryTest extends TestCase
 
     public function testPassesThroughConstraintInstances(): void
     {
-        $constraint = new NotBlank(['message' => 'required']);
+        $constraint = new NotBlank(message: 'required');
         $created    = (new ConstraintDefinitionFactory())->create([$constraint]);
 
         self::assertSame($constraint, $created[0]);

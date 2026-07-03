@@ -6,21 +6,7 @@ namespace Nowo\FormKitBundle\Tests\Stubs;
 
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 
-/**
- * Test doubles for FormOptionsMergerInjectorCompilerPass reflection checks.
- */
-final class DummyFormTypeWithSetter
-{
-    public function setFormOptionsMerger(FormOptionsMerger $formOptionsMerger): static
-    {
-        return $this;
-    }
-}
-
-final class DummyFormTypeWithoutSetter
-{
-}
-
+/** Test double with a private setter (must be skipped by the compiler pass). */
 final class DummyFormTypeWithPrivateSetter
 {
     private function setFormOptionsMerger(FormOptionsMerger $formOptionsMerger): void

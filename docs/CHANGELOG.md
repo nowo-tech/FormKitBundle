@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.4] - 2026-07-03
+
+### Fixed
+
+- **ConstraintDefinitionFactory** — Instantiate Symfony Validator constraints with named arguments (`new $class(...$options)`) instead of a single options array, compatible with Symfony Validator 7.4+ / 8.x (`NotBlank`, `Length`, etc.).
+- **tests/Stubs** — PSR-4 autoload for compiler-pass dummy form types (fixes `FormOptionsMergerInjectorCompilerPassTest` after `composer dump-autoload -o`).
+
 ## [2.0.3] - 2026-07-03
 
 ### Added
@@ -114,6 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.4]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.4
 [2.0.3]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.3
 [2.0.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.2
 [2.0.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.1

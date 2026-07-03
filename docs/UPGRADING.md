@@ -31,6 +31,10 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.4 (2026-07-03)
+
+- **ConstraintDefinitionFactory** — Validator constraints from YAML/config use named constructor arguments (fixes CI on Symfony 7.4 / 8.x where array options are rejected).
+
 ### 2.0.3 (2026-07-03)
 
 - **Demos** — New **Nowo special fields** page (OTP, phone, password widgets, icon selector, Tiptap, CKEditor 5) in symfony7/symfony8; requires sibling `bundles/` mounted at `/var/nowo-bundles` when using Docker path repos (see [demo/README](../demo/README.md)).
