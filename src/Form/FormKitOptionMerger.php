@@ -7,16 +7,16 @@ namespace Nowo\FormKitBundle\Form;
 use function array_key_exists;
 use function is_array;
 
-final class FormKitOptionMerger
+final readonly class FormKitOptionMerger
 {
     public function __construct(
-        private readonly ?string $translationDomain,
-        private readonly bool $autoLabel,
-        private readonly bool $autoPlaceholder,
-        private readonly bool $autoHelp,
-        private readonly array $optionsConfig,
-        private readonly array $attrConfig,
-        private readonly array $rowAttrConfig,
+        private ?string $translationDomain,
+        private bool $autoLabel,
+        private bool $autoPlaceholder,
+        private bool $autoHelp,
+        private array $optionsConfig,
+        private array $attrConfig,
+        private array $rowAttrConfig,
     ) {
     }
 

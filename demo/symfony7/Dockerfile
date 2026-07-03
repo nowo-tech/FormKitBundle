@@ -1,5 +1,5 @@
-# FrankenPHP + PHP 8.4 for Form Kit Bundle Demo (Symfony 7)
-FROM dunglas/frankenphp:1-php8.4-alpine
+# FrankenPHP + PHP 8.2 for Form Kit Bundle Demo (Symfony 7)
+FROM dunglas/frankenphp:1-php8.2-alpine
 
 # Node + npm; pnpm via npm -g (Alpine nodejs often ships without corepack on PATH).
 RUN apk add --no-cache git unzip bash nodejs npm \

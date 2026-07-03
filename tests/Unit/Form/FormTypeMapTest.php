@@ -7,7 +7,9 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use PHPUnit\Framework\TestCase;
 
-class FormTypeMapTest extends TestCase
+use function dirname;
+
+final class FormTypeMapTest extends TestCase
 {
     public function testResolveReturnsFqcnForBuiltinType(): void
     {
@@ -34,5 +36,20 @@ class FormTypeMapTest extends TestCase
         $names = $map->typeNames();
         self::assertContains('text', $names);
         self::assertContains('email', $names);
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testOptionalTypesAreRegisteredWhenClassesExist(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $map = new FormTypeMap([]);
+
+        self::assertSame(\Symfony\UX\Dropzone\Form\DropzoneType::class, $map->resolve('dropzone'));
+        self::assertContains('dropzone', $map->typeNames());
     }
 }

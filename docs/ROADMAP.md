@@ -10,7 +10,7 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 - **FormKitTrait** + **FormTypeMap**: snake_case type names; optional UX/A2lix types (dropzone, cropper, translations); `type_map` config; `buildFormFromArray()` with string types.
 - **FormKitAbstractType**: base type using FormKitTrait; uses FormOptionsMerger + FormTypeMap for snake_case types with the same config model (`configs` / `default_config`).
 - **FormKitControllerTrait**, choice presets, model transformers, help modal (JS + Twig shells), optional FQCN helpers (Autocomplete, CKEditor).
-- **Demos**: Symfony 7.4 and 8.x with FormType, controller form, Search, Example, Dropzone, Cropper, translations, nested form, data transformers, choice fields (Select All Choice), CKEditor (FOS), multi-step wizard; locales `en` / `es` / `fr` / `de`.
+- **Demos**: Symfony 7.4 and 8.x with FormType, controller form, Search, Example, Dropzone, Cropper, translations, nested form, data transformers, choice fields (Select All Choice), **Nowo special fields** (ecosystem widgets via `addWithDefaults()`), CKEditor (FOS), UX Autocomplete, multi-step wizard; locales `en` / `es` / `fr` / `de`.
 
 ---
 

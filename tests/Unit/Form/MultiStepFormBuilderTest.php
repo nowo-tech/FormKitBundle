@@ -51,7 +51,7 @@ final class MultiStepFormBuilderTest extends TestCase
         $calls = [];
         $builder->expects(self::exactly(2))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder) {
+            ->willReturnCallback(static function ($name, $type, array $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
                 self::assertIsArray($opts);
                 self::assertSame('messages', $opts['translation_domain'] ?? null);
                 $calls[] = [$name, $type];
@@ -71,7 +71,6 @@ final class MultiStepFormBuilderTest extends TestCase
                 ],
             ],
             data: ['a' => 1],
-            configName: null,
         );
 
         self::assertSame($form, $result);

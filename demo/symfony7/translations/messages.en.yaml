@@ -11,6 +11,7 @@ demo_nav:
   nested: Nested
   data_transformers: 'Data transformers'
   choice_fields: 'Choice fields'
+  nowo_special_fields: 'Nowo fields'
   ckeditor: CKEditor
   ux_autocomplete: Autocomplete
   multi_step: 'Multi-step'
@@ -348,6 +349,10 @@ demo_pages:
       title: Multi-step
       description: 'Wizard from array: contact → address → confirm. Session-based steps.'
       button: 'Open Multi-step'
+    nowo_special_fields:
+      title: 'Nowo special fields'
+      description: 'Ecosystem widgets: OTP, phone, password toggle/strength, icon selector, Tiptap, CKEditor 5 — all via <code>addWithDefaults()</code> and Form Kit conventions.'
+      button: 'Open Nowo fields'
   form_type:
     page_title: 'FormType Example - Form Kit Demo'
     heading: 'FormType Example'
@@ -443,6 +448,44 @@ demo_pages:
   multistep_summary:
     page_title: 'Multi-step Summary - Form Kit Demo'
     heading: 'Multi-step — Summary'
+  nowo_special_fields:
+    page_title: 'Nowo special fields - Form Kit Demo'
+    heading: 'Nowo special fields'
+    intro: 'Showcase of <strong>nowo-tech</strong> ecosystem form widgets wired through <code>FormOptionsTrait::addWithDefaults()</code> — same translation keys and merge pipeline as built-in helpers.'
+    usage_1: '<code>nowo-tech/otp-input-bundle</code> (OTP digits), <code>phone-input-bundle</code> (E.164 + country selector), <code>password-toggle-bundle</code> and <code>password-strength-bundle</code>.'
+    usage_2: '<code>icon-selector-bundle</code> (Tom Select + icons), <code>tiptap-editor-bundle</code> and <code>ckeditor5-editor-bundle</code> for rich text (GPL CKEditor 5).'
+    usage_3: 'Also available elsewhere in this demo: <code>select-all-choice-bundle</code>, FOS CKEditor 4, UX Autocomplete, Dropzone, Cropper, A2lix translations.'
+    normalized_title: 'Submitted data (normalized)'
+
+nowo_special_fields_demo:
+  verification_code:
+    label: Verification code
+    placeholder: ''
+    help: 'Six-digit OTP via <code>nowo-tech/otp-input-bundle</code>.'
+  mobile_phone:
+    label: Mobile phone
+    placeholder: ''
+    help: 'International phone with prefix selector (<code>nowo-tech/phone-input-bundle</code>).'
+  secret_password:
+    label: Password (toggle)
+    placeholder: ''
+    help: 'Show/hide toggle from <code>nowo-tech/password-toggle-bundle</code>.'
+  account_password:
+    label: Account password (strength)
+    placeholder: ''
+    help: 'Live strength feedback via <code>nowo-tech/password-strength-bundle</code> (uses toggle when installed).'
+  app_icon:
+    label: Application icon
+    placeholder: Search icons…
+    help: 'Icon picker (<code>nowo-tech/icon-selector-bundle</code>) with heroicons and Bootstrap Icons.'
+  article_body:
+    label: Article body (Tiptap)
+    placeholder: ''
+    help: 'Rich text with <code>nowo-tech/tiptap-editor-bundle</code> (simple profile).'
+  page_content:
+    label: Page content (CKEditor 5)
+    placeholder: ''
+    help: 'Rich text with <code>nowo-tech/ckeditor5-editor-bundle</code> (GPL OSS build).'
 
 autocomplete_demo:
   topic:

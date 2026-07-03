@@ -59,6 +59,51 @@ final class FormKitTraitTest extends TestCase
             {
                 $this->buildFormFromArray($builder, $fields);
             }
+
+            public function addTextField(FormBuilderInterface $builder, string $name, array $options = []): void
+            {
+                $this->addText($builder, $name, $options);
+            }
+
+            public function addEmailField(FormBuilderInterface $builder, string $name): void
+            {
+                $this->addEmail($builder, $name);
+            }
+
+            public function addTextareaField(FormBuilderInterface $builder, string $name): void
+            {
+                $this->addTextarea($builder, $name);
+            }
+
+            public function addPasswordField(FormBuilderInterface $builder, string $name): void
+            {
+                $this->addPassword($builder, $name);
+            }
+
+            public function addUrlField(FormBuilderInterface $builder, string $name): void
+            {
+                $this->addUrl($builder, $name);
+            }
+
+            public function addIntegerField(FormBuilderInterface $builder, string $name): void
+            {
+                $this->addInteger($builder, $name);
+            }
+
+            public function addNumberField(FormBuilderInterface $builder, string $name): void
+            {
+                $this->addNumber($builder, $name);
+            }
+
+            public function addCheckboxField(FormBuilderInterface $builder, string $name): void
+            {
+                $this->addCheckbox($builder, $name);
+            }
+
+            public function addChoiceField(FormBuilderInterface $builder, string $name): void
+            {
+                $this->addChoice($builder, $name);
+            }
         };
     }
 
@@ -121,5 +166,61 @@ final class FormKitTraitTest extends TestCase
                 'choices' => ['Support' => 'support'],
             ],
         ]);
+    }
+
+    public function testBuildFormFromArrayThrowsWhenTypeIsMissing(): void
+    {
+        $type = $this->createType();
+        $type->setFormOptionsMerger($this->createMerger());
+        $type->setFormTypeMap(new FormTypeMap([]));
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Field "broken" must have a non-empty "type" key.');
+
+        $type->addFromArray($builder, [
+            'broken' => ['choices' => ['a' => 'A']],
+        ]);
+    }
+
+    public function testPhase2AddHelpersDelegateToAddField(): void
+    {
+        $type = $this->createType();
+        $type->setFormOptionsMerger($this->createMerger());
+        $type->setFormTypeMap(new FormTypeMap([]));
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $calls   = [];
+        $builder->expects(self::exactly(9))
+            ->method('add')
+            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
+                $calls[] = [$name, $fqcn];
+                self::assertIsArray($opts);
+
+                return $builder;
+            });
+
+        $type->addTextField($builder, 'text');
+        $type->addEmailField($builder, 'email');
+        $type->addTextareaField($builder, 'textarea');
+        $type->addPasswordField($builder, 'password');
+        $type->addUrlField($builder, 'url');
+        $type->addIntegerField($builder, 'integer');
+        $type->addNumberField($builder, 'number');
+        $type->addCheckboxField($builder, 'checkbox');
+        $type->addChoiceField($builder, 'choice');
+
+        self::assertSame([
+            ['text', \Symfony\Component\Form\Extension\Core\Type\TextType::class],
+            ['email', \Symfony\Component\Form\Extension\Core\Type\EmailType::class],
+            ['textarea', \Symfony\Component\Form\Extension\Core\Type\TextareaType::class],
+            ['password', \Symfony\Component\Form\Extension\Core\Type\PasswordType::class],
+            ['url', \Symfony\Component\Form\Extension\Core\Type\UrlType::class],
+            ['integer', \Symfony\Component\Form\Extension\Core\Type\IntegerType::class],
+            ['number', \Symfony\Component\Form\Extension\Core\Type\NumberType::class],
+            ['checkbox', \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class],
+            ['choice', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class],
+        ], $calls);
     }
 }

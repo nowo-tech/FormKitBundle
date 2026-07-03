@@ -38,4 +38,27 @@ final class BoolModelTransformerTest extends TestCase
         self::assertSame(0, $t->reverseTransform(''));
         self::assertSame(0, $t->reverseTransform(null));
     }
+
+    public function testTransformTreatsEmptyStringAsOff(): void
+    {
+        $t = new BoolModelTransformer(1, 0);
+
+        self::assertFalse($t->transform('   '));
+    }
+
+    public function testTransformAndReverseTransformFallbackForUnsupportedTypes(): void
+    {
+        $t = new BoolModelTransformer(1, 0);
+
+        self::assertFalse($t->transform(1.5));
+        self::assertSame(0, $t->reverseTransform([]));
+    }
+
+    public function testReverseTransformMapsNumericStringToOnOrOffValue(): void
+    {
+        $t = new BoolModelTransformer(1, 0);
+
+        self::assertSame(1, $t->reverseTransform('1'));
+        self::assertSame(0, $t->reverseTransform('2'));
+    }
 }

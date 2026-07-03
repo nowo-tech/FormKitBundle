@@ -10,6 +10,7 @@ demo_nav:
   nested: Anidado
   data_transformers: 'Transformadores de datos'
   choice_fields: 'Campos de elección'
+  nowo_special_fields: 'Campos Nowo'
   ckeditor: CKEditor
   ux_autocomplete: Autocompletado
   multi_step: 'Varios pasos'
@@ -335,6 +336,10 @@ demo_pages:
       title: 'Varios pasos'
       description: 'Asistente desde un array: contacto → dirección → confirmar. Pasos en sesión.'
       button: 'Abrir varios pasos'
+    nowo_special_fields:
+      title: 'Campos especiales Nowo'
+      description: 'Widgets del ecosistema: OTP, teléfono, contraseña con toggle/fuerza, selector de iconos, Tiptap, CKEditor 5 — todo con <code>addWithDefaults()</code> y convenciones Form Kit.'
+      button: 'Abrir campos Nowo'
   form_type:
     page_title: 'Ejemplo FormType - Demo Form Kit'
     heading: 'Ejemplo FormType'
@@ -430,6 +435,44 @@ demo_pages:
   multistep_summary:
     page_title: 'Resumen por pasos - Demo Form Kit'
     heading: 'Varios pasos — Resumen'
+  nowo_special_fields:
+    page_title: 'Campos especiales Nowo - Demo Form Kit'
+    heading: 'Campos especiales Nowo'
+    intro: 'Muestra de widgets de formulario del ecosistema <strong>nowo-tech</strong> integrados con <code>FormOptionsTrait::addWithDefaults()</code> — mismas claves de traducción y pipeline de fusión que los helpers integrados.'
+    usage_1: '<code>nowo-tech/otp-input-bundle</code> (dígitos OTP), <code>phone-input-bundle</code> (E.164 + selector de país), <code>password-toggle-bundle</code> y <code>password-strength-bundle</code>.'
+    usage_2: '<code>icon-selector-bundle</code> (Tom Select + iconos), <code>tiptap-editor-bundle</code> y <code>ckeditor5-editor-bundle</code> para texto enriquecido (CKEditor 5 GPL).'
+    usage_3: 'También disponibles en otras páginas de esta demo: <code>select-all-choice-bundle</code>, FOS CKEditor 4, UX Autocomplete, Dropzone, Cropper, traducciones A2lix.'
+    normalized_title: 'Datos enviados (normalizados)'
+
+nowo_special_fields_demo:
+  verification_code:
+    label: Código de verificación
+    placeholder: ''
+    help: 'OTP de seis dígitos con <code>nowo-tech/otp-input-bundle</code>.'
+  mobile_phone:
+    label: Teléfono móvil
+    placeholder: ''
+    help: 'Teléfono internacional con selector de prefijo (<code>nowo-tech/phone-input-bundle</code>).'
+  secret_password:
+    label: Contraseña (toggle)
+    placeholder: ''
+    help: 'Mostrar/ocultar con <code>nowo-tech/password-toggle-bundle</code>.'
+  account_password:
+    label: Contraseña de cuenta (fuerza)
+    placeholder: ''
+    help: 'Indicador de fuerza en vivo con <code>nowo-tech/password-strength-bundle</code> (usa toggle si está instalado).'
+  app_icon:
+    label: Icono de la aplicación
+    placeholder: Buscar iconos…
+    help: 'Selector de iconos (<code>nowo-tech/icon-selector-bundle</code>) con heroicons y Bootstrap Icons.'
+  article_body:
+    label: Cuerpo del artículo (Tiptap)
+    placeholder: ''
+    help: 'Texto enriquecido con <code>nowo-tech/tiptap-editor-bundle</code> (perfil simple).'
+  page_content:
+    label: Contenido de página (CKEditor 5)
+    placeholder: ''
+    help: 'Texto enriquecido con <code>nowo-tech/ckeditor5-editor-bundle</code> (build OSS GPL).'
 
 autocomplete_demo:
   topic:

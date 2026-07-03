@@ -16,11 +16,11 @@ use const JSON_UNESCAPED_UNICODE;
  * Transforms JSON-compatible model values (array/object/null) to a pretty JSON string
  * for textarea widgets, and back to associative arrays on submit.
  */
-final class JsonModelTransformer implements DataTransformer
+final readonly class JsonModelTransformer implements DataTransformer
 {
     public function __construct(
-        private readonly bool $prettyPrint = true,
-        private readonly bool $unescapedUnicode = true,
+        private bool $prettyPrint = true,
+        private bool $unescapedUnicode = true,
     ) {
     }
 

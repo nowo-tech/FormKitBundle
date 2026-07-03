@@ -7,6 +7,9 @@ namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 use Nowo\FormKitBundle\DependencyInjection\FormOptionsMergerInjectorCompilerPass;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use Nowo\FormKitBundle\Tests\Stubs\DummyFormTypeWithoutSetter;
+use Nowo\FormKitBundle\Tests\Stubs\DummyFormTypeWithPrivateSetter;
+use Nowo\FormKitBundle\Tests\Stubs\DummyFormTypeWithSetter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -41,15 +44,40 @@ final class FormOptionsMergerInjectorCompilerPassTest extends TestCase
         $defNoSetter = $container->getDefinition('dummy.no_setter');
         self::assertSame([], $defNoSetter->getMethodCalls());
     }
-}
 
-final class DummyFormTypeWithSetter
-{
-    public function setFormOptionsMerger(FormOptionsMerger $formOptionsMerger): void
+    public function testDoesNothingWhenMergerServiceIsMissing(): void
     {
-    }
-}
+        $container = new ContainerBuilder();
+        $container->register('dummy.form_type', DummyFormTypeWithSetter::class)->addTag('form.type');
 
-final class DummyFormTypeWithoutSetter
-{
+        $pass = new FormOptionsMergerInjectorCompilerPass();
+        $pass->process($container);
+
+        self::assertSame([], $container->getDefinition('dummy.form_type')->getMethodCalls());
+    }
+
+    public function testSkipsDefinitionsWithoutResolvableClass(): void
+    {
+        $container = new ContainerBuilder();
+        $container->setDefinition(FormOptionsMerger::class, (new Definition(FormOptionsMerger::class))
+            ->setArguments([[], 'default', new Reference(ConstraintDefinitionFactory::class)])
+            ->setPublic(false));
+
+        $container->register('dummy.null_class', DummyFormTypeWithSetter::class)
+            ->addTag('form.type')
+            ->setClass(null);
+
+        $container->register('dummy.missing_class', DummyFormTypeWithSetter::class)
+            ->addTag('form.type')
+            ->setClass('App\\Missing\\FormType');
+
+        $container->register('dummy.private_setter', DummyFormTypeWithPrivateSetter::class)->addTag('form.type');
+
+        $pass = new FormOptionsMergerInjectorCompilerPass();
+        $pass->process($container);
+
+        self::assertSame([], $container->getDefinition('dummy.null_class')->getMethodCalls());
+        self::assertSame([], $container->getDefinition('dummy.missing_class')->getMethodCalls());
+        self::assertSame([], $container->getDefinition('dummy.private_setter')->getMethodCalls());
+    }
 }

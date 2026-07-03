@@ -11,11 +11,11 @@ use function is_string;
  * Converts model values (0/1, 1/0, "1"/"0", true/false) into a boolean view value
  * for CheckboxType, and back to the model "on/off" scalar.
  */
-final class BoolModelTransformer implements DataTransformer
+final readonly class BoolModelTransformer implements DataTransformer
 {
     public function __construct(
-        private readonly int $onValue = 1,
-        private readonly int $offValue = 0,
+        private int $onValue = 1,
+        private int $offValue = 0,
     ) {
     }
 

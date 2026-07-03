@@ -263,7 +263,7 @@ trait FormKitControllerTrait
      */
     protected function addMultiSelectSelectAllType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
-        if (!class_exists('Nowo\\SelectAllChoiceBundle\\NowoSelectAllChoiceBundle')) {
+        if (!class_exists(\Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle::class)) {
             throw new LogicException('addMultiSelectSelectAllType() requires nowo-tech/select-all-choice-bundle. Use addMultiSelectType() or install the bundle.');
         }
 
@@ -325,11 +325,11 @@ trait FormKitControllerTrait
      */
     protected function addCKEditorFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
-        if (!class_exists('FOS\\CKEditorBundle\\Form\\Type\\CKEditorType')) {
+        if (!class_exists(\FOS\CKEditorBundle\Form\Type\CKEditorType::class)) {
             throw new LogicException('addCKEditorFieldType() requires friendsofsymfony/ckeditor-bundle. Install it and run bin/console ckeditor:install.');
         }
 
-        $this->addFieldType($builder, $fieldName, 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType', $options, $configName, $formName);
+        $this->addFieldType($builder, $fieldName, \FOS\CKEditorBundle\Form\Type\CKEditorType::class, $options, $configName, $formName);
     }
 
     /**
@@ -371,8 +371,8 @@ trait FormKitControllerTrait
             $finalOptions['form_options']['attr'] = [];
         }
 
-        $finalOptions['form_options']['row_attr']['class'] = trim((string) ($finalOptions['form_options']['row_attr']['class'] ?? '') . ' row');
-        $finalOptions['form_options']['attr']['class']     = trim((string) ($finalOptions['form_options']['attr']['class'] ?? '') . ' row');
+        $finalOptions['form_options']['row_attr']['class'] = trim(($finalOptions['form_options']['row_attr']['class'] ?? '') . ' row');
+        $finalOptions['form_options']['attr']['class']     = trim(($finalOptions['form_options']['attr']['class'] ?? '') . ' row');
 
         return $builder->add('translations', TranslationsFormsType::class, $finalOptions);
     }
@@ -599,15 +599,15 @@ trait FormKitControllerTrait
         $labelAttrBase = ['class' => 'form-label'];
 
         if ($labelPosition === 'horizontal') {
-            $fieldConfiguration['label'] = $fieldConfiguration['label'] ?? false;
+            $fieldConfiguration['label'] ??= false;
             if (!array_key_exists('choices', $fieldConfiguration)) {
                 $fieldConfiguration['choices'] = [$labelKey => $switchValue];
             }
         }
 
         if ($labelPosition === 'vertical') {
-            $rowAttrBase                        = ['class' => 'd-flex flex-column'];
-            $fieldConfiguration['choice_label'] = $fieldConfiguration['choice_label'] ?? false;
+            $rowAttrBase = ['class' => 'd-flex flex-column'];
+            $fieldConfiguration['choice_label'] ??= false;
             if (!array_key_exists('choices', $fieldConfiguration)) {
                 $fieldConfiguration['choices'] = ['active' => $switchValue];
             }
@@ -626,8 +626,8 @@ trait FormKitControllerTrait
         $fieldConfiguration['label_attr']          = array_merge($labelAttrBase, $existingLabelAttr);
         $fieldConfiguration['label_attr']['class'] = $labelClass;
 
-        $fieldConfiguration['expanded'] = $fieldConfiguration['expanded'] ?? true;
-        $fieldConfiguration['multiple'] = $fieldConfiguration['multiple'] ?? true;
+        $fieldConfiguration['expanded'] ??= true;
+        $fieldConfiguration['multiple'] ??= true;
 
         unset($fieldConfiguration['label_position'], $fieldConfiguration['switch_value']);
 

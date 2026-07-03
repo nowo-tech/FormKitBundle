@@ -25,6 +25,8 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use function array_key_exists;
+use function dirname;
+use function is_array;
 
 final class FormOptionsTraitTest extends TestCase
 {
@@ -361,7 +363,7 @@ final class FormOptionsTraitTest extends TestCase
 
         $child->expects(self::once())
             ->method('addModelTransformer')
-            ->with(self::callback(static fn ($t) => $t instanceof JsonModelTransformer));
+            ->with(self::callback(static fn ($t): bool => $t instanceof JsonModelTransformer));
 
         $builder->expects(self::once())
             ->method('add')
@@ -568,7 +570,7 @@ final class FormOptionsTraitTest extends TestCase
         $calls = [];
         $builder->expects(self::exactly(9))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder) {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
                 self::assertIsArray($opts);
                 $calls[] = [$name, $type];
 
@@ -633,16 +635,14 @@ final class FormOptionsTraitTest extends TestCase
             ->with(
                 'translations',
                 TranslationsFormsType::class,
-                self::callback(static function (array $opts): bool {
-                    return $opts['form_type'] === 'App\\Form\\TranslationItemType'
-                        && $opts['default_locale'] === 'es'
-                        && $opts['enabled_locales'] === ['es', 'en']
-                        && $opts['required_locales'] === ['es']
-                        && ($opts['form_options']['row_attr']['class'] ?? '') === 'row'
-                        && ($opts['form_options']['attr']['class'] ?? '') === 'row'
-                        && array_key_exists('data_class', $opts)
-                        && $opts['data_class'] === null;
-                }),
+                self::callback(static fn (array $opts): bool => $opts['form_type'] === 'App\\Form\\TranslationItemType'
+                    && $opts['default_locale'] === 'es'
+                    && $opts['enabled_locales'] === ['es', 'en']
+                    && $opts['required_locales'] === ['es']
+                    && ($opts['form_options']['row_attr']['class'] ?? '') === 'row'
+                    && ($opts['form_options']['attr']['class'] ?? '') === 'row'
+                    && array_key_exists('data_class', $opts)
+                    && $opts['data_class'] === null),
             );
 
         $type->addTranslationsField($builder);
@@ -668,12 +668,10 @@ final class FormOptionsTraitTest extends TestCase
         };
 
         $type->setFormOptionsMerger($this->createMerger());
-        $type->setFormKitTranslationsLocaleResolver(static function (array $options, object $subject): array {
-            return [
-                'default_locale'  => 'fr',
-                'enabled_locales' => ['fr', 'en'],
-            ];
-        });
+        $type->setFormKitTranslationsLocaleResolver(static fn (array $options, object $subject): array => [
+            'default_locale'  => 'fr',
+            'enabled_locales' => ['fr', 'en'],
+        ]);
 
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::once())
@@ -714,7 +712,7 @@ final class FormOptionsTraitTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::exactly(4))
             ->method('add')
-            ->willReturnCallback(static function (string $name, string $fqcn, array $opts) use (&$calls, $builder) {
+            ->willReturnCallback(static function (string $name, string $fqcn, array $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
                 $calls[] = [$name, $fqcn, $opts['expanded'] ?? null, $opts['multiple'] ?? null];
 
                 return $builder;
@@ -730,6 +728,11 @@ final class FormOptionsTraitTest extends TestCase
         ], $calls);
     }
 
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
     public function testAddMultiSelectSelectAllThrowsWhenBundleMissing(): void
     {
         $type = new class {
@@ -753,6 +756,11 @@ final class FormOptionsTraitTest extends TestCase
         $type->run($builder);
     }
 
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
     public function testAddCKEditorFieldThrowsWhenBundleMissing(): void
     {
         $type = new class {
@@ -800,5 +808,318 @@ final class FormOptionsTraitTest extends TestCase
             ->with('city', TextType::class, self::isType('array'));
 
         $type->run($builder);
+    }
+
+    public function testSettersStoreConfiguration(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+        $type->setFormKitConfigName('bootstrap');
+        $type->setFormKitTranslationsDefaults(['label' => false]);
+        $type->setFormKitTranslationsLocaleResolver(static fn (): array => ['default_locale' => 'es', 'enabled_locales' => ['es']]);
+
+        self::assertTrue(true);
+    }
+
+    public function testMergeSubFormAndRemoveFieldOptionKeys(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function merge(array $cfg): array
+            {
+                return $this->mergeSubFormFieldOptions($cfg);
+            }
+
+            public function remove(array $cfg, array $keys): array
+            {
+                return $this->removeFieldOptionKeys($cfg, $keys);
+            }
+        };
+
+        self::assertArrayHasKey('row_attr', $type->merge([]));
+        self::assertSame(['label' => 'x'], $type->remove(['label' => 'x', 'help' => 'y'], ['help']));
+    }
+
+    public function testAddFieldBreakAddsStaticHtmlField(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function addBreak(FormBuilderInterface $builder): void
+            {
+                $this->addFieldBreak($builder, 'break', '<div class="w-100"></div>');
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'break',
+                \Nowo\FormKitBundle\Form\Type\StaticHtmlType::class,
+                self::callback(static fn (array $opts): bool => $opts['html'] === '<div class="w-100"></div>'),
+            );
+
+        $type->addBreak($builder);
+    }
+
+    public function testAddTranslationsNormalizesInvalidFormOptionsShape(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function addTranslationsField(FormBuilderInterface $builder): void
+            {
+                $this->addTranslations($builder, [
+                    'form_type'    => 'App\\Form\\TranslationItemType',
+                    'form_options' => 'invalid',
+                ]);
+            }
+        };
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'translations',
+                TranslationsFormsType::class,
+                self::callback(static fn (array $opts): bool => is_array($opts['form_options'])
+                    && str_contains((string) ($opts['form_options']['row_attr']['class'] ?? ''), 'row')),
+            );
+
+        $type->addTranslationsField($builder);
+    }
+
+    public function testAddTranslationsUsesFallbackLocaleContext(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function addTranslationsField(FormBuilderInterface $builder): void
+            {
+                $this->addTranslations($builder, ['form_type' => 'App\\Form\\TranslationItemType']);
+            }
+        };
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'translations',
+                TranslationsFormsType::class,
+                self::callback(static fn (array $opts): bool => $opts['default_locale'] === 'en'
+                    && $opts['enabled_locales'] === ['en']),
+            );
+
+        $type->addTranslationsField($builder);
+    }
+
+    public function testAddTranslationsThrowsWhenFormTypeMissing(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function addTranslationsField(FormBuilderInterface $builder): void
+            {
+                $this->addTranslations($builder, []);
+            }
+        };
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $type->addTranslationsField($builder);
+    }
+
+    public function testAddTranslationsUsesRequiredLocalesFromLocaleContext(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            protected function resolveFormKitTranslationsLocaleContext(array $options): array
+            {
+                return [
+                    'default_locale'   => 'es',
+                    'enabled_locales'  => ['es', 'en'],
+                    'required_locales' => ['es', 'en'],
+                ];
+            }
+
+            public function addTranslationsField(FormBuilderInterface $builder): void
+            {
+                $this->addTranslations($builder, ['form_type' => 'App\\Form\\TranslationItemType']);
+            }
+        };
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'translations',
+                TranslationsFormsType::class,
+                self::callback(static fn (array $opts): bool => $opts['required_locales'] === ['es', 'en']),
+            );
+
+        $type->addTranslationsField($builder);
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testAddMultiSelectSelectAllAddsChoiceWhenBundleInstalled(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'choice_demo';
+            }
+
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addMultiSelectSelectAll($builder, 'roles', ['choices' => ['r' => 'R']]);
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with(
+                'roles',
+                ChoiceType::class,
+                self::callback(static fn (array $opts): bool => ($opts['select_all'] ?? false) === true),
+            );
+
+        $type->run($builder);
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testAddCKEditorFieldAddsFieldWhenBundleInstalled(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'ckeditor_demo';
+            }
+
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addCKEditorField($builder, 'body');
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with('body', \FOS\CKEditorBundle\Form\Type\CKEditorType::class, self::isType('array'));
+
+        $type->run($builder);
+    }
+
+    public function testDataTransformerSwitchConfigurationFormBranchRebuildsChild(): void
+    {
+        $merger = $this->createMerger();
+        $type   = new class($merger) {
+            use FormOptionsTrait;
+
+            public function __construct(FormOptionsMerger $merger)
+            {
+                $this->setFormOptionsMerger($merger);
+            }
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function attach(\Symfony\Component\Form\FormInterface $form, string $field): void
+            {
+                $this->dataTransformerSwitchConfiguration($form, $field, 1);
+            }
+        };
+
+        $childForm = $this->createMock(\Symfony\Component\Form\FormInterface::class);
+        $childForm->method('getConfig')->willReturn($this->createConfiguredMock(\Symfony\Component\Form\FormConfigInterface::class, [
+            'getOptions' => ['expanded' => true, 'multiple' => true],
+        ]));
+
+        $childBuilder = $this->createMock(FormBuilderInterface::class);
+        $childBuilder->expects(self::once())->method('addModelTransformer')->with(self::isInstanceOf(SwitchModelTransformer::class));
+        $childBuilder->method('getForm')->willReturn($this->createMock(\Symfony\Component\Form\FormInterface::class));
+
+        $factory = $this->createMock(\Symfony\Component\Form\FormFactoryInterface::class);
+        $factory->expects(self::once())
+            ->method('createNamedBuilder')
+            ->with('is_active', ChoiceType::class, null, ['expanded' => true, 'multiple' => true])
+            ->willReturn($childBuilder);
+
+        $formConfig = $this->createMock(\Symfony\Component\Form\FormConfigInterface::class);
+        $formConfig->method('getFormFactory')->willReturn($factory);
+
+        $form = $this->createMock(\Symfony\Component\Form\FormInterface::class);
+        $form->expects(self::once())->method('get')->with('is_active')->willReturn($childForm);
+        $form->expects(self::once())->method('remove')->with('is_active');
+        $form->expects(self::once())->method('add');
+        $form->method('getConfig')->willReturn($formConfig);
+
+        $type->attach($form, 'is_active');
     }
 }

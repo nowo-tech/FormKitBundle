@@ -1,0 +1,6 @@
+nowo_icon_selector:
+    icon_sets:
+        - heroicons
+        - bootstrap-icons
+    use_iconify_collection: false
+    form_theme: bootstrap_5_layout.html.twig

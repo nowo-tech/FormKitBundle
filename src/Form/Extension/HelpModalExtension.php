@@ -109,7 +109,7 @@ final class HelpModalExtension extends AbstractTypeExtension
         /** @var string|null $titleHtml Raw HTML for modal title (optional); plain $title is escaped on the client if this is null */
         $titleHtml = isset($merged['title_html']) && is_string($merged['title_html']) ? $merged['title_html'] : null;
 
-        $content = isset($merged['content']) ? $merged['content'] : null;
+        $content = $merged['content'] ?? null;
 
         $triggerClass = (string) ($merged['trigger_class'] ?? 'nowo-help-modal-trigger nowo-help-modal-trigger--circle');
 
@@ -117,7 +117,7 @@ final class HelpModalExtension extends AbstractTypeExtension
 
         $modalId = isset($merged['id']) && is_string($merged['id'])
             ? $merged['id']
-            : 'nowo-help-modal-' . (string) ($view->vars['id'] ?? spl_object_hash($form));
+            : 'nowo-help-modal-' . ($view->vars['id'] ?? spl_object_hash($form));
 
         if (is_string($content)) {
             // JSON needs explicit string value.

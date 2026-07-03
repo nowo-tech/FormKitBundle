@@ -27,4 +27,27 @@ final class CsvModelTransformerTest extends TestCase
         self::assertSame([], $t->reverseTransform(''));
         self::assertSame([], $t->reverseTransform(null));
     }
+
+    public function testTransformReturnsStringValueUnchanged(): void
+    {
+        $t = new CsvModelTransformer(',', true, false);
+
+        self::assertSame('already,csv', $t->transform('already,csv'));
+    }
+
+    public function testTransformSkipsNullTokensAndNonArrayValues(): void
+    {
+        $t = new CsvModelTransformer(',', true, false);
+
+        self::assertSame('a', $t->transform(['a', null]));
+        self::assertSame('', $t->transform(123));
+    }
+
+    public function testReverseTransformAcceptsArrayAndRejectsNonString(): void
+    {
+        $t = new CsvModelTransformer(',', true, false);
+
+        self::assertSame(['x'], $t->reverseTransform(['x']));
+        self::assertSame([], $t->reverseTransform(123));
+    }
 }

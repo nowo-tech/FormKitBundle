@@ -1,10 +1,12 @@
 # Form Kit Bundle
 
-[![CI](https://github.com/nowo-tech/FormKitBundle/actions/workflows/ci.yml/badge.svg)](https://github.com/nowo-tech/FormKitBundle/actions/workflows/ci.yml) [![Packagist Version](https://img.shields.io/packagist/v/nowo-tech/form-kit-bundle.svg?style=flat)](https://packagist.org/packages/nowo-tech/form-kit-bundle) [![Packagist Downloads](https://img.shields.io/packagist/dt/nowo-tech/form-kit-bundle.svg)](https://packagist.org/packages/nowo-tech/form-kit-bundle) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php)](https://php.net) [![Symfony](https://img.shields.io/badge/Symfony-7.4%20%7C%208.0%20%7C%208.1-000000?logo=symfony)](https://symfony.com)
+[![CI](https://github.com/nowo-tech/FormKitBundle/actions/workflows/ci.yml/badge.svg)](https://github.com/nowo-tech/FormKitBundle/actions/workflows/ci.yml) [![Packagist Version](https://img.shields.io/packagist/v/nowo-tech/form-kit-bundle.svg?style=flat)](https://packagist.org/packages/nowo-tech/form-kit-bundle) [![Packagist Downloads](https://img.shields.io/packagist/dt/nowo-tech/form-kit-bundle.svg)](https://packagist.org/packages/nowo-tech/form-kit-bundle) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php)](https://php.net) [![Symfony](https://img.shields.io/badge/Symfony-7.4%20%7C%208.0%20%7C%208.1-000000?logo=symfony)](https://symfony.com) [![GitHub stars](https://img.shields.io/github/stars/nowo-tech/FormKitBundle.svg?style=social&label=Star)](https://github.com/nowo-tech/FormKitBundle) [![Coverage](https://img.shields.io/badge/Coverage-99.6%25-brightgreen)](#tests-and-coverage)
+
+> ⭐ **Found this useful?** Install from [Packagist](https://packagist.org/packages/nowo-tech/form-kit-bundle) and give the repo a star on GitHub.
 
 Symfony bundle to reduce repetitive form field options: convention-based translation keys (`form_snake.field_snake.label`, `.placeholder`, `.help`), configurable defaults and multiple configs via YAML, and cascading option merge (global → field type → form → field).
 
-**Compatible with Symfony 7.4, 8.0 and 8.1** (PHP 8.2+; Symfony 8 requires PHP 8.4+).
+**Minimum requirements: PHP 8.2 and Symfony 7.4.** Also compatible with Symfony 8.0 and 8.1 (require PHP 8.4+).
 
 ## Features
 
@@ -71,7 +73,7 @@ The bundle includes demos (Symfony 7 and 8) that run with **FrankenPHP** (Caddy 
 - **Locale in the URL** — routes are under `/{locale}/…` (`en`, `es`, `fr`, `de`); `/` redirects to the default locale.
 - **FormType** example (contact, `buildFormFromArray`), **help modal** sample (`help-modal.js` + `assets:install`; include `@NowoFormKit/help_modal/shells.html.twig` for overridable modal shells).
 - Form built in the **controller** (`FormKitControllerTrait` / `FormOptionsMerger::resolve()`).
-- **Search**, **example**, **Dropzone**, **Cropper**, **translations** (A2lix), **nested**, **data transformers**, **choice fields** (select / multiselect / radios / checkboxes; optional Select All Choice on Symfony 7/8 demos), **CKEditor** (FOSCKEditorBundle), **multi-step** wizard.
+- **Search**, **example**, **Dropzone**, **Cropper**, **translations** (A2lix), **nested**, **data transformers**, **choice fields** (select / multiselect / radios / checkboxes; optional Select All Choice on Symfony 7/8 demos), **Nowo special fields** (OTP, phone, password, icon selector, Tiptap, CKEditor 5 — see [demo/README.md](demo/README.md)), **CKEditor** (FOSCKEditorBundle), **UX Autocomplete**, **multi-step** wizard.
 
 Run a demo via Docker/Make from the bundle root; see [demo/README.md](demo/README.md) and [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
@@ -81,12 +83,9 @@ For CSS frameworks, see [docs/USAGE.md](docs/USAGE.md) for ready-to-use configur
 
 Developer-facing docs and comments (Markdown, PHPDoc, JSDoc) are **English only**; see [Contributing — Language policy](docs/CONTRIBUTING.md#language-policy).
 
-- [Demo with FrankenPHP (development and production)](docs/DEMO-FRANKENPHP.md)
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
 - [Usage](docs/USAGE.md)
-- [Help modal (field option + frontend script)](docs/USAGE.md#help-modal-optional)
-- [Overriding bundle templates](docs/USAGE.md#overriding-bundle-templates)
 - [Contributing](docs/CONTRIBUTING.md)
 - [Changelog](docs/CHANGELOG.md)
 - [Upgrading](docs/UPGRADING.md)
@@ -96,10 +95,18 @@ Developer-facing docs and comments (Markdown, PHPDoc, JSDoc) are **English only*
 - [Spec-driven development](docs/SPEC-DRIVEN-DEVELOPMENT.md)
 - [Roadmap](docs/ROADMAP.md)
 
+### Additional documentation
+
+- [Demo with FrankenPHP (development and production)](docs/DEMO-FRANKENPHP.md)
+- [Help modal (field option + frontend script)](docs/USAGE.md#help-modal-optional)
+- [Overriding bundle templates](docs/USAGE.md#overriding-bundle-templates)
+
 ## Tests and coverage
 
-- Tests: PHPUnit (PHP)
-- PHP: 100%
+- Tests: PHPUnit (PHP), Vitest (TypeScript)
+- PHP: 99.59%
+- TS/JS: 100%
+- Python: N/A
 
 ## License
 

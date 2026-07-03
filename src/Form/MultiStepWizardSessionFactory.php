@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final class MultiStepWizardSessionFactory
+final readonly class MultiStepWizardSessionFactory
 {
     public function __construct(
-        private readonly RequestStack $requestStack
+        private RequestStack $requestStack
     ) {
     }
 

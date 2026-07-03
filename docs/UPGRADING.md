@@ -31,6 +31,13 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.3 (2026-07-03)
+
+- **Demos** — New **Nowo special fields** page (OTP, phone, password widgets, icon selector, Tiptap, CKEditor 5) in symfony7/symfony8; requires sibling `bundles/` mounted at `/var/nowo-bundles` when using Docker path repos (see [demo/README](../demo/README.md)).
+- **demo/symfony7** — PHP **8.2** image, **a2lix ^3.2**, A2lix config key `locales` (not `enabled_locales`).
+- **demo/symfony8** — Composer requires **PHP >= 8.4**.
+- **Tests / docs** — PHP coverage **99.59%**; README badges and TOC updates; no bundle API or config key changes for consumers.
+
 ### 2.0.2 (2026-06-11)
 
 Repository-only (demos / Makefiles; no Composer package or bundle API change):
