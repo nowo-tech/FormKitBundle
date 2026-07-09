@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.6] - 2026-07-09
+
+### Added
+
+- **GitHub Spec Kit** — Baseline spec workflow for maintainers: [`.specify/`](../.specify/), Cursor Agent skills (`.cursor/skills/speckit-*`), and [`specs/001-baseline/`](../specs/001-baseline/) (`spec.md`, `code-inventory.md` covering **100%** of production code under `src/`).
+- **`docs/SPEC-KIT.md`** — Operator manual: Specify CLI install, `specify init`, folder layout, Cursor `/speckit-*` skills, and maintainer checklist.
+
+### Changed
+
+- **`docs/SPEC-DRIVEN-DEVELOPMENT.md`** — Three-layer model (Spec Kit baseline, product behavior, `REQ-*` anchors); user stories aligned with Form Kit integrator goals; workflow step to keep Spec Kit artifacts in sync when `src/` changes.
+- **README** — Link to **GitHub Spec Kit** documentation.
+- **demo/symfony8** — `config/reference.php` synced via CI PHP CS Fixer.
+
 ## [2.0.5] - 2026-07-03
 
 ### Fixed
@@ -139,6 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.6]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.6
 [2.0.5]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.5
 [2.0.4]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.4
 [2.0.3]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.3
