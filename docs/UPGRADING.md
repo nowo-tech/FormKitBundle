@@ -31,6 +31,11 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.6 (2026-07-09)
+
+- **Repository only** — GitHub Spec Kit baseline ([`specs/001-baseline/`](../specs/001-baseline/)), [`.specify/`](../.specify/), Cursor skills (`.cursor/skills/speckit-*`), and [`docs/SPEC-KIT.md`](SPEC-KIT.md). No Composer package API, config key, or runtime behavior change for integrators.
+- **Maintainers** — When changing production code under `src/`, update the baseline spec and code inventory per [`SPEC-KIT.md`](SPEC-KIT.md).
+
 ### 2.0.5 (2026-07-03)
 
 - **`static_blocks` form theme** — If you register `@NowoFormKit/form/static_blocks.html.twig` together with **Bootstrap 5**, list **static_blocks first** (lowest priority), then `bootstrap_5_layout.html.twig`, then other bundle themes. See [Usage — Custom static blocks](USAGE.md#custom-static-blocks-in-the-form-hr-alert).
