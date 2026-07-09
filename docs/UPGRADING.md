@@ -31,6 +31,10 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.7 (2026-07-09)
+
+- **Demos only** — Symfony 7 demo lockfile realigned to **7.4.x**; both demos’ `composer.lock` and `config/reference.php` refreshed. No Composer package API or config change for **form-kit-bundle** consumers.
+
 ### 2.0.6 (2026-07-09)
 
 - **Repository only** — GitHub Spec Kit baseline ([`specs/001-baseline/`](../specs/001-baseline/)), [`.specify/`](../.specify/), Cursor skills (`.cursor/skills/speckit-*`), and [`docs/SPEC-KIT.md`](SPEC-KIT.md). No Composer package API, config key, or runtime behavior change for integrators.

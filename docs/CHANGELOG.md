@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.7] - 2026-07-09
+
+### Fixed
+
+- **demo/symfony7** — `composer.lock` resolved Symfony components to **7.4.x** again (lock had drifted to **8.2.x-dev** branches incompatible with the Symfony 7 demo platform).
+
+### Changed
+
+- **Demos (symfony7 / symfony8)** — Refreshed `composer.lock` (Guzzle, Intervention Image, Nowo path bundles, Symfony patches) and regenerated `config/reference.php` without `declare(strict_types=1)` to match Symfony Flex auto-generated config reference files.
+
 ## [2.0.6] - 2026-07-09
 
 ### Added
@@ -152,6 +162,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.7]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.7
 [2.0.6]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.6
 [2.0.5]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.5
 [2.0.4]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.4
