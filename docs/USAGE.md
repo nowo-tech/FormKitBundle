@@ -5,6 +5,7 @@
 - [FormOptionsMerger service](#formoptionsmerger-service)
 - [Controller helpers (trait)](#controller-helpers-trait)
 - [Using FormOptionsTrait](#using-formoptionstrait)
+- [Conditional fields (show one field or another)](#conditional-fields-show-one-field-or-another)
 - [FormKitTrait and FormKitAbstractType (snake_case types)](#formkittrait-and-formkitabstracttype-snake_case-types)
 - [Custom type layer (wrapping third-party types)](#custom-type-layer-wrapping-third-party-types)
 - [Translations](#translations)
@@ -104,15 +105,19 @@ class UserProfileType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $this->addText($builder, 'full_name', []);
-        $this->addEmail($builder, 'email_address', []);
-        $this->addTextarea($builder, 'message', []);
-        $this->addText($builder, 'internal_note', ['label' => false]); // no label
+        $this->withBuilder($builder, function (): void {
+            $this->addTextField('full_name');
+            $this->addEmailField('email_address');
+            $this->addTextareaField('message');
+            $this->addTextField('internal_note', ['label' => false]); // no label
+        });
     }
 }
 ```
 
-**Building the form from an array:** Define all fields in one array and call `buildFormFromArray($builder, $fields)`. Each key is the field name; the value is either the type FQCN (e.g. `TextType::class`) or an array with a required `type` key and any other options. Options are still merged by convention and config.
+You can still pass `$builder` explicitly with the older helpers (`addText($builder, …)`, `addEmail($builder, …)`, …). `boundBuilder()` returns the builder bound by `withBuilder()` when you need helpers that still require it (e.g. `addAutocompleteField`, `addCKEditorField`).
+
+**Building the form from an array:** Define all fields in one array and call `buildFormFromArray($builder, $fields)` or, inside `withBuilder()`, `buildFieldsFromArray($fields)`. Each key is the field name; the value is either the type FQCN (e.g. `TextType::class`) or an array with a required `type` key and any other options. Options are still merged by convention and config.
 
 ```php
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -128,19 +133,118 @@ $this->buildFormFromArray($builder, [
 
 **Or** use `addWithDefaults($builder, $name, TextType::class, $options)` when you need a type not covered by the helpers or a custom type.
 
-**Available Phase 2 helpers (core):** `addText`, `addEmail`, `addTextarea`, `addPassword`, `addUrl`, `addInteger`, `addNumber`, `addCheckbox`, `addChoice`.
+**Available Phase 2 helpers (core):** `addText` / `addTextField`, `addEmail` / `addEmailField`, `addTextarea` / `addTextareaField`, `addPassword` / `addPasswordField`, `addUrl` / `addUrlField`, `addInteger` / `addIntegerField`, `addNumber` / `addNumberField`, `addCheckbox` / `addCheckboxField`, `addChoice` / `addChoiceField`. Prefer `withBuilder($builder, …)` + `*Field` when adding several fields.
 
-**Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect`, `addMultiSelect`, `addChoiceRadios`, `addChoiceCheckboxes`. Radios and checkbox groups clear the global `form-control` class on the widget root and disable `placeholder` by default so Bootstrap 5 `form-check` markup renders correctly. **`addMultiSelectSelectAll`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
+**Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect` / `addSelectField`, `addMultiSelect` / `addMultiSelectField`, `addChoiceRadios` / `addChoiceRadiosField`, `addChoiceCheckboxes` / `addChoiceCheckboxesField`. Radios and checkbox groups clear the global `form-control` class on the widget root and disable `placeholder` by default so Bootstrap 5 `form-check` markup renders correctly. **`addMultiSelectSelectAll`** / **`addMultiSelectSelectAllField`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
 
-**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle** and runs `CKEditorType` through the same merge pipeline (install CKEditor assets with `bin/console ckeditor:install`; register the FOSCKEditor Twig form theme — see that bundle’s documentation).
+**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle** and runs `CKEditorType` through the same merge pipeline (install CKEditor assets with `bin/console ckeditor:install`; register the FOSCKEditor Twig form theme — see that bundle’s documentation). Inside `withBuilder()`, pass `$this->boundBuilder()` as the first argument. Generic bound helper: `addTypedField($name, $typeFqcn, $options)`.
 
-**Model transformers:** `addSwitchType`, `addJsonType`, `addBoolType`, `addMoneyType`, `addCsvType`.
+**Model transformers:** `addSwitchType` / `addSwitchField`, `addJsonType` / `addJsonField`, `addBoolType` / `addBoolField`, `addMoneyType` / `addMoneyField`, `addCsvType` / `addCsvField`.
 
 **Layout:** `addFieldBreak` inserts a full-width break in grid layouts (optional).
 
 The form block prefix (e.g. `user_profile` for `UserProfileType`) is used automatically. Field names are used as-is for the translation key segment (use snake_case for consistency: `full_name`, `email_address`).
 
 Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` suffix (e.g. `addSelectType`, `addCKEditorFieldType`).
+
+## Conditional fields (show one field or another)
+
+Form Kit does **not** ship a dedicated `when` / `visible_if` option. Conditionals stay in Symfony (build-time `if`, `FormEvents`, or frontend). The helpers above still apply: use `withBuilder()` + `add*Field()` when you know the shape at build time, or `resolveFieldOptions()` + `$form->add()` inside listeners.
+
+### 1. Build-time (`if` on known options / data)
+
+Use when the condition does **not** change within the same request (e.g. form option, role, feature flag):
+
+```php
+public function buildForm(FormBuilderInterface $builder, array $options): void
+{
+    $this->withBuilder($builder, function () use ($options): void {
+        $this->addChoiceRadiosField('account_type', [
+            'choices' => ['Individual' => 'individual', 'Company' => 'company'],
+        ]);
+
+        if (($options['account_mode'] ?? 'individual') === 'company') {
+            $this->addTextField('company_name');
+        } else {
+            $this->addTextField('first_name');
+            $this->addTextField('last_name');
+        }
+    });
+}
+```
+
+### 2. Form events (`PRE_SET_DATA` / `PRE_SUBMIT`)
+
+Use when the visible fields depend on a value in the form data (including the submitted payload). Listeners receive a `FormInterface`, so call `$form->add()` / `$form->remove()` with options from `resolveFieldOptions()` (same merge pipeline as `addTextField()`).
+
+```php
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+
+public function buildForm(FormBuilderInterface $builder, array $options): void
+{
+    $row = ['row_attr' => ['class' => 'col-12 mb-3']];
+
+    $this->withBuilder($builder, function () use ($row): void {
+        $this->addChoiceRadiosField('account_type', array_merge($row, [
+            'choices' => [
+                'Individual' => 'individual',
+                'Company'    => 'company',
+            ],
+        ]));
+    });
+
+    $adapt = function (FormInterface $form, ?string $accountType) use ($row): void {
+        foreach (['company_name', 'first_name', 'last_name'] as $name) {
+            if ($form->has($name)) {
+                $form->remove($name);
+            }
+        }
+
+        if ($accountType === 'company') {
+            $form->add('company_name', TextType::class, $this->resolveFieldOptions('company_name', TextType::class, $row));
+        } else {
+            $form->add('first_name', TextType::class, $this->resolveFieldOptions('first_name', TextType::class, $row));
+            $form->add('last_name', TextType::class, $this->resolveFieldOptions('last_name', TextType::class, $row));
+        }
+    };
+
+    $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($adapt): void {
+        $data = $event->getData();
+        $type = is_object($data) ? ($data->account_type ?? null) : ($data['account_type'] ?? null);
+        $adapt($event->getForm(), is_string($type) ? $type : 'individual');
+    });
+
+    $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($adapt): void {
+        $data = $event->getData();
+        $type = is_array($data) ? ($data['account_type'] ?? null) : null;
+        $adapt($event->getForm(), is_string($type) ? $type : 'individual');
+    });
+}
+```
+
+Demo: `/conditional-fields` — events form (`ConditionalFieldsDemoType`) and build-time form (`BuildTimeConditionalDemoType`) in the Symfony 7/8 demos. Also `/kit-api-patterns` for `FormKitAbstractType` (snake_case) and named config (`setFormKitConfigName('bootstrap')`).
+
+**Twig tip:** render dynamic children with `is defined` or rely on `form_rest()`:
+
+```twig
+{{ form_row(form.account_type) }}
+{% if form.company_name is defined %}{{ form_row(form.company_name) }}{% endif %}
+{% if form.first_name is defined %}{{ form_row(form.first_name) }}{% endif %}
+{% if form.last_name is defined %}{{ form_row(form.last_name) }}{% endif %}
+```
+
+Changing the driving field in the browser does **not** rebuild the form until the next request (submit or Live Component refresh). Align validation (groups / constraints) with the fields that exist for each branch.
+
+### 3. UI-only hide/show (Stimulus / CSS)
+
+Add **all** fields with Form Kit helpers, then toggle visibility in the browser. Keep server-side validation consistent (optional fields, validation groups, or constraints that match the selected branch). Good for polish; not a substitute for `PRE_SUBMIT` when a hidden field must not be submitted or validated.
+
+### 4. Live Components (optional)
+
+For instant re-render without a full page submit, wrap the form in a Symfony UX Live Component and re-create or re-handle the form when the driving field changes. Form Kit stays the options/convention layer; Live owns the refresh cycle. See also [ROADMAP](ROADMAP.md) (UX Live ideas).
 
 ## FormKitTrait and FormKitAbstractType (snake_case types)
 

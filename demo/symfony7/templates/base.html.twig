@@ -30,6 +30,8 @@
                 <li class="nav-item"><a class="nav-link" href="{{ path('form_demo_nested', {_locale: locale}) }}">{{ 'demo_nav.nested'|trans }}</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ path('form_demo_data_transformers', {_locale: locale}) }}">{{ 'demo_nav.data_transformers'|trans }}</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ path('form_demo_choice_fields', {_locale: locale}) }}">{{ 'demo_nav.choice_fields'|trans }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ path('form_demo_conditional_fields', {_locale: locale}) }}">{{ 'demo_nav.conditional_fields'|trans }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ path('form_demo_kit_api_patterns', {_locale: locale}) }}">{{ 'demo_nav.kit_api_patterns'|trans }}</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ path('form_demo_nowo_special_fields', {_locale: locale}) }}">{{ 'demo_nav.nowo_special_fields'|trans }}</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ path('form_demo_ckeditor', {_locale: locale}) }}">{{ 'demo_nav.ckeditor'|trans }}</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ path('form_demo_ux_autocomplete', {_locale: locale}) }}">{{ 'demo_nav.ux_autocomplete'|trans }}</a></li>
@@ -59,7 +61,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-{# Root-relative URL: avoid resolving bundles/... under /{_locale}/ (e.g. /es/bundles/... 404). #}
+{# Root-relative URL: asset() + bundle path must resolve from /, not under /{_locale}/ (browser would request /es/bundles/... otherwise). #}
 <script defer src="{{ asset('/' ~ nowo_select_all_choice_asset_path('select-all-choice.js')) }}"></script>
 {# Form Kit HelpModalExtension: icons + modals for label[data-nowo-help-modal]. Shell markup from Twig (override per framework in templates/bundles/NowoFormKitBundle/help_modal/). #}
 {% include '@NowoFormKit/help_modal/shells.html.twig' %}

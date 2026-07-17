@@ -2,7 +2,7 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/form-kit-bundle`  
-**Last audited**: 2026-07-07
+**Last audited**: 2026-07-18
 
 ## Symfony config
 
@@ -43,8 +43,8 @@
 | `Form/AbstractFormKitType.php` | Base form type | FR-FORM-001 |
 | `Form/AbstractFormKitWrappedType.php` | Wrapped type base | FR-FORM-001 |
 | `Form/FormKitAbstractType.php` | Snake_case type base | FR-FORM-001 |
-| `Form/FormKitTrait.php` | Type-map trait | FR-FORM-001 |
-| `Form/FormOptionsTrait.php` | FQCN helper trait | FR-FORM-001 |
+| `Form/FormKitTrait.php` | Type-map trait; `withBuilder` / `add*Field` / `addNamedField` | FR-FORM-001, FR-FORM-009 |
+| `Form/FormOptionsTrait.php` | FQCN helper trait; `withBuilder` / `add*Field` / `resolveFieldOptions` | FR-FORM-001, FR-FORM-009, FR-FORM-010 |
 | `Form/FormOptionsMerger.php` | Cascading merge service | FR-FORM-002 |
 | `Form/FormKitOptionMerger.php` | Kit-specific merge | FR-FORM-002 |
 | `Form/FormFieldOptionsHelper.php` | Label/placeholder/help keys | FR-FORM-003 |

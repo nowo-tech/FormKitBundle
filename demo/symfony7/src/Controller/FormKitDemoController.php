@@ -6,19 +6,24 @@ namespace App\Controller;
 
 use App\Demo\DemoTranslationLocales;
 use App\Form\AutocompleteDemoType;
+use App\Form\BuildTimeConditionalDemoType;
 use App\Form\ChoiceFieldsDemoType;
 use App\Form\CkeditorDemoType;
+use App\Form\ConditionalFieldsDemoType;
 use App\Form\DataTransformersDemoType;
 use App\Form\DemoContactType;
 use App\Form\DropzoneDemoType;
 use App\Form\ExampleFormType;
+use App\Form\NamedConfigDemoType;
 use App\Form\NestedFormDemoType;
 use App\Form\NowoSpecialFieldsDemoType;
 use App\Form\SearchFormType;
+use App\Form\SnakeCaseKitDemoType;
 use App\Form\TranslationsDemoType;
 use App\Model\AutocompleteDemoData;
 use App\Model\ChoiceFieldsDemoData;
 use App\Model\CkeditorDemoData;
+use App\Model\ConditionalFieldsDemoData;
 use App\Model\ContactWithAddress;
 use App\Model\DataTransformersDemoData;
 use App\Model\DemoTranslatableItem;
@@ -342,6 +347,70 @@ class FormKitDemoController extends AbstractController
     }
 
     /**
+     * Conditional fields demo — FormEvents + resolveFieldOptions(), and build-time if.
+     */
+    #[Route(path: '/conditional-fields', name: 'form_demo_conditional_fields', methods: ['GET', 'POST'])]
+    public function conditionalFieldsDemo(Request $request): Response
+    {
+        $data = new ConditionalFieldsDemoData();
+        $form = $this->createForm(ConditionalFieldsDemoType::class, $data);
+        $form->handleRequest($request);
+        $submitted = null;
+        if ($form->isSubmitted() && $form->isValid() && $request->request->has('events_submit')) {
+            $submitted = $form->getData();
+        }
+
+        $buildMode = $request->query->getString('account_mode', 'individual');
+        if (!in_array($buildMode, ['individual', 'company'], true)) {
+            $buildMode = 'individual';
+        }
+        $buildForm = $this->createForm(BuildTimeConditionalDemoType::class, null, [
+            'account_mode' => $buildMode,
+        ]);
+        $buildForm->handleRequest($request);
+        $buildSubmitted = null;
+        if ($buildForm->isSubmitted() && $buildForm->isValid() && $request->request->has('build_submit')) {
+            $buildSubmitted = $buildForm->getData();
+        }
+
+        return $this->render('form_demo/conditional_fields.html.twig', [
+            'form'            => $form,
+            'submitted'       => $submitted,
+            'build_form'      => $buildForm,
+            'build_mode'      => $buildMode,
+            'build_submitted' => $buildSubmitted,
+        ]);
+    }
+
+    /**
+     * Kit API patterns — FormKitAbstractType (snake_case) + named config profile.
+     */
+    #[Route(path: '/kit-api-patterns', name: 'form_demo_kit_api_patterns', methods: ['GET', 'POST'])]
+    public function kitApiPatternsDemo(Request $request): Response
+    {
+        $snakeForm = $this->createForm(SnakeCaseKitDemoType::class);
+        $snakeForm->handleRequest($request);
+        $snakeSubmitted = null;
+        if ($snakeForm->isSubmitted() && $snakeForm->isValid() && $request->request->has('snake_submit')) {
+            $snakeSubmitted = $snakeForm->getData();
+        }
+
+        $namedForm = $this->createForm(NamedConfigDemoType::class);
+        $namedForm->handleRequest($request);
+        $namedSubmitted = null;
+        if ($namedForm->isSubmitted() && $namedForm->isValid() && $request->request->has('named_submit')) {
+            $namedSubmitted = $namedForm->getData();
+        }
+
+        return $this->render('form_demo/kit_api_patterns.html.twig', [
+            'snake_form'      => $snakeForm,
+            'snake_submitted' => $snakeSubmitted,
+            'named_form'      => $namedForm,
+            'named_submitted' => $namedSubmitted,
+        ]);
+    }
+
+    /**
      * CKEditor demo — FOSCKEditorBundle (CKEditor 4) with addCKEditorField().
      */
     #[Route(path: '/ckeditor', name: 'form_demo_ckeditor', methods: ['GET', 'POST'])]
@@ -440,15 +509,34 @@ class FormKitDemoController extends AbstractController
     {
         $builder = $this->createFormBuilder([
             'notifySwitch' => 1,
+            'topic'        => 'support',
         ]);
         $rowHalf = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
         $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
 
+        $this->setFormKitFormName('controller_contact');
         $this->addTextType($builder, 'name', $rowHalf);
         $this->addEmailType($builder, 'email', $rowHalf);
+        $this->addSelectType($builder, 'topic', array_merge($rowHalf, [
+            'choices' => [
+                'Support' => 'support',
+                'Sales'   => 'sales',
+                'Other'   => 'other',
+            ],
+        ]));
+        $this->addChoiceRadiosType($builder, 'priority', array_merge($rowHalf, [
+            'choices' => [
+                'Low'    => 'low',
+                'Normal' => 'normal',
+                'High'   => 'high',
+            ],
+        ]));
         $this->addTextareaType($builder, 'message', $rowFull);
         $this->addSwitchType($builder, 'notifySwitch', array_merge($rowHalf, [
             'switch_value' => 1,
+        ]));
+        $this->addMoneyType($builder, 'budget_cents', array_merge($rowHalf, [
+            'required' => false,
         ]));
 
         return $builder->getForm();

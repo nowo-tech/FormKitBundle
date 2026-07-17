@@ -10,6 +10,8 @@ demo_nav:
   nested: Imbriqué
   data_transformers: 'Transformateurs de données'
   choice_fields: 'Champs de choix'
+  conditional_fields: 'Champs conditionnels'
+  kit_api_patterns: 'Motifs API Kit'
   nowo_special_fields: 'Champs Nowo'
   ckeditor: CKEditor
   ux_autocomplete: Autocomplétion
@@ -110,6 +112,18 @@ controller_contact:
     label: 'Notifications par e-mail'
     placeholder: ""
     help: 'Bootstrap <code>form-switch</code> avec <code>FormKitControllerTrait::addSwitchType()</code> (même préréglage que <code>FormOptionsTrait::addSwitchType()</code> sur la page Transformateurs de données).'
+  topic:
+    label: Sujet
+    placeholder: ""
+    help: '<code>addSelectType()</code>.'
+  priority:
+    label: Priorité
+    placeholder: ""
+    help: '<code>addChoiceRadiosType()</code>.'
+  budget_cents:
+    label: Budget
+    placeholder: ""
+    help: '<code>addMoneyType()</code>.'
 
 nested_form_demo:
   full_name:
@@ -146,6 +160,24 @@ data_transformers_demo:
     label: 'Notifications par e-mail'
     placeholder: ""
     help: 'Modèle : 1/0. Vue : interrupteur (<code>SwitchModelTransformer</code>).'
+
+conditional_fields_demo:
+  account_type:
+    label: 'Type de compte'
+    placeholder: ""
+    help: 'Champ pilote — <code>PRE_SET_DATA</code> / <code>PRE_SUBMIT</code> ajoutent société ou personne.'
+  company_name:
+    label: 'Nom de la société'
+    placeholder: 'Acme SAS'
+    help: 'Affiché si le type est <strong>company</strong>.'
+  first_name:
+    label: Prénom
+    placeholder: Marie
+    help: 'Affiché si le type est <strong>individual</strong>.'
+  last_name:
+    label: Nom
+    placeholder: Dupont
+    help: 'Affiché si le type est <strong>individual</strong>.'
 
 choice_fields_demo:
   country:
@@ -324,6 +356,14 @@ demo_pages:
       title: 'Champs de choix'
       description: 'Select, multiselect, radios, cases, « Tout sélectionner » avec <code>nowo-tech/select-all-choice-bundle</code>, helper FQCN autocomplétion.'
       button: 'Ouvrir les champs de choix'
+    conditional_fields:
+      title: 'Champs conditionnels'
+      description: 'Société ou personne avec <code>FormEvents</code> + <code>resolveFieldOptions()</code>, et <code>if</code> au build.'
+      button: 'Ouvrir les champs conditionnels'
+    kit_api_patterns:
+      title: 'Motifs API Kit'
+      description: '<code>FormKitAbstractType</code> (snake_case) et config nommée <code>setFormKitConfigName</code>.'
+      button: 'Ouvrir les motifs API'
     ckeditor:
       title: CKEditor
       description: 'FOSCKEditorBundle (CKEditor 4) : texte enrichi avec <code>addCKEditorField()</code> et configurations de barre.'
@@ -413,6 +453,29 @@ demo_pages:
     usage_2: 'Option <code>addMultiSelectSelectAll()</code> : UI <code>select_all</code> (démos Symfony 7/8 ; script <code>select-all-choice.js</code> dans le layout).'
     usage_3: 'Pour Symfony UX Autocomplete : <code>addAutocompleteField()</code> / <code>addAutocompleteFieldType()</code> avec le FQCN du type.'
     normalized_title: 'Données soumises (normalisées)'
+  conditional_fields:
+    page_title: 'Champs conditionnels - Démo Form Kit'
+    heading: 'Champs conditionnels'
+    intro: 'Sans option <code>when</code>. Gauche : événements + <code>resolveFieldOptions()</code>. Droite : <code>if</code> au build (<code>account_mode</code>).'
+    usage_1: 'Événements : <code>ConditionalFieldsDemoType</code>.'
+    usage_2: 'Build-time : <code>BuildTimeConditionalDemoType</code> (toggle query).'
+    usage_3: 'Voir <code>docs/USAGE.md</code> — Conditional fields.'
+    events_heading: 'FormEvents + resolveFieldOptions'
+    events_intro: 'Champs ajoutés/retirés selon les données.'
+    build_heading: 'if au build'
+    build_intro: 'Forme fixe à la création ; toggle pour changer <code>account_mode</code>.'
+    normalized_title: 'Données soumises (normalisées)'
+  kit_api_patterns:
+    page_title: 'Motifs API Kit - Démo Form Kit'
+    heading: 'Motifs API Kit'
+    intro: '<code>FormKitAbstractType</code> / snake_case, <code>withBuilder</code>, profil YAML <code>bootstrap</code>.'
+    usage_1: 'Gauche : <code>SnakeCaseKitDemoType</code>.'
+    usage_2: 'Droite : <code>NamedConfigDemoType</code> + <code>setFormKitConfigName(''bootstrap'')</code>.'
+    usage_3: '<code>internal_code</code> désactive la convention.'
+    snake_heading: 'FormKitTrait (snake_case)'
+    snake_intro: 'Types via <code>FormTypeMap</code>.'
+    named_heading: 'Config nommée (bootstrap)'
+    named_intro: 'Comparer la taille des contrôles avec le profil default.'
   ckeditor:
     page_title: 'CKEditor - Démo Form Kit'
     heading: CKEditor
@@ -504,3 +567,58 @@ autocomplete_demo:
     label: Compétences
     placeholder: Ajoutez une ou plusieurs compétences…
     help: Multi-sélection avec le même widget.
+
+# --- Fallback EN keys (demo completeness for new pages) ---
+build_time_conditional_demo:
+  account_type:
+    label: Account type (fixed)
+    placeholder: ""
+    help: 'Set via form option <code>account_mode</code> at build time (disabled in UI).'
+  company_name:
+    label: Company name
+    placeholder: Acme Ltd
+    help: 'Added only when <code>account_mode === company</code>.'
+  first_name:
+    label: First name
+    placeholder: Jane
+    help: 'Added only when <code>account_mode === individual</code>.'
+  last_name:
+    label: Last name
+    placeholder: Doe
+    help: 'Added only when <code>account_mode === individual</code>.'
+
+snake_case_kit_demo:
+  full_name:
+    label: Full name
+    placeholder: Jane Doe
+    help: '<code>addTextField()</code> via <code>FormKitAbstractType</code>.'
+  email_address:
+    label: Email
+    placeholder: you@example.com
+    help: '<code>addEmailField()</code>.'
+  topic:
+    label: Topic
+    placeholder: ""
+    help: '<code>buildFieldsFromArray()</code> with snake_case type <code>choice</code>.'
+  notes:
+    label: Notes
+    placeholder: Optional notes
+    help: 'Snake_case type <code>textarea</code>.'
+  priority:
+    label: Priority
+    placeholder: ""
+    help: '<code>addNamedField(..., ''integer'', …)</code>.'
+
+named_config_demo:
+  title:
+    label: Title
+    placeholder: Large control title
+    help: 'Uses config profile <code>bootstrap</code> (<code>form-control-lg</code>).'
+  summary:
+    label: Summary
+    placeholder: Short summary
+    help: '<code>setFormKitConfigName(''bootstrap'')</code>.'
+  internal_code:
+    label: Internal code
+    placeholder: ""
+    help: 'Convention disabled with <code>label/placeholder/help =&gt; false</code>.'

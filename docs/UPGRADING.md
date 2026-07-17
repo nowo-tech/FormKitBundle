@@ -31,6 +31,13 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.8 (2026-07-18)
+
+- **Additive API (no BC break)** — Prefer `withBuilder($builder, fn () => …)` with `addTextField()` / `addEmailField()` / choice and transformer `*Field` helpers. Existing `addText($builder, …)` and peers remain supported.
+- **`resolveFieldOptions()`** — Use when adding fields from `FormEvents` (`PRE_SET_DATA` / `PRE_SUBMIT`) via `$form->add(...)`.
+- **Conditional fields** — Still no built-in `when` option; use Symfony events or build-time `if` (see [USAGE — Conditional fields](USAGE.md#conditional-fields-show-one-field-or-another)). Demos: `/conditional-fields`, `/kit-api-patterns`.
+- **No config key changes** — Optional: use a second named profile with `setFormKitConfigName('…')` (demo enables `configs.bootstrap`).
+
 ### 2.0.7 (2026-07-09)
 
 - **Demos only** — Symfony 7 demo lockfile realigned to **7.4.x**; both demos’ `composer.lock` and `config/reference.php` refreshed. No Composer package API or config change for **form-kit-bundle** consumers.
