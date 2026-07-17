@@ -43,6 +43,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\Cropperjs\Factory\CropperInterface;
 use Symfony\UX\Cropperjs\Form\CropperType;
 
+use function in_array;
+
 /**
  * Form Kit demo: FormType example and form built in controller example.
  */

@@ -25,8 +25,8 @@ final class SnakeCaseKitDemoType extends FormKitAbstractType
             $this->addEmailField('email_address', $rowHalf);
             $this->buildFieldsFromArray([
                 'topic' => [
-                    'type'     => 'choice',
-                    'choices'  => [
+                    'type'    => 'choice',
+                    'choices' => [
                         'Support' => 'support',
                         'Sales'   => 'sales',
                         'Other'   => 'other',
