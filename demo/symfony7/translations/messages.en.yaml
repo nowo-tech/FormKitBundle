@@ -11,6 +11,8 @@ demo_nav:
   nested: Nested
   data_transformers: 'Data transformers'
   choice_fields: 'Choice fields'
+  conditional_fields: 'Conditional fields'
+  kit_api_patterns: 'Kit API patterns'
   nowo_special_fields: 'Nowo fields'
   ckeditor: CKEditor
   ux_autocomplete: Autocomplete
@@ -115,6 +117,18 @@ controller_contact:
     label: Email notifications
     placeholder: ""
     help: 'Bootstrap <code>form-switch</code> via <code>FormKitControllerTrait::addSwitchType()</code> (same preset as <code>FormOptionsTrait::addSwitchType()</code> on the Data transformers page).'
+  topic:
+    label: Topic
+    placeholder: ""
+    help: '<code>addSelectType()</code> on the controller trait.'
+  priority:
+    label: Priority
+    placeholder: ""
+    help: '<code>addChoiceRadiosType()</code>.'
+  budget_cents:
+    label: Budget
+    placeholder: ""
+    help: '<code>addMoneyType()</code> — model cents, view decimal.'
 
 # Nested form demo — keys: nested_form_demo.*
 nested_form_demo:
@@ -153,6 +167,80 @@ data_transformers_demo:
     label: 'Email notifications'
     placeholder: ""
     help: 'Model: 1/0. View: switch (<code>SwitchModelTransformer</code>).'
+
+# Conditional fields demo — keys: conditional_fields_demo.* / build_time_conditional_demo.*
+conditional_fields_demo:
+  account_type:
+    label: Account type
+    placeholder: ""
+    help: 'Driving field — <code>PRE_SET_DATA</code> / <code>PRE_SUBMIT</code> add company or person fields.'
+  company_name:
+    label: Company name
+    placeholder: Acme Ltd
+    help: 'Shown when account type is <strong>company</strong>.'
+  first_name:
+    label: First name
+    placeholder: Jane
+    help: 'Shown when account type is <strong>individual</strong>.'
+  last_name:
+    label: Last name
+    placeholder: Doe
+    help: 'Shown when account type is <strong>individual</strong>.'
+
+build_time_conditional_demo:
+  account_type:
+    label: Account type (fixed)
+    placeholder: ""
+    help: 'Set via form option <code>account_mode</code> at build time (disabled in UI).'
+  company_name:
+    label: Company name
+    placeholder: Acme Ltd
+    help: 'Added only when <code>account_mode === company</code>.'
+  first_name:
+    label: First name
+    placeholder: Jane
+    help: 'Added only when <code>account_mode === individual</code>.'
+  last_name:
+    label: Last name
+    placeholder: Doe
+    help: 'Added only when <code>account_mode === individual</code>.'
+
+# Kit API patterns — snake_case_kit_demo.* / named_config_demo.*
+snake_case_kit_demo:
+  full_name:
+    label: Full name
+    placeholder: Jane Doe
+    help: '<code>addTextField()</code> via <code>FormKitAbstractType</code>.'
+  email_address:
+    label: Email
+    placeholder: you@example.com
+    help: '<code>addEmailField()</code>.'
+  topic:
+    label: Topic
+    placeholder: ""
+    help: '<code>buildFieldsFromArray()</code> with snake_case type <code>choice</code>.'
+  notes:
+    label: Notes
+    placeholder: Optional notes
+    help: 'Snake_case type <code>textarea</code>.'
+  priority:
+    label: Priority
+    placeholder: ""
+    help: '<code>addNamedField(..., ''integer'', …)</code>.'
+
+named_config_demo:
+  title:
+    label: Title
+    placeholder: Large control title
+    help: 'Uses config profile <code>bootstrap</code> (<code>form-control-lg</code>).'
+  summary:
+    label: Summary
+    placeholder: Short summary
+    help: '<code>setFormKitConfigName(''bootstrap'')</code>.'
+  internal_code:
+    label: Internal code
+    placeholder: ""
+    help: 'Convention disabled with <code>label/placeholder/help =&gt; false</code>.'
 
 # Choice fields demo — keys: choice_fields_demo.*
 choice_fields_demo:
@@ -337,6 +425,14 @@ demo_pages:
       title: 'Choice fields'
       description: 'Select, multiselect, radios, checkboxes, optional Select all via <code>nowo-tech/select-all-choice-bundle</code>, and autocomplete FQCN helper.'
       button: 'Open Choice fields'
+    conditional_fields:
+      title: 'Conditional fields'
+      description: 'Show company or person fields with Symfony <code>FormEvents</code> and Form Kit <code>resolveFieldOptions()</code>, plus build-time <code>if</code>.'
+      button: 'Open Conditional fields'
+    kit_api_patterns:
+      title: 'Kit API patterns'
+      description: '<code>FormKitAbstractType</code> (snake_case + <code>withBuilder</code>) and named config via <code>setFormKitConfigName</code>.'
+      button: 'Open Kit API patterns'
     ckeditor:
       title: CKEditor
       description: 'FOSCKEditorBundle (CKEditor 4): rich text with <code>addCKEditorField()</code> and named toolbar configs.'
@@ -363,9 +459,9 @@ demo_pages:
   controller_form:
     page_title: 'Controller Form Example - Form Kit Demo'
     heading: 'Controller Form Example'
-    intro: 'Form built in <code>FormKitDemoController::createControllerForm()</code> with <code>FormKitControllerTrait</code> helpers (<code>addTextType</code>, …, <code>addSwitchType</code>). Same convention-based labels/placeholders; layout: two columns + full-width message + switch.'
+    intro: 'Form built in <code>FormKitDemoController::createControllerForm()</code> with <code>FormKitControllerTrait</code>: text, email, select, radios, textarea, switch, money.'
     usage_1: 'The controller injects <code>FormOptionsMerger</code> and <code>FormTypeMap</code> and calls <code>add*Type()</code> helpers (same merge as FormTypes with the trait).'
-    usage_2: 'Convention: keys <code>controller_contact.name</code>, <code>.email</code>, <code>.message</code>, <code>.notify_switch.*</code> for label/placeholder/help.'
+    usage_2: 'Convention: keys <code>controller_contact.*</code> (name, email, topic, priority, message, notify_switch, budget_cents).'
     usage_3: 'Useful when the form is built in the controller (no FormType class) but you want the same bundle conventions.'
   search:
     page_title: 'Search Form - Form Kit Demo'
@@ -426,6 +522,29 @@ demo_pages:
     usage_2: 'Optional <code>addMultiSelectSelectAll()</code> enables the bundle’s <code>select_all</code> UI (demo Symfony 7/8 only; load <code>select-all-choice.js</code> in the layout).'
     usage_3: 'For Symfony UX Autocomplete (entity field classes), use <code>addAutocompleteField()</code> / <code>addAutocompleteFieldType()</code> with your FormType FQCN.'
     normalized_title: 'Submitted data (normalized)'
+  conditional_fields:
+    page_title: 'Conditional fields - Form Kit Demo'
+    heading: 'Conditional fields'
+    intro: 'Form Kit has no built-in <code>when</code> option. Left: Symfony <code>PRE_SET_DATA</code> / <code>PRE_SUBMIT</code> + <code>resolveFieldOptions()</code>. Right: build-time <code>if</code> on form option <code>account_mode</code>.'
+    usage_1: 'Events form: <code>ConditionalFieldsDemoType</code> — change account type and submit to rebuild fields.'
+    usage_2: 'Build-time form: <code>BuildTimeConditionalDemoType</code> — switch Individual/Company (query) to rebuild with <code>withBuilder</code> + <code>if</code>.'
+    usage_3: 'See <code>docs/USAGE.md</code> — Conditional fields (UI hide / Live Component remain optional).'
+    events_heading: 'FormEvents + resolveFieldOptions'
+    events_intro: 'Fields added/removed on each request from submitted or model data.'
+    build_heading: 'Build-time if'
+    build_intro: 'Shape fixed when the form is created; use the toggle to recreate with another <code>account_mode</code>.'
+    normalized_title: 'Submitted data (normalized)'
+  kit_api_patterns:
+    page_title: 'Kit API patterns - Form Kit Demo'
+    heading: 'Kit API patterns'
+    intro: 'Covers remaining Form Kit APIs: <code>FormKitAbstractType</code> / snake_case type map, <code>withBuilder</code> + <code>add*Field</code>, and a second YAML config profile.'
+    usage_1: 'Left: <code>SnakeCaseKitDemoType</code> extends <code>FormKitAbstractType</code> — <code>addTextField</code>, <code>buildFieldsFromArray</code> (<code>text</code>/<code>choice</code>), <code>addNamedField</code>.'
+    usage_2: 'Right: <code>NamedConfigDemoType</code> calls <code>setFormKitConfigName(''bootstrap'')</code> — larger controls from <code>nowo_form_kit.configs.bootstrap</code>.'
+    usage_3: '<code>internal_code</code> disables convention with <code>label/placeholder/help =&gt; false</code>.'
+    snake_heading: 'FormKitTrait (snake_case)'
+    snake_intro: 'Types resolved via <code>FormTypeMap</code> (<code>text</code>, <code>email</code>, <code>choice</code>, …).'
+    named_heading: 'Named config (bootstrap)'
+    named_intro: 'Compare control size with the default profile used on other demo pages.'
   ckeditor:
     page_title: 'CKEditor - Form Kit Demo'
     heading: CKEditor
@@ -487,6 +606,7 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Rich text with <code>nowo-tech/ckeditor5-editor-bundle</code> (GPL OSS build).'
 
+# Keys consumed by Nowo widget bundles (translation_domain: messages)
 tiptap_placeholder: 'Start writing…'
 ckeditor5_placeholder: 'Write page content…'
 requirement.min_length: 'At least 8 characters'

@@ -1122,4 +1122,146 @@ final class FormOptionsTraitTest extends TestCase
 
         $type->attach($form, 'is_active');
     }
+
+    public function testResolveFieldOptionsMergesConventionWithoutAddingField(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function resolve(string $name, string $typeFqcn, array $options = []): array
+            {
+                return $this->resolveFieldOptions($name, $typeFqcn, $options);
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $merged = $type->resolve('company_name', TextType::class, ['required' => false]);
+
+        self::assertSame('demo_form.company_name.label', $merged['label']);
+        self::assertFalse($merged['required']);
+        self::assertSame('messages', $merged['translation_domain']);
+    }
+
+    public function testWithBuilderAddTextFieldDelegatesWithoutRepeatingBuilder(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function build(FormBuilderInterface $builder): void
+            {
+                $this->withBuilder($builder, function (): void {
+                    $this->addTextField('full_name');
+                    $this->addEmailField('email', ['label' => false]);
+                });
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $calls   = [];
+        $builder->expects(self::exactly(2))
+            ->method('add')
+            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): FormBuilderInterface {
+                $calls[] = [$name, $fqcn, $opts];
+                self::assertIsArray($opts);
+
+                return $builder;
+            });
+
+        $type->build($builder);
+
+        self::assertSame('full_name', $calls[0][0]);
+        self::assertSame(TextType::class, $calls[0][1]);
+        self::assertSame('demo_form.full_name.label', $calls[0][2]['label']);
+        self::assertSame('email', $calls[1][0]);
+        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\EmailType::class, $calls[1][1]);
+        self::assertArrayNotHasKey('label', $calls[1][2]);
+    }
+
+    public function testBoundBuilderThrowsOutsideWithBuilder(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function callBoundBuilder(): void
+            {
+                $this->boundBuilder();
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('No form builder is bound');
+        $type->callBoundBuilder();
+    }
+
+    public function testWithBuilderRestoresPreviousBuilderAfterNestedCall(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'demo_form';
+            }
+
+            public function build(FormBuilderInterface $outer, FormBuilderInterface $inner): void
+            {
+                $this->withBuilder($outer, function () use ($inner): void {
+                    $this->addTextField('outer_field');
+                    $this->withBuilder($inner, function (): void {
+                        $this->addTextField('inner_field');
+                    });
+                    $this->addTextField('after_nested');
+                });
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $outer = $this->createMock(FormBuilderInterface::class);
+        $inner = $this->createMock(FormBuilderInterface::class);
+
+        $outerNames = [];
+        $innerNames = [];
+
+        $outer->expects(self::exactly(2))
+            ->method('add')
+            ->willReturnCallback(static function ($name) use (&$outerNames, $outer): FormBuilderInterface {
+                $outerNames[] = $name;
+
+                return $outer;
+            });
+
+        $inner->expects(self::once())
+            ->method('add')
+            ->willReturnCallback(static function ($name) use (&$innerNames, $inner): FormBuilderInterface {
+                $innerNames[] = $name;
+
+                return $inner;
+            });
+
+        $type->build($outer, $inner);
+
+        self::assertSame(['outer_field', 'after_nested'], $outerNames);
+        self::assertSame(['inner_field'], $innerNames);
+    }
 }

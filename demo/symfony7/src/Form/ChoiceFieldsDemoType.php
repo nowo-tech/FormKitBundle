@@ -11,8 +11,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Showcases addSelect, addMultiSelect, addChoiceRadios, addChoiceCheckboxes, addCheckbox,
- * addMultiSelectSelectAll (when nowo-tech/select-all-choice-bundle is installed), and documents addAutocompleteField for UX Autocomplete FQCNs.
+ * Showcases addSelectField, addMultiSelectField, addChoiceRadiosField, addChoiceCheckboxesField,
+ * addCheckboxField, addMultiSelectSelectAllField (when nowo-tech/select-all-choice-bundle is installed),
+ * and documents addAutocompleteField for UX Autocomplete FQCNs.
  */
 final class ChoiceFieldsDemoType extends AbstractType
 {
@@ -23,59 +24,61 @@ final class ChoiceFieldsDemoType extends AbstractType
         $rowHalf = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
         $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
 
-        $this->addSelect($builder, 'country', array_merge($rowHalf, [
-            'choices' => [
-                'Spain'   => 'es',
-                'France'  => 'fr',
-                'Germany' => 'de',
-            ],
-            'required' => false,
-        ]));
+        $this->withBuilder($builder, function () use ($rowHalf, $rowFull): void {
+            $this->addSelectField('country', array_merge($rowHalf, [
+                'choices' => [
+                    'Spain'   => 'es',
+                    'France'  => 'fr',
+                    'Germany' => 'de',
+                ],
+                'required' => false,
+            ]));
 
-        $this->addMultiSelect($builder, 'hobbies', array_merge($rowFull, [
-            'choices' => [
-                'PHP'     => 'php',
-                'Symfony' => 'symfony',
-                'Twig'    => 'twig',
-            ],
-            'required' => false,
-        ]));
+            $this->addMultiSelectField('hobbies', array_merge($rowFull, [
+                'choices' => [
+                    'PHP'     => 'php',
+                    'Symfony' => 'symfony',
+                    'Twig'    => 'twig',
+                ],
+                'required' => false,
+            ]));
 
-        $this->addChoiceRadios($builder, 'priority', array_merge($rowHalf, [
-            'choices' => [
-                'Low'    => 'low',
-                'Normal' => 'normal',
-                'High'   => 'high',
-            ],
-        ]));
+            $this->addChoiceRadiosField('priority', array_merge($rowHalf, [
+                'choices' => [
+                    'Low'    => 'low',
+                    'Normal' => 'normal',
+                    'High'   => 'high',
+                ],
+            ]));
 
-        $this->addChoiceCheckboxes($builder, 'tags', array_merge($rowFull, [
-            'choices' => [
-                'Documentation' => 'docs',
-                'API'           => 'api',
-                'UI'            => 'ui',
-            ],
-            'required' => false,
-        ]));
+            $this->addChoiceCheckboxesField('tags', array_merge($rowFull, [
+                'choices' => [
+                    'Documentation' => 'docs',
+                    'API'           => 'api',
+                    'UI'            => 'ui',
+                ],
+                'required' => false,
+            ]));
 
-        $this->addCheckbox($builder, 'agree', array_merge($rowFull, [
-            'required' => false,
-        ]));
+            $this->addCheckboxField('agree', array_merge($rowFull, [
+                'required' => false,
+            ]));
 
-        $permissionsOptions = array_merge($rowFull, [
-            'choices' => [
-                'Read'   => 'read',
-                'Write'  => 'write',
-                'Delete' => 'delete',
-            ],
-            'required' => false,
-        ]);
+            $permissionsOptions = array_merge($rowFull, [
+                'choices' => [
+                    'Read'   => 'read',
+                    'Write'  => 'write',
+                    'Delete' => 'delete',
+                ],
+                'required' => false,
+            ]);
 
-        if (class_exists('Nowo\\SelectAllChoiceBundle\\NowoSelectAllChoiceBundle')) {
-            $this->addMultiSelectSelectAll($builder, 'permissions', $permissionsOptions);
-        } else {
-            $this->addMultiSelect($builder, 'permissions', $permissionsOptions);
-        }
+            if (class_exists('Nowo\\SelectAllChoiceBundle\\NowoSelectAllChoiceBundle')) {
+                $this->addMultiSelectSelectAllField('permissions', $permissionsOptions);
+            } else {
+                $this->addMultiSelectField('permissions', $permissionsOptions);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

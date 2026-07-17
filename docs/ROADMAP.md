@@ -45,7 +45,7 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 - **PHP attributes**
   - Explore attributes on form types or properties to select config, translation domain, or field options (e.g. `#[FormKitConfig('bootstrap')]`) where it fits Symfony’s form and DI model.
 - **Symfony UX Live**
-  - Ensure compatibility and, if useful, small examples for forms used with Live Components (e.g. re-validation, form options merge with dynamic fields).
+  - Ensure compatibility and, if useful, small examples for forms used with Live Components (e.g. re-validation, form options merge with dynamic fields). Patterns for server-side conditionals (without Live) are documented in [USAGE.md](USAGE.md#conditional-fields-show-one-field-or-another) and the `/conditional-fields` demo.
 - **Backward compatibility**
   - Document supported Symfony versions and upgrade path in UPGRADING.md when dropping a major Symfony version.
 

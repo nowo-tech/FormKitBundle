@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
+use LogicException;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use function is_string;
@@ -14,6 +15,7 @@ use function sprintf;
  * Trait for form types that want cascading option merge and add-by-type helpers.
  *
  * Requires the form to have FormOptionsMerger and FormTypeMap set (e.g. via FormKitAbstractType).
+ * Prefer withBuilder() + addTextField() when adding many fields without repeating $builder.
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
@@ -22,6 +24,9 @@ trait FormKitTrait
 {
     protected FormOptionsMerger $formOptionsMerger;
     protected FormTypeMap $formTypeMap;
+
+    /** Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
+    private ?FormBuilderInterface $formKitBoundBuilder = null;
 
     /** Config name (key in nowo_form_kit.configs) to use; null = default_config */
     private ?string $formKitConfigName = null;
@@ -40,6 +45,39 @@ trait FormKitTrait
     public function setFormKitConfigName(?string $configName): void
     {
         $this->formKitConfigName = $configName;
+    }
+
+    /**
+     * Bind $builder for the duration of $callback so add*Field() helpers can omit it.
+     *
+     * Nested calls restore the previous builder (or null) when the inner callback returns.
+     *
+     * @param callable(): void $callback
+     */
+    protected function withBuilder(FormBuilderInterface $builder, callable $callback): void
+    {
+        $previous                   = $this->formKitBoundBuilder;
+        $this->formKitBoundBuilder = $builder;
+
+        try {
+            $callback();
+        } finally {
+            $this->formKitBoundBuilder = $previous;
+        }
+    }
+
+    /**
+     * Builder currently bound by {@see withBuilder()}.
+     *
+     * @throws LogicException when called outside withBuilder()
+     */
+    protected function boundBuilder(): FormBuilderInterface
+    {
+        if ($this->formKitBoundBuilder === null) {
+            throw new LogicException('No form builder is bound. Call add*Field() (or boundBuilder()) inside withBuilder($builder, …).');
+        }
+
+        return $this->formKitBoundBuilder;
     }
 
     /**
@@ -77,6 +115,16 @@ trait FormKitTrait
     }
 
     /**
+     * Like {@see addField()} using the builder from {@see withBuilder()}.
+     *
+     * @param array<string, mixed> $options
+     */
+    protected function addNamedField(string $name, string $typeSnakeCase, array $options = []): void
+    {
+        $this->addField($this->boundBuilder(), $name, $typeSnakeCase, $options);
+    }
+
+    /**
      * Build form from an array of field definitions.
      *
      * Each key is the field name. Value can be:
@@ -100,6 +148,16 @@ trait FormKitTrait
                 $this->addField($builder, $name, $type, $options);
             }
         }
+    }
+
+    /**
+     * Like {@see buildFormFromArray()} using the builder from {@see withBuilder()}.
+     *
+     * @param array<string, array{type: string, ...}|string> $fields
+     */
+    protected function buildFieldsFromArray(array $fields): void
+    {
+        $this->buildFormFromArray($this->boundBuilder(), $fields);
     }
 
     // --- Phase 2: add-by-type helpers (no type class needed, only field name + options) ---
@@ -156,5 +214,61 @@ trait FormKitTrait
     protected function addChoice(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'choice', $options);
+    }
+
+    // --- Bound-builder helpers (use inside withBuilder(); no $builder argument) ---
+
+    /** @param array<string, mixed> $options */
+    protected function addTextField(string $name, array $options = []): void
+    {
+        $this->addText($this->boundBuilder(), $name, $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addEmailField(string $name, array $options = []): void
+    {
+        $this->addEmail($this->boundBuilder(), $name, $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addTextareaField(string $name, array $options = []): void
+    {
+        $this->addTextarea($this->boundBuilder(), $name, $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addPasswordField(string $name, array $options = []): void
+    {
+        $this->addPassword($this->boundBuilder(), $name, $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addUrlField(string $name, array $options = []): void
+    {
+        $this->addUrl($this->boundBuilder(), $name, $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addIntegerField(string $name, array $options = []): void
+    {
+        $this->addInteger($this->boundBuilder(), $name, $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addNumberField(string $name, array $options = []): void
+    {
+        $this->addNumber($this->boundBuilder(), $name, $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addCheckboxField(string $name, array $options = []): void
+    {
+        $this->addCheckbox($this->boundBuilder(), $name, $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addChoiceField(string $name, array $options = []): void
+    {
+        $this->addChoice($this->boundBuilder(), $name, $options);
     }
 }

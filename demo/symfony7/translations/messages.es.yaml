@@ -10,6 +10,8 @@ demo_nav:
   nested: Anidado
   data_transformers: 'Transformadores de datos'
   choice_fields: 'Campos de elección'
+  conditional_fields: 'Campos condicionales'
+  kit_api_patterns: 'Patrones API Kit'
   nowo_special_fields: 'Campos Nowo'
   ckeditor: CKEditor
   ux_autocomplete: Autocompletado
@@ -110,6 +112,18 @@ controller_contact:
     label: 'Notificaciones por correo'
     placeholder: ""
     help: 'Bootstrap <code>form-switch</code> con <code>FormKitControllerTrait::addSwitchType()</code> (mismo preset que <code>FormOptionsTrait::addSwitchType()</code> en Transformadores de datos).'
+  topic:
+    label: Tema
+    placeholder: ""
+    help: '<code>addSelectType()</code> en el trait del controlador.'
+  priority:
+    label: Prioridad
+    placeholder: ""
+    help: '<code>addChoiceRadiosType()</code>.'
+  budget_cents:
+    label: Presupuesto
+    placeholder: ""
+    help: '<code>addMoneyType()</code> — modelo céntimos, vista decimal.'
 
 nested_form_demo:
   full_name:
@@ -146,6 +160,78 @@ data_transformers_demo:
     label: 'Notificaciones por correo'
     placeholder: ""
     help: 'Modelo: 1/0. Vista: interruptor (<code>SwitchModelTransformer</code>).'
+
+conditional_fields_demo:
+  account_type:
+    label: 'Tipo de cuenta'
+    placeholder: ""
+    help: 'Campo conductor — <code>PRE_SET_DATA</code> / <code>PRE_SUBMIT</code> añaden empresa o persona.'
+  company_name:
+    label: 'Nombre de la empresa'
+    placeholder: 'Acme S.L.'
+    help: 'Visible si el tipo es <strong>company</strong>.'
+  first_name:
+    label: Nombre
+    placeholder: Ana
+    help: 'Visible si el tipo es <strong>individual</strong>.'
+  last_name:
+    label: Apellidos
+    placeholder: García
+    help: 'Visible si el tipo es <strong>individual</strong>.'
+
+build_time_conditional_demo:
+  account_type:
+    label: 'Tipo de cuenta (fijo)'
+    placeholder: ""
+    help: 'Definido con la opción <code>account_mode</code> en build (deshabilitado en UI).'
+  company_name:
+    label: 'Nombre de la empresa'
+    placeholder: 'Acme S.L.'
+    help: 'Solo si <code>account_mode === company</code>.'
+  first_name:
+    label: Nombre
+    placeholder: Ana
+    help: 'Solo si <code>account_mode === individual</code>.'
+  last_name:
+    label: Apellidos
+    placeholder: García
+    help: 'Solo si <code>account_mode === individual</code>.'
+
+snake_case_kit_demo:
+  full_name:
+    label: 'Nombre completo'
+    placeholder: 'Ana García'
+    help: '<code>addTextField()</code> vía <code>FormKitAbstractType</code>.'
+  email_address:
+    label: Correo
+    placeholder: tu@ejemplo.com
+    help: '<code>addEmailField()</code>.'
+  topic:
+    label: Tema
+    placeholder: ""
+    help: '<code>buildFieldsFromArray()</code> con tipo snake_case <code>choice</code>.'
+  notes:
+    label: Notas
+    placeholder: 'Notas opcionales'
+    help: 'Tipo snake_case <code>textarea</code>.'
+  priority:
+    label: Prioridad
+    placeholder: ""
+    help: '<code>addNamedField(..., ''integer'', …)</code>.'
+
+named_config_demo:
+  title:
+    label: Título
+    placeholder: 'Título con control grande'
+    help: 'Perfil <code>bootstrap</code> (<code>form-control-lg</code>).'
+  summary:
+    label: Resumen
+    placeholder: 'Resumen corto'
+    help: '<code>setFormKitConfigName(''bootstrap'')</code>.'
+  internal_code:
+    label: 'Código interno'
+    placeholder: ""
+    help: 'Convención desactivada con <code>label/placeholder/help =&gt; false</code>.'
 
 choice_fields_demo:
   country:
@@ -324,6 +410,14 @@ demo_pages:
       title: 'Campos de elección'
       description: 'Select, multiselect, radios, casillas, «Seleccionar todo» con <code>nowo-tech/select-all-choice-bundle</code> y helper de autocompletado (FQCN).'
       button: 'Abrir campos de elección'
+    conditional_fields:
+      title: 'Campos condicionales'
+      description: 'Empresa o persona con <code>FormEvents</code> + <code>resolveFieldOptions()</code>, y también <code>if</code> en build-time.'
+      button: 'Abrir campos condicionales'
+    kit_api_patterns:
+      title: 'Patrones API Kit'
+      description: '<code>FormKitAbstractType</code> (snake_case + <code>withBuilder</code>) y config nombrada con <code>setFormKitConfigName</code>.'
+      button: 'Abrir patrones API'
     ckeditor:
       title: CKEditor
       description: 'FOSCKEditorBundle (CKEditor 4): texto enriquecido con <code>addCKEditorField()</code> y configuraciones de barra.'
@@ -350,9 +444,9 @@ demo_pages:
   controller_form:
     page_title: 'Formulario en controlador - Demo Form Kit'
     heading: 'Formulario en controlador'
-    intro: 'Formulario en <code>FormKitDemoController::createControllerForm()</code> con helpers de <code>FormKitControllerTrait</code> (<code>addTextType</code>, …, <code>addSwitchType</code>). Mismas convenciones; dos columnas + mensaje a ancho completo + interruptor.'
+    intro: 'Formulario en <code>FormKitDemoController::createControllerForm()</code> con <code>FormKitControllerTrait</code>: texto, email, select, radios, textarea, switch, money.'
     usage_1: 'El controlador inyecta <code>FormOptionsMerger</code> y <code>FormTypeMap</code> y usa <code>add*Type()</code> (misma fusión que los FormType con el trait).'
-    usage_2: 'Convención: claves <code>controller_contact.name</code>, <code>.email</code>, <code>.message</code>, <code>.notify_switch.*</code> para etiqueta/placeholder/ayuda.'
+    usage_2: 'Convención: claves <code>controller_contact.*</code> (name, email, topic, priority, message, notify_switch, budget_cents).'
     usage_3: 'Útil cuando el formulario se crea en el controlador (sin clase FormType) pero quieres las mismas convenciones del bundle.'
   search:
     page_title: 'Búsqueda - Demo Form Kit'
@@ -413,6 +507,29 @@ demo_pages:
     usage_2: 'Opcional <code>addMultiSelectSelectAll()</code> activa la UI <code>select_all</code> (demos Symfony 7/8; incluye <code>select-all-choice.js</code> en el layout).'
     usage_3: 'Para Symfony UX Autocomplete, usa <code>addAutocompleteField()</code> / <code>addAutocompleteFieldType()</code> con el FQCN de tu tipo de formulario.'
     normalized_title: 'Datos enviados (normalizados)'
+  conditional_fields:
+    page_title: 'Campos condicionales - Demo Form Kit'
+    heading: 'Campos condicionales'
+    intro: 'Form Kit no tiene <code>when</code>. Izquierda: <code>PRE_SET_DATA</code> / <code>PRE_SUBMIT</code> + <code>resolveFieldOptions()</code>. Derecha: <code>if</code> en build con opción <code>account_mode</code>.'
+    usage_1: 'Eventos: <code>ConditionalFieldsDemoType</code> — cambia el tipo y envía para reconstruir.'
+    usage_2: 'Build-time: <code>BuildTimeConditionalDemoType</code> — toggle Individual/Company (query) con <code>withBuilder</code> + <code>if</code>.'
+    usage_3: 'Ver <code>docs/USAGE.md</code> — Conditional fields (UI hide / Live Component opcionales).'
+    events_heading: 'FormEvents + resolveFieldOptions'
+    events_intro: 'Campos añadidos/eliminados en cada request según datos enviados o del modelo.'
+    build_heading: 'if en build-time'
+    build_intro: 'Forma fija al crear el form; usa el toggle para recrear con otro <code>account_mode</code>.'
+    normalized_title: 'Datos enviados (normalizados)'
+  kit_api_patterns:
+    page_title: 'Patrones API Kit - Demo Form Kit'
+    heading: 'Patrones API Kit'
+    intro: 'APIs restantes: <code>FormKitAbstractType</code> / type map snake_case, <code>withBuilder</code> + <code>add*Field</code>, y un segundo perfil YAML.'
+    usage_1: 'Izquierda: <code>SnakeCaseKitDemoType</code> extiende <code>FormKitAbstractType</code>.'
+    usage_2: 'Derecha: <code>NamedConfigDemoType</code> con <code>setFormKitConfigName(''bootstrap'')</code>.'
+    usage_3: '<code>internal_code</code> desactiva la convención con <code>label/placeholder/help =&gt; false</code>.'
+    snake_heading: 'FormKitTrait (snake_case)'
+    snake_intro: 'Tipos vía <code>FormTypeMap</code> (<code>text</code>, <code>email</code>, <code>choice</code>, …).'
+    named_heading: 'Config nombrada (bootstrap)'
+    named_intro: 'Compara el tamaño de control con el perfil default de otras demos.'
   ckeditor:
     page_title: 'CKEditor - Demo Form Kit'
     heading: CKEditor

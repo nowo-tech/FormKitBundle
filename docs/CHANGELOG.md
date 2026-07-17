@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.8] - 2026-07-18
+
+### Added
+
+- **`withBuilder()` + `add*Field()`** on `FormOptionsTrait` and `FormKitTrait` — bind the form builder once and add fields without repeating `$builder` (e.g. `$this->addTextField('name')`). Also: `boundBuilder()`, `addTypedField()` / `addNamedField()`, `buildFieldsFromArray()`, and bound aliases for choice presets and model-transformer helpers. Existing `addText($builder, …)` APIs remain unchanged.
+- **`resolveFieldOptions()`** on `FormOptionsTrait` — merge conventions/config without adding the field (for `FormEvents` + `$form->add()`).
+- **Docs + demo: conditional fields** — [USAGE](USAGE.md) patterns (build-time `if`, `PRE_SET_DATA` / `PRE_SUBMIT`, UI hide, Live Component) and demo route `/conditional-fields` (`ConditionalFieldsDemoType` + `BuildTimeConditionalDemoType`).
+- **Demo coverage** — `/kit-api-patterns` (`FormKitAbstractType` snake_case + named `bootstrap` config); expanded `/controller-form` (select, radios, money); `boundBuilder()` on autocomplete demo; `configs.bootstrap` enabled in demo YAML.
+- **Spec Kit baseline** — [`specs/001-baseline/`](../specs/001-baseline/) updated for bound-builder helpers, `resolveFieldOptions`, and conditional-field patterns (`US-03b`/`US-03c`/`US-06`, `FR-FORM-009`/`FR-FORM-010`, `SC-004`).
+
+### Changed
+
+- **README / INSTALLATION / USAGE** — Prefer `withBuilder()` + `add*Field()` in quick-start examples; document conditional-field patterns and new demo routes.
+
 ## [2.0.7] - 2026-07-09
 
 ### Fixed
@@ -162,6 +176,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.8]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.8
 [2.0.7]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.7
 [2.0.6]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.6
 [2.0.5]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.5

@@ -14,7 +14,7 @@ Symfony bundle to reduce repetitive form field options: convention-based transla
 - **Multiple configs:** Define named configs (e.g. `default`, `bootstrap`) with `translation_domain`, `defaults.attr`, `defaults.row_attr`, and per-field-type options. Choose the active config per form via `setFormKitConfigName()`.
 - **Cascading merge:** Options are merged in order: config defaults → field type → field options. Explicit field options override.
 - **Trait or base class:** Use **FormOptionsTrait** with **FormOptionsMerger** (inject via service), or extend **FormKitAbstractType** for snake_case type names with **FormTypeMap** (same option-merging model via FormOptionsMerger).
-- **Phase 2 helpers:** `addText()`, `addEmail()`, `addTextarea()`, `addPassword()`, `addUrl()`, `addInteger()`, `addNumber()`, `addCheckbox()`, `addChoice()` — pass only field name and options.
+- **Phase 2 helpers:** `addText()`, `addEmail()`, `addTextarea()`, `addPassword()`, `addUrl()`, `addInteger()`, `addNumber()`, `addCheckbox()`, `addChoice()` — pass field name and options (optionally with `$builder`). Prefer **`withBuilder($builder, …)` + `addTextField()` / `addEmailField()`** to avoid repeating `$builder`.
 - **Choice presets:** `addSelect()`, `addMultiSelect()`, `addChoiceRadios()`, `addChoiceCheckboxes()`, plus `addMultiSelectSelectAll()` when **nowo-tech/select-all-choice-bundle** is installed (optional Composer **suggest**).
 - **FQCN helpers:** `addAutocompleteField()` for Symfony UX Autocomplete types, `addCKEditorField()` when **friendsofsymfony/ckeditor-bundle** is installed (CKEditor 4).
 - **Model transformers:** `addSwitchType()`, `addJsonType()`, `addBoolType()`, `addMoneyType()`, `addCsvType()` (same helpers on **FormKitControllerTrait** with `*Type` suffix).
@@ -57,8 +57,10 @@ class UserProfileType extends AbstractType
 
   public function buildForm(FormBuilderInterface $builder, array $options): void
   {
-    $this->addText($builder, 'full_name', []);
-    $this->addEmail($builder, 'email_address', []);
+    $this->withBuilder($builder, function (): void {
+      $this->addTextField('full_name');
+      $this->addEmailField('email_address');
+    });
     // Or: $this->buildFormFromArray($builder, ['full_name' => TextType::class, 'email_address' => EmailType::class]);
   }
 }
@@ -73,7 +75,7 @@ The bundle includes demos (Symfony 7 and 8) that run with **FrankenPHP** (Caddy 
 - **Locale in the URL** — routes are under `/{locale}/…` (`en`, `es`, `fr`, `de`); `/` redirects to the default locale.
 - **FormType** example (contact, `buildFormFromArray`), **help modal** sample (`help-modal.js` + `assets:install`; include `@NowoFormKit/help_modal/shells.html.twig` for overridable modal shells).
 - Form built in the **controller** (`FormKitControllerTrait` / `FormOptionsMerger::resolve()`).
-- **Search**, **example**, **Dropzone**, **Cropper**, **translations** (A2lix), **nested**, **data transformers**, **choice fields** (select / multiselect / radios / checkboxes; optional Select All Choice on Symfony 7/8 demos), **Nowo special fields** (OTP, phone, password, icon selector, Tiptap, CKEditor 5 — see [demo/README.md](demo/README.md)), **CKEditor** (FOSCKEditorBundle), **UX Autocomplete**, **multi-step** wizard.
+- **Search**, **example**, **Dropzone**, **Cropper**, **translations** (A2lix), **nested**, **data transformers**, **choice fields**, **conditional fields**, **Kit API patterns** (snake_case `FormKitAbstractType` + named config), **Nowo special fields** (OTP, phone, password, icon selector, Tiptap, CKEditor 5 — see [demo/README.md](demo/README.md)), **CKEditor** (FOSCKEditorBundle), **UX Autocomplete**, **multi-step** wizard.
 
 Run a demo via Docker/Make from the bundle root; see [demo/README.md](demo/README.md) and [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
