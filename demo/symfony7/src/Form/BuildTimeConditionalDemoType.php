@@ -20,7 +20,7 @@ final class BuildTimeConditionalDemoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $row = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $row  = ['row_attr' => ['class' => 'col-12 mb-3']];
         $mode = (string) $options['account_mode'];
 
         $this->withBuilder($builder, function () use ($row, $mode): void {

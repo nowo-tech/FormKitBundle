@@ -73,7 +73,7 @@ final class ConditionalFieldsDemoType extends AbstractType
             $adapt($event->getForm(), $this->resolveAccountType($event->getData()));
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($adapt): void {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, static function (FormEvent $event) use ($adapt): void {
             $data = $event->getData();
             $type = is_array($data) ? ($data['account_type'] ?? null) : null;
             $adapt($event->getForm(), is_string($type) ? $type : 'individual');

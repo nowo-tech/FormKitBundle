@@ -95,7 +95,7 @@ trait FormOptionsTrait
      */
     protected function withBuilder(FormBuilderInterface $builder, callable $callback): void
     {
-        $previous                   = $this->formKitBoundBuilder;
+        $previous                  = $this->formKitBoundBuilder;
         $this->formKitBoundBuilder = $builder;
 
         try {
