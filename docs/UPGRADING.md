@@ -31,6 +31,13 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.9 (2026-07-18)
+
+Repository-only (demos / Makefiles / docs; no Composer package or bundle API change):
+
+- **demo/symfony7** removed — Use **demo/symfony8**. `make update-deps` and demo Makefiles target **symfony8** only. Symfony **7.4+** remains supported at runtime.
+- **Demo `/nowo-special-fields`** — Password examples cover toggle only, strength only, and combined toggle + strength.
+
 ### 2.0.8 (2026-07-18)
 
 - **Additive API (no BC break)** — Prefer `withBuilder($builder, fn () => …)` with `addTextField()` / `addEmailField()` / choice and transformer `*Field` helpers. Existing `addText($builder, …)` and peers remain supported.

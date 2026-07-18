@@ -517,13 +517,17 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Téléphone international avec sélecteur de préfixe (<code>nowo-tech/phone-input-bundle</code>).'
   secret_password:
-    label: Mot de passe (bascule)
+    label: 'Password (toggle only)'
     placeholder: ''
-    help: 'Afficher/masquer via <code>nowo-tech/password-toggle-bundle</code>.'
-  account_password:
-    label: Mot de passe du compte (force)
+    help: 'Show/hide only — PasswordToggleBundle.'
+  strength_only_password:
+    label: 'Password (strength only)'
     placeholder: ''
-    help: 'Indicateur de force en direct via <code>nowo-tech/password-strength-bundle</code> (utilise la bascule si installée).'
+    help: 'PasswordStrengthType with use_password_toggle => false.'
+  combined_password:
+    label: 'Password (toggle + strength)'
+    placeholder: ''
+    help: '<strong>Combined:</strong> PasswordStrengthType + use_password_toggle => true.'
   app_icon:
     label: Icône de l’application
     placeholder: Rechercher des icônes…

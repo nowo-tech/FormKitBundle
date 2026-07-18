@@ -20,6 +20,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Showcases Nowo ecosystem special fields integrated with Form Kit conventions.
+ *
+ * Passwords: toggle-only, strength-only, and combined (PasswordStrengthType + PasswordToggleBundle).
  */
 final class NowoSpecialFieldsDemoType extends AbstractType
 {
@@ -50,11 +52,22 @@ final class NowoSpecialFieldsDemoType extends AbstractType
 
         $this->addWithDefaults($builder, 'secretPassword', TogglePasswordType::class, $row([
             'required' => false,
+            'toggle'   => true,
         ]));
 
-        $this->addWithDefaults($builder, 'accountPassword', PasswordStrengthType::class, $row([
-            'required'     => false,
-            'ui_framework' => 'bootstrap5',
+        // Strength meter only (no eye toggle), even if PasswordToggleBundle is installed.
+        $this->addWithDefaults($builder, 'strengthOnlyPassword', PasswordStrengthType::class, $row([
+            'required'            => false,
+            'ui_framework'        => 'bootstrap5',
+            'use_password_toggle' => false,
+        ]));
+
+        // Combined: PasswordStrengthType + PasswordToggleBundle (eye + live strength + optional generator).
+        $this->addWithDefaults($builder, 'combinedPassword', PasswordStrengthType::class, $row([
+            'required'            => false,
+            'ui_framework'        => 'bootstrap5',
+            'use_password_toggle' => true,
+            'toggle'              => true,
         ]));
 
         $this->addWithDefaults($builder, 'appIcon', IconSelectorType::class, $widgetRoot([

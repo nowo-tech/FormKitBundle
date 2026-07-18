@@ -15,7 +15,9 @@ final class NowoSpecialFieldsDemoData
 
     public ?string $secretPassword = null;
 
-    public ?string $accountPassword = null;
+    public ?string $strengthOnlyPassword = null;
+
+    public ?string $combinedPassword = null;
 
     public ?string $appIcon = null;
 

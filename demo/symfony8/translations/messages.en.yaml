@@ -571,9 +571,9 @@ demo_pages:
     page_title: 'Nowo special fields - Form Kit Demo'
     heading: 'Nowo special fields'
     intro: 'Showcase of <strong>nowo-tech</strong> ecosystem form widgets wired through <code>FormOptionsTrait::addWithDefaults()</code> — same translation keys and merge pipeline as built-in helpers.'
-    usage_1: '<code>nowo-tech/otp-input-bundle</code> (OTP digits), <code>phone-input-bundle</code> (E.164 + country selector), <code>password-toggle-bundle</code> and <code>password-strength-bundle</code>.'
-    usage_2: '<code>icon-selector-bundle</code> (Tom Select + icons), <code>tiptap-editor-bundle</code> and <code>ckeditor5-editor-bundle</code> for rich text (GPL CKEditor 5).'
-    usage_3: 'Also available elsewhere in this demo: <code>select-all-choice-bundle</code>, FOS CKEditor 4, UX Autocomplete, Dropzone, Cropper, A2lix translations.'
+    usage_1: '<code>otp-input-bundle</code>, <code>phone-input-bundle</code>, <code>password-toggle-bundle</code>, <code>password-strength-bundle</code> (toggle alone, strength alone, and <strong>combined</strong> on one field).'
+    usage_2: '<code>icon-selector-bundle</code>, <code>tiptap-editor-bundle</code>, <code>ckeditor5-editor-bundle</code>.'
+    usage_3: 'Combined password: <code>PasswordStrengthType</code> with <code>use_password_toggle =&gt; true</code> (PasswordToggleBundle must be installed; demo YAML already sets this).'
     normalized_title: 'Submitted data (normalized)'
 
 nowo_special_fields_demo:
@@ -586,13 +586,17 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'International phone with prefix selector (<code>nowo-tech/phone-input-bundle</code>).'
   secret_password:
-    label: Password (toggle)
+    label: 'Password (toggle only)'
     placeholder: ''
-    help: 'Show/hide toggle from <code>nowo-tech/password-toggle-bundle</code>.'
-  account_password:
-    label: Account password (strength)
+    help: 'Show/hide only — <code>PasswordToggleBundle\\PasswordType</code>.'
+  strength_only_password:
+    label: 'Password (strength only)'
     placeholder: ''
-    help: 'Live strength feedback via <code>nowo-tech/password-strength-bundle</code> (uses toggle when installed).'
+    help: '<code>PasswordStrengthType</code> with <code>use_password_toggle =&gt; false</code> (meter, no eye).'
+  combined_password:
+    label: 'Password (toggle + strength)'
+    placeholder: ''
+    help: '<strong>Combined:</strong> <code>PasswordStrengthType</code> + <code>use_password_toggle =&gt; true</code> — eye toggle and live strength on the same field.'
   app_icon:
     label: Application icon
     placeholder: Search icons…
