@@ -32,14 +32,14 @@ class FormKitExtension extends Extension
         if ($configsMap === []) {
             $configsMap = [
                 Configuration::DEFAULT_CONFIG_NAME => [
-                    'alias'                          => Configuration::DEFAULT_CONFIG_NAME,
-                    'translation_domain'             => $config['translation_domain'],
-                    'required_label_suffix'          => $config['required_label_suffix'] ?? null,
-                    'help_modal'                     => $config['help_modal'] ?? [],
-                    'defaults'                       => $config['defaults'],
-                    'field_types'                    => $config['field_types'],
-                    'constraint_message_convention'  => $config['constraint_message_convention'] ?? false,
-                    'by_form'                        => $config['by_form'] ?? [],
+                    'alias'                         => Configuration::DEFAULT_CONFIG_NAME,
+                    'translation_domain'            => $config['translation_domain'],
+                    'required_label_suffix'         => $config['required_label_suffix'] ?? null,
+                    'help_modal'                    => $config['help_modal'] ?? [],
+                    'defaults'                      => $config['defaults'],
+                    'field_types'                   => $config['field_types'],
+                    'constraint_message_convention' => $config['constraint_message_convention'] ?? false,
+                    'by_form'                       => $config['by_form'] ?? [],
                 ],
             ];
         }

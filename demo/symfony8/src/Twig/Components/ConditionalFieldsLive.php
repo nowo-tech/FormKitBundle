@@ -22,8 +22,8 @@ use Symfony\UX\LiveComponent\DefaultActionTrait;
 #[AsLiveComponent]
 final class ConditionalFieldsLive extends AbstractController
 {
-    use DefaultActionTrait;
     use ComponentWithFormTrait;
+    use DefaultActionTrait;
 
     #[LiveProp]
     public ?ConditionalFieldsDemoData $initialFormData = null;
