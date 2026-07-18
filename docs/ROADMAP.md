@@ -6,22 +6,21 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 
 ## Current state (v2.x)
 
-- **FormOptionsTrait** + **FormOptionsMerger**: primary path; convention-based labels/placeholder/help; multiple configs; Phase 2 helpers; `buildFormFromArray()` with FQCN types.
-- **FormKitTrait** + **FormTypeMap**: snake_case type names; optional UX/A2lix types (dropzone, cropper, translations); `type_map` config; `buildFormFromArray()` with string types.
+- **FormOptionsTrait** + **FormOptionsMerger**: primary path; convention-based labels/placeholder/help; multiple configs; `by_form` defaults; optional constraint message convention; `#[FormKitConfig]`; Phase 2 helpers; `buildFormFromArray()` with FQCN types; `withBuilder()` + `add*Field()`.
+- **FormKitTrait** + **FormTypeMap**: snake_case type names (core Symfony types + optional UX/A2lix); `type_map` config; `buildFormFromArray()` with string types; `#[FormKitConfig]`.
 - **FormKitAbstractType**: base type using FormKitTrait; uses FormOptionsMerger + FormTypeMap for snake_case types with the same config model (`configs` / `default_config`).
-- **FormKitControllerTrait**, choice presets, model transformers, help modal (JS + Twig shells), optional FQCN helpers (Autocomplete, CKEditor).
-- **Demos**: Symfony 7.4 and 8.x with FormType, controller form, Search, Example, Dropzone, Cropper, translations, nested form, data transformers, choice fields (Select All Choice), **Nowo special fields** (ecosystem widgets via `addWithDefaults()`), CKEditor (FOS), UX Autocomplete, multi-step wizard; locales `en` / `es` / `fr` / `de`.
+- **FormKitControllerTrait**, choice presets, model transformers, help modal (JS + Twig shells), optional helpers (Autocomplete, CKEditor, Dropzone, Cropper).
+- **Demos**: **demo/symfony8** (PHP 8.4+) with FormType, controller form, Search, Example, Dropzone, Cropper, translations, nested form, data transformers, choice fields, conditional fields (+ Live Component), Kit API patterns, **Nowo special fields**, CKEditor (FOS), UX Autocomplete, multi-step wizard; locales `en` / `es` / `fr` / `de`.
+- **Flex recipe** (repo stub under `.symfony/recipe/`): see [docs/RECIPE.md](RECIPE.md) for submitting to [symfony/recipes-contrib](https://github.com/symfony/recipes-contrib).
 
 ---
 
 ## Short term
 
-- **Stabilise 2.x**
-  - Submit recipe to [symfony/recipes-contrib](https://github.com/symfony/recipes-contrib) when the package is on Packagist.
+- **Recipe on recipes-contrib**
+  - Open a PR to [symfony/recipes-contrib](https://github.com/symfony/recipes-contrib) from the maintained stub (config + Twig `form_themes` for `static_blocks`). Tracked in [RECIPE.md](RECIPE.md).
 - **FormKit path hardening**
   - Add dedicated examples/tests for FormKitAbstractType + FormTypeMap (snake_case types) to ensure long-term parity with FormOptionsTrait.
-- **Optional types**
-  - Add more optional types to FormTypeMap when relevant packages are present (e.g. other Symfony UX or popular form bundles), with clear docs and `class_exists` guards.
 - **Testing**
   - Broaden test coverage (integration tests for demos, FormOptionsMerger with multiple configs, FormTypeMap with type_map).
 
@@ -29,23 +28,14 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 
 ## Medium term
 
-- **Helpers for optional types**
-  - Add helpers such as `addDropzone()` on FormOptionsTrait/FormKitTrait when `symfony/ux-dropzone` is available, delegating to the type map and keeping the bundle optional-dependency free.
-- **Form-level defaults**
-  - Support form-level default options in config (e.g. `by_form[contact]`) so that all fields of a given form inherit options without repeating per field.
-- **Validation / constraints**
-  - Optional convention or helpers for common validation (e.g. mapping form name + field to constraint messages) without replacing Symfony Validator.
-- **Layout / themes**
-  - Document or provide examples for common layouts (horizontal, floating labels, grid) and theme configs (Bootstrap 5, Tailwind) using existing `defaults` and `row_attr`.
+- **More optional type_map entries** — additional UX / ecosystem types when packages are present.
+- **Layout recipes** — more copy-paste Twig patterns (input groups + grid, Foundation) beyond Bootstrap/Tailwind examples in USAGE.
+- **Richer attributes** — optional attribute-driven field options / translation domain beyond `#[FormKitConfig]`.
 
 ---
 
 ## Long term / ideas
 
-- **PHP attributes**
-  - Explore attributes on form types or properties to select config, translation domain, or field options (e.g. `#[FormKitConfig('bootstrap')]`) where it fits Symfony’s form and DI model.
-- **Symfony UX Live**
-  - Ensure compatibility and, if useful, small examples for forms used with Live Components (e.g. re-validation, form options merge with dynamic fields). Patterns for server-side conditionals (without Live) are documented in [USAGE.md](USAGE.md#conditional-fields-show-one-field-or-another) and the `/conditional-fields` demo.
 - **Backward compatibility**
   - Document supported Symfony versions and upgrade path in UPGRADING.md when dropping a major Symfony version.
 
@@ -55,7 +45,7 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 
 - Replacing or wrapping the Symfony Form component.
 - Providing a full UI component library (only form option and convention layer).
-- Built-in frontend assets or JavaScript (bundle stays backend-only).
+- Built-in frontend assets or JavaScript beyond the optional help modal.
 
 ---
 

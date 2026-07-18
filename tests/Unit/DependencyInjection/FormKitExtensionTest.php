@@ -39,6 +39,8 @@ final class FormKitExtensionTest extends TestCase
         self::assertSame('bootstrap', $container->getParameter('nowo_form_kit.css_framework'));
         self::assertSame(['address' => 'App\Form\Type\AddressType'], $container->getParameter('nowo_form_kit.type_map'));
         self::assertSame('forms', $configs['bootstrap']['translation_domain']);
+        self::assertFalse($configs['bootstrap']['constraint_message_convention']);
+        self::assertSame([], $configs['bootstrap']['by_form']);
         self::assertTrue($container->hasDefinition(\Nowo\FormKitBundle\Form\FormOptionsMerger::class));
         self::assertTrue($container->hasDefinition(\Nowo\FormKitBundle\Form\FormTypeMap::class));
     }
@@ -64,6 +66,8 @@ final class FormKitExtensionTest extends TestCase
         self::assertSame('messages', $configs['default']['translation_domain']);
         self::assertSame('input', $configs['default']['defaults']['attr']['class']);
         self::assertSame('legacy_help', $configs['default']['field_types']['text']['help']);
+        self::assertFalse($configs['default']['constraint_message_convention']);
+        self::assertSame([], $configs['default']['by_form']);
     }
 
     public function testLoadSetsCssFrameworkParameter(): void

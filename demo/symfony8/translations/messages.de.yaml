@@ -12,6 +12,7 @@ demo_nav:
   data_transformers: Datentransformatoren
   choice_fields: Auswahlfelder
   conditional_fields: Bedingte Felder
+  conditional_fields_live: Live-Bedingte
   kit_api_patterns: 'Kit-API-Muster'
   nowo_special_fields: 'Nowo-Felder'
   ckeditor: CKEditor
@@ -371,9 +372,13 @@ demo_pages:
       title: Bedingte Felder
       description: 'Firma/Person mit <code>FormEvents</code> + <code>resolveFieldOptions()</code> und Build-Zeit-<code>if</code>.'
       button: 'Bedingte Felder öffnen'
+    conditional_fields_live:
+      title: 'Bedingte Felder (Live)'
+      description: 'Dieselbe FormEvents-Form in einer Symfony UX <code>Live Component</code>.'
+      button: 'Live-Bedingte öffnen'
     kit_api_patterns:
       title: Kit-API-Muster
-      description: '<code>FormKitAbstractType</code> (snake_case) und benannte Config <code>setFormKitConfigName</code>.'
+      description: '<code>FormKitAbstractType</code> (snake_case) und benannte Config <code>#[FormKitConfig]</code>.'
       button: 'Kit-API-Muster öffnen'
     ckeditor:
       title: CKEditor
@@ -476,12 +481,20 @@ demo_pages:
     build_heading: 'Build-Zeit-if'
     build_intro: 'Form fest bei Erstellung; Toggle ändert <code>account_mode</code>.'
     normalized_title: 'Gesendete Daten (normalisiert)'
+  conditional_fields_live:
+    page_title: 'Bedingte Felder (Live) - Form Kit Demo'
+    heading: 'Bedingte Felder (Live Component)'
+    intro: 'Kapselt <code>ConditionalFieldsDemoType</code> in <code>ComponentWithFormTrait</code>.'
+    usage_1: 'Komponente: <code>App\Twig\Components\ConditionalFieldsLive</code>.'
+    usage_2: 'Benötigt <code>symfony/ux-live-component</code>.'
+    usage_3: 'Vergleich mit <code>/conditional-fields</code>.'
+    component_intro: 'Ändern Sie den <strong>Kontotyp</strong> — Felder aktualisieren ohne vollständigen Seitenreload.'
   kit_api_patterns:
     page_title: 'Kit-API-Muster - Form Kit Demo'
     heading: Kit-API-Muster
     intro: '<code>FormKitAbstractType</code> / snake_case, <code>withBuilder</code>, YAML-Profil <code>bootstrap</code>.'
     usage_1: 'Links: <code>SnakeCaseKitDemoType</code>.'
-    usage_2: 'Rechts: <code>NamedConfigDemoType</code> + <code>setFormKitConfigName(''bootstrap'')</code>.'
+    usage_2: 'Rechts: <code>NamedConfigDemoType</code> + <code>#[FormKitConfig(''bootstrap'')]</code>.'
     usage_3: '<code>internal_code</code> deaktiviert die Konvention.'
     snake_heading: 'FormKitTrait (snake_case)'
     snake_intro: 'Typen über <code>FormTypeMap</code>.'
@@ -632,7 +645,7 @@ named_config_demo:
   summary:
     label: Summary
     placeholder: Short summary
-    help: '<code>setFormKitConfigName(''bootstrap'')</code>.'
+    help: '<code>#[FormKitConfig(''bootstrap'')]</code>.'
   internal_code:
     label: Internal code
     placeholder: ""

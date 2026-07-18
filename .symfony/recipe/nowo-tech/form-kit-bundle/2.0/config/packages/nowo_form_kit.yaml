@@ -1,0 +1,111 @@
+# Form Kit Bundle — https://github.com/nowo-tech/form-kit-bundle
+#
+# Top-level keys:
+#   default_config  — Name of the entry under `configs` to use when a form does not call setFormKitConfigName().
+#   type_map        — Optional. Extra snake_case type name => form type FQCN. Merged with built-in types (text, email, …)
+#                     and optional UX types when packages are installed (e.g. dropzone, cropper, translations).
+#   css_framework   — Optional. bootstrap | tailwind | foundation | none. Drives Nowo\FormKitBundle\Css\CssClassUtilities
+#                     (column-class merge + utility ordering). Default: bootstrap.
+#   configs         — One or more named profiles: translation domain, defaults, help_modal defaults, per field-type tweaks.
+#
+# Per config entry (configs.<name>):
+#   alias                    — Required. Human-readable name for this profile.
+#   translation_domain       — Domain for convention keys: {form_snake}.{field_snake}.label|.placeholder|.help
+#   required_label_suffix    — Optional. Appended to required field labels (e.g. " *"). Null/empty disables.
+#                              Note: RequiredLabelSuffixExtension reads suffix from the config named `default_config` only.
+#   help_modal               — Defaults merged when a field sets help_modal: true (or partial array). See HelpModalExtension.
+#   defaults.attr / row_attr — Merged into every field unless overridden.
+#   field_types              — Optional per-type overrides. Keys: short name (text, email, …) or FQCN.
+#                              Each value may set attr, row_attr, label, placeholder, help, translation_domain.
+
+nowo_form_kit:
+    default_config: default
+    # css_framework: bootstrap
+
+    # Optional: register custom or project-specific types for FormKitTrait / snake_case buildFormFromArray.
+    # type_map:
+    #     my_upload: 'App\Form\Type\MyUploadType'
+
+    configs:
+        default:
+            alias: default
+            translation_domain: messages
+
+            # Uncomment to show a suffix on required fields (e.g. asterisk). Same string for all required fields using this config.
+            # required_label_suffix: ' *'
+
+            defaults:
+                attr:
+                    class: 'form-control'
+                row_attr:
+                    class: 'mb-3'
+
+            # Used when a field option sets help_modal: true. Load help-modal.js (+ optional help-modal.css) after Bootstrap.
+            help_modal:
+                framework: bootstrap5
+                # Clickable wrapper at end of label (after required *): circle style by default
+                # trigger_class: 'nowo-help-modal-trigger nowo-help-modal-trigger--circle'
+                # Plain HTML inside the trigger (icon / UX):
+                icon_html: '<span aria-hidden="true">?</span>'
+                # Or Symfony UX Icons — overrides icon_html when symfony/ux-icons is installed:
+                # ux_icon: 'lucide:circle-help'
+                # ux_icon_attributes: { class: 'nowo-help-modal-icon', 'aria-hidden': 'true' }
+                # Modal body: HTML string (trusted). Optional title_html for HTML title; else use title (plain).
+
+            # Per Symfony form type (short name or FQCN). Optional: constraints (NotBlank, Email, …) merged into resolve().
+            # Example for EmailType fields app-wide:
+            # field_types:
+            #     email:
+            #         constraints: [ NotBlank, Email ]
+            field_types: {}
+            # Example:
+            # field_types:
+            #     text:
+            #         attr: { class: 'form-control' }
+            #     checkbox:
+            #         attr: { class: 'form-check-input' }
+            #         row_attr: { class: 'form-check mb-3' }
+            #     choice:
+            #         attr: { class: 'form-select' }
+
+            # Opt-in: auto message keys {form}.{field}.constraints.NotBlank (validators catalog)
+            # constraint_message_convention: true
+
+            # Per-form defaults (key = form block prefix / getBlockPrefix())
+            # by_form:
+            #     user_profile:
+            #         defaults:
+            #             row_attr: { class: 'col-12 mb-4' }
+            #         fields:
+            #             email_address:
+            #                 attr: { autocomplete: email }
+            #                 constraints: [ NotBlank, Email ]
+
+        # Optional second profile (e.g. large controls or another theme). Select in services.yaml via setFormKitConfigName('bootstrap').
+        # bootstrap:
+        #     alias: bootstrap
+        #     translation_domain: messages
+        #     required_label_suffix: ' *'
+        #     defaults:
+        #         attr: { class: 'form-control form-control-lg' }
+        #         row_attr: { class: 'mb-3' }
+        #     help_modal:
+        #         framework: bootstrap5
+        #         icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>'
+        #     field_types: {}
+
+# -----------------------------------------------------------------------------
+# Legacy layout (no `configs` key): a single implicit "default" config is built
+# from these root keys. Prefer the `configs` structure above for new projects.
+# -----------------------------------------------------------------------------
+# nowo_form_kit:
+#     translation_domain: messages
+#     required_label_suffix: null
+#     help_modal:
+#         framework: bootstrap5
+#         icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>'
+#     defaults:
+#         attr: { class: 'form-control' }
+#         row_attr: { class: 'mb-3' }
+#     field_types: {}
+#     type_map: {}

@@ -1,3 +1,3 @@
-# Form Kit Bundle recipe
+# Form Kit Bundle recipe (legacy 1.0 layout)
 
-This recipe registers the bundle and adds `config/packages/nowo_form_kit.yaml`. Customize `configs`, `default_config`, `type_map`, and optional `help_modal` defaults under each config. Optional integrations (Select All Choice, FOSCKEditor, UX Autocomplete, UX Icons, A2lix translations) are documented under Composer **suggest** and [Configuration — Suggested optional Composer packages](https://github.com/nowo-tech/form-kit-bundle/blob/main/docs/CONFIGURATION.md#suggested-optional-composer-packages). See also: [Configuration](https://github.com/nowo-tech/form-kit-bundle/blob/main/docs/CONFIGURATION.md), [Usage](https://github.com/nowo-tech/form-kit-bundle/blob/main/docs/USAGE.md).
+Prefer the **2.0** stub: [../2.0/](../2.0/). See [docs/RECIPE.md](../../../../docs/RECIPE.md).

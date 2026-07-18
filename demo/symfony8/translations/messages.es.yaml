@@ -11,6 +11,7 @@ demo_nav:
   data_transformers: 'Transformadores de datos'
   choice_fields: 'Campos de elección'
   conditional_fields: 'Campos condicionales'
+  conditional_fields_live: 'Condicionales Live'
   kit_api_patterns: 'Patrones API Kit'
   nowo_special_fields: 'Campos Nowo'
   ckeditor: CKEditor
@@ -227,7 +228,7 @@ named_config_demo:
   summary:
     label: Resumen
     placeholder: 'Resumen corto'
-    help: '<code>setFormKitConfigName(''bootstrap'')</code>.'
+    help: '<code>#[FormKitConfig(''bootstrap'')]</code>.'
   internal_code:
     label: 'Código interno'
     placeholder: ""
@@ -414,9 +415,13 @@ demo_pages:
       title: 'Campos condicionales'
       description: 'Empresa o persona con <code>FormEvents</code> + <code>resolveFieldOptions()</code>, y también <code>if</code> en build-time.'
       button: 'Abrir campos condicionales'
+    conditional_fields_live:
+      title: 'Campos condicionales (Live)'
+      description: 'El mismo formulario FormEvents dentro de un <code>Live Component</code> de Symfony UX.'
+      button: 'Abrir condicionales Live'
     kit_api_patterns:
       title: 'Patrones API Kit'
-      description: '<code>FormKitAbstractType</code> (snake_case + <code>withBuilder</code>) y config nombrada con <code>setFormKitConfigName</code>.'
+      description: '<code>FormKitAbstractType</code> (snake_case + <code>withBuilder</code>) y config nombrada con <code>#[FormKitConfig]</code>.'
       button: 'Abrir patrones API'
     ckeditor:
       title: CKEditor
@@ -519,12 +524,20 @@ demo_pages:
     build_heading: 'if en build-time'
     build_intro: 'Forma fija al crear el form; usa el toggle para recrear con otro <code>account_mode</code>.'
     normalized_title: 'Datos enviados (normalizados)'
+  conditional_fields_live:
+    page_title: 'Campos condicionales (Live) - Demo Form Kit'
+    heading: 'Campos condicionales (Live Component)'
+    intro: 'Envuelve <code>ConditionalFieldsDemoType</code> en <code>ComponentWithFormTrait</code>.'
+    usage_1: 'Componente: <code>App\Twig\Components\ConditionalFieldsLive</code>.'
+    usage_2: 'Requiere <code>symfony/ux-live-component</code>.'
+    usage_3: 'Compara con <code>/conditional-fields</code>.'
+    component_intro: 'Cambia el <strong>tipo de cuenta</strong> — los campos se actualizan sin recargar toda la página.'
   kit_api_patterns:
     page_title: 'Patrones API Kit - Demo Form Kit'
     heading: 'Patrones API Kit'
     intro: 'APIs restantes: <code>FormKitAbstractType</code> / type map snake_case, <code>withBuilder</code> + <code>add*Field</code>, y un segundo perfil YAML.'
     usage_1: 'Izquierda: <code>SnakeCaseKitDemoType</code> extiende <code>FormKitAbstractType</code>.'
-    usage_2: 'Derecha: <code>NamedConfigDemoType</code> con <code>setFormKitConfigName(''bootstrap'')</code>.'
+    usage_2: 'Derecha: <code>NamedConfigDemoType</code> con <code>#[FormKitConfig(''bootstrap'')]</code>.'
     usage_3: '<code>internal_code</code> desactiva la convención con <code>label/placeholder/help =&gt; false</code>.'
     snake_heading: 'FormKitTrait (snake_case)'
     snake_intro: 'Tipos vía <code>FormTypeMap</code> (<code>text</code>, <code>email</code>, <code>choice</code>, …).'

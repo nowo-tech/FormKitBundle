@@ -43,8 +43,9 @@
 | `Form/AbstractFormKitType.php` | Base form type | FR-FORM-001 |
 | `Form/AbstractFormKitWrappedType.php` | Wrapped type base | FR-FORM-001 |
 | `Form/FormKitAbstractType.php` | Snake_case type base | FR-FORM-001 |
-| `Form/FormKitTrait.php` | Type-map trait; `withBuilder` / `add*Field` / `addNamedField` | FR-FORM-001, FR-FORM-009 |
-| `Form/FormOptionsTrait.php` | FQCN helper trait; `withBuilder` / `add*Field` / `resolveFieldOptions` | FR-FORM-001, FR-FORM-009, FR-FORM-010 |
+| `Form/FormKitTrait.php` | Type-map trait; `withBuilder` / `add*Field` / `addNamedField` / `#[FormKitConfig]` | FR-FORM-001, FR-FORM-009 |
+| `Form/FormOptionsTrait.php` | FQCN helper trait; `withBuilder` / `add*Field` / `resolveFieldOptions` / `#[FormKitConfig]` | FR-FORM-001, FR-FORM-009, FR-FORM-010 |
+| `Attribute/FormKitConfig.php` | Named config attribute | FR-FORM-011 |
 | `Form/FormOptionsMerger.php` | Cascading merge service | FR-FORM-002 |
 | `Form/FormKitOptionMerger.php` | Kit-specific merge | FR-FORM-002 |
 | `Form/FormFieldOptionsHelper.php` | Label/placeholder/help keys | FR-FORM-003 |

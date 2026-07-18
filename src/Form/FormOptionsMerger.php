@@ -12,11 +12,15 @@ use function is_array;
 use function sprintf;
 
 /**
- * Merges form field options in cascade: global defaults → field type → form-level → field options.
+ * Merges form field options in cascade:
+ * global defaults → field type → by_form defaults → by_form field → field options.
  *
  * Supports multiple coexisting configs; resolve() accepts an optional config name (otherwise default_config is used).
  * Applies convention: label, placeholder and help default to translation keys
  * "form_snake.field_snake.label", ".placeholder", ".help" unless explicitly set to false.
+ *
+ * Optional constraint_message_convention: constraints without an explicit message get
+ * "{form}.{field}.constraints.{ConstraintName}" (validators catalog).
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
@@ -24,7 +28,13 @@ use function sprintf;
 final class FormOptionsMerger
 {
     /**
-     * @param array<string, array{translation_domain: string, defaults: array{attr: array, row_attr: array}, field_types: array}> $configs
+     * @param array<string, array{
+     *     translation_domain: string,
+     *     defaults: array{attr: array, row_attr: array},
+     *     field_types: array,
+     *     constraint_message_convention?: bool,
+     *     by_form?: array
+     * }> $configs
      */
     public function __construct(
         private array $configs,
@@ -56,6 +66,8 @@ final class FormOptionsMerger
         $translationDomain = $config['translation_domain'];
         $defaults          = $config['defaults'];
         $fieldTypes        = $config['field_types'];
+        $byFormMap         = $config['by_form'] ?? [];
+        $messageConvention = (bool) ($config['constraint_message_convention'] ?? false);
 
         $fieldNameSnake = $this->camelCaseToSnakeCase($fieldName);
         $baseKey        = $formName . '.' . $fieldNameSnake;
@@ -80,6 +92,27 @@ final class FormOptionsMerger
         }
         unset($typeDefaults['constraints']);
 
+        $formDefaults = [];
+        $formField    = [];
+        $formConstraintDefs = [];
+        if (isset($byFormMap[$formName]) && is_array($byFormMap[$formName])) {
+            $formEntry    = $byFormMap[$formName];
+            $formDefaults = [
+                'attr'     => $formEntry['defaults']['attr'] ?? [],
+                'row_attr' => $formEntry['defaults']['row_attr'] ?? [],
+            ];
+            $fields = $formEntry['fields'] ?? [];
+            if (isset($fields[$fieldName]) && is_array($fields[$fieldName])) {
+                $formField = $fields[$fieldName];
+            } elseif (isset($fields[$fieldNameSnake]) && is_array($fields[$fieldNameSnake])) {
+                $formField = $fields[$fieldNameSnake];
+            }
+            if (isset($formField['constraints']) && is_array($formField['constraints'])) {
+                $formConstraintDefs = $formField['constraints'];
+            }
+            unset($formField['constraints']);
+        }
+
         $optionsConstraints = array_key_exists('constraints', $options) && is_array($options['constraints'])
             ? $options['constraints']
             : [];
@@ -87,14 +120,17 @@ final class FormOptionsMerger
         unset($optionsForMerge['constraints']);
 
         $merged = $this->arrayReplaceRecursive($base, $typeDefaults);
+        $merged = $this->arrayReplaceRecursive($merged, $formDefaults);
+        $merged = $this->arrayReplaceRecursive($merged, $formField);
         $merged = $this->arrayReplaceRecursive($merged, $optionsForMerge);
         $merged = $this->normalizePlaceholderToAttr($merged, $options);
 
         $merged = $this->removeExplicitFalseConventionKeys($merged, $options);
 
-        $constraintDefs = array_merge($typeConstraintDefs, $optionsConstraints);
+        $constraintDefs = array_merge($typeConstraintDefs, $formConstraintDefs, $optionsConstraints);
         if ($constraintDefs !== []) {
-            $merged['constraints'] = $this->constraintDefinitionFactory->create($constraintDefs);
+            $messagePrefix = $messageConvention ? $baseKey : null;
+            $merged['constraints'] = $this->constraintDefinitionFactory->create($constraintDefs, $messagePrefix);
         }
 
         return $merged;

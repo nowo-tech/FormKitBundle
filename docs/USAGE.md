@@ -37,7 +37,7 @@ You can inject **FormOptionsMerger** and call `resolve($formName, $fieldName, $t
 
 If you build forms in controllers (without a Symfony `FormType`), you can use `Nowo\FormKitBundle\Controller\FormKitControllerTrait`.
 
-It provides helpers like `addTextType()`, `addEmailType()`, `addChoiceType()`, choice presets (`addSelectType`, `addMultiSelectType`, `addChoiceRadiosType`, `addChoiceCheckboxesType`, `addMultiSelectSelectAllType`), `addAutocompleteFieldType`, `addCKEditorFieldType`, plus transformer presets like:
+It provides helpers like `addTextType()`, `addEmailType()`, `addChoiceType()`, choice presets (`addSelectType`, `addMultiSelectType`, `addChoiceRadiosType`, `addChoiceCheckboxesType`, `addMultiSelectSelectAllType`), `addAutocompleteFieldType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, plus transformer presets like:
 - `addSwitchType()` (model int/bool <-> ChoiceType switch)
 - `addJsonType()` (model array <-> JSON textarea)
 - `addBoolType()` (model 0/1 <-> CheckboxType)
@@ -95,10 +95,12 @@ App\Form\UserProfileType:
 **Phase 2 (field name + options only, no type class):**
 
 ```php
+use Nowo\FormKitBundle\Attribute\FormKitConfig;
 use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+#[FormKitConfig('bootstrap')] // optional: named config; or call setFormKitConfigName()
 class UserProfileType extends AbstractType
 {
     use FormOptionsTrait;
@@ -114,6 +116,8 @@ class UserProfileType extends AbstractType
     }
 }
 ```
+
+**Named config:** put `#[FormKitConfig('bootstrap')]` on the form class (reads `nowo_form_kit.configs.bootstrap`), or call `setFormKitConfigName('bootstrap')` in `buildForm()` / DI. An explicit `setFormKitConfigName()` call overrides the attribute.
 
 You can still pass `$builder` explicitly with the older helpers (`addText($builder, …)`, `addEmail($builder, …)`, …). `boundBuilder()` returns the builder bound by `withBuilder()` when you need helpers that still require it (e.g. `addAutocompleteField`, `addCKEditorField`).
 
@@ -137,7 +141,7 @@ $this->buildFormFromArray($builder, [
 
 **Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect` / `addSelectField`, `addMultiSelect` / `addMultiSelectField`, `addChoiceRadios` / `addChoiceRadiosField`, `addChoiceCheckboxes` / `addChoiceCheckboxesField`. Radios and checkbox groups clear the global `form-control` class on the widget root and disable `placeholder` by default so Bootstrap 5 `form-check` markup renders correctly. **`addMultiSelectSelectAll`** / **`addMultiSelectSelectAllField`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
 
-**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle** and runs `CKEditorType` through the same merge pipeline (install CKEditor assets with `bin/console ckeditor:install`; register the FOSCKEditor Twig form theme — see that bundle’s documentation). Inside `withBuilder()`, pass `$this->boundBuilder()` as the first argument. Generic bound helper: `addTypedField($name, $typeFqcn, $options)`.
+**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle**. **`addDropzone` / `addDropzoneField`** require **symfony/ux-dropzone**. **`addCropper` / `addCropperField`** require **symfony/ux-cropperjs** (pass Cropper options such as `public_url`). All run through the same merge pipeline and throw `LogicException` if the package is missing. Inside `withBuilder()`, use the `*Field` variants or pass `$this->boundBuilder()`. Generic bound helper: `addTypedField($name, $typeFqcn, $options)`. On **FormKitTrait**, the same Dropzone/Cropper helpers resolve the `dropzone` / `cropper` entries in **FormTypeMap**.
 
 **Model transformers:** `addSwitchType` / `addSwitchField`, `addJsonType` / `addJsonField`, `addBoolType` / `addBoolField`, `addMoneyType` / `addMoneyField`, `addCsvType` / `addCsvField`.
 
@@ -145,7 +149,7 @@ $this->buildFormFromArray($builder, [
 
 The form block prefix (e.g. `user_profile` for `UserProfileType`) is used automatically. Field names are used as-is for the translation key segment (use snake_case for consistency: `full_name`, `email_address`).
 
-Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` suffix (e.g. `addSelectType`, `addCKEditorFieldType`).
+Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` / `*FieldType` suffix (e.g. `addSelectType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`).
 
 ## Conditional fields (show one field or another)
 
@@ -225,7 +229,7 @@ public function buildForm(FormBuilderInterface $builder, array $options): void
 }
 ```
 
-Demo: `/conditional-fields` — events form (`ConditionalFieldsDemoType`) and build-time form (`BuildTimeConditionalDemoType`) in the Symfony 7/8 demos. Also `/kit-api-patterns` for `FormKitAbstractType` (snake_case) and named config (`setFormKitConfigName('bootstrap')`).
+Demo: `/conditional-fields` — events form (`ConditionalFieldsDemoType`) and build-time form (`BuildTimeConditionalDemoType`) in **demo/symfony8**. Also `/kit-api-patterns` for `FormKitAbstractType` (snake_case) and named config (`#[FormKitConfig('bootstrap')]`), plus `/conditional-fields-live` for Live Components.
 
 **Twig tip:** render dynamic children with `is defined` or rely on `form_rest()`:
 
@@ -244,7 +248,9 @@ Add **all** fields with Form Kit helpers, then toggle visibility in the browser.
 
 ### 4. Live Components (optional)
 
-For instant re-render without a full page submit, wrap the form in a Symfony UX Live Component and re-create or re-handle the form when the driving field changes. Form Kit stays the options/convention layer; Live owns the refresh cycle. See also [ROADMAP](ROADMAP.md) (UX Live ideas).
+For instant re-render without a full page submit, wrap the form in a Symfony UX Live Component (`ComponentWithFormTrait`) and pass the driving value as a form option (build-time `if`) or rebuild via Live props. Form Kit stays the options/convention layer; Live owns the refresh cycle.
+
+Requires **symfony/ux-live-component**. Demo: `/{locale}/conditional-fields-live` in **demo/symfony8** (`ConditionalFieldsLive` component + `BuildTimeConditionalDemoType`).
 
 ## FormKitTrait and FormKitAbstractType (snake_case types)
 
@@ -581,7 +587,48 @@ The buttons are wrapped in a `<div class="form-kit-buttons">` for styling. When 
 
 ## Layout examples (Bootstrap and Tailwind)
 
-The bundle does not enforce a CSS framework, but `defaults.attr` and `defaults.row_attr` make it easy to standardize markup per project/theme.
+The bundle does not enforce a CSS framework, but `defaults.attr`, `defaults.row_attr`, `field_types`, and `by_form` make it easy to standardize markup per project, theme, or individual form.
+
+### Horizontal / grid (Bootstrap)
+
+Use `row_attr` with column classes on fields (or `by_form` defaults), and wrap the form in a Bootstrap `row`:
+
+```yaml
+nowo_form_kit:
+    configs:
+        default:
+            alias: default
+            translation_domain: messages
+            defaults:
+                attr: { class: 'form-control' }
+                row_attr: { class: 'col-md-6 mb-3' }
+            by_form:
+                search:
+                    defaults:
+                        row_attr: { class: 'col-auto mb-0' }
+            field_types:
+                checkbox:
+                    attr: { class: 'form-check-input' }
+                    row_attr: { class: 'col-12 form-check mb-3' }
+```
+
+```twig
+{{ form_start(form, { attr: { class: 'row g-3' } }) }}
+  {{ form_row(form.full_name) }}
+  {{ form_row(form.email) }}
+{{ form_end(form) }}
+```
+
+### Floating labels (Bootstrap 5)
+
+Keep Form Kit conventions for labels; in Twig use Bootstrap’s floating markup (or a custom form theme). Form Kit still supplies the label translation key:
+
+```twig
+<div class="form-floating mb-3">
+  {{ form_widget(form.email) }}
+  {{ form_label(form.email) }}
+</div>
+```
 
 ### Bootstrap 5 example
 

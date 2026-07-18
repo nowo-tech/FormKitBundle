@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
 use LogicException;
+use Nowo\FormKitBundle\Attribute\FormKitConfig;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use function is_string;
@@ -31,6 +32,9 @@ trait FormKitTrait
     /** Config name (key in nowo_form_kit.configs) to use; null = default_config */
     private ?string $formKitConfigName = null;
 
+    /** True after setFormKitConfigName() or after resolving #[FormKitConfig]. */
+    private bool $formKitConfigNameResolved = false;
+
     public function setFormOptionsMerger(FormOptionsMerger $merger): void
     {
         $this->formOptionsMerger = $merger;
@@ -41,10 +45,24 @@ trait FormKitTrait
         $this->formTypeMap = $map;
     }
 
-    /** Set which config to use (key in configs); null uses default_config. */
+    /** Set which config to use (key in configs); null uses default_config. Overrides #[FormKitConfig]. */
     public function setFormKitConfigName(?string $configName): void
     {
-        $this->formKitConfigName = $configName;
+        $this->formKitConfigName         = $configName;
+        $this->formKitConfigNameResolved = true;
+    }
+
+    /**
+     * Config name for FormOptionsMerger: explicit setter, else #[FormKitConfig] on the form class, else null (default_config).
+     */
+    protected function resolvedFormKitConfigName(): ?string
+    {
+        if (!$this->formKitConfigNameResolved) {
+            $this->formKitConfigName         = FormKitConfig::nameFrom($this);
+            $this->formKitConfigNameResolved = true;
+        }
+
+        return $this->formKitConfigName;
     }
 
     /**
@@ -94,7 +112,7 @@ trait FormKitTrait
             $fieldName,
             $fieldTypeSnake,
             $options,
-            $this->formKitConfigName,
+            $this->resolvedFormKitConfigName(),
         );
     }
 
@@ -270,5 +288,49 @@ trait FormKitTrait
     protected function addChoiceField(string $name, array $options = []): void
     {
         $this->addChoice($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional UX Dropzone (`dropzone` in FormTypeMap). Requires `symfony/ux-dropzone`.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addDropzone(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        if (!class_exists(\Symfony\UX\Dropzone\Form\DropzoneType::class)) {
+            throw new LogicException('addDropzone() requires symfony/ux-dropzone. Install it or register a custom type in nowo_form_kit.type_map.');
+        }
+
+        $this->addField($builder, $name, 'dropzone', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addDropzoneField(string $name, array $options = []): void
+    {
+        $this->addDropzone($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional UX Cropper.js (`cropper` in FormTypeMap). Requires `symfony/ux-cropperjs`.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addCropper(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        if (!class_exists(\Symfony\UX\Cropperjs\Form\CropperType::class)) {
+            throw new LogicException('addCropper() requires symfony/ux-cropperjs. Install it or register a custom type in nowo_form_kit.type_map.');
+        }
+
+        $this->addField($builder, $name, 'cropper', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addCropperField(string $name, array $options = []): void
+    {
+        $this->addCropper($this->boundBuilder(), $name, $options);
     }
 }

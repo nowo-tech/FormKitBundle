@@ -87,4 +87,65 @@ final class FormOptionsMergerTest extends TestCase
 
         self::assertSame('existing', $merged['attr']['placeholder']);
     }
+
+    public function testResolveAppliesByFormDefaultsAndFieldOverrides(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
+                        'row_attr' => ['class' => 'mb-3'],
+                    ],
+                    'field_types' => [],
+                    'by_form'     => [
+                        'contact' => [
+                            'defaults' => [
+                                'attr'     => ['class' => 'form-control-lg'],
+                                'row_attr' => ['class' => 'col-12 mb-4'],
+                            ],
+                            'fields' => [
+                                'email' => [
+                                    'attr' => ['autocomplete' => 'email'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('contact', 'email', 'email');
+
+        self::assertSame('form-control-lg', $merged['attr']['class']);
+        self::assertSame('col-12 mb-4', $merged['row_attr']['class']);
+        self::assertSame('email', $merged['attr']['autocomplete']);
+    }
+
+    public function testResolveAppliesConstraintMessageConventionWhenEnabled(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain'            => 'messages',
+                    'defaults'                      => ['attr' => [], 'row_attr' => []],
+                    'field_types'                   => [
+                        'text' => ['constraints' => ['NotBlank']],
+                    ],
+                    'constraint_message_convention' => true,
+                    'by_form'                       => [],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('user_profile', 'fullName', 'text');
+
+        self::assertInstanceOf(NotBlank::class, $merged['constraints'][0]);
+        self::assertSame('user_profile.full_name.constraints.NotBlank', $merged['constraints'][0]->message);
+    }
 }

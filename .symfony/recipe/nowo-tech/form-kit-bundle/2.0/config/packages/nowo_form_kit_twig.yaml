@@ -1,0 +1,6 @@
+# Twig form theme for Form Kit static blocks (input groups, HR/alert helpers).
+# List static_blocks *before* Bootstrap (or other CSS framework) themes so framework
+# widgets win for radio/checkbox; see docs/USAGE.md "Custom static blocks".
+twig:
+    form_themes:
+        - '@NowoFormKit/form/static_blocks.html.twig'

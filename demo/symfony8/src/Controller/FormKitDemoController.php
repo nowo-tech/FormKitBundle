@@ -385,6 +385,15 @@ class FormKitDemoController extends AbstractController
     }
 
     /**
+     * Conditional fields with Symfony UX Live Component (same FormEvents form type).
+     */
+    #[Route(path: '/conditional-fields-live', name: 'form_demo_conditional_fields_live', methods: ['GET'])]
+    public function conditionalFieldsLiveDemo(): Response
+    {
+        return $this->render('form_demo/conditional_fields_live.html.twig');
+    }
+
+    /**
      * Kit API patterns — FormKitAbstractType (snake_case) + named config profile.
      */
     #[Route(path: '/kit-api-patterns', name: 'form_demo_kit_api_patterns', methods: ['GET', 'POST'])]

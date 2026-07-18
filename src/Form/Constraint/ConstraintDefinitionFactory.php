@@ -7,6 +7,7 @@ namespace Nowo\FormKitBundle\Form\Constraint;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Constraint;
 
+use function array_key_exists;
 use function array_key_first;
 use function class_exists;
 use function count;
@@ -14,6 +15,8 @@ use function is_array;
 use function is_string;
 use function sprintf;
 use function str_starts_with;
+
+use ReflectionClass;
 
 /**
  * Builds Symfony Validator Constraint instances from YAML/PHP config definitions.
@@ -23,6 +26,9 @@ use function str_starts_with;
  * - string: short name or FQCN under Symfony\Component\Validator\Constraints\ (e.g. NotBlank, Email)
  * - { ConstraintName: options } single-key array (YAML list item)
  * - { type: NotBlank|FQCN, options?: array }
+ *
+ * Optional $messageKeyPrefix (e.g. "user_profile.email"): when set, definitions without an
+ * explicit "message" option get message "{prefix}.constraints.{ConstraintShortName}".
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
@@ -36,11 +42,11 @@ final class ConstraintDefinitionFactory
      *
      * @return list<Constraint>
      */
-    public function create(array $definitions): array
+    public function create(array $definitions, ?string $messageKeyPrefix = null): array
     {
         $out = [];
         foreach ($definitions as $item) {
-            foreach ($this->createOne($item) as $c) {
+            foreach ($this->createOne($item, $messageKeyPrefix) as $c) {
                 $out[] = $c;
             }
         }
@@ -51,14 +57,16 @@ final class ConstraintDefinitionFactory
     /**
      * @return list<Constraint>
      */
-    private function createOne(mixed $item): array
+    private function createOne(mixed $item, ?string $messageKeyPrefix): array
     {
         if ($item instanceof Constraint) {
             return [$item];
         }
 
         if (is_string($item)) {
-            return [$this->instantiate($this->resolveClass($item), [])];
+            $class = $this->resolveClass($item);
+
+            return [$this->instantiate($class, [], $messageKeyPrefix, $this->shortName($class, $item))];
         }
 
         if (!is_array($item)) {
@@ -66,18 +74,20 @@ final class ConstraintDefinitionFactory
         }
 
         if (isset($item['type'])) {
-            $type = (string) $item['type'];
-            $opts = isset($item['options']) && is_array($item['options']) ? $item['options'] : [];
+            $type  = (string) $item['type'];
+            $opts  = isset($item['options']) && is_array($item['options']) ? $item['options'] : [];
+            $class = $this->resolveClass($type);
 
-            return [$this->instantiate($this->resolveClass($type), $opts)];
+            return [$this->instantiate($class, $opts, $messageKeyPrefix, $this->shortName($class, $type))];
         }
 
         if (count($item) === 1) {
-            $name = (string) array_key_first($item);
-            $opts = $item[$name];
-            $opts = $opts === null ? [] : (is_array($opts) ? $opts : []);
+            $name  = (string) array_key_first($item);
+            $opts  = $item[$name];
+            $opts  = $opts === null ? [] : (is_array($opts) ? $opts : []);
+            $class = $this->resolveClass($name);
 
-            return [$this->instantiate($this->resolveClass($name), $opts)];
+            return [$this->instantiate($class, $opts, $messageKeyPrefix, $this->shortName($class, $name))];
         }
 
         throw new InvalidArgumentException('Invalid constraint definition: use a one-key map (NotBlank: { ... }), type/options, or a string.');
@@ -86,9 +96,63 @@ final class ConstraintDefinitionFactory
     /**
      * @param array<string, mixed> $options
      */
-    private function instantiate(string $class, array $options): Constraint
+    private function instantiate(string $class, array $options, ?string $messageKeyPrefix, string $shortName): Constraint
     {
+        $options = $this->applyMessageConvention($class, $options, $messageKeyPrefix, $shortName);
+
         return new $class(...$options);
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
+    private function applyMessageConvention(string $class, array $options, ?string $messageKeyPrefix, string $shortName): array
+    {
+        if ($messageKeyPrefix === null || $messageKeyPrefix === '') {
+            return $options;
+        }
+
+        $key = $messageKeyPrefix . '.constraints.' . $shortName;
+
+        if (!array_key_exists('message', $options) && $this->constructorAccepts($class, 'message')) {
+            $options['message'] = $key;
+        }
+
+        // Length-style constraints use minMessage / maxMessage instead of message.
+        if (array_key_exists('min', $options) && !array_key_exists('minMessage', $options) && $this->constructorAccepts($class, 'minMessage')) {
+            $options['minMessage'] = $key . '.min';
+        }
+        if (array_key_exists('max', $options) && !array_key_exists('maxMessage', $options) && $this->constructorAccepts($class, 'maxMessage')) {
+            $options['maxMessage'] = $key . '.max';
+        }
+
+        return $options;
+    }
+
+    private function constructorAccepts(string $class, string $paramName): bool
+    {
+        $ctor = (new ReflectionClass($class))->getConstructor();
+        if ($ctor === null) {
+            return false;
+        }
+        foreach ($ctor->getParameters() as $param) {
+            if ($param->getName() === $paramName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function shortName(string $class, string $fallback): string
+    {
+        if (str_contains($class, '\\')) {
+            return substr($class, strrpos($class, '\\') + 1);
+        }
+
+        return $fallback;
     }
 
     private function resolveClass(string $name): string

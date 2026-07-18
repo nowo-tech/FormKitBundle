@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.10] - 2026-07-18
+
+### Added
+
+- **`by_form` config** — Per-form `defaults` / `fields` keyed by form name (block prefix), merged after `field_types` and before PHP options.
+- **`constraint_message_convention`** — Opt-in: constraints without an explicit message get `{form}.{field}.constraints.{Name}` (and Length-style `.min` / `.max` message keys).
+- **FormTypeMap built-ins** — Extended snake_case map: `date`, `datetime`, `money`, `collection`, `tel`, `file`, `submit`, and other core Symfony form types.
+- **`#[FormKitConfig('name')]`** — PHP attribute on form types (`FormOptionsTrait` / `FormKitTrait`) to select a named config; `setFormKitConfigName()` still overrides.
+- **Optional helpers** — `addDropzone()` / `addDropzoneField()` / `addDropzoneFieldType()` (`symfony/ux-dropzone`) and `addCropper()` / `addCropperField()` / `addCropperFieldType()` (`symfony/ux-cropperjs`) on FormOptionsTrait, FormKitTrait, and FormKitControllerTrait (`class_exists` guards).
+- **Flex recipe stub 2.0** — [`.symfony/recipe/nowo-tech/form-kit-bundle/2.0/`](../.symfony/recipe/nowo-tech/form-kit-bundle/2.0/) with `nowo_form_kit.yaml`, Twig `static_blocks` form theme, and [docs/RECIPE.md](RECIPE.md) for recipes-contrib submission.
+- **Demo Live Component** — `/{locale}/conditional-fields-live` (`ConditionalFieldsLive` + `ComponentWithFormTrait`) using the same FormEvents conditional form.
+- **Spec Kit** — Baseline updated for `by_form`, constraint message convention, and `#[FormKitConfig]` (`US-02b` / `US-07`, `FR-FORM-011`).
+
+### Changed
+
+- **ROADMAP / INSTALLATION / USAGE / CONFIGURATION / README** — Aligned with symfony8-only demo, `by_form` / constraint convention, expanded type map, Dropzone/Cropper helpers, recipe docs, Live demo, layout examples (grid / floating labels), and `#[FormKitConfig]`.
+
 ## [2.0.9] - 2026-07-18
 
 ### Removed
@@ -187,6 +204,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.10]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.10
 [2.0.9]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.9
 [2.0.8]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.8
 [2.0.7]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.7

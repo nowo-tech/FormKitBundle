@@ -10,6 +10,14 @@ if (!class_exists(DropzoneType::class)) {
     }
 }
 
+namespace Symfony\UX\Cropperjs\Form;
+
+if (!class_exists(CropperType::class)) {
+    final class CropperType
+    {
+    }
+}
+
 namespace Nowo\SelectAllChoiceBundle;
 
 if (!class_exists(NowoSelectAllChoiceBundle::class)) {

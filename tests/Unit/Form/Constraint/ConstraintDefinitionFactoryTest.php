@@ -87,6 +87,28 @@ final class ConstraintDefinitionFactoryTest extends TestCase
         self::assertInstanceOf(NotBlank::class, $created[0]);
     }
 
+    public function testAppliesMessageKeyPrefixWhenMessageMissing(): void
+    {
+        $created = (new ConstraintDefinitionFactory())->create(
+            ['NotBlank', ['Length' => ['max' => 10]]],
+            'user_profile.email',
+        );
+
+        self::assertSame('user_profile.email.constraints.NotBlank', $created[0]->message);
+        self::assertSame('user_profile.email.constraints.Length.max', $created[1]->maxMessage);
+        self::assertSame(10, $created[1]->max);
+    }
+
+    public function testDoesNotOverrideExplicitMessageWhenPrefixSet(): void
+    {
+        $created = (new ConstraintDefinitionFactory())->create(
+            [['NotBlank' => ['message' => 'keep_me']]],
+            'user_profile.email',
+        );
+
+        self::assertSame('keep_me', $created[0]->message);
+    }
+
     public function testRejectsMissingValidatorFqcn(): void
     {
         $this->expectException(InvalidArgumentException::class);
