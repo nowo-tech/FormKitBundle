@@ -555,10 +555,10 @@ demo_pages:
   nowo_special_fields:
     page_title: 'Campos especiales Nowo - Demo Form Kit'
     heading: 'Campos especiales Nowo'
-    intro: 'Muestra de widgets de formulario del ecosistema <strong>nowo-tech</strong> integrados con <code>FormOptionsTrait::addWithDefaults()</code> — mismas claves de traducción y pipeline de fusión que los helpers integrados.'
-    usage_1: '<code>nowo-tech/otp-input-bundle</code> (dígitos OTP), <code>phone-input-bundle</code> (E.164 + selector de país), <code>password-toggle-bundle</code> y <code>password-strength-bundle</code>.'
-    usage_2: '<code>icon-selector-bundle</code> (Tom Select + iconos), <code>tiptap-editor-bundle</code> y <code>ckeditor5-editor-bundle</code> para texto enriquecido (CKEditor 5 GPL).'
-    usage_3: 'También disponibles en otras páginas de esta demo: <code>select-all-choice-bundle</code>, FOS CKEditor 4, UX Autocomplete, Dropzone, Cropper, traducciones A2lix.'
+    intro: 'Muestra de widgets del ecosistema <strong>nowo-tech</strong> con <code>FormOptionsTrait::addWithDefaults()</code>.'
+    usage_1: 'OTP, teléfono, password-toggle, password-strength (solo toggle, solo fuerza, y <strong>combinados</strong> en un campo).'
+    usage_2: 'Icon selector, Tiptap y CKEditor 5.'
+    usage_3: 'Combinado: <code>PasswordStrengthType</code> con <code>use_password_toggle =&gt; true</code> (PasswordToggleBundle instalado).'
     normalized_title: 'Datos enviados (normalizados)'
 
 nowo_special_fields_demo:
@@ -571,13 +571,17 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Teléfono internacional con selector de prefijo (<code>nowo-tech/phone-input-bundle</code>).'
   secret_password:
-    label: Contraseña (toggle)
+    label: 'Contraseña (solo toggle)'
     placeholder: ''
-    help: 'Mostrar/ocultar con <code>nowo-tech/password-toggle-bundle</code>.'
-  account_password:
-    label: Contraseña de cuenta (fuerza)
+    help: 'Solo mostrar/ocultar — <code>PasswordToggleBundle\\PasswordType</code>.'
+  strength_only_password:
+    label: 'Contraseña (solo fuerza)'
     placeholder: ''
-    help: 'Indicador de fuerza en vivo con <code>nowo-tech/password-strength-bundle</code> (usa toggle si está instalado).'
+    help: '<code>PasswordStrengthType</code> con <code>use_password_toggle =&gt; false</code> (medidor, sin ojo).'
+  combined_password:
+    label: 'Contraseña (toggle + fuerza)'
+    placeholder: ''
+    help: '<strong>Combinado:</strong> <code>PasswordStrengthType</code> + <code>use_password_toggle =&gt; true</code> — ojo y medidor en el mismo campo.'
   app_icon:
     label: Icono de la aplicación
     placeholder: Buscar iconos…

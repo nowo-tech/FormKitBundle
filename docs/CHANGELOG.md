@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.9] - 2026-07-18
+
+### Removed
+
+- **demo/symfony7** — Symfony 7 demo removed from the repository. Use **demo/symfony8** (PHP 8.4+). Does not affect the Composer package (`demo/` is excluded from the archive). Bundle runtime still supports Symfony **7.4+**.
+
+### Changed
+
+- **Demo `/nowo-special-fields`** — Password examples: toggle only, strength only (`use_password_toggle => false`), and **combined** toggle + strength (`PasswordStrengthType` + `use_password_toggle => true`).
+- **Make / docs** — Root and demo Makefiles, README, and DEMO-FRANKENPHP target **symfony8** only.
+
 ## [2.0.8] - 2026-07-18
 
 ### Added
@@ -176,6 +187,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.9]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.9
 [2.0.8]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.8
 [2.0.7]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.7
 [2.0.6]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.6

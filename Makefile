@@ -10,8 +10,8 @@ RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 COMPOSER ?= composer
 
 .PHONY: help install test test-coverage coverage-php-percent test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos composer-sync rector rector-dry phpstan
-.PHONY: demo-up-symfony7 demo-up-symfony8
-.PHONY: up down down-dev up-symfony7 up-symfony8 build shell demo-install demo-down
+.PHONY: demo-up-symfony8
+.PHONY: up down down-dev up-symfony8 build shell demo-install demo-down
 
 help:
 	@echo "Form Kit Bundle - Development Commands (Docker)"
@@ -45,12 +45,10 @@ help:
 	@echo "  down-dev       Stop root container (alias for down)"
 	@echo ""
 	@echo "Demos:"
-	@echo "  demo-install   Install Composer dependencies in demo"
-	@echo "  demo-up-symfony7   Install deps in demo/symfony7 (Symfony 7.4)"
+	@echo "  demo-install       Install Composer dependencies in demo/symfony8"
 	@echo "  demo-up-symfony8   Install deps in demo/symfony8 (Symfony 8.1)"
-	@echo "  up-symfony7    Start demo symfony7 (http://localhost:8007)"
-	@echo "  up-symfony8    Start demo symfony8 (http://localhost:8008)"
-	@echo "  demo-down      Stop demo containers"
+	@echo "  up-symfony8        Start demo symfony8 (http://localhost:8008)"
+	@echo "  demo-down          Stop demo containers"
 	@echo ""
 
 ensure-up:
@@ -142,16 +140,6 @@ test-ts:
 
 assets-test: test-ts
 
-demo-up-symfony7:
-	@echo "Installing demo symfony7..."
-	cd demo/symfony7 && $(COMPOSER) install --no-interaction
-	@if command -v pnpm >/dev/null 2>&1; then \
-		cd demo/symfony7 && pnpm install && pnpm run build; \
-	else \
-		echo "pnpm not found; skip demo Vite build (cd demo/symfony7 && pnpm install && pnpm run build)."; \
-	fi
-	@echo "✅ demo/symfony7 ready"
-
 demo-up-symfony8:
 	@echo "Installing demo symfony8..."
 	cd demo/symfony8 && $(COMPOSER) install --no-interaction
@@ -183,9 +171,6 @@ build:
 	$(COMPOSE) build --no-cache
 
 # Demos with Docker
-up-symfony7:
-	$(MAKE) -C demo/symfony7 up
-
 up-symfony8:
 	$(MAKE) -C demo/symfony8 up
 

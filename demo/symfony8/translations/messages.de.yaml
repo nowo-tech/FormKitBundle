@@ -528,13 +528,17 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Internationale Nummer mit Vorwahlwahl (<code>nowo-tech/phone-input-bundle</code>).'
   secret_password:
-    label: Passwort (Toggle)
+    label: 'Password (toggle only)'
     placeholder: ''
-    help: 'Ein-/Ausblenden über <code>nowo-tech/password-toggle-bundle</code>.'
-  account_password:
-    label: Kontopasswort (Stärke)
+    help: 'Show/hide only — PasswordToggleBundle.'
+  strength_only_password:
+    label: 'Password (strength only)'
     placeholder: ''
-    help: 'Live-Stärkeanzeige über <code>nowo-tech/password-strength-bundle</code> (nutzt Toggle wenn installiert).'
+    help: 'PasswordStrengthType with use_password_toggle => false.'
+  combined_password:
+    label: 'Password (toggle + strength)'
+    placeholder: ''
+    help: '<strong>Combined:</strong> PasswordStrengthType + use_password_toggle => true.'
   app_icon:
     label: Anwendungsicon
     placeholder: Icons suchen…
