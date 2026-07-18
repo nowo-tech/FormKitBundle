@@ -6,12 +6,12 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 
 ## Current state (v2.x)
 
-- **FormOptionsTrait** + **FormOptionsMerger**: primary path; convention-based labels/placeholder/help; multiple configs; `by_form` defaults; optional constraint message convention; `#[FormKitConfig]`; Phase 2 helpers; `buildFormFromArray()` with FQCN types; `withBuilder()` + `add*Field()`.
-- **FormKitTrait** + **FormTypeMap**: snake_case type names (core Symfony types + optional UX/A2lix); `type_map` config; `buildFormFromArray()` with string types; `#[FormKitConfig]`.
-- **FormKitAbstractType**: base type using FormKitTrait; uses FormOptionsMerger + FormTypeMap for snake_case types with the same config model (`configs` / `default_config`).
-- **FormKitControllerTrait**, choice presets, model transformers, help modal (JS + Twig shells), optional helpers (Autocomplete, CKEditor, Dropzone, Cropper).
-- **Demos**: **demo/symfony8** (PHP 8.4+) with FormType, controller form, Search, Example, Dropzone, Cropper, translations, nested form, data transformers, choice fields, conditional fields (+ Live Component), Kit API patterns, **Nowo special fields**, CKEditor (FOS), UX Autocomplete, multi-step wizard; locales `en` / `es` / `fr` / `de`.
-- **Flex recipe** (repo stub under `.symfony/recipe/`): see [docs/RECIPE.md](RECIPE.md) for submitting to [symfony/recipes-contrib](https://github.com/symfony/recipes-contrib).
+- **Options** strategy (`FormOptionsTrait` + FQCN): primary path; `by_form`; `constraint_message_convention`; `#[FormKitConfig]`; **bound-builder** / **array-build**.
+- **Kit** strategy (`FormKitTrait` / `FormKitAbstractType` + `FormTypeMap`): snake_case types; same merge model.
+- **Controller** strategy (`FormKitControllerTrait`) and **Wrapped** strategy (`AbstractFormKitWrappedType`).
+- Choice presets, model transformers, help modal, optional UX helpers (Autocomplete, CKEditor, Dropzone, Cropper).
+- **Demos**: **demo/symfony8** — see [USAGE — strategies](USAGE.md#usage-strategies) for the naming used in docs.
+- **Flex recipe** stub: [RECIPE.md](RECIPE.md).
 
 ---
 
