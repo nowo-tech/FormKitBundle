@@ -92,8 +92,8 @@ final class FormOptionsMerger
         }
         unset($typeDefaults['constraints']);
 
-        $formDefaults = [];
-        $formField    = [];
+        $formDefaults       = [];
+        $formField          = [];
         $formConstraintDefs = [];
         if (isset($byFormMap[$formName]) && is_array($byFormMap[$formName])) {
             $formEntry    = $byFormMap[$formName];
@@ -129,7 +129,7 @@ final class FormOptionsMerger
 
         $constraintDefs = array_merge($typeConstraintDefs, $formConstraintDefs, $optionsConstraints);
         if ($constraintDefs !== []) {
-            $messagePrefix = $messageConvention ? $baseKey : null;
+            $messagePrefix         = $messageConvention ? $baseKey : null;
             $merged['constraints'] = $this->constraintDefinitionFactory->create($constraintDefs, $messagePrefix);
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Form\Constraint;
 
 use InvalidArgumentException;
+use ReflectionClass;
 use Symfony\Component\Validator\Constraint;
 
 use function array_key_exists;
@@ -15,8 +16,6 @@ use function is_array;
 use function is_string;
 use function sprintf;
 use function str_starts_with;
-
-use ReflectionClass;
 
 /**
  * Builds Symfony Validator Constraint instances from YAML/PHP config definitions.

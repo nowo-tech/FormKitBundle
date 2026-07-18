@@ -130,9 +130,9 @@ final class FormOptionsMergerTest extends TestCase
         $merger = new FormOptionsMerger(
             [
                 'default' => [
-                    'translation_domain'            => 'messages',
-                    'defaults'                      => ['attr' => [], 'row_attr' => []],
-                    'field_types'                   => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => ['attr' => [], 'row_attr' => []],
+                    'field_types'        => [
                         'text' => ['constraints' => ['NotBlank']],
                     ],
                     'constraint_message_convention' => true,

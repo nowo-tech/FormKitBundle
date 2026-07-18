@@ -68,8 +68,8 @@ final class FormKitConfigAttributeTest extends TestCase
                     'by_form'                       => [],
                 ],
                 'bootstrap' => [
-                    'translation_domain'            => 'messages',
-                    'defaults'                      => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
                         'attr'     => ['class' => 'form-control-lg'],
                         'row_attr' => ['class' => 'mb-3'],
                     ],
