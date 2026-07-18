@@ -6,7 +6,7 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 
 ## Current state (v2.x)
 
-- **Options** strategy (`FormOptionsTrait` + FQCN): primary path; `by_form`; `constraint_message_convention`; `#[FormKitConfig]`; **bound-builder** / **array-build**.
+- **Options** strategy (`FormOptionsTrait` + FQCN): primary path; `profiles` / `default_profile`; `by_form`; `constraint_message_convention`; `#[FormKitConfig]`; **bound-builder** / **array-build**.
 - **Kit** strategy (`FormKitTrait` / `FormKitAbstractType` + `FormTypeMap`): snake_case types; same merge model.
 - **Controller** strategy (`FormKitControllerTrait`) and **Wrapped** strategy (`AbstractFormKitWrappedType`).
 - Choice presets, model transformers, help modal, optional UX helpers (Autocomplete, CKEditor, Dropzone, Cropper).
@@ -22,7 +22,7 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 - **FormKit path hardening**
   - Add dedicated examples/tests for FormKitAbstractType + FormTypeMap (snake_case types) to ensure long-term parity with FormOptionsTrait.
 - **Testing**
-  - Broaden test coverage (integration tests for demos, FormOptionsMerger with multiple configs, FormTypeMap with type_map).
+  - Broaden test coverage (integration tests for demos, FormOptionsMerger with multiple profiles, FormTypeMap with type_map).
 
 ---
 

@@ -5,7 +5,7 @@ Stub for [symfony/recipes-contrib](https://github.com/symfony/recipes-contrib).
 ## What it installs
 
 - Registers `Nowo\FormKitBundle\NowoFormKitBundle`
-- Copies `config/packages/nowo_form_kit.yaml` (configs / defaults / help_modal)
+- Copies `config/packages/nowo_form_kit.yaml` (profiles / defaults / help_modal)
 - Copies `config/packages/nowo_form_kit_twig.yaml` (`form_themes` → `static_blocks`)
 - Prints `post-install.txt`
 

@@ -15,7 +15,7 @@ use function sprintf;
  * Merges form field options in cascade:
  * global defaults → field type → by_form defaults → by_form field → field options.
  *
- * Supports multiple coexisting configs; resolve() accepts an optional config name (otherwise default_config is used).
+ * Supports multiple coexisting profiles; resolve() accepts an optional profile name (otherwise default_profile is used).
  * Applies convention: label, placeholder and help default to translation keys
  * "form_snake.field_snake.label", ".placeholder", ".help" unless explicitly set to false.
  *
@@ -34,11 +34,11 @@ final class FormOptionsMerger
      *     field_types: array,
      *     constraint_message_convention?: bool,
      *     by_form?: array
-     * }> $configs
+     * }> $profiles
      */
     public function __construct(
-        private array $configs,
-        private readonly string $defaultConfigName,
+        private array $profiles,
+        private readonly string $defaultProfileName,
         private readonly ConstraintDefinitionFactory $constraintDefinitionFactory,
     ) {
     }
@@ -46,7 +46,7 @@ final class FormOptionsMerger
     /**
      * Resolves final options for a form field with cascading merge and convention-based keys.
      *
-     * @param string|null $configName Config name (key in configs); when null, default_config is used
+     * @param string|null $configName Profile name (key in profiles); when null, default_profile is used
      * @param array<string, mixed> $options Field-specific options (override convention and defaults)
      *
      * @return array<string, mixed> Merged options ready for FormBuilder::add()
@@ -58,11 +58,11 @@ final class FormOptionsMerger
         array $options = [],
         ?string $configName = null
     ): array {
-        $name = $configName ?? $this->defaultConfigName;
-        if (!isset($this->configs[$name])) {
-            throw new InvalidArgumentException(sprintf('Unknown form kit config "%s". Available: %s.', $name, implode(', ', array_keys($this->configs))));
+        $name = $configName ?? $this->defaultProfileName;
+        if (!isset($this->profiles[$name])) {
+            throw new InvalidArgumentException(sprintf('Unknown form kit profile "%s". Available: %s.', $name, implode(', ', array_keys($this->profiles))));
         }
-        $config            = $this->configs[$name];
+        $config            = $this->profiles[$name];
         $translationDomain = $config['translation_domain'];
         $defaults          = $config['defaults'];
         $fieldTypes        = $config['field_types'];

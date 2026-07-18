@@ -23,7 +23,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 
 ### US-02 — Named configs & cascading merge (P1)
 
-**Given** multiple entries under `nowo_form_kit.configs`, **When** a form calls `setFormKitConfigName('bootstrap')`, **Then** `FormOptionsMerger` merges config defaults → field-type options → `by_form` defaults/fields → field options with later keys winning.
+**Given** multiple entries under `nowo_form_kit.profiles`, **When** a form calls `setFormKitConfigName('bootstrap')`, **Then** `FormOptionsMerger` merges config defaults → field-type options → `by_form` defaults/fields → field options with later keys winning.
 
 ### US-02b — Per-form defaults & constraint message keys (P2)
 
@@ -64,7 +64,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 ### Bundle & config
 
 - **FR-BUNDLE-001**: `NowoFormKitBundle` alias `nowo_form_kit`.
-- **FR-CFG-001**: `Configuration` — `type_map`, `default_config`, `css_framework`, named `configs` (alias, translation_domain, required_label_suffix, help_modal, defaults, field_types).
+- **FR-CFG-001**: `Configuration` — `type_map`, `default_profile`, `css_framework`, named `profiles` (alias, translation_domain, required_label_suffix, help_modal, defaults, field_types).
 - **FR-CFG-002**: `FormKitExtension` loads services and parameters; legacy root keys normalize to `default` config.
 
 ### DI
@@ -92,7 +92,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 - **FR-FORM-008**: Static alert/HTML/separator types; optional A2lix `TranslationsFormsType`.
 - **FR-FORM-009**: Bound-builder API on `FormOptionsTrait` / `FormKitTrait`: `withBuilder()`, `boundBuilder()`, `add*Field()` / `buildFieldsFromArray()` / `addTypedField()` (and FormKit `addNamedField()`), preserving BC for existing `addText($builder, …)` helpers.
 - **FR-FORM-010**: `FormOptionsTrait::resolveFieldOptions()` exposes the same merge as `addWithDefaults` for use with `FormInterface::add` in form event listeners (conditional fields).
-- **FR-FORM-011**: `#[FormKitConfig('name')]` on a form type selects `nowo_form_kit.configs.<name>` unless `setFormKitConfigName()` was called.
+- **FR-FORM-011**: `#[FormKitConfig('name')]` on a form type selects `nowo_form_kit.profiles.<name>` unless `setFormKitConfigName()` was called.
 
 ### Multi-step wizard
 

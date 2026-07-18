@@ -8,7 +8,7 @@ use Attribute;
 use ReflectionObject;
 
 /**
- * Selects a named Form Kit config (`nowo_form_kit.configs.<name>`) for a form type.
+ * Selects a named Form Kit profile (`nowo_form_kit.profiles.<name>`) for a form type.
  *
  * Prefer this on the form class instead of calling {@see \Nowo\FormKitBundle\Form\FormOptionsTrait::setFormKitConfigName()}
  * in `buildForm()`. An explicit `setFormKitConfigName()` call still wins.

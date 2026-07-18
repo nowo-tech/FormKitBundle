@@ -552,7 +552,7 @@ demo_pages:
     heading: 'Kit API patterns'
     intro: 'Covers remaining Form Kit APIs: <code>FormKitAbstractType</code> / snake_case type map, <code>withBuilder</code> + <code>add*Field</code>, and a second YAML config profile.'
     usage_1: 'Left: <code>SnakeCaseKitDemoType</code> extends <code>FormKitAbstractType</code> — <code>addTextField</code>, <code>buildFieldsFromArray</code> (<code>text</code>/<code>choice</code>), <code>addNamedField</code>.'
-    usage_2: 'Right: <code>NamedConfigDemoType</code> uses <code>#[FormKitConfig(''bootstrap'')]</code> — larger controls from <code>nowo_form_kit.configs.bootstrap</code>.'
+    usage_2: 'Right: <code>NamedConfigDemoType</code> uses <code>#[FormKitConfig(''bootstrap'')]</code> — larger controls from <code>nowo_form_kit.profiles.bootstrap</code>.'
     usage_3: '<code>internal_code</code> disables convention with <code>label/placeholder/help =&gt; false</code>.'
     snake_heading: 'FormKitTrait (snake_case)'
     snake_intro: 'Types resolved via <code>FormTypeMap</code> (<code>text</code>, <code>email</code>, <code>choice</code>, …).'

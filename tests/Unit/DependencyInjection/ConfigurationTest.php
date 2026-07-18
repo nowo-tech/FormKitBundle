@@ -18,20 +18,21 @@ final class ConfigurationTest extends TestCase
 
         $processed = $processor->processConfiguration($configuration, [[]]);
 
-        self::assertSame('default', $processed['default_config']);
+        self::assertSame('default', $processed['default_profile']);
         self::assertSame([], $processed['type_map']);
-        self::assertSame([], $processed['configs']);
-        self::assertSame('messages', $processed['translation_domain']);
+        self::assertArrayHasKey('default', $processed['profiles']);
+        self::assertSame('default', $processed['profiles']['default']['alias']);
+        self::assertSame('messages', $processed['profiles']['default']['translation_domain']);
     }
 
-    public function testRequiresAliasForNamedConfig(): void
+    public function testRequiresAliasForNamedProfile(): void
     {
         $processor     = new Processor();
         $configuration = new Configuration();
 
         $this->expectException(InvalidConfigurationException::class);
         $processor->processConfiguration($configuration, [[
-            'configs' => [
+            'profiles' => [
                 'default' => [
                     'translation_domain' => 'messages',
                 ],
@@ -39,17 +40,17 @@ final class ConfigurationTest extends TestCase
         ]]);
     }
 
-    public function testProcessesTypeMapAndNamedConfig(): void
+    public function testProcessesTypeMapAndNamedProfile(): void
     {
         $processor     = new Processor();
         $configuration = new Configuration();
 
         $processed = $processor->processConfiguration($configuration, [[
-            'default_config' => 'bootstrap',
-            'type_map'       => [
+            'default_profile' => 'bootstrap',
+            'type_map'        => [
                 'address' => 'App\Form\Type\AddressType',
             ],
-            'configs' => [
+            'profiles' => [
                 'bootstrap' => [
                     'alias'              => 'bootstrap',
                     'translation_domain' => 'forms',
@@ -64,9 +65,57 @@ final class ConfigurationTest extends TestCase
             ],
         ]]);
 
-        self::assertSame('bootstrap', $processed['default_config']);
+        self::assertSame('bootstrap', $processed['default_profile']);
         self::assertSame('App\Form\Type\AddressType', $processed['type_map']['address']);
-        self::assertSame('bootstrap', $processed['configs']['bootstrap']['alias']);
-        self::assertSame('forms', $processed['configs']['bootstrap']['translation_domain']);
+        self::assertSame('bootstrap', $processed['profiles']['bootstrap']['alias']);
+        self::assertSame('forms', $processed['profiles']['bootstrap']['translation_domain']);
+    }
+
+    public function testAcceptsLegacyDefaultConfigAndConfigsKeys(): void
+    {
+        $processor     = new Processor();
+        $configuration = new Configuration();
+
+        $processed = $processor->processConfiguration($configuration, [[
+            'default_config' => 'bootstrap',
+            'configs'        => [
+                'bootstrap' => [
+                    'alias'              => 'bootstrap',
+                    'translation_domain' => 'forms',
+                    'defaults'           => [
+                        'attr'     => [],
+                        'row_attr' => [],
+                    ],
+                    'field_types' => [],
+                ],
+            ],
+        ]]);
+
+        self::assertSame('bootstrap', $processed['default_profile']);
+        self::assertArrayHasKey('bootstrap', $processed['profiles']);
+        self::assertArrayNotHasKey('default_config', $processed);
+        self::assertArrayNotHasKey('configs', $processed);
+    }
+
+    public function testLegacyRootKeysNormalizeIntoDefaultProfile(): void
+    {
+        $processor     = new Processor();
+        $configuration = new Configuration();
+
+        $processed = $processor->processConfiguration($configuration, [[
+            'translation_domain' => 'legacy_forms',
+            'defaults'           => [
+                'attr'     => ['class' => 'input'],
+                'row_attr' => [],
+            ],
+            'field_types' => [
+                'text' => ['help' => 'legacy_help'],
+            ],
+        ]]);
+
+        self::assertSame('default', $processed['default_profile']);
+        self::assertSame('legacy_forms', $processed['profiles']['default']['translation_domain']);
+        self::assertSame('input', $processed['profiles']['default']['defaults']['attr']['class']);
+        self::assertSame('legacy_help', $processed['profiles']['default']['field_types']['text']['help']);
     }
 }

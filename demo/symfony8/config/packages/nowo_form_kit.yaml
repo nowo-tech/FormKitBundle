@@ -1,23 +1,23 @@
 # Form Kit Bundle — demo configuration (see bundle docs: docs/CONFIGURATION.md).
 #
 # Top-level:
-#   default_config — Config block used when a form does not call setFormKitConfigName().
+#   default_profile — Config block used when a form does not call setFormKitConfigName().
 #   type_map       — Optional snake_case => FQCN; merged with built-in and optional UX types.
-#   configs        — Named profiles (translation domain, defaults, help_modal, field_types).
+#   profiles        — Named profiles (translation domain, defaults, help_modal, field_types).
 
 nowo_form_kit:
-    default_config: default
+    default_profile: default
 
     # Optional: extra types for FormKitTrait / snake_case fields (uncomment if you add custom types).
     # type_map:
     #     my_custom: 'App\Form\Type\MyCustomType'
 
-    configs:
+    profiles:
         default:
             alias: default
             translation_domain: messages
 
-            # Suffix for required field labels (RequiredLabelSuffixExtension reads `default_config` only).
+            # Suffix for required field labels (RequiredLabelSuffixExtension reads `default_profile` only).
             required_label_suffix: ' *'
 
             defaults:
@@ -58,7 +58,7 @@ nowo_form_kit:
                 icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>'
             field_types: {}
 
-# Legacy (single implicit config without `configs`): supported but not used in this demo.
+# Legacy (single implicit config without `profiles`): supported but not used in this demo.
 # nowo_form_kit:
 #     translation_domain: messages
 #     required_label_suffix: null

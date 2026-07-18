@@ -1,31 +1,31 @@
 # Configuration
 
-The bundle is configured under the root key `nowo_form_kit`. Multiple configs can coexist; each is identified by a name and has an `alias` and the usual options.
+The bundle is configured under the root key `nowo_form_kit`. Multiple profiles can coexist; each is identified by a name and has an `alias` and the usual options.
 
 ## Structure
 
 | Option | Type | Description |
 |--------|------|-------------|
-| `default_config` | `string` | Name (key) of the config to use when a form does not specify one. Must be a key in `configs`. Default: `default`. |
-| `configs` | `array` | Named configs. Key = config name (e.g. `default`, `bootstrap`). Each value has: |
-| `configs.<name>.alias` | `string` | **Required.** Alias for this config (e.g. for reference in form types or UI). |
-| `configs.<name>.translation_domain` | `string` | Translation domain for labels, placeholders, help. Default: `messages`. |
-| `configs.<name>.required_label_suffix` | `string\|null` | Appended to the label when the field is required (e.g. ` *`). `null` or empty disables. **`RequiredLabelSuffixExtension`** reads this from the config whose key equals **`default_config`** (not from the form’s `setFormKitConfigName()`), and injects `required_label_suffix` into the view for all forms. |
-| `configs.<name>.defaults.attr` | `array` | Default HTML attributes for every field (e.g. `class: form-control`). |
-| `configs.<name>.defaults.row_attr` | `array` | Default HTML attributes for the form row wrapper (e.g. `class: mb-3`). |
-| `configs.<name>.field_types` | `array` | Per-field-type default options. Key = short type name (e.g. `text`, `email`) or FQCN. Value = options array (may include `constraints`). |
-| `configs.<name>.by_form` | `array` | Per-form defaults keyed by form name / block prefix (e.g. `user_profile`). Each entry may set `defaults.attr` / `defaults.row_attr` and `fields.<field>` overrides (including `constraints`). Merged **after** `field_types`, **before** per-field options. |
-| `configs.<name>.constraint_message_convention` | `bool` | When `true`, constraints without an explicit `message` (or `minMessage`/`maxMessage` when `min`/`max` are set) get keys `{form}.{field}.constraints.{Name}` (and `.min` / `.max` suffixes for Length-style). Put those keys in the **validators** catalog. Default: `false`. |
-| `configs.<name>.help_modal` | `array` | Default options when a field sets `help_modal: true` (merged with per-field overrides). Keys: `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` (with **symfony/ux-icons**), `trigger_class`, `aria_label`, `title` / `title_html`, `content`. See [Usage — Help modal](USAGE.md#help-modal-optional). |
+| `default_profile` | `string` | Name (key) of the profile to use when a form does not specify one. Must be a key in `profiles`. Default: `default`. |
+| `profiles` | `array` | Named profiles. Key = profile name (e.g. `default`, `bootstrap`). Each value has: |
+| `profiles.<name>.alias` | `string` | **Required.** Alias for this profile (e.g. for reference in form types or UI). |
+| `profiles.<name>.translation_domain` | `string` | Translation domain for labels, placeholders, help. Default: `messages`. |
+| `profiles.<name>.required_label_suffix` | `string\|null` | Appended to the label when the field is required (e.g. ` *`). `null` or empty disables. **`RequiredLabelSuffixExtension`** reads this from the profile whose key equals **`default_profile`** (not from the form’s `setFormKitConfigName()`), and injects `required_label_suffix` into the view for all forms. |
+| `profiles.<name>.defaults.attr` | `array` | Default HTML attributes for every field (e.g. `class: form-control`). |
+| `profiles.<name>.defaults.row_attr` | `array` | Default HTML attributes for the form row wrapper (e.g. `class: mb-3`). |
+| `profiles.<name>.field_types` | `array` | Per-field-type default options. Key = short type name (e.g. `text`, `email`) or FQCN. Value = options array (may include `constraints`). |
+| `profiles.<name>.by_form` | `array` | Per-form defaults keyed by form name / block prefix (e.g. `user_profile`). Each entry may set `defaults.attr` / `defaults.row_attr` and `fields.<field>` overrides (including `constraints`). Merged **after** `field_types`, **before** per-field options. |
+| `profiles.<name>.constraint_message_convention` | `bool` | When `true`, constraints without an explicit `message` (or `minMessage`/`maxMessage` when `min`/`max` are set) get keys `{form}.{field}.constraints.{Name}` (and `.min` / `.max` suffixes for Length-style). Put those keys in the **validators** catalog. Default: `false`. |
+| `profiles.<name>.help_modal` | `array` | Default options when a field sets `help_modal: true` (merged with per-field overrides). Keys: `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` (with **symfony/ux-icons**), `trigger_class`, `aria_label`, `title` / `title_html`, `content`. See [Usage — Help modal](USAGE.md#help-modal-optional). |
 | `type_map` | `array` | Additional form type names (snake_case) => FQCN. Merged with built-in and optional types (e.g. Dropzone, Cropper, A2lix Translations when the package is installed). Use for custom types or to override. |
 
-**Legacy:** If `configs` is not set (or empty), the root-level `translation_domain`, `required_label_suffix`, `defaults`, `help_modal`, `field_types`, `by_form`, and `constraint_message_convention` are used to build a single config named `default`, so existing YAML keeps working.
+**Legacy:** If `profiles` is not set (or empty), the root-level `translation_domain`, `required_label_suffix`, `defaults`, `help_modal`, `field_types`, `by_form`, and `constraint_message_convention` are used to build a single profile named `default`, so existing YAML keeps working. YAML keys `default_config` / `configs` are still accepted and normalized to `default_profile` / `profiles` (see [UPGRADING](UPGRADING.md#2011-2026-07-18)).
 
 ## Cascade order
 
 For each field, `FormOptionsMerger::resolve()` merges:
 
-1. Convention keys (`label` / `help` / `attr.placeholder`) + config `defaults`
+1. Convention keys (`label` / `help` / `attr.placeholder`) + profile `defaults`
 2. `field_types.<type>`
 3. `by_form.<formName>.defaults`
 4. `by_form.<formName>.fields.<fieldName>`
@@ -37,7 +37,7 @@ Later layers win (scalars replace; nested arrays merge recursively). Constraints
 
 ```yaml
 nowo_form_kit:
-    configs:
+    profiles:
         default:
             alias: default
             translation_domain: messages
@@ -64,16 +64,16 @@ The bundle registers these **form type extensions** (they apply to all field typ
 | Extension | Purpose |
 |-----------|---------|
 | **InputGroupExtension** | Options `input_group_prefix` and `input_group_suffix` for Bootstrap-style input groups (requires the bundle form theme; see [Usage](USAGE.md#input-group-icon-at-start-or-end)). |
-| **RequiredLabelSuffixExtension** | Appends `required_label_suffix` from the config named **`default_config`** to required field labels. |
+| **RequiredLabelSuffixExtension** | Appends `required_label_suffix` from the profile named **`default_profile`** to required field labels. |
 | **HelpModalExtension** | Option `help_modal` (`false`, `true`, or array): injects JSON into `label[data-nowo-help-modal]` for the frontend script; see [Usage](USAGE.md#help-modal-optional). |
 
-## Example with multiple configs
+## Example with multiple profiles
 
 ```yaml
 # config/packages/nowo_form_kit.yaml
 nowo_form_kit:
-    default_config: default
-    configs:
+    default_profile: default
+    profiles:
         default:
             alias: default
             translation_domain: messages
@@ -129,9 +129,9 @@ nowo_form_kit:
 
 This is used with the **Kit** strategy (`FormKitTrait` / `FormKitAbstractType`, e.g. `addField($builder, 'file', 'dropzone', [])` or `buildFormFromArray()` with snake_case types). See [Usage — strategies](USAGE.md#usage-strategies).
 
-## Using a specific config in a form type
+## Using a specific profile in a form type
 
-Inject the merger and call `setFormKitConfigName('bootstrap')` (or the config name you want) so that form uses that config instead of `default_config`. For example in `config/services.yaml`:
+Inject the merger and call `setFormKitConfigName('bootstrap')` (or the profile name you want) so that form uses that profile instead of `default_profile`. For example in `config/services.yaml`:
 
 ```yaml
 App\Form\MyBootstrapFormType:

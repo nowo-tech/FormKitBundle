@@ -4,7 +4,7 @@
 
 > ⭐ **Found this useful?** Install from [Packagist](https://packagist.org/packages/nowo-tech/form-kit-bundle) and give the repo a star on GitHub.
 
-Symfony bundle to reduce repetitive form field options: convention-based translation keys (`form_snake.field_snake.label`, `.placeholder`, `.help`), configurable defaults and multiple configs via YAML, and cascading option merge (global → field type → form → field).
+Symfony bundle to reduce repetitive form field options: convention-based translation keys (`form_snake.field_snake.label`, `.placeholder`, `.help`), configurable defaults and multiple profiles via YAML, and cascading option merge (global → field type → form → field).
 
 **Minimum requirements: PHP 8.2 and Symfony 7.4.** Also compatible with Symfony 8.0 and 8.1 (require PHP 8.4+).
 
@@ -12,8 +12,8 @@ Symfony bundle to reduce repetitive form field options: convention-based transla
 
 - **Usage strategies:** **Options** (`FormOptionsTrait` + FQCN), **Kit** (`FormKitTrait` / `FormKitAbstractType` + snake_case), **Controller** (`FormKitControllerTrait`), **Wrapped** (`AbstractFormKitWrappedType`). See [Usage — strategies](docs/USAGE.md#usage-strategies).
 - **Convention-based labels, placeholder and help:** Default translation keys are `{form_snake}.{field_snake}.label`, `.placeholder`, `.help`. Set any to `false` in field options to disable.
-- **Multiple configs:** Define named configs (e.g. `default`, `bootstrap`) with `translation_domain`, `defaults.attr`, `defaults.row_attr`, `by_form`, and per-field-type options. Choose the active config per form via `#[FormKitConfig('bootstrap')]` or `setFormKitConfigName()` (**named-config** technique).
-- **Cascading merge:** Options are merged in order: config defaults → field type → `by_form` → field options. Explicit field options override.
+- **Multiple profiles:** Define named profiles (e.g. `default`, `bootstrap`) with `translation_domain`, `defaults.attr`, `defaults.row_attr`, `by_form`, and per-field-type options. Choose the active profile per form via `#[FormKitConfig('bootstrap')]` or `setFormKitConfigName()` (**named-config** technique).
+- **Cascading merge:** Options are merged in order: profile defaults → field type → `by_form` → field options. Explicit field options override.
 - **Options strategy helpers:** `addText()`, `addEmail()`, … Prefer **`withBuilder($builder, …)` + `addTextField()`** (**bound-builder**). Or **array-build** with `buildFormFromArray()`.
 - **Choice presets:** `addSelect()`, `addMultiSelect()`, `addChoiceRadios()`, `addChoiceCheckboxes()`, plus `addMultiSelectSelectAll()` when **nowo-tech/select-all-choice-bundle** is installed (optional Composer **suggest**).
 - **FQCN helpers:** `addAutocompleteField()` for Symfony UX Autocomplete types, `addCKEditorField()` when **friendsofsymfony/ckeditor-bundle** is installed; `addDropzone()` / `addCropper()` when the UX packages are installed.
@@ -31,7 +31,7 @@ With Flex, the recipe creates `config/packages/nowo_form_kit.yaml`. Otherwise re
 
 ## Quick usage (**Options** strategy)
 
-1. **Configure** (optional) — edit `config/packages/nowo_form_kit.yaml`: set `default_config`, `configs` (each with `alias`, `translation_domain`, `defaults`, `field_types`), and optionally `type_map` for custom or UX types.
+1. **Configure** (optional) — edit `config/packages/nowo_form_kit.yaml`: set `default_profile`, `profiles` (each with `alias`, `translation_domain`, `defaults`, `field_types`), and optionally `type_map` for custom or UX types.
 2. **Register your form as a service** and inject **FormOptionsMerger**:
 
 ```yaml

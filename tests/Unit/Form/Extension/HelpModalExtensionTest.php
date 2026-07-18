@@ -23,7 +23,7 @@ final class HelpModalExtensionTest extends TestCase
     public function testBuildViewDoesNothingWhenHelpModalIsFalse(): void
     {
         $ext = new HelpModalExtension(
-            configs: [
+            profiles: [
                 'default' => [
                     'help_modal' => [
                         'framework' => 'bootstrap5',
@@ -31,7 +31,7 @@ final class HelpModalExtensionTest extends TestCase
                     ],
                 ],
             ],
-            defaultConfigName: 'default',
+            defaultProfileName: 'default',
         );
 
         $view                     = new FormView();
@@ -49,7 +49,7 @@ final class HelpModalExtensionTest extends TestCase
     public function testBuildViewInjectsDataAttributeIntoLabelAttrUsingMergedDefaults(): void
     {
         $ext = new HelpModalExtension(
-            configs: [
+            profiles: [
                 'default' => [
                     'help_modal' => [
                         'framework' => 'tailwind',
@@ -57,7 +57,7 @@ final class HelpModalExtensionTest extends TestCase
                     ],
                 ],
             ],
-            defaultConfigName: 'default',
+            defaultProfileName: 'default',
         );
 
         $view                     = new FormView();
@@ -91,7 +91,7 @@ final class HelpModalExtensionTest extends TestCase
     public function testBuildViewAcceptsHelpModalTrueAsEnabledWithDefaults(): void
     {
         $ext = new HelpModalExtension(
-            configs: [
+            profiles: [
                 'default' => [
                     'help_modal' => [
                         'framework' => 'bootstrap5',
@@ -99,7 +99,7 @@ final class HelpModalExtensionTest extends TestCase
                     ],
                 ],
             ],
-            defaultConfigName: 'default',
+            defaultProfileName: 'default',
         );
 
         $view                     = new FormView();
@@ -133,7 +133,7 @@ final class HelpModalExtensionTest extends TestCase
         };
 
         $ext = new HelpModalExtension(
-            configs: [
+            profiles: [
                 'default' => [
                     'help_modal' => [
                         'framework' => 'bootstrap5',
@@ -141,7 +141,7 @@ final class HelpModalExtensionTest extends TestCase
                     ],
                 ],
             ],
-            defaultConfigName: 'default',
+            defaultProfileName: 'default',
             iconRenderer: $renderer,
         );
 
@@ -168,7 +168,7 @@ final class HelpModalExtensionTest extends TestCase
     public function testBuildViewFallsBackToIconHtmlWhenUxIconSetButRendererMissing(): void
     {
         $ext = new HelpModalExtension(
-            configs: [
+            profiles: [
                 'default' => [
                     'help_modal' => [
                         'framework' => 'bootstrap5',
@@ -176,7 +176,7 @@ final class HelpModalExtensionTest extends TestCase
                     ],
                 ],
             ],
-            defaultConfigName: 'default',
+            defaultProfileName: 'default',
         );
 
         $view                     = new FormView();
@@ -211,8 +211,8 @@ final class HelpModalExtensionTest extends TestCase
     public function testBuildViewIgnoresNonArrayHelpModalValue(): void
     {
         $ext = new HelpModalExtension(
-            configs: ['default' => ['help_modal' => ['framework' => 'bootstrap5']]],
-            defaultConfigName: 'default',
+            profiles: ['default' => ['help_modal' => ['framework' => 'bootstrap5']]],
+            defaultProfileName: 'default',
         );
 
         $view = new FormView();
@@ -226,8 +226,8 @@ final class HelpModalExtensionTest extends TestCase
     public function testBuildViewUsesCustomModalIdAndNormalizesNonArrayLabelAttr(): void
     {
         $ext = new HelpModalExtension(
-            configs: ['default' => ['help_modal' => ['framework' => 'bootstrap5', 'icon_html' => '?']]],
-            defaultConfigName: 'default',
+            profiles: ['default' => ['help_modal' => ['framework' => 'bootstrap5', 'icon_html' => '?']]],
+            defaultProfileName: 'default',
         );
 
         $view                     = new FormView();
@@ -257,8 +257,8 @@ final class HelpModalExtensionTest extends TestCase
         };
 
         $ext = new HelpModalExtension(
-            configs: ['default' => ['help_modal' => ['icon_html' => '<span>fallback</span>']]],
-            defaultConfigName: 'default',
+            profiles: ['default' => ['help_modal' => ['icon_html' => '<span>fallback</span>']]],
+            defaultProfileName: 'default',
             iconRenderer: $renderer,
         );
 
