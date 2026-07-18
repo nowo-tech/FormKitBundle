@@ -26,4 +26,6 @@ return [
     Symfony\UX\Icons\UXIconsBundle::class                         => ['all' => true],
     Nowo\TiptapEditorBundle\NowoTiptapEditorBundle::class         => ['all' => true],
     Nowo\Ckeditor5EditorBundle\NowoCkeditor5EditorBundle::class   => ['all' => true],
+    Symfony\UX\TwigComponent\TwigComponentBundle::class           => ['all' => true],
+    Symfony\UX\LiveComponent\LiveComponentBundle::class           => ['all' => true],
 ];

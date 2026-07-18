@@ -11,6 +11,7 @@ demo_nav:
   data_transformers: 'Transformateurs de données'
   choice_fields: 'Champs de choix'
   conditional_fields: 'Champs conditionnels'
+  conditional_fields_live: 'Conditionnels Live'
   kit_api_patterns: 'Motifs API Kit'
   nowo_special_fields: 'Champs Nowo'
   ckeditor: CKEditor
@@ -360,9 +361,13 @@ demo_pages:
       title: 'Champs conditionnels'
       description: 'Société ou personne avec <code>FormEvents</code> + <code>resolveFieldOptions()</code>, et <code>if</code> au build.'
       button: 'Ouvrir les champs conditionnels'
+    conditional_fields_live:
+      title: 'Champs conditionnels (Live)'
+      description: 'Le même formulaire FormEvents dans un <code>Live Component</code> Symfony UX.'
+      button: 'Ouvrir conditionnels Live'
     kit_api_patterns:
       title: 'Motifs API Kit'
-      description: '<code>FormKitAbstractType</code> (snake_case) et config nommée <code>setFormKitConfigName</code>.'
+      description: '<code>FormKitAbstractType</code> (snake_case) et config nommée <code>#[FormKitConfig]</code>.'
       button: 'Ouvrir les motifs API'
     ckeditor:
       title: CKEditor
@@ -465,12 +470,20 @@ demo_pages:
     build_heading: 'if au build'
     build_intro: 'Forme fixe à la création ; toggle pour changer <code>account_mode</code>.'
     normalized_title: 'Données soumises (normalisées)'
+  conditional_fields_live:
+    page_title: 'Champs conditionnels (Live) - Démo Form Kit'
+    heading: 'Champs conditionnels (Live Component)'
+    intro: 'Enveloppe <code>ConditionalFieldsDemoType</code> dans <code>ComponentWithFormTrait</code>.'
+    usage_1: 'Composant : <code>App\Twig\Components\ConditionalFieldsLive</code>.'
+    usage_2: 'Nécessite <code>symfony/ux-live-component</code>.'
+    usage_3: 'Comparer avec <code>/conditional-fields</code>.'
+    component_intro: 'Changez le <strong>type de compte</strong> — les champs se mettent à jour sans rechargement complet.'
   kit_api_patterns:
     page_title: 'Motifs API Kit - Démo Form Kit'
     heading: 'Motifs API Kit'
     intro: '<code>FormKitAbstractType</code> / snake_case, <code>withBuilder</code>, profil YAML <code>bootstrap</code>.'
     usage_1: 'Gauche : <code>SnakeCaseKitDemoType</code>.'
-    usage_2: 'Droite : <code>NamedConfigDemoType</code> + <code>setFormKitConfigName(''bootstrap'')</code>.'
+    usage_2: 'Droite : <code>NamedConfigDemoType</code> + <code>#[FormKitConfig(''bootstrap'')]</code>.'
     usage_3: '<code>internal_code</code> désactive la convention.'
     snake_heading: 'FormKitTrait (snake_case)'
     snake_intro: 'Types via <code>FormTypeMap</code>.'
@@ -621,7 +634,7 @@ named_config_demo:
   summary:
     label: Summary
     placeholder: Short summary
-    help: '<code>setFormKitConfigName(''bootstrap'')</code>.'
+    help: '<code>#[FormKitConfig(''bootstrap'')]</code>.'
   internal_code:
     label: Internal code
     placeholder: ""

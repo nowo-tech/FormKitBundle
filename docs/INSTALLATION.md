@@ -31,7 +31,7 @@ Use a constraint such as `^2.0` to stay on the current major version.
 
 ### With Symfony Flex
 
-If you use Symfony Flex and the bundle is installed from Packagist, the recipe (when available in [symfony/recipes-contrib](https://github.com/symfony/recipes-contrib)) will register the bundle and create `config/packages/nowo_form_kit.yaml`. Until then, register the bundle and config manually as below.
+If you use Symfony Flex and the bundle is installed from Packagist, the recipe (when available in [symfony/recipes-contrib](https://github.com/symfony/recipes-contrib)) will register the bundle, create `config/packages/nowo_form_kit.yaml`, and add the Form Kit Twig form theme (`nowo_form_kit_twig.yaml`). The maintained stub lives in this repo — see [RECIPE.md](RECIPE.md). Until the recipe is published upstream, register the bundle and config manually as below.
 
 ### Manual registration
 

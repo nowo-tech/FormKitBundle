@@ -12,6 +12,7 @@ demo_nav:
   data_transformers: 'Data transformers'
   choice_fields: 'Choice fields'
   conditional_fields: 'Conditional fields'
+  conditional_fields_live: 'Live conditionals'
   kit_api_patterns: 'Kit API patterns'
   nowo_special_fields: 'Nowo fields'
   ckeditor: CKEditor
@@ -236,7 +237,7 @@ named_config_demo:
   summary:
     label: Summary
     placeholder: Short summary
-    help: '<code>setFormKitConfigName(''bootstrap'')</code>.'
+    help: '<code>#[FormKitConfig(''bootstrap'')]</code>.'
   internal_code:
     label: Internal code
     placeholder: ""
@@ -429,9 +430,13 @@ demo_pages:
       title: 'Conditional fields'
       description: 'Show company or person fields with Symfony <code>FormEvents</code> and Form Kit <code>resolveFieldOptions()</code>, plus build-time <code>if</code>.'
       button: 'Open Conditional fields'
+    conditional_fields_live:
+      title: 'Conditional fields (Live)'
+      description: 'Same FormEvents form inside a Symfony UX <code>Live Component</code> — change account type without a full page submit.'
+      button: 'Open Live conditionals'
     kit_api_patterns:
       title: 'Kit API patterns'
-      description: '<code>FormKitAbstractType</code> (snake_case + <code>withBuilder</code>) and named config via <code>setFormKitConfigName</code>.'
+      description: '<code>FormKitAbstractType</code> (snake_case + <code>withBuilder</code>) and named config via <code>#[FormKitConfig]</code>.'
       button: 'Open Kit API patterns'
     ckeditor:
       title: CKEditor
@@ -534,12 +539,20 @@ demo_pages:
     build_heading: 'Build-time if'
     build_intro: 'Shape fixed when the form is created; use the toggle to recreate with another <code>account_mode</code>.'
     normalized_title: 'Submitted data (normalized)'
+  conditional_fields_live:
+    page_title: 'Conditional fields (Live) - Form Kit Demo'
+    heading: 'Conditional fields (Live Component)'
+    intro: 'Wraps <code>ConditionalFieldsDemoType</code> in <code>ComponentWithFormTrait</code>. Changing the account-type radios re-renders via Live; Form Kit still merges options through <code>resolveFieldOptions()</code>.'
+    usage_1: 'Component: <code>App\\Twig\\Components\\ConditionalFieldsLive</code>.'
+    usage_2: 'Requires <code>symfony/ux-live-component</code> (and Twig Component). Form Kit stays the options layer.'
+    usage_3: 'Compare with the non-Live page at <code>/conditional-fields</code>.'
+    component_intro: 'Change <strong>Account type</strong> — fields update without a full page navigation.'
   kit_api_patterns:
     page_title: 'Kit API patterns - Form Kit Demo'
     heading: 'Kit API patterns'
     intro: 'Covers remaining Form Kit APIs: <code>FormKitAbstractType</code> / snake_case type map, <code>withBuilder</code> + <code>add*Field</code>, and a second YAML config profile.'
     usage_1: 'Left: <code>SnakeCaseKitDemoType</code> extends <code>FormKitAbstractType</code> — <code>addTextField</code>, <code>buildFieldsFromArray</code> (<code>text</code>/<code>choice</code>), <code>addNamedField</code>.'
-    usage_2: 'Right: <code>NamedConfigDemoType</code> calls <code>setFormKitConfigName(''bootstrap'')</code> — larger controls from <code>nowo_form_kit.configs.bootstrap</code>.'
+    usage_2: 'Right: <code>NamedConfigDemoType</code> uses <code>#[FormKitConfig(''bootstrap'')]</code> — larger controls from <code>nowo_form_kit.configs.bootstrap</code>.'
     usage_3: '<code>internal_code</code> disables convention with <code>label/placeholder/help =&gt; false</code>.'
     snake_heading: 'FormKitTrait (snake_case)'
     snake_intro: 'Types resolved via <code>FormTypeMap</code> (<code>text</code>, <code>email</code>, <code>choice</code>, …).'

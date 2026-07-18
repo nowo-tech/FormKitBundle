@@ -4,15 +4,38 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ColorType;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
+use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\LanguageType;
+use Symfony\Component\Form\Extension\Core\Type\LocaleType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
+use Symfony\Component\Form\Extension\Core\Type\RangeType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\WeekType;
 
 /**
  * Maps snake_case type names to Symfony FormType FQCNs.
@@ -27,15 +50,38 @@ final class FormTypeMap
 {
     /** @var array<string, string> */
     private const BUILTIN = [
-        'checkbox' => CheckboxType::class,
-        'choice'   => ChoiceType::class,
-        'email'    => EmailType::class,
-        'integer'  => IntegerType::class,
-        'number'   => NumberType::class,
-        'password' => PasswordType::class,
-        'textarea' => TextareaType::class,
-        'text'     => TextType::class,
-        'url'      => UrlType::class,
+        'birthday'      => BirthdayType::class,
+        'button'        => ButtonType::class,
+        'checkbox'      => CheckboxType::class,
+        'choice'        => ChoiceType::class,
+        'collection'    => CollectionType::class,
+        'color'         => ColorType::class,
+        'country'       => CountryType::class,
+        'currency'      => CurrencyType::class,
+        'date'          => DateType::class,
+        'date_interval' => DateIntervalType::class,
+        'datetime'      => DateTimeType::class,
+        'email'         => EmailType::class,
+        'file'          => FileType::class,
+        'hidden'        => HiddenType::class,
+        'integer'       => IntegerType::class,
+        'language'      => LanguageType::class,
+        'locale'        => LocaleType::class,
+        'money'         => MoneyType::class,
+        'number'        => NumberType::class,
+        'password'      => PasswordType::class,
+        'percent'       => PercentType::class,
+        'range'         => RangeType::class,
+        'repeated'      => RepeatedType::class,
+        'reset'         => ResetType::class,
+        'submit'        => SubmitType::class,
+        'tel'           => TelType::class,
+        'text'          => TextType::class,
+        'textarea'      => TextareaType::class,
+        'time'          => TimeType::class,
+        'timezone'      => TimezoneType::class,
+        'url'           => UrlType::class,
+        'week'          => WeekType::class,
     ];
 
     /**

@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
 use LogicException;
+use Nowo\FormKitBundle\Attribute\FormKitConfig;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\CsvModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\JsonModelTransformer;
@@ -50,6 +51,9 @@ trait FormOptionsTrait
     /** Config name (key in nowo_form_kit.configs) to use; null = default_config */
     private ?string $formKitConfigName = null;
 
+    /** True after setFormKitConfigName() or after resolving #[FormKitConfig]. */
+    private bool $formKitConfigNameResolved = false;
+
     /** Optional override for translation defaults used by addTranslations(). */
     private array $formKitTranslationsDefaults = [];
 
@@ -68,10 +72,24 @@ trait FormOptionsTrait
         $this->formOptionsMerger = $formOptionsMerger;
     }
 
-    /** Set which config to use (key in configs); null uses default_config. */
+    /** Set which config to use (key in configs); null uses default_config. Overrides #[FormKitConfig]. */
     public function setFormKitConfigName(?string $configName): void
     {
-        $this->formKitConfigName = $configName;
+        $this->formKitConfigName         = $configName;
+        $this->formKitConfigNameResolved = true;
+    }
+
+    /**
+     * Config name for FormOptionsMerger: explicit setter, else #[FormKitConfig] on the form class, else null (default_config).
+     */
+    protected function resolvedFormKitConfigName(): ?string
+    {
+        if (!$this->formKitConfigNameResolved) {
+            $this->formKitConfigName         = FormKitConfig::nameFrom($this);
+            $this->formKitConfigNameResolved = true;
+        }
+
+        return $this->formKitConfigName;
     }
 
     /** @param array<string, mixed> $defaults */
@@ -138,7 +156,7 @@ trait FormOptionsTrait
             $name,
             $type,
             $options,
-            $this->formKitConfigName,
+            $this->resolvedFormKitConfigName(),
         );
     }
 
@@ -625,6 +643,63 @@ trait FormOptionsTrait
     }
 
     /**
+     * Adds a Symfony UX Dropzone field (`DropzoneType`) with Form Kit merged options.
+     *
+     * Requires the optional Composer package `symfony/ux-dropzone`.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when `symfony/ux-dropzone` is not installed
+     */
+    protected function addDropzone(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        if (!class_exists(\Symfony\UX\Dropzone\Form\DropzoneType::class)) {
+            throw new LogicException('addDropzone() requires symfony/ux-dropzone. Install it or use addWithDefaults() with your own upload type.');
+        }
+
+        $this->addWithDefaults($builder, $name, \Symfony\UX\Dropzone\Form\DropzoneType::class, $options);
+    }
+
+    /**
+     * Like {@see addDropzone()} using the builder from {@see withBuilder()}.
+     *
+     * @param array<string, mixed> $options
+     */
+    protected function addDropzoneField(string $name, array $options = []): void
+    {
+        $this->addDropzone($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Adds a Symfony UX Cropper.js field (`CropperType`) with Form Kit merged options.
+     *
+     * Requires `symfony/ux-cropperjs`. Pass Cropper-specific options such as `public_url`
+     * (and typically inject `CropperInterface` in the controller to build crop options).
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when `symfony/ux-cropperjs` is not installed
+     */
+    protected function addCropper(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        if (!class_exists(\Symfony\UX\Cropperjs\Form\CropperType::class)) {
+            throw new LogicException('addCropper() requires symfony/ux-cropperjs. Install it or use addWithDefaults() with CropperType when available.');
+        }
+
+        $this->addWithDefaults($builder, $name, \Symfony\UX\Cropperjs\Form\CropperType::class, $options);
+    }
+
+    /**
+     * Like {@see addCropper()} using the builder from {@see withBuilder()}.
+     *
+     * @param array<string, mixed> $options
+     */
+    protected function addCropperField(string $name, array $options = []): void
+    {
+        $this->addCropper($this->boundBuilder(), $name, $options);
+    }
+
+    /**
      * Minimal switch preset: creates a ChoiceType configured as expanded+multiple and
      * installs a SwitchModelTransformer so the model stays scalar (1/0 or true/false).
      *
@@ -647,7 +722,7 @@ trait FormOptionsTrait
             $fieldName,
             ChoiceType::class,
             $options,
-            $this->formKitConfigName,
+            $this->resolvedFormKitConfigName(),
         );
 
         // If choices contain translation keys, use the field translation_domain by default.
@@ -795,7 +870,7 @@ trait FormOptionsTrait
             $fieldName,
             TextareaType::class,
             $fieldConfiguration,
-            $this->formKitConfigName,
+            $this->resolvedFormKitConfigName(),
         );
 
         $builder->add($fieldName, TextareaType::class, $merged);
@@ -828,7 +903,7 @@ trait FormOptionsTrait
             $fieldName,
             CheckboxType::class,
             $fieldConfiguration,
-            $this->formKitConfigName,
+            $this->resolvedFormKitConfigName(),
         );
 
         $builder->add($fieldName, CheckboxType::class, $merged);
@@ -866,7 +941,7 @@ trait FormOptionsTrait
             $fieldName,
             TextType::class,
             $fieldConfiguration,
-            $this->formKitConfigName,
+            $this->resolvedFormKitConfigName(),
         );
 
         $merged = FormFieldOptionsHelper::stripPlaceholderFromMergedOptions($merged);
@@ -907,7 +982,7 @@ trait FormOptionsTrait
             $fieldName,
             TextareaType::class,
             $fieldConfiguration,
-            $this->formKitConfigName,
+            $this->resolvedFormKitConfigName(),
         );
 
         $builder->add($fieldName, TextareaType::class, $merged);

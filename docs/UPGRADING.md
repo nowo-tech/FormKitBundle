@@ -31,6 +31,18 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.10 (2026-07-18)
+
+Additive / opt-in (no BC break for existing YAML without the new keys):
+
+- **`by_form`** — Optional per-form defaults under each config (or legacy root when `configs` is empty).
+- **`constraint_message_convention`** — Defaults to `false`; enable to auto-fill constraint message translation keys.
+- **FormTypeMap** — More built-in snake_case names (date, money, collection, …); existing names unchanged.
+- **`#[FormKitConfig]`** — Optional attribute on form types; `setFormKitConfigName()` remains supported and wins when called.
+- **Optional helpers** — `addDropzone*` / `addCropper*` (require UX packages; throw if missing).
+- **Flex recipe stub 2.0** — see [RECIPE.md](RECIPE.md); submit to recipes-contrib when ready.
+- **Demo** — `/conditional-fields-live` with Symfony UX Live Component.
+
 ### 2.0.9 (2026-07-18)
 
 Repository-only (demos / Makefiles / docs; no Composer package or bundle API change):

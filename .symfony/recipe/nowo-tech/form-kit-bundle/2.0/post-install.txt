@@ -1,0 +1,9 @@
+Form Kit Bundle configured.
+
+  * Config: config/packages/nowo_form_kit.yaml
+  * Twig form theme: config/packages/nowo_form_kit_twig.yaml (@NowoFormKit/form/static_blocks.html.twig)
+
+  Docs: https://github.com/nowo-tech/FormKitBundle/blob/main/docs/INSTALLATION.md
+  Usage: https://github.com/nowo-tech/FormKitBundle/blob/main/docs/USAGE.md
+
+  Optional: composer suggest lists UX Dropzone/Cropper, FOSCKEditor, A2lix, Select All Choice, Live Component.

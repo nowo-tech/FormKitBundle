@@ -1,0 +1,21 @@
+<div{{ attributes }}>
+  <p class="small text-secondary mb-3">{{ 'demo_pages.conditional_fields_live.component_intro'|trans|raw }}</p>
+  {{ form_start(form) }}
+  <div class="row g-3">
+    <div class="col-12">{{ form_row(form.account_type) }}</div>
+    {% if form.company_name is defined %}
+      <div class="col-12">{{ form_row(form.company_name) }}</div>
+    {% endif %}
+    {% if form.first_name is defined %}
+      <div class="col-12 col-md-6">{{ form_row(form.first_name) }}</div>
+    {% endif %}
+    {% if form.last_name is defined %}
+      <div class="col-12 col-md-6">{{ form_row(form.last_name) }}</div>
+    {% endif %}
+  </div>
+  {{ form_rest(form) }}
+  <div class="form-kit-buttons mt-3">
+    <button type="submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
+  </div>
+  {{ form_end(form, { render_rest: false }) }}
+</div>

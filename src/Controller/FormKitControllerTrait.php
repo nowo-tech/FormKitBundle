@@ -333,6 +333,38 @@ trait FormKitControllerTrait
     }
 
     /**
+     * Symfony UX Dropzone with merged Form Kit options. Requires `symfony/ux-dropzone`.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addDropzoneFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
+    {
+        if (!class_exists(\Symfony\UX\Dropzone\Form\DropzoneType::class)) {
+            throw new LogicException('addDropzoneFieldType() requires symfony/ux-dropzone.');
+        }
+
+        $this->addFieldType($builder, $fieldName, \Symfony\UX\Dropzone\Form\DropzoneType::class, $options, $configName, $formName);
+    }
+
+    /**
+     * Symfony UX Cropper.js with merged Form Kit options. Requires `symfony/ux-cropperjs`.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addCropperFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
+    {
+        if (!class_exists(\Symfony\UX\Cropperjs\Form\CropperType::class)) {
+            throw new LogicException('addCropperFieldType() requires symfony/ux-cropperjs.');
+        }
+
+        $this->addFieldType($builder, $fieldName, \Symfony\UX\Cropperjs\Form\CropperType::class, $options, $configName, $formName);
+    }
+
+    /**
      * Adds A2lix translations field with defaults and optional locale resolver.
      *
      * @param array<string, mixed> $options

@@ -784,6 +784,92 @@ final class FormOptionsTraitTest extends TestCase
         $type->run($builder);
     }
 
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testAddDropzoneThrowsWhenBundleMissing(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'dropzone_demo';
+            }
+
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addDropzone($builder, 'document', []);
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('symfony/ux-dropzone');
+        $type->run($builder);
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     */
+    public function testAddCropperThrowsWhenBundleMissing(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'cropper_demo';
+            }
+
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addCropper($builder, 'crop', []);
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('symfony/ux-cropperjs');
+        $type->run($builder);
+    }
+
+    public function testAddDropzoneDelegatesWhenStubPresent(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'dropzone_demo';
+            }
+
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addDropzone($builder, 'document', []);
+            }
+        };
+
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with('document', \Symfony\UX\Dropzone\Form\DropzoneType::class, self::isType('array'));
+
+        $type->run($builder);
+    }
+
     public function testAddAutocompleteFieldDelegatesToAddWithDefaults(): void
     {
         $type = new class {

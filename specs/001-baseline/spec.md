@@ -23,7 +23,15 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 
 ### US-02 — Named configs & cascading merge (P1)
 
-**Given** multiple entries under `nowo_form_kit.configs`, **When** a form calls `setFormKitConfigName('bootstrap')`, **Then** `FormOptionsMerger` merges config defaults → field-type options → form options → field options with later keys winning.
+**Given** multiple entries under `nowo_form_kit.configs`, **When** a form calls `setFormKitConfigName('bootstrap')`, **Then** `FormOptionsMerger` merges config defaults → field-type options → `by_form` defaults/fields → field options with later keys winning.
+
+### US-02b — Per-form defaults & constraint message keys (P2)
+
+**Given** `by_form.user_profile` and optional `constraint_message_convention: true`, **When** resolving a field on form `user_profile`, **Then** form-scoped attr/row_attr/field overrides apply, and constraints without an explicit message receive `{form}.{field}.constraints.{Name}` keys.
+
+### US-07 — FormKitConfig attribute (P3)
+
+**Given** a form type annotated with `#[FormKitConfig('bootstrap')]`, **When** fields are added via FormOptionsTrait / FormKitTrait without calling `setFormKitConfigName()`, **Then** options resolve using the `bootstrap` config. An explicit `setFormKitConfigName()` call overrides the attribute.
 
 ### US-03 — Phase-2 field helpers (P1)
 
@@ -47,7 +55,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 
 ### US-06 — Conditional fields via Symfony patterns (P2)
 
-**Given** an integrator needs to show company vs person fields, **When** they follow documented patterns (build-time `if`, `FormEvents` + `resolveFieldOptions`, UI hide, or Live Component), **Then** Form Kit remains the options/convention layer and does not require a dedicated `when` / `visible_if` field option. **And** the Symfony 7/8 demos expose `/conditional-fields` with both `ConditionalFieldsDemoType` (events) and `BuildTimeConditionalDemoType` (build-time `if`), plus `/kit-api-patterns` for snake_case `FormKitAbstractType` and named config.
+**Given** an integrator needs to show company vs person fields, **When** they follow documented patterns (build-time `if`, `FormEvents` + `resolveFieldOptions`, UI hide, or Live Component), **Then** Form Kit remains the options/convention layer and does not require a dedicated `when` / `visible_if` field option. **And** **demo/symfony8** exposes `/conditional-fields` with both `ConditionalFieldsDemoType` (events) and `BuildTimeConditionalDemoType` (build-time `if`), `/conditional-fields-live` (Live Component), plus `/kit-api-patterns` for snake_case `FormKitAbstractType` and named config (`#[FormKitConfig]`).
 
 ---
 
@@ -75,7 +83,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 ### Forms — core
 
 - **FR-FORM-001**: `FormKitAbstractType`, traits, and abstract types for snake_case and wrapped types.
-- **FR-FORM-002**: `FormOptionsMerger`, `FormKitOptionMerger` — cascading option resolution.
+- **FR-FORM-002**: `FormOptionsMerger`, `FormKitOptionMerger` — cascading option resolution (including `by_form` and optional constraint message convention).
 - **FR-FORM-003**: `FormFieldOptionsHelper` — convention keys and disable flags.
 - **FR-FORM-004**: `FormTypeMap` — built-in + configurable type name → FQCN map.
 - **FR-FORM-005**: Form extensions — input group, required suffix, help modal.
@@ -84,6 +92,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 - **FR-FORM-008**: Static alert/HTML/separator types; optional A2lix `TranslationsFormsType`.
 - **FR-FORM-009**: Bound-builder API on `FormOptionsTrait` / `FormKitTrait`: `withBuilder()`, `boundBuilder()`, `add*Field()` / `buildFieldsFromArray()` / `addTypedField()` (and FormKit `addNamedField()`), preserving BC for existing `addText($builder, …)` helpers.
 - **FR-FORM-010**: `FormOptionsTrait::resolveFieldOptions()` exposes the same merge as `addWithDefaults` for use with `FormInterface::add` in form event listeners (conditional fields).
+- **FR-FORM-011**: `#[FormKitConfig('name')]` on a form type selects `nowo_form_kit.configs.<name>` unless `setFormKitConfigName()` was called.
 
 ### Multi-step wizard
 

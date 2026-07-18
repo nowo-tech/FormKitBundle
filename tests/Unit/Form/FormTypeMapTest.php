@@ -36,6 +36,18 @@ final class FormTypeMapTest extends TestCase
         $names = $map->typeNames();
         self::assertContains('text', $names);
         self::assertContains('email', $names);
+        self::assertContains('date', $names);
+        self::assertContains('money', $names);
+        self::assertContains('collection', $names);
+        self::assertContains('tel', $names);
+    }
+
+    public function testResolveReturnsFqcnForExtendedBuiltinTypes(): void
+    {
+        $map = new FormTypeMap([]);
+        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\DateType::class, $map->resolve('date'));
+        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\MoneyType::class, $map->resolve('money'));
+        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\CollectionType::class, $map->resolve('collection'));
     }
 
     /**
