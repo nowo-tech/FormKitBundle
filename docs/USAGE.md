@@ -2,12 +2,13 @@
 
 ## Table of contents
 
+- [Usage strategies](#usage-strategies)
 - [FormOptionsMerger service](#formoptionsmerger-service)
-- [Controller helpers (trait)](#controller-helpers-trait)
-- [Using FormOptionsTrait](#using-formoptionstrait)
+- [Controller strategy](#controller-strategy)
+- [Options strategy (FormOptionsTrait)](#options-strategy-formoptionstrait)
 - [Conditional fields (show one field or another)](#conditional-fields-show-one-field-or-another)
-- [FormKitTrait and FormKitAbstractType (snake_case types)](#formkittrait-and-formkitabstracttype-snake_case-types)
-- [Custom type layer (wrapping third-party types)](#custom-type-layer-wrapping-third-party-types)
+- [Kit strategy (FormKitTrait / FormKitAbstractType)](#kit-strategy-formkittrait--formkitabstracttype)
+- [Wrapped strategy (third-party types)](#wrapped-strategy-third-party-types)
 - [Translations](#translations)
 - [Disabling convention for a key](#disabling-convention-for-a-key)
 - [Custom static blocks in the form (HR, alert)](#custom-static-blocks-in-the-form-hr-alert)
@@ -23,19 +24,45 @@
   - [Bootstrap 5 example](#bootstrap-5-example)
   - [Tailwind CSS example](#tailwind-css-example)
 
+## Usage strategies
+
+Form Kit exposes four **usage strategies**. Pick one entry point; all share the same merge pipeline (`FormOptionsMerger`) and convention keys (`{form}.{field}.label` / `.placeholder` / `.help`).
+
+| Strategy | ID | Entry point | Type names | Typical when |
+|----------|----|-------------|------------|--------------|
+| **Options** | `options` | [`FormOptionsTrait`](#options-strategy-formoptionstrait) | Symfony FQCN (`TextType::class`) | Recommended default for app `FormType` classes |
+| **Kit** | `kit` | [`FormKitTrait`](#kit-strategy-formkittrait--formkitabstracttype) / `FormKitAbstractType` | snake_case via [`FormTypeMap`](CONFIGURATION.md#optional-and-custom-types-type_map) (`'text'`) | Prefer string types / YAML-friendly `buildFormFromArray` |
+| **Controller** | `controller` | [`FormKitControllerTrait`](#controller-strategy) | FQCN resolved from map in helpers (`addTextType`) | Forms built in a controller without a dedicated `FormType` |
+| **Wrapped** | `wrapped` | [`AbstractFormKitWrappedType`](#wrapped-strategy-third-party-types) | Your type wrapping a third-party FQCN | Reuse UX/vendor widgets with Form Kit conventions |
+
+**Cross-cutting techniques** (usable inside Options / Kit / Controller):
+
+| Technique | ID | What it is |
+|-----------|----|------------|
+| **Bound builder** | `bound-builder` | `withBuilder($builder, …)` + `add*Field()` so you do not repeat `$builder` |
+| **Array build** | `array-build` | `buildFormFromArray()` / `buildFieldsFromArray()` — declare fields as one array |
+| **Named config** | `named-config` | `#[FormKitConfig('bootstrap')]` or `setFormKitConfigName('…')` |
+| **Direct merge** | `direct-merge` | Call `FormOptionsMerger::resolve()` yourself (e.g. in events or ad-hoc builders) |
+| **Field options for events** | `resolve-field-options` | `resolveFieldOptions()` then `$form->add()` in `PRE_SET_DATA` / `PRE_SUBMIT` |
+
+In docs and issues you can say e.g. “use the **Options** strategy with **bound-builder**” or “demo page uses **Kit** + **named-config**”.
+
 ## FormOptionsMerger service
 
-The **FormOptionsMerger** resolves final options for each field with cascading merge. It uses the configured `configs` and `default_config`: the selected config (or the one passed to `resolve()`) provides `translation_domain`, `defaults`, and `field_types`.
+The **FormOptionsMerger** resolves final options for each field with cascading merge. It uses the configured `configs` and `default_config`: the selected config (or the one passed to `resolve()`) provides `translation_domain`, `defaults`, `field_types`, and optional `by_form`.
 
 1. **Config defaults:** Convention keys `form_snake.field_snake.label`, `.placeholder`, `.help`, plus `translation_domain`, `attr` and `row_attr` from the active config.
 2. **Field type defaults:** From the config’s `field_types` (key = short name like `text` or FQCN).
-3. **Field options:** What you pass to `addWithDefaults()` or `buildFormFromArray()`; last wins. Use `label: false`, `placeholder: false` or `help: false` to disable the convention for that key.
+3. **`by_form` defaults / fields:** Optional per-form overrides (see [Configuration](CONFIGURATION.md#per-form-defaults-by_form)).
+4. **Field options:** What you pass to `addWithDefaults()` or `buildFormFromArray()`; last wins. Use `label: false`, `placeholder: false` or `help: false` to disable the convention for that key.
 
-You can inject **FormOptionsMerger** and call `resolve($formName, $fieldName, $type, $options, $configName)` directly (e.g. when building a form in the controller without a FormType class).
+You can inject **FormOptionsMerger** and call `resolve($formName, $fieldName, $type, $options, $configName)` directly (**direct-merge** technique), e.g. when building a form in the controller without a FormType class.
 
-## Controller helpers (trait)
+## Controller strategy
 
-If you build forms in controllers (without a Symfony `FormType`), you can use `Nowo\FormKitBundle\Controller\FormKitControllerTrait`.
+**Strategy ID:** `controller` · **API:** `Nowo\FormKitBundle\Controller\FormKitControllerTrait`
+
+If you build forms in controllers (without a Symfony `FormType`), use this trait.
 
 It provides helpers like `addTextType()`, `addEmailType()`, `addChoiceType()`, choice presets (`addSelectType`, `addMultiSelectType`, `addChoiceRadiosType`, `addChoiceCheckboxesType`, `addMultiSelectSelectAllType`), `addAutocompleteFieldType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, plus transformer presets like:
 - `addSwitchType()` (model int/bool <-> ChoiceType switch)
@@ -78,7 +105,9 @@ final class MyController
 }
 ```
 
-## Using FormOptionsTrait
+## Options strategy (FormOptionsTrait)
+
+**Strategy ID:** `options` · **API:** `Nowo\FormKitBundle\Form\FormOptionsTrait` · **Recommended default** for application form types.
 
 1. **Register your form type as a service** and inject the merger:
 
@@ -90,9 +119,9 @@ App\Form\UserProfileType:
         - setFormOptionsMerger: ['@Nowo\FormKitBundle\Form\FormOptionsMerger']
 ```
 
-2. **In your form type**, use the trait and either the **Phase 2 helpers** (`addText()`, `addEmail()`, …), `addWithDefaults()`, or **buildFormFromArray()**:
+2. **In your form type**, use the trait and either the typed helpers (`addText()`, `addEmail()`, …), `addWithDefaults()`, **bound-builder** (`withBuilder` + `add*Field`), or **array-build** (`buildFormFromArray()`):
 
-**Phase 2 (field name + options only, no type class):**
+**Typed helpers (field name + options only, no type class) + bound-builder:**
 
 ```php
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
@@ -117,7 +146,7 @@ class UserProfileType extends AbstractType
 }
 ```
 
-**Named config:** put `#[FormKitConfig('bootstrap')]` on the form class (reads `nowo_form_kit.configs.bootstrap`), or call `setFormKitConfigName('bootstrap')` in `buildForm()` / DI. An explicit `setFormKitConfigName()` call overrides the attribute.
+**Named config** technique: put `#[FormKitConfig('bootstrap')]` on the form class (reads `nowo_form_kit.configs.bootstrap`), or call `setFormKitConfigName('bootstrap')` in `buildForm()` / DI. An explicit `setFormKitConfigName()` call overrides the attribute.
 
 You can still pass `$builder` explicitly with the older helpers (`addText($builder, …)`, `addEmail($builder, …)`, …). `boundBuilder()` returns the builder bound by `withBuilder()` when you need helpers that still require it (e.g. `addAutocompleteField`, `addCKEditorField`).
 
@@ -137,7 +166,7 @@ $this->buildFormFromArray($builder, [
 
 **Or** use `addWithDefaults($builder, $name, TextType::class, $options)` when you need a type not covered by the helpers or a custom type.
 
-**Available Phase 2 helpers (core):** `addText` / `addTextField`, `addEmail` / `addEmailField`, `addTextarea` / `addTextareaField`, `addPassword` / `addPasswordField`, `addUrl` / `addUrlField`, `addInteger` / `addIntegerField`, `addNumber` / `addNumberField`, `addCheckbox` / `addCheckboxField`, `addChoice` / `addChoiceField`. Prefer `withBuilder($builder, …)` + `*Field` when adding several fields.
+**Available typed helpers (core):** `addText` / `addTextField`, `addEmail` / `addEmailField`, `addTextarea` / `addTextareaField`, `addPassword` / `addPasswordField`, `addUrl` / `addUrlField`, `addInteger` / `addIntegerField`, `addNumber` / `addNumberField`, `addCheckbox` / `addCheckboxField`, `addChoice` / `addChoiceField`. Prefer `withBuilder($builder, …)` + `*Field` when adding several fields.
 
 **Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect` / `addSelectField`, `addMultiSelect` / `addMultiSelectField`, `addChoiceRadios` / `addChoiceRadiosField`, `addChoiceCheckboxes` / `addChoiceCheckboxesField`. Radios and checkbox groups clear the global `form-control` class on the widget root and disable `placeholder` by default so Bootstrap 5 `form-check` markup renders correctly. **`addMultiSelectSelectAll`** / **`addMultiSelectSelectAllField`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
 
@@ -153,7 +182,7 @@ Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` / 
 
 ## Conditional fields (show one field or another)
 
-Form Kit does **not** ship a dedicated `when` / `visible_if` option. Conditionals stay in Symfony (build-time `if`, `FormEvents`, or frontend). The helpers above still apply: use `withBuilder()` + `add*Field()` when you know the shape at build time, or `resolveFieldOptions()` + `$form->add()` inside listeners.
+Form Kit has no built-in `when` / `visible_if` option. Conditionals stay in Symfony (build-time `if`, `FormEvents`, or frontend). Use any strategy’s helpers: **bound-builder** + `add*Field()` when the shape is known at build time, or the **resolve-field-options** technique + `$form->add()` inside listeners.
 
 ### 1. Build-time (`if` on known options / data)
 
@@ -252,9 +281,11 @@ For instant re-render without a full page submit, wrap the form in a Symfony UX 
 
 Requires **symfony/ux-live-component**. Demo: `/{locale}/conditional-fields-live` in **demo/symfony8** (`ConditionalFieldsLive` component + `BuildTimeConditionalDemoType`).
 
-## FormKitTrait and FormKitAbstractType (snake_case types)
+## Kit strategy (FormKitTrait / FormKitAbstractType)
 
-If you prefer **snake_case type names** instead of FQCNs, use **FormKitTrait** with **FormTypeMap**. The bundle registers **FormTypeMap** with built-in types (`text`, `email`, `choice`, etc.) and optional types when the package is present (e.g. `dropzone`, `cropper`, `translations`). You can extend the map via `nowo_form_kit.type_map` in config (see [Configuration](CONFIGURATION.md)).
+**Strategy ID:** `kit` · **API:** `FormKitTrait` / `FormKitAbstractType` + `FormTypeMap`
+
+If you prefer **snake_case type names** instead of FQCNs, use this strategy. The bundle registers **FormTypeMap** with built-in types (`text`, `email`, `choice`, `date`, `money`, …) and optional types when the package is present (e.g. `dropzone`, `cropper`, `translations`). Extend via `nowo_form_kit.type_map` (see [Configuration](CONFIGURATION.md)).
 
 - **FormKitTrait** provides `addField($builder, $name, $typeSnakeCase, $options)` and `buildFormFromArray($builder, $fields)` where each field’s type is a string (e.g. `'text'`, `'choice'`) instead of a class. It uses **FormOptionsMerger** for the option cascade and **FormTypeMap** for snake_case type resolution.
 - **FormKitAbstractType** is a base class that uses FormKitTrait and injects **FormOptionsMerger** and **FormTypeMap** via the constructor, so it works with the same `configs` / `default_config` model as FormOptionsTrait.
@@ -268,9 +299,11 @@ $this->buildFormFromArray($builder, [
 ]);
 ```
 
-## Custom type layer (wrapping third-party types)
+## Wrapped strategy (third-party types)
 
-To use **your own form types** that wrap third-party types (e.g. UX Dropzone, Cropper) and still get the bundle’s convention (label, placeholder, help, `field_types.*`), extend **AbstractFormKitWrappedType**.
+**Strategy ID:** `wrapped` · **API:** `Nowo\FormKitBundle\Form\AbstractFormKitWrappedType`
+
+To use **your own form types** that wrap third-party types (e.g. UX Dropzone, Cropper) and still get the bundle’s convention (label, placeholder, help, `field_types.*`), extend **AbstractFormKitWrappedType**. Often combined with the **Options** strategy (`addWithDefaults`) or registered in `type_map` for the **Kit** strategy.
 
 1. Implement **getInnerType()** and return the FQCN of the type you wrap.
 2. Use your type with **FormOptionsTrait::addWithDefaults()** or **buildFormFromArray()** (pass your class as the type). The merger will apply convention using your type’s block prefix (derived from the class name, e.g. `DropzoneFieldType` → `dropzone_field`).

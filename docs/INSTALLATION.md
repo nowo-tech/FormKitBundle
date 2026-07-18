@@ -71,7 +71,7 @@ If omitted, the bundle uses a single default config with `translation_domain: me
 ## Using in form types
 
 1. Register your form type as a service and inject **FormOptionsMerger** (see [Usage](USAGE.md)).
-2. Use **FormOptionsTrait** and call `withBuilder()` + `addTextField()`, or `addText()`, `addEmail()`, … or `buildFormFromArray()` in `buildForm()`.
+2. Use the **Options** strategy: **FormOptionsTrait** with `withBuilder()` + `addTextField()`, or `addText()`, `addEmail()`, … or `buildFormFromArray()` in `buildForm()`. See [Usage — strategies](USAGE.md#usage-strategies).
 3. Optionally call `setFormKitConfigName('config_name')` to use a different config than `default_config`.
 4. Add translation keys for `{form_snake}.{field_snake}.label`, `.placeholder`, `.help` in your translation domain.
 

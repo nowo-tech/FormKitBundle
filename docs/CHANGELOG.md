@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Docs — usage strategies** — Named strategies (**Options**, **Kit**, **Controller**, **Wrapped**) and techniques (**bound-builder**, **array-build**, **named-config**, **direct-merge**, **resolve-field-options**) in [USAGE](USAGE.md#usage-strategies); README / ROADMAP / INSTALLATION aligned.
+
 ## [2.0.10] - 2026-07-18
 
 ### Added

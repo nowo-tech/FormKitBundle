@@ -31,6 +31,10 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### Docs (Unreleased)
+
+Documentation naming only (no API change): usage entry points are called **strategies** — **Options**, **Kit**, **Controller**, **Wrapped** — with technique IDs such as **bound-builder** and **array-build**. See [USAGE — strategies](USAGE.md#usage-strategies).
+
 ### 2.0.10 (2026-07-18)
 
 Additive / opt-in (no BC break for existing YAML without the new keys):

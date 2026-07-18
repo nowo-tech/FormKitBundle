@@ -127,7 +127,7 @@ nowo_form_kit:
         my_upload: 'App\Form\Type\MyUploadType'
 ```
 
-This is used when building forms with **FormKitTrait** / **FormKitAbstractType** (e.g. `addField($builder, 'file', 'dropzone', [])` or `buildFormFromArray()` with snake_case types).
+This is used with the **Kit** strategy (`FormKitTrait` / `FormKitAbstractType`, e.g. `addField($builder, 'file', 'dropzone', [])` or `buildFormFromArray()` with snake_case types). See [Usage — strategies](USAGE.md#usage-strategies).
 
 ## Using a specific config in a form type
 
