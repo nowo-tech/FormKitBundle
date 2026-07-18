@@ -50,8 +50,8 @@ return [
 
 ```yaml
 nowo_form_kit:
-    default_config: default
-    configs:
+    default_profile: default
+    profiles:
         default:
             alias: default
             translation_domain: messages
@@ -66,13 +66,13 @@ nowo_form_kit:
             field_types: {}
 ```
 
-If omitted, the bundle uses a single default config with `translation_domain: messages` and empty attr/row_attr. See [Configuration](CONFIGURATION.md). To use **help modal** in the browser, install bundle assets and load `bundles/nowoformkit/help-modal.js` after Bootstrap; see [Usage — Help modal](USAGE.md#help-modal-optional).
+If omitted, the bundle uses a single default profile with `translation_domain: messages` and empty attr/row_attr. See [Configuration](CONFIGURATION.md). To use **help modal** in the browser, install bundle assets and load `bundles/nowoformkit/help-modal.js` after Bootstrap; see [Usage — Help modal](USAGE.md#help-modal-optional).
 
 ## Using in form types
 
 1. Register your form type as a service and inject **FormOptionsMerger** (see [Usage](USAGE.md)).
 2. Use the **Options** strategy: **FormOptionsTrait** with `withBuilder()` + `addTextField()`, or `addText()`, `addEmail()`, … or `buildFormFromArray()` in `buildForm()`. See [Usage — strategies](USAGE.md#usage-strategies).
-3. Optionally call `setFormKitConfigName('config_name')` to use a different config than `default_config`.
+3. Optionally call `setFormKitConfigName('profile_name')` to use a different profile than `default_profile`.
 4. Add translation keys for `{form_snake}.{field_snake}.label`, `.placeholder`, `.help` in your translation domain.
 
 ## Next steps

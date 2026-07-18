@@ -49,10 +49,10 @@ In docs and issues you can say e.g. “use the **Options** strategy with **bound
 
 ## FormOptionsMerger service
 
-The **FormOptionsMerger** resolves final options for each field with cascading merge. It uses the configured `configs` and `default_config`: the selected config (or the one passed to `resolve()`) provides `translation_domain`, `defaults`, `field_types`, and optional `by_form`.
+The **FormOptionsMerger** resolves final options for each field with cascading merge. It uses the configured `profiles` and `default_profile`: the selected profile (or the one passed to `resolve()`) provides `translation_domain`, `defaults`, `field_types`, and optional `by_form`.
 
-1. **Config defaults:** Convention keys `form_snake.field_snake.label`, `.placeholder`, `.help`, plus `translation_domain`, `attr` and `row_attr` from the active config.
-2. **Field type defaults:** From the config’s `field_types` (key = short name like `text` or FQCN).
+1. **Profile defaults:** Convention keys `form_snake.field_snake.label`, `.placeholder`, `.help`, plus `translation_domain`, `attr` and `row_attr` from the active profile.
+2. **Field type defaults:** From the profile’s `field_types` (key = short name like `text` or FQCN).
 3. **`by_form` defaults / fields:** Optional per-form overrides (see [Configuration](CONFIGURATION.md#per-form-defaults-by_form)).
 4. **Field options:** What you pass to `addWithDefaults()` or `buildFormFromArray()`; last wins. Use `label: false`, `placeholder: false` or `help: false` to disable the convention for that key.
 
@@ -146,7 +146,7 @@ class UserProfileType extends AbstractType
 }
 ```
 
-**Named config** technique: put `#[FormKitConfig('bootstrap')]` on the form class (reads `nowo_form_kit.configs.bootstrap`), or call `setFormKitConfigName('bootstrap')` in `buildForm()` / DI. An explicit `setFormKitConfigName()` call overrides the attribute.
+**Named config** technique: put `#[FormKitConfig('bootstrap')]` on the form class (reads `nowo_form_kit.profiles.bootstrap`), or call `setFormKitConfigName('bootstrap')` in `buildForm()` / DI. An explicit `setFormKitConfigName()` call overrides the attribute.
 
 You can still pass `$builder` explicitly with the older helpers (`addText($builder, …)`, `addEmail($builder, …)`, …). `boundBuilder()` returns the builder bound by `withBuilder()` when you need helpers that still require it (e.g. `addAutocompleteField`, `addCKEditorField`).
 
@@ -288,7 +288,7 @@ Requires **symfony/ux-live-component**. Demo: `/{locale}/conditional-fields-live
 If you prefer **snake_case type names** instead of FQCNs, use this strategy. The bundle registers **FormTypeMap** with built-in types (`text`, `email`, `choice`, `date`, `money`, …) and optional types when the package is present (e.g. `dropzone`, `cropper`, `translations`). Extend via `nowo_form_kit.type_map` (see [Configuration](CONFIGURATION.md)).
 
 - **FormKitTrait** provides `addField($builder, $name, $typeSnakeCase, $options)` and `buildFormFromArray($builder, $fields)` where each field’s type is a string (e.g. `'text'`, `'choice'`) instead of a class. It uses **FormOptionsMerger** for the option cascade and **FormTypeMap** for snake_case type resolution.
-- **FormKitAbstractType** is a base class that uses FormKitTrait and injects **FormOptionsMerger** and **FormTypeMap** via the constructor, so it works with the same `configs` / `default_config` model as FormOptionsTrait.
+- **FormKitAbstractType** is a base class that uses FormKitTrait and injects **FormOptionsMerger** and **FormTypeMap** via the constructor, so it works with the same `profiles` / `default_profile` model as FormOptionsTrait.
 
 Example with FormKitTrait (when both services are available):
 
@@ -433,7 +433,7 @@ $this->buildFormFromArray($builder, [
 **HelpModalExtension** adds an optional field option **`help_modal`**:
 
 - `false` or omitted — no help trigger (default).
-- `true` — use defaults from `configs.<name>.help_modal` in `nowo_form_kit` (see [Configuration](CONFIGURATION.md)).
+- `true` — use defaults from `profiles.<name>.help_modal` in `nowo_form_kit` (see [Configuration](CONFIGURATION.md)).
 - `array` — merge with those defaults; keys include `id`, `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` when **symfony/ux-icons** is installed, `title`, `title_html`, `content` (HTML string for the modal body), `trigger_class`, `aria_label`.
 
 The extension sets `label_attr['data-nowo-help-modal']` to a JSON payload. The bundled script **`help-modal.js`** (built from TypeScript) scans `label[data-nowo-help-modal]`, injects the icon beside the label, and opens a modal. **Bootstrap 5** uses `window.bootstrap.Modal` when available; **Bootstrap 4** uses jQuery `.modal()`; **Tailwind** and **Foundation** use inline shells and `[data-help-modal-close]` buttons.
@@ -628,7 +628,7 @@ Use `row_attr` with column classes on fields (or `by_form` defaults), and wrap t
 
 ```yaml
 nowo_form_kit:
-    configs:
+    profiles:
         default:
             alias: default
             translation_domain: messages
@@ -668,8 +668,8 @@ Keep Form Kit conventions for labels; in Twig use Bootstrap’s floating markup 
 ```yaml
 # config/packages/nowo_form_kit.yaml
 nowo_form_kit:
-    default_config: bootstrap
-    configs:
+    default_profile: bootstrap
+    profiles:
         bootstrap:
             alias: bootstrap
             translation_domain: messages
@@ -703,8 +703,8 @@ Typical Twig rendering (using the bundle form renderer component):
 ```yaml
 # config/packages/nowo_form_kit.yaml
 nowo_form_kit:
-    default_config: tailwind
-    configs:
+    default_profile: tailwind
+    profiles:
         tailwind:
             alias: tailwind
             translation_domain: messages

@@ -48,7 +48,7 @@ trait FormOptionsTrait
     /** Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
     private ?FormBuilderInterface $formKitBoundBuilder = null;
 
-    /** Config name (key in nowo_form_kit.configs) to use; null = default_config */
+    /** Profile name (key in nowo_form_kit.profiles) to use; null = default_profile */
     private ?string $formKitConfigName = null;
 
     /** True after setFormKitConfigName() or after resolving #[FormKitConfig]. */
@@ -72,7 +72,7 @@ trait FormOptionsTrait
         $this->formOptionsMerger = $formOptionsMerger;
     }
 
-    /** Set which config to use (key in configs); null uses default_config. Overrides #[FormKitConfig]. */
+    /** Set which profile to use (key in profiles); null uses default_profile. Overrides #[FormKitConfig]. */
     public function setFormKitConfigName(?string $configName): void
     {
         $this->formKitConfigName         = $configName;
@@ -80,7 +80,7 @@ trait FormOptionsTrait
     }
 
     /**
-     * Config name for FormOptionsMerger: explicit setter, else #[FormKitConfig] on the form class, else null (default_config).
+     * Profile name for FormOptionsMerger: explicit setter, else #[FormKitConfig] on the form class, else null (default_profile).
      */
     protected function resolvedFormKitConfigName(): ?string
     {
@@ -165,7 +165,7 @@ trait FormOptionsTrait
      *
      * Form name is taken from getBlockPrefix(); label, placeholder and help default to
      * translation keys "form_snake.field_snake.label", ".placeholder", ".help" unless
-     * you pass false for any of them in $options. Uses the config set via setFormKitConfigName() or default_config.
+     * you pass false for any of them in $options. Uses the profile set via setFormKitConfigName() or default_profile.
      *
      * @param array<string, mixed> $options Field-specific options (override convention; use false to disable label/placeholder/help)
      */

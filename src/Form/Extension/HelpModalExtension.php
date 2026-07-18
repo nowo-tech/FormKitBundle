@@ -36,13 +36,13 @@ use const JSON_UNESCAPED_UNICODE;
 final class HelpModalExtension extends AbstractTypeExtension
 {
     /**
-     * @param array<string, array<string, mixed>> $configs merged Form Kit configuration (all named configs)
-     * @param string $defaultConfigName key used when resolving `help_modal` defaults
+     * @param array<string, array<string, mixed>> $profiles merged Form Kit configuration (all named profiles)
+     * @param string $defaultProfileName key used when resolving `help_modal` defaults
      * @param object|null $iconRenderer optional; Symfony UX Icons renderer when the package is installed
      */
     public function __construct(
-        private readonly array $configs,
-        private readonly string $defaultConfigName,
+        private readonly array $profiles,
+        private readonly string $defaultProfileName,
         private readonly ?object $iconRenderer = null,
     ) {
     }
@@ -90,7 +90,7 @@ final class HelpModalExtension extends AbstractTypeExtension
             return;
         }
 
-        $default = $this->configs[$this->defaultConfigName]['help_modal'] ?? [];
+        $default = $this->profiles[$this->defaultProfileName]['help_modal'] ?? [];
         $merged  = array_replace_recursive($default, $helpModal);
 
         $framework        = (string) ($merged['framework'] ?? 'bootstrap5');

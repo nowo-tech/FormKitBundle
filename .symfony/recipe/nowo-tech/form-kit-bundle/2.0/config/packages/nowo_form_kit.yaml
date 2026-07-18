@@ -1,32 +1,32 @@
 # Form Kit Bundle — https://github.com/nowo-tech/form-kit-bundle
 #
 # Top-level keys:
-#   default_config  — Name of the entry under `configs` to use when a form does not call setFormKitConfigName().
+#   default_profile  — Name of the entry under `profiles` to use when a form does not call setFormKitConfigName().
 #   type_map        — Optional. Extra snake_case type name => form type FQCN. Merged with built-in types (text, email, …)
 #                     and optional UX types when packages are installed (e.g. dropzone, cropper, translations).
 #   css_framework   — Optional. bootstrap | tailwind | foundation | none. Drives Nowo\FormKitBundle\Css\CssClassUtilities
 #                     (column-class merge + utility ordering). Default: bootstrap.
-#   configs         — One or more named profiles: translation domain, defaults, help_modal defaults, per field-type tweaks.
+#   profiles         — One or more named profiles: translation domain, defaults, help_modal defaults, per field-type tweaks.
 #
-# Per config entry (configs.<name>):
+# Per config entry (profiles.<name>):
 #   alias                    — Required. Human-readable name for this profile.
 #   translation_domain       — Domain for convention keys: {form_snake}.{field_snake}.label|.placeholder|.help
 #   required_label_suffix    — Optional. Appended to required field labels (e.g. " *"). Null/empty disables.
-#                              Note: RequiredLabelSuffixExtension reads suffix from the config named `default_config` only.
+#                              Note: RequiredLabelSuffixExtension reads suffix from the config named `default_profile` only.
 #   help_modal               — Defaults merged when a field sets help_modal: true (or partial array). See HelpModalExtension.
 #   defaults.attr / row_attr — Merged into every field unless overridden.
 #   field_types              — Optional per-type overrides. Keys: short name (text, email, …) or FQCN.
 #                              Each value may set attr, row_attr, label, placeholder, help, translation_domain.
 
 nowo_form_kit:
-    default_config: default
+    default_profile: default
     # css_framework: bootstrap
 
     # Optional: register custom or project-specific types for FormKitTrait / snake_case buildFormFromArray.
     # type_map:
     #     my_upload: 'App\Form\Type\MyUploadType'
 
-    configs:
+    profiles:
         default:
             alias: default
             translation_domain: messages
@@ -95,8 +95,8 @@ nowo_form_kit:
         #     field_types: {}
 
 # -----------------------------------------------------------------------------
-# Legacy layout (no `configs` key): a single implicit "default" config is built
-# from these root keys. Prefer the `configs` structure above for new projects.
+# Legacy layout (no `profiles` key): a single implicit "default" config is built
+# from these root keys. Prefer the `profiles` structure above for new projects.
 # -----------------------------------------------------------------------------
 # nowo_form_kit:
 #     translation_domain: messages

@@ -52,7 +52,7 @@ trait FormKitControllerTrait
     private ?FormTypeMap $formKitTypeMap = null;
 
     /**
-     * Key in nowo_form_kit.configs. When null, FormOptionsMerger will use default_config.
+     * Key in nowo_form_kit.profiles. When null, FormOptionsMerger will use default_profile.
      */
     private ?string $formKitConfigName = null;
 

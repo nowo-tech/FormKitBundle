@@ -29,7 +29,7 @@ trait FormKitTrait
     /** Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
     private ?FormBuilderInterface $formKitBoundBuilder = null;
 
-    /** Config name (key in nowo_form_kit.configs) to use; null = default_config */
+    /** Profile name (key in nowo_form_kit.profiles) to use; null = default_profile */
     private ?string $formKitConfigName = null;
 
     /** True after setFormKitConfigName() or after resolving #[FormKitConfig]. */
@@ -45,7 +45,7 @@ trait FormKitTrait
         $this->formTypeMap = $map;
     }
 
-    /** Set which config to use (key in configs); null uses default_config. Overrides #[FormKitConfig]. */
+    /** Set which profile to use (key in profiles); null uses default_profile. Overrides #[FormKitConfig]. */
     public function setFormKitConfigName(?string $configName): void
     {
         $this->formKitConfigName         = $configName;
@@ -53,7 +53,7 @@ trait FormKitTrait
     }
 
     /**
-     * Config name for FormOptionsMerger: explicit setter, else #[FormKitConfig] on the form class, else null (default_config).
+     * Profile name for FormOptionsMerger: explicit setter, else #[FormKitConfig] on the form class, else null (default_profile).
      */
     protected function resolvedFormKitConfigName(): ?string
     {

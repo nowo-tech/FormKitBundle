@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.11] - 2026-07-18
+
 ### Changed
 
-- **Docs — usage strategies** — Named strategies (**Options**, **Kit**, **Controller**, **Wrapped**) and techniques (**bound-builder**, **array-build**, **named-config**, **direct-merge**, **resolve-field-options**) in [USAGE](USAGE.md#usage-strategies); README / ROADMAP / INSTALLATION aligned.
+- **Config naming (AuditKit-style)** — `default_config` / `configs` renamed to `default_profile` / `profiles`. Legacy YAML keys and container parameters (`nowo_form_kit.default_config`, `nowo_form_kit.configs`) remain accepted during transition. See [UPGRADING](UPGRADING.md).
+- **Docs — usage strategies** — Named strategies (**Options**, **Kit**, **Controller**, **Wrapped**) and techniques (**bound-builder**, **array-build**, **named-config**, **direct-merge**, **resolve-field-options**) in [USAGE](USAGE.md#usage-strategies); README / ROADMAP / INSTALLATION / recipes / demo YAML aligned with `profiles`.
 
 ## [2.0.10] - 2026-07-18
 
@@ -208,6 +211,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.11]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.11
 [2.0.10]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.10
 [2.0.9]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.9
 [2.0.8]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.8

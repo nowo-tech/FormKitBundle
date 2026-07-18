@@ -10,15 +10,15 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
 /**
- * Injects required_label_suffix into the view from the bundle config (default config).
+ * Injects required_label_suffix into the view from the bundle config (default profile).
  * The suffix is appended to the label in the form theme when the field is required.
  * The option is never passed to the form type; it is only read from config and used when building the label.
  */
 final class RequiredLabelSuffixExtension extends AbstractTypeExtension
 {
     public function __construct(
-        private readonly array $configs,
-        private readonly string $defaultConfigName,
+        private readonly array $profiles,
+        private readonly string $defaultProfileName,
     ) {
     }
 
@@ -29,7 +29,7 @@ final class RequiredLabelSuffixExtension extends AbstractTypeExtension
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $config                              = $this->configs[$this->defaultConfigName] ?? null;
+        $config                              = $this->profiles[$this->defaultProfileName] ?? null;
         $view->vars['required_label_suffix'] = $config['required_label_suffix'] ?? null;
     }
 }

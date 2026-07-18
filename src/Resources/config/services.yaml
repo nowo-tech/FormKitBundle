@@ -8,8 +8,8 @@ services:
 
   Nowo\FormKitBundle\Form\FormOptionsMerger:
     arguments:
-      $configs: '%nowo_form_kit.configs%'
-      $defaultConfigName: '%nowo_form_kit.default_config%'
+      $profiles: '%nowo_form_kit.profiles%'
+      $defaultProfileName: '%nowo_form_kit.default_profile%'
 
   Nowo\FormKitBundle\Form\FormTypeMap:
     arguments:
@@ -27,13 +27,13 @@ services:
 
   Nowo\FormKitBundle\Form\Extension\RequiredLabelSuffixExtension:
     arguments:
-      $configs: '%nowo_form_kit.configs%'
-      $defaultConfigName: '%nowo_form_kit.default_config%'
+      $profiles: '%nowo_form_kit.profiles%'
+      $defaultProfileName: '%nowo_form_kit.default_profile%'
     tags: ['form.type_extension']
 
   Nowo\FormKitBundle\Form\Extension\HelpModalExtension:
     arguments:
-      $configs: '%nowo_form_kit.configs%'
-      $defaultConfigName: '%nowo_form_kit.default_config%'
+      $profiles: '%nowo_form_kit.profiles%'
+      $defaultProfileName: '%nowo_form_kit.default_profile%'
       $iconRenderer: '@?Symfony\UX\Icons\IconRendererInterface'
     tags: ['form.type_extension']

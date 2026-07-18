@@ -15,10 +15,10 @@ final class RequiredLabelSuffixExtensionTest extends TestCase
     public function testBuildViewUsesDefaultConfigSuffix(): void
     {
         $ext = new RequiredLabelSuffixExtension(
-            configs: [
+            profiles: [
                 'default' => ['required_label_suffix' => ' *'],
             ],
-            defaultConfigName: 'default',
+            defaultProfileName: 'default',
         );
 
         self::assertSame([FormType::class], iterator_to_array($ext::getExtendedTypes()));
@@ -33,8 +33,8 @@ final class RequiredLabelSuffixExtensionTest extends TestCase
     public function testBuildViewSetsNullWhenConfigMissing(): void
     {
         $ext = new RequiredLabelSuffixExtension(
-            configs: [],
-            defaultConfigName: 'default',
+            profiles: [],
+            defaultProfileName: 'default',
         );
 
         $view = new FormView();

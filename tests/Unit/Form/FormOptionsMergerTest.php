@@ -37,7 +37,7 @@ final class FormOptionsMergerTest extends TestCase
     public function testResolveThrowsForUnknownConfig(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unknown form kit config "missing".');
+        $this->expectExceptionMessage('Unknown form kit profile "missing".');
 
         $this->createMerger()->resolve('demo_form', 'name', 'text', [], 'missing');
     }

@@ -31,9 +31,31 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
-### Docs (Unreleased)
+### 2.0.11 (2026-07-18)
 
-Documentation naming only (no API change): usage entry points are called **strategies** — **Options**, **Kit**, **Controller**, **Wrapped** — with technique IDs such as **bound-builder** and **array-build**. See [USAGE — strategies](USAGE.md#usage-strategies).
+**YAML rename (BC preserved):** prefer `default_profile` / `profiles` over `default_config` / `configs`. Legacy keys still work via `beforeNormalization`. Prefer parameters `nowo_form_kit.default_profile` / `nowo_form_kit.profiles` (legacy `nowo_form_kit.default_config` / `nowo_form_kit.configs` remain set to the same values).
+
+PHP APIs keep the word “config” for BC: `#[FormKitConfig('…')]`, `setFormKitConfigName()`, etc. — they still select a **profile** name.
+
+```yaml
+# Before
+nowo_form_kit:
+    default_config: default
+    configs:
+        default:
+            alias: default
+            # ...
+
+# After
+nowo_form_kit:
+    default_profile: default
+    profiles:
+        default:
+            alias: default
+            # ...
+```
+
+**Docs:** usage entry points are called **strategies** — **Options**, **Kit**, **Controller**, **Wrapped** — with technique IDs such as **bound-builder** and **array-build**. See [USAGE — strategies](USAGE.md#usage-strategies).
 
 ### 2.0.10 (2026-07-18)
 
