@@ -466,7 +466,7 @@ demo_pages:
     heading: Auswahlfelder
     intro: 'Hilfsmethoden in <code>FormOptionsTrait</code> und <code>FormKitControllerTrait</code> für <code>ChoiceType</code> (Select, Multiselect, Radios, Checkbox-Gruppe) und <code>addMultiSelectSelectAll()</code> mit <strong>nowo-tech/select-all-choice-bundle</strong>.'
     usage_1: '<code>addSelect()</code>, <code>addMultiSelect()</code>, <code>addChoiceRadios()</code>, <code>addChoiceCheckboxes()</code>, <code>addCheckbox()</code>.'
-    usage_2: 'Optional <code>addMultiSelectSelectAll()</code> aktiviert die <code>select_all</code>-UI (Demos Symfony 7/8; <code>select-all-choice.js</code> im Layout).'
+    usage_2: 'Optional <code>addMultiSelectSelectAll()</code> aktiviert die <code>select_all</code>-UI (diese Demo; <code>select-all-choice.js</code> im Layout).'
     usage_3: 'Für Symfony UX Autocomplete: <code>addAutocompleteField()</code> / <code>addAutocompleteFieldType()</code> mit dem FQCN Ihres FormTypes.'
     normalized_title: 'Gesendete Daten (normalisiert)'
   conditional_fields:

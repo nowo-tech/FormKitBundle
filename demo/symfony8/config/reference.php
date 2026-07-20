@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 // This file is auto-generated and is for apps only. Bundles SHOULD NOT rely on its content.
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
@@ -819,10 +817,10 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * }
  * @psalm-type NowoFormKitConfig = array{
  *     type_map?: array<string, scalar|Param|null>,
- *     default_config?: scalar|Param|null, // Name of the config to use when no config is specified (key in configs) // Default: "default"
+ *     default_profile?: scalar|Param|null, // Name of the profile to use when no profile is specified (key in profiles) // Default: "default"
  *     css_framework?: scalar|Param|null, // CSS framework for CssClassUtilities (column merge + class ordering): bootstrap, tailwind, foundation, none. // Default: "bootstrap"
- *     configs?: array<string, array{ // Default: []
- *         alias?: scalar|Param|null, // Alias for this config (e.g. for reference in form types)
+ *     profiles?: array<string, array{ // Default: []
+ *         alias?: scalar|Param|null, // Alias for this profile (e.g. for reference in form types)
  *         translation_domain?: scalar|Param|null, // Default: "messages"
  *         required_label_suffix?: scalar|Param|null, // Appended to the label when the field is required (e.g. " *"). Empty or null to disable. // Default: null
  *         help_modal?: array{ // Default help modal configuration (used when the field option "help_modal" is enabled).
@@ -845,10 +843,26 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             translation_domain?: scalar|Param|null,
  *             constraints?: list<mixed>,
  *         }>,
+ *         constraint_message_convention?: bool|Param, // When true, constraints without an explicit "message" get key {form_snake}.{field_snake}.constraints.{ConstraintName} (put translations in the validators catalog). Default: false. // Default: false
+ *         by_form?: array<string, array{ // Default: []
+ *             defaults?: array{
+ *                 attr?: array<string, scalar|Param|null>,
+ *                 row_attr?: array<string, scalar|Param|null>,
+ *             },
+ *             fields?: array<string, array{ // Default: []
+ *                 attr?: array<string, scalar|Param|null>,
+ *                 row_attr?: array<string, scalar|Param|null>,
+ *                 label?: scalar|Param|null,
+ *                 placeholder?: scalar|Param|null,
+ *                 help?: scalar|Param|null,
+ *                 translation_domain?: scalar|Param|null,
+ *                 constraints?: list<mixed>,
+ *             }>,
+ *         }>,
  *     }>,
- *     translation_domain?: scalar|Param|null, // (Legacy) Used when configs is not set // Default: "messages"
- *     required_label_suffix?: scalar|Param|null, // (Legacy) Suffix for required field labels when configs is not set // Default: null
- *     help_modal?: array{ // (Legacy) Default help modal configuration when configs is not used.
+ *     translation_domain?: scalar|Param|null, // (Legacy) Used when profiles is not set // Default: "messages"
+ *     required_label_suffix?: scalar|Param|null, // (Legacy) Suffix for required field labels when profiles is not set // Default: null
+ *     help_modal?: array{ // (Legacy) Default help modal configuration when profiles is not used.
  *         framework?: scalar|Param|null, // Default: "bootstrap5"
  *         icon_html?: scalar|Param|null, // Default: "<span class=\"nowo-help-modal-icon\" aria-hidden=\"true\">?</span>"
  *         ux_icon?: scalar|Param|null, // Default: null
@@ -867,6 +881,22 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         help?: scalar|Param|null,
  *         translation_domain?: scalar|Param|null,
  *         constraints?: list<mixed>,
+ *     }>,
+ *     constraint_message_convention?: bool|Param, // (Legacy) Used when profiles is not set // Default: false
+ *     by_form?: array<string, array{ // Default: []
+ *         defaults?: array{
+ *             attr?: array<string, scalar|Param|null>,
+ *             row_attr?: array<string, scalar|Param|null>,
+ *         },
+ *         fields?: array<string, array{ // Default: []
+ *             attr?: array<string, scalar|Param|null>,
+ *             row_attr?: array<string, scalar|Param|null>,
+ *             label?: scalar|Param|null,
+ *             placeholder?: scalar|Param|null,
+ *             help?: scalar|Param|null,
+ *             translation_domain?: scalar|Param|null,
+ *             constraints?: list<mixed>,
+ *         }>,
  *     }>,
  * }
  * @psalm-type NowoSelectAllChoiceConfig = array{
@@ -1001,8 +1031,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     ignore_not_found?: bool|Param, // Ignore error when an icon is not found. Set to 'true' to fail silently. // Default: false
  * }
  * @psalm-type NowoTiptapEditorConfig = array{
- *     default_config?: scalar|Param|null, // Profile name used when the form field omits the "config" option. // Default: "default"
- *     configs?: array<string, array{ // Default: []
+ *     default_profile?: scalar|Param|null, // Profile name used when the form field omits the "config" option (form option key remains "config" for BC). // Default: "default"
+ *     profiles?: array<string, array{ // Default: []
  *         toolbar?: bool|Param, // When true, the frontend shows a compact formatting toolbar (bold, lists, undo, etc.). // Default: true
  *         min_height?: scalar|Param|null, // Default CSS min-height for the editor surface (e.g. 240px, 12rem). // Default: "240px"
  *         form_theme?: scalar|Param|null, // Base Symfony form layout (must match twig.form_themes in your app). // Default: "form_div_layout.html.twig"
@@ -1012,8 +1042,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     }>,
  * }
  * @psalm-type NowoCkeditor5EditorConfig = array{
- *     default_config?: scalar|Param|null, // Profile name used when the form field omits the "config" option. // Default: "default"
- *     configs?: array<string, array{ // Default: []
+ *     default_profile?: scalar|Param|null, // Profile name used when the form field omits the "config" option (form option key remains "config" for BC). // Default: "default"
+ *     profiles?: array<string, array{ // Default: []
  *         toolbar?: bool|Param, // When true, CKEditor shows its toolbar (preset still controls which buttons are available). // Default: true
  *         min_height?: scalar|Param|null, // Default CSS min-height for the editable region wrapper (e.g. 240px, 12rem). // Default: "240px"
  *         form_theme?: scalar|Param|null, // Base Symfony form layout (must match twig.form_themes in your app). // Default: "form_div_layout.html.twig"

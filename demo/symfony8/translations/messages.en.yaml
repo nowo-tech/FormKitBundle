@@ -524,7 +524,7 @@ demo_pages:
     heading: 'Choice fields'
     intro: 'Helpers on <code>FormOptionsTrait</code> and <code>FormKitControllerTrait</code> wrap <code>ChoiceType</code> presets (select, multiselect, radios, checkbox group) and a dedicated <code>addMultiSelectSelectAll()</code> when <strong>nowo-tech/select-all-choice-bundle</strong> (Select All Choice) is installed.'
     usage_1: '<code>addSelect()</code>, <code>addMultiSelect()</code>, <code>addChoiceRadios()</code>, <code>addChoiceCheckboxes()</code>, <code>addCheckbox()</code>.'
-    usage_2: 'Optional <code>addMultiSelectSelectAll()</code> enables the bundle’s <code>select_all</code> UI (demo Symfony 7/8 only; load <code>select-all-choice.js</code> in the layout).'
+    usage_2: 'Optional <code>addMultiSelectSelectAll()</code> enables the bundle’s <code>select_all</code> UI (this demo; load <code>select-all-choice.js</code> in the layout).'
     usage_3: 'For Symfony UX Autocomplete (entity field classes), use <code>addAutocompleteField()</code> / <code>addAutocompleteFieldType()</code> with your FormType FQCN.'
     normalized_title: 'Submitted data (normalized)'
   conditional_fields:

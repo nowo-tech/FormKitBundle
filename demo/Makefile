@@ -4,7 +4,7 @@
 # Demo: Symfony 8.x (bundle 2.x).
 DEMOS := symfony8
 
-# Do not list up-symfony7-style names in .PHONY: GNU Make would treat them as empty
+# Do not list up-symfony8-style names in .PHONY: GNU Make would treat them as empty
 # phony targets and skip pattern rules (up-%, assets-%, …).
 .PHONY: help clean test-all test-coverage-all verify-all release-verify assets-all
 .PHONY: up down restart build install update-bundle test test-coverage shell logs verify

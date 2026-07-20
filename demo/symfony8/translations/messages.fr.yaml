@@ -455,7 +455,7 @@ demo_pages:
     heading: 'Champs de choix'
     intro: 'Helpers sur <code>FormOptionsTrait</code> et <code>FormKitControllerTrait</code> pour <code>ChoiceType</code> (select, multiselect, radios, groupe de cases) et <code>addMultiSelectSelectAll()</code> avec <strong>nowo-tech/select-all-choice-bundle</strong>.'
     usage_1: '<code>addSelect()</code>, <code>addMultiSelect()</code>, <code>addChoiceRadios()</code>, <code>addChoiceCheckboxes()</code>, <code>addCheckbox()</code>.'
-    usage_2: 'Option <code>addMultiSelectSelectAll()</code> : UI <code>select_all</code> (démos Symfony 7/8 ; script <code>select-all-choice.js</code> dans le layout).'
+    usage_2: 'Option <code>addMultiSelectSelectAll()</code> : UI <code>select_all</code> (cette démo ; script <code>select-all-choice.js</code> dans le layout).'
     usage_3: 'Pour Symfony UX Autocomplete : <code>addAutocompleteField()</code> / <code>addAutocompleteFieldType()</code> avec le FQCN du type.'
     normalized_title: 'Données soumises (normalisées)'
   conditional_fields:

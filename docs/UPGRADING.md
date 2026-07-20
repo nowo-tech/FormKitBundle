@@ -31,6 +31,10 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.13 (2026-07-20)
+
+- **Demos only** — Symfony 8 demo lockfile / `config/reference.php` sync and choice-fields copy cleanup after removal of the Symfony 7 demo. No Composer package API or runtime change for **form-kit-bundle** consumers.
+
 ### 2.0.12 (2026-07-20)
 
 - **Dev dependencies only** — PHP CS Fixer and Rector bumps in `composer.lock`. No Composer package API, config, or runtime change for integrators.
