@@ -3,3 +3,5 @@
 1. Update [CHANGELOG.md](CHANGELOG.md): move entries from `[Unreleased]` to a new `[X.Y.Z] - YYYY-MM-DD` section and add the version link at the bottom. (This project does not store version in `composer.json`; Packagist uses the git tag.)
 2. Commit, tag (e.g. `v2.0.0`), and push. The release workflow will create the GitHub Release with the changelog.
 3. Publish the package to Packagist if applicable.
+
+After creating the release commit and tag, run `make check-no-cursor-coauthor` again **before** `git push` (REQ-GIT-001). The release commit itself is not covered by an earlier `release-check` run.

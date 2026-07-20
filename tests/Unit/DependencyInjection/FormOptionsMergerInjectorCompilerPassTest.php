@@ -10,6 +10,8 @@ use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Tests\Stubs\DummyFormTypeWithoutSetter;
 use Nowo\FormKitBundle\Tests\Stubs\DummyFormTypeWithPrivateSetter;
 use Nowo\FormKitBundle\Tests\Stubs\DummyFormTypeWithSetter;
+use Nowo\FormKitBundle\Tests\Stubs\DummyFormTypeWithTwoParams;
+use Nowo\FormKitBundle\Tests\Stubs\DummyFormTypeWithWrongParamType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -79,5 +81,21 @@ final class FormOptionsMergerInjectorCompilerPassTest extends TestCase
         self::assertSame([], $container->getDefinition('dummy.null_class')->getMethodCalls());
         self::assertSame([], $container->getDefinition('dummy.missing_class')->getMethodCalls());
         self::assertSame([], $container->getDefinition('dummy.private_setter')->getMethodCalls());
+    }
+
+    public function testSkipsSetterWithWrongSignature(): void
+    {
+        $container = new ContainerBuilder();
+        $container->setDefinition(FormOptionsMerger::class, (new Definition(FormOptionsMerger::class))
+            ->setArguments([[], 'default', new Reference(ConstraintDefinitionFactory::class)])
+            ->setPublic(false));
+
+        $container->register('dummy.wrong_param', DummyFormTypeWithWrongParamType::class)->addTag('form.type');
+        $container->register('dummy.two_params', DummyFormTypeWithTwoParams::class)->addTag('form.type');
+
+        (new FormOptionsMergerInjectorCompilerPass())->process($container);
+
+        self::assertSame([], $container->getDefinition('dummy.wrong_param')->getMethodCalls());
+        self::assertSame([], $container->getDefinition('dummy.two_params')->getMethodCalls());
     }
 }

@@ -9,7 +9,7 @@ RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 
 COMPOSER ?= composer
 
-.PHONY: help install test test-coverage coverage-php-percent test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos composer-sync rector rector-dry phpstan
+.PHONY: help install test test-coverage coverage-php-percent test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos composer-sync rector rector-dry phpstan check-no-cursor-coauthor strip-cursor-coauthor-from-history setup-hooks
 .PHONY: demo-up-symfony8
 .PHONY: up down down-dev up-symfony8 build shell demo-install demo-down
 
@@ -35,7 +35,9 @@ help:
 	@echo "  rector-dry     Run Rector in dry-run mode"
 	@echo "  phpstan        Run PHPStan static analysis"
 	@echo "  qa             Run all QA (cs-check + test)"
-	@echo "  release-check  Pre-release: cs-fix, cs-check, rector-dry, phpstan, test-coverage, test-ts, demo healthchecks"
+	@echo "  release-check  Pre-release: git hygiene, cs-fix, cs-check, rector-dry, phpstan, test-coverage, test-ts, demo healthchecks"
+	@echo "  setup-hooks    Install local git hooks (.githooks; REQ-GIT-001)"
+	@echo "  check-no-cursor-coauthor  Fail if history has Cursor co-author trailers"
 	@echo "  composer-sync  Validate composer.json and align composer.lock (no install)"
 	@echo "  clean          Remove vendor, cache, coverage"
 	@echo "  update         Update composer.lock"
@@ -88,7 +90,7 @@ phpstan: install
 qa: install
 	$(RUN) composer qa
 
-release-check: ensure-up composer-sync cs-fix cs-check rector-dry phpstan test-coverage test-ts release-check-demos
+release-check: check-no-cursor-coauthor ensure-up composer-sync cs-fix cs-check rector-dry phpstan test-coverage test-ts release-check-demos
 
 release-check-demos:
 	@$(MAKE) -C demo release-check
@@ -180,6 +182,19 @@ demo-down:
 demo-install:
 	$(MAKE) -C demo/symfony8 install
 
+setup-hooks:
+	@chmod +x .githooks/pre-commit 2>/dev/null || true
+	@chmod +x .githooks/commit-msg 2>/dev/null || true
+	@git config core.hooksPath .githooks
+	@echo "✅ Git hooks installed (.githooks — includes commit-msg for REQ-GIT-001)."
+
+check-no-cursor-coauthor:
+	@chmod +x .scripts/check-no-cursor-coauthor.sh
+	@./.scripts/check-no-cursor-coauthor.sh HEAD
+
+strip-cursor-coauthor-from-history:
+	@chmod +x .scripts/strip-cursor-coauthor-from-history.sh
+	@./.scripts/strip-cursor-coauthor-from-history.sh main
 
 # REQ-MAKE-008: update-deps (REQ-MAKE-008)
 BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))

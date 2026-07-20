@@ -55,6 +55,12 @@ final class BootstrapCssClassUtilitiesTest extends TestCase
         self::assertSame('', BootstrapCssClassUtilities::orderClasses(''));
     }
 
+    public function testOrderClassesSkipsEmptyClassTokens(): void
+    {
+        self::assertSame('col-6', BootstrapCssClassUtilities::orderClasses(' col-6 '));
+        self::assertSame('col-6', BootstrapCssClassUtilities::orderClasses('col-6  '));
+    }
+
     public function testNormalizeColumnClassesIgnoresEmptyTokens(): void
     {
         self::assertSame('col-6', BootstrapCssClassUtilities::normalizeColumnClasses(['', 'col-6']));

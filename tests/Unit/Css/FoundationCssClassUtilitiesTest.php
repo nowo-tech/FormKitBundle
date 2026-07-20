@@ -46,6 +46,12 @@ final class FoundationCssClassUtilitiesTest extends TestCase
         self::assertSame('', FoundationCssClassUtilities::orderClasses('   '));
     }
 
+    public function testOrderClassesSkipsEmptyClassTokens(): void
+    {
+        self::assertSame('cell', FoundationCssClassUtilities::orderClasses(' cell '));
+        self::assertSame('cell', FoundationCssClassUtilities::orderClasses('cell  '));
+    }
+
     public function testNormalizeColumnClassesSkipsEmptyTokens(): void
     {
         $out = FoundationCssClassUtilities::normalizeColumnClasses(['', '  ', 'small-4']);

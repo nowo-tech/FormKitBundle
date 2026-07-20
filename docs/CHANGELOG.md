@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.15] - 2026-07-20
+
+### Added
+
+- **REQ-GIT-001** — No Cursor `Co-authored-by` trailers: `.githooks/commit-msg`, `.scripts/check-no-cursor-coauthor.sh` / `strip-cursor-coauthor-from-history.sh`, Cursor rule, CI job **Git history (no Cursor co-author)**, Make targets `setup-hooks` / `check-no-cursor-coauthor` / `strip-cursor-coauthor-from-history`, and [docs/GITHUB_CI.md](GITHUB_CI.md).
+- **PHPUnit stubs** — `DummyFormTypeWithTwoParams` / `DummyFormTypeWithWrongParamType` cover compiler-pass skips for invalid `setFormOptionsMerger` signatures.
+- **CSS utility tests** — Empty class-token cases for Bootstrap and Foundation `orderClasses()`.
+
+### Changed
+
+- **CONTRIBUTING / RELEASE / README** — Document git hooks and link to GitHub CI requirements.
+- **`.gitignore`** — Ignore `.cursor/sandbox.json`.
+
 ## [2.0.14] - 2026-07-20
 
 ### Added
@@ -231,6 +244,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.15]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.15
 [2.0.14]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.14
 [2.0.13]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.13
 [2.0.12]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.12

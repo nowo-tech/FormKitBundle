@@ -23,3 +23,15 @@ This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDU
 - **End-user translations** (e.g. `translations/messages.es.yaml` in demos) may be localized; that is **not** developer documentation.
 
 Pull requests that add or change non-English developer-facing text may be rejected or asked to be translated.
+
+## Git hooks (REQ-GIT-001)
+
+Do **not** add `Co-authored-by: Cursor` or `cursoragent@cursor.com` trailers to commit messages.
+
+```bash
+make setup-hooks
+make check-no-cursor-coauthor
+```
+
+`make setup-hooks` installs `.githooks/commit-msg` (or sets `core.hooksPath` to `.githooks`). Run it once per clone before your first commit.
+If CI fails because trailers are already on the remote, see [GITHUB_CI.md](GITHUB_CI.md) (REQ-GIT-001) and run `make strip-cursor-coauthor-from-history` before `git push --force-with-lease`.

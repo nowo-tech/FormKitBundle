@@ -31,6 +31,10 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.15 (2026-07-20)
+
+- **Repository / CI only** — Enforces no Cursor co-author trailers in git history ([GITHUB_CI.md](GITHUB_CI.md)); contributors should run `make setup-hooks` once per clone. No Composer package API or runtime change for integrators.
+
 ### 2.0.14 (2026-07-20)
 
 - **Repository only** — Adds [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md). No Composer package API or runtime change for integrators.

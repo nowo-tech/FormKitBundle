@@ -92,6 +92,7 @@ Developer-facing docs and comments (Markdown, PHPDoc, JSDoc) are **English only*
 - [Changelog](docs/CHANGELOG.md)
 - [Upgrading](docs/UPGRADING.md)
 - [Release](docs/RELEASE.md)
+- [GitHub Actions CI requirements](docs/GITHUB_CI.md)
 - [Security](docs/SECURITY.md)
 - [Engram](docs/ENGRAM.md)
 - [Spec-driven development](docs/SPEC-DRIVEN-DEVELOPMENT.md)
