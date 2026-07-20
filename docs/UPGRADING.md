@@ -31,6 +31,10 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.12 (2026-07-20)
+
+- **Dev dependencies only** — PHP CS Fixer and Rector bumps in `composer.lock`. No Composer package API, config, or runtime change for integrators.
+
 ### 2.0.11 (2026-07-18)
 
 **YAML rename (BC preserved):** prefer `default_profile` / `profiles` over `default_config` / `configs`. Legacy keys still work via `beforeNormalization`. Prefer parameters `nowo_form_kit.default_profile` / `nowo_form_kit.profiles` (legacy `nowo_form_kit.default_config` / `nowo_form_kit.configs` remain set to the same values).
