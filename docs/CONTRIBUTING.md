@@ -10,6 +10,10 @@ Development uses Docker and Make. From the bundle root:
 
 See the root [Makefile](../Makefile) and [README](../README.md).
 
+## Code of Conduct
+
+This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md). By participating, you are expected to uphold it. Please report unacceptable behavior to **hectorfranco@nowo.tech**.
+
 ## Language policy
 
 - **Documentation** (Markdown in the repo, `README`, `docs/`, issue templates, inline comments in config examples): **English only**.

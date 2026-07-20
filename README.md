@@ -88,6 +88,7 @@ Developer-facing docs and comments (Markdown, PHPDoc, JSDoc) are **English only*
 - [Usage](docs/USAGE.md)
 - [Flex recipe](docs/RECIPE.md)
 - [Contributing](docs/CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Changelog](docs/CHANGELOG.md)
 - [Upgrading](docs/UPGRADING.md)
 - [Release](docs/RELEASE.md)

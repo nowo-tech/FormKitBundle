@@ -31,6 +31,10 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.14 (2026-07-20)
+
+- **Repository only** — Adds [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md). No Composer package API or runtime change for integrators.
+
 ### 2.0.13 (2026-07-20)
 
 - **Demos only** — Symfony 8 demo lockfile / `config/reference.php` sync and choice-fields copy cleanup after removal of the Symfony 7 demo. No Composer package API or runtime change for **form-kit-bundle** consumers.

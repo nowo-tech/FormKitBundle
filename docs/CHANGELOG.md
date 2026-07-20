@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.14] - 2026-07-20
+
+### Added
+
+- **`CODE_OF_CONDUCT.md`** — Contributor Covenant 2.1; linked from README and [Contributing](CONTRIBUTING.md).
+
 ## [2.0.13] - 2026-07-20
 
 ### Changed
@@ -225,6 +231,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.14]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.14
 [2.0.13]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.13
 [2.0.12]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.12
 [2.0.11]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.11
