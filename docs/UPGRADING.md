@@ -31,6 +31,12 @@ No configuration key renames are required for existing YAML; public services and
 
 ## 2.0.x patch releases
 
+### 2.0.16 (2026-07-22)
+
+- **Twig namespace** — Update logical template names from `@NowoFormKit/...` to `@NowoFormKitBundle/...` (e.g. form theme, help-modal shells, `form_renderer`).
+- **Application overrides** — Move overrides to `templates/bundles/NowoFormKitBundle/...` (was `templates/bundles/NowoFormKit/...`).
+- Clear Twig cache after upgrading: `php bin/console cache:clear`.
+
 ### 2.0.15 (2026-07-20)
 
 - **Repository / CI only** — Enforces no Cursor co-author trailers in git history ([GITHUB_CI.md](GITHUB_CI.md)); contributors should run `make setup-hooks` once per clone. No Composer package API or runtime change for integrators.
@@ -110,7 +116,7 @@ Repository-only (demos / Makefiles / docs; no Composer package or bundle API cha
 
 ### 2.0.5 (2026-07-03)
 
-- **`static_blocks` form theme** — If you register `@NowoFormKit/form/static_blocks.html.twig` together with **Bootstrap 5**, list **static_blocks first** (lowest priority), then `bootstrap_5_layout.html.twig`, then other bundle themes. See [Usage — Custom static blocks](USAGE.md#custom-static-blocks-in-the-form-hr-alert).
+- **`static_blocks` form theme** — If you register `@NowoFormKitBundle/form/static_blocks.html.twig` together with **Bootstrap 5**, list **static_blocks first** (lowest priority), then `bootstrap_5_layout.html.twig`, then other bundle themes. See [Usage — Custom static blocks](USAGE.md#custom-static-blocks-in-the-form-hr-alert).
 - **Expanded choices** — `addChoiceRadios()` / `addChoiceCheckboxes()` no longer apply global `form-control` to the choice container (upgrade is automatic when using the trait helpers).
 - **Demos only** — Choice / Nowo special-fields pages: phone-input form theme, password-toggle CSS, icon-selector theme workaround, and Makefile Docker fixes (no Composer package API change).
 

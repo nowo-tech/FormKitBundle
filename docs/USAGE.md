@@ -368,13 +368,13 @@ When rendering forms with the form_renderer loop (or any `form_row` loop), you c
 - **StaticSeparatorType** – Renders an `<hr>` in the form flow. Add it like any other field; it is not mapped and has no label.
 - **StaticAlertType** – Renders a Bootstrap-style alert with a translatable message. Options: `message` (required, translation key), `alert_type` (e.g. `info`, `warning`, `success`), `translation_domain`.
 
-**1. Register the form theme** so Twig knows how to render these types. List **`@NowoFormKit/form/static_blocks.html.twig` first** (lowest priority), then your CSS framework layout (e.g. Bootstrap 5). If static blocks is registered *after* Bootstrap 5, Symfony may inherit bare `form_div` radio/checkbox widgets from the theme chain and break expanded choices (`addChoiceRadios`, `addChoiceCheckboxes`, Select All Choice checkboxes).
+**1. Register the form theme** so Twig knows how to render these types. List **`@NowoFormKitBundle/form/static_blocks.html.twig` first** (lowest priority), then your CSS framework layout (e.g. Bootstrap 5). If static blocks is registered *after* Bootstrap 5, Symfony may inherit bare `form_div` radio/checkbox widgets from the theme chain and break expanded choices (`addChoiceRadios`, `addChoiceCheckboxes`, Select All Choice checkboxes).
 
 ```yaml
 # config/packages/twig.yaml
 twig:
   form_themes:
-    - '@NowoFormKit/form/static_blocks.html.twig'
+    - '@NowoFormKitBundle/form/static_blocks.html.twig'
     - 'bootstrap_5_layout.html.twig'
     # Other bundle themes (Select All Choice, CKEditor, …) after Bootstrap 5
 ```
@@ -407,7 +407,7 @@ You can add a prefix or suffix to any field so it renders inside Bootstrap’s *
 - **input_group_prefix** – Rendered in a `<span class="input-group-text">` before the widget.
 - **input_group_suffix** – Rendered in a `<span class="input-group-text">` after the widget.
 
-Use the bundle’s form theme (`@NowoFormKit/form/static_blocks.html.twig`); when either option is set, the row wraps the widget in an `input-group` div. You can pass plain text (e.g. `'@'`) or HTML (e.g. an icon `<i class="bi bi-envelope">`); the theme outputs it with `|raw`.
+Use the bundle’s form theme (`@NowoFormKitBundle/form/static_blocks.html.twig`); when either option is set, the row wraps the widget in an `input-group` div. You can pass plain text (e.g. `'@'`) or HTML (e.g. an icon `<i class="bi bi-envelope">`); the theme outputs it with `|raw`.
 
 Example:
 
@@ -441,7 +441,7 @@ The extension sets `label_attr['data-nowo-help-modal']` to a JSON payload. The b
 **0. Optional: render modal shell templates** (lets you override markup per framework; the script clones from `<template id="nowo-formkit-help-modal-shell-*">` or falls back to built-in HTML):
 
 ```twig
-{% include '@NowoFormKit/help_modal/shells.html.twig' %}
+{% include '@NowoFormKitBundle/help_modal/shells.html.twig' %}
 ```
 
 Override under `templates/bundles/NowoFormKitBundle/help_modal/shell_*.html.twig` if needed.
@@ -482,14 +482,14 @@ The bundle provides Twig templates under `src/Resources/views/`:
 
 You can override any Twig template provided by the bundle by placing a file with the **same path** inside your project’s `templates/bundles/` directory. Symfony will use your template instead of the bundle’s.
 
-**Important:** The directory name under `templates/bundles/` must match the bundle name returned by `Bundle::getName()`. With Symfony’s default behaviour, the `Bundle` suffix is removed from the bundle class short name. For this bundle the class is `NowoFormKitBundle`, so the name is **`NowoFormKit`**.
+**Important:** This bundle registers the Twig namespace **`NowoFormKitBundle`** via `TwigPathsPass`. Put overrides under `templates/bundles/NowoFormKitBundle/` so your application templates take precedence over the bundle defaults.
 
 | Bundle path (relative to `Resources/views/`) | Override in your project |
 |---------------------------------------------|--------------------------|
-| `components/form_renderer.html.twig` | `templates/bundles/NowoFormKit/components/form_renderer.html.twig` |
-| `form/static_blocks.html.twig` | `templates/bundles/NowoFormKit/form/static_blocks.html.twig` |
-| `help_modal/shells.html.twig` | `templates/bundles/NowoFormKit/help_modal/shells.html.twig` |
-| `help_modal/shell_bootstrap5.html.twig` (and `shell_bootstrap4`, `shell_tailwind`, `shell_foundation`) | Same path under `templates/bundles/NowoFormKit/help_modal/` |
+| `components/form_renderer.html.twig` | `templates/bundles/NowoFormKitBundle/components/form_renderer.html.twig` |
+| `form/static_blocks.html.twig` | `templates/bundles/NowoFormKitBundle/form/static_blocks.html.twig` |
+| `help_modal/shells.html.twig` | `templates/bundles/NowoFormKitBundle/help_modal/shells.html.twig` |
+| `help_modal/shell_bootstrap5.html.twig` (and `shell_bootstrap4`, `shell_tailwind`, `shell_foundation`) | Same path under `templates/bundles/NowoFormKitBundle/help_modal/` |
 
 After adding or changing overrides, clear the Twig cache if needed: `php bin/console cache:clear`.
 
@@ -571,7 +571,7 @@ Translation keys for each step follow the same pattern: e.g. `demo_wizard_contac
 
 The bundle provides a reusable Twig component that outputs `form_start`, all unrendered fields (via `form_rest`), an optional **buttons block**, and `form_end`. You control how many and which submit buttons (or links) appear by passing HTML into `form_buttons`. No single-submit limitation.
 
-**Template:** `@NowoFormKit/components/form_renderer.html.twig`
+**Template:** `@NowoFormKitBundle/components/form_renderer.html.twig`
 
 **Variables:**
 
@@ -586,7 +586,7 @@ The bundle provides a reusable Twig component that outputs `form_start`, all unr
 
 ```twig
 {# In PHP: $builder->add('save', SubmitType::class); $builder->add('cancel', SubmitType::class); #}
-{{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'cancel'] }) }}
+{{ include('@NowoFormKitBundle/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'cancel'] }) }}
 ```
 
 **Single submit (HTML):**
@@ -595,7 +595,7 @@ The bundle provides a reusable Twig component that outputs `form_start`, all unr
 {% set form_buttons %}
   <button type="submit" class="btn btn-primary">{{ 'Submit'|trans }}</button>
 {% endset %}
-{{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
+{{ include('@NowoFormKitBundle/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
 ```
 
 **Multiple submits (HTML):**
@@ -606,14 +606,14 @@ The bundle provides a reusable Twig component that outputs `form_start`, all unr
   <button type="submit" name="action" value="save_and_new" class="btn btn-outline-secondary">Save and new</button>
   <a href="{{ path('app_list') }}" class="btn btn-link">Cancel</a>
 {% endset %}
-{{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
+{{ include('@NowoFormKitBundle/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
 ```
 
 **Form-type buttons plus extra HTML (e.g. cancel link):**
 
 ```twig
 {% set form_buttons %}<a href="{{ path('app_list') }}" class="btn btn-link">Cancel</a>{% endset %}
-{{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'save_and_new'], form_buttons: form_buttons }) }}
+{{ include('@NowoFormKitBundle/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'save_and_new'], form_buttons: form_buttons }) }}
 ```
 
 The buttons are wrapped in a `<div class="form-kit-buttons">` for styling. When you use `form_button_names`, the component renders the rest of the form first, then those children in the buttons div; otherwise it uses `form_rest()` for good performance and correct CSRF handling.
@@ -695,7 +695,7 @@ Typical Twig rendering (using the bundle form renderer component):
 {% set form_buttons %}
   <button type="submit" class="btn btn-primary">Save</button>
 {% endset %}
-{{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
+{{ include('@NowoFormKitBundle/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
 ```
 
 ### Tailwind CSS example

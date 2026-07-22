@@ -63,7 +63,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 
 ### Bundle & config
 
-- **FR-BUNDLE-001**: `NowoFormKitBundle` alias `nowo_form_kit`.
+- **FR-BUNDLE-001**: `NowoFormKitBundle` alias `nowo_form_kit` and register `TwigPathsPass` for the `NowoFormKitBundle` Twig namespace.
 - **FR-CFG-001**: `Configuration` — `type_map`, `default_profile`, `css_framework`, named `profiles` (alias, translation_domain, required_label_suffix, help_modal, defaults, field_types).
 - **FR-CFG-002**: `FormKitExtension` loads services and parameters; legacy root keys normalize to `default` config.
 

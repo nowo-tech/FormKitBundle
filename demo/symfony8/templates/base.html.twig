@@ -65,7 +65,7 @@
 {# Root-relative URL: asset() + bundle path must resolve from /, not under /{_locale}/ (browser would request /es/bundles/... otherwise). #}
 <script defer src="{{ asset('/' ~ nowo_select_all_choice_asset_path('select-all-choice.js')) }}"></script>
 {# Form Kit HelpModalExtension: icons + modals for label[data-nowo-help-modal]. Shell markup from Twig (override per framework in templates/bundles/NowoFormKitBundle/help_modal/). #}
-{% include '@NowoFormKit/help_modal/shells.html.twig' %}
+{% include '@NowoFormKitBundle/help_modal/shells.html.twig' %}
 <script defer src="{{ asset('/bundles/nowoformkit/help-modal.js') }}"></script>
 {% block importmap %}{{ importmap('ux') }}{% endblock %}
 {{ vite_entry_script_tags('app') }}

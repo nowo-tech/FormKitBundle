@@ -10,7 +10,7 @@ Until the recipe is published on recipes-contrib, Flex users must register the b
 |------|---------|
 | `manifest.json` | Register the bundle; copy `config/` into the project |
 | `config/packages/nowo_form_kit.yaml` | Default `profiles` / `help_modal` / Bootstrap-oriented `defaults` |
-| `config/packages/nowo_form_kit_twig.yaml` | Adds `@NowoFormKit/form/static_blocks.html.twig` to `twig.form_themes` |
+| `config/packages/nowo_form_kit_twig.yaml` | Adds `@NowoFormKitBundle/form/static_blocks.html.twig` to `twig.form_themes` |
 | `post-install.txt` | Short install summary printed by Flex |
 
 ## Submit to recipes-contrib

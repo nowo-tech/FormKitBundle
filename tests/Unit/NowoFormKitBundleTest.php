@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit;
 
+use Nowo\FormKitBundle\DependencyInjection\Compiler\TwigPathsPass;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
 use Nowo\FormKitBundle\NowoFormKitBundle;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +20,25 @@ final class NowoFormKitBundleTest extends TestCase
 
         self::assertInstanceOf(FormKitExtension::class, $first);
         self::assertSame($first, $second);
+    }
+
+    public function testBuildRegistersTwigPathsPass(): void
+    {
+        $bundle    = new NowoFormKitBundle();
+        $container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
+
+        $bundle->build($container);
+
+        $passes = $container->getCompilerPassConfig()->getPasses();
+        foreach ($passes as $pass) {
+            if ($pass instanceof TwigPathsPass) {
+                self::assertTrue(true);
+
+                return;
+            }
+        }
+
+        self::fail('TwigPathsPass was not registered.');
     }
 
     public function testBuildRegistersFormOptionsMergerInjectorCompilerPass(): void

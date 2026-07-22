@@ -13,17 +13,17 @@
     - form_buttons: optional HTML for extra submit/button(s)
 
   Usage (submit as form type):
-    {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'cancel'] }) }}
+    {{ include('@NowoFormKitBundle/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'cancel'] }) }}
 
   Usage (HTML buttons):
     {% set form_buttons %}
       <button type="submit" class="btn btn-primary">Save</button>
     {% endset %}
-    {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
+    {{ include('@NowoFormKitBundle/components/form_renderer.html.twig', { form: form, form_buttons: form_buttons }) }}
 
   Usage (both: form-type buttons + extra HTML link):
     {% set form_buttons %}<a href="{{ path('app_list') }}" class="btn btn-link">Cancel</a>{% endset %}
-    {{ include('@NowoFormKit/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'save_and_new'], form_buttons: form_buttons }) }}
+    {{ include('@NowoFormKitBundle/components/form_renderer.html.twig', { form: form, form_button_names: ['save', 'save_and_new'], form_buttons: form_buttons }) }}
 #}
 {{ form_start(form, form_start_options|default({})) }}
 {% if form_button_names is defined and form_button_names is not empty %}

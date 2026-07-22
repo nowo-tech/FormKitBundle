@@ -1,7 +1,7 @@
 Form Kit Bundle configured.
 
   * Config: config/packages/nowo_form_kit.yaml
-  * Twig form theme: config/packages/nowo_form_kit_twig.yaml (@NowoFormKit/form/static_blocks.html.twig)
+  * Twig form theme: config/packages/nowo_form_kit_twig.yaml (@NowoFormKitBundle/form/static_blocks.html.twig)
 
   Docs: https://github.com/nowo-tech/FormKitBundle/blob/main/docs/INSTALLATION.md
   Usage: https://github.com/nowo-tech/FormKitBundle/blob/main/docs/USAGE.md

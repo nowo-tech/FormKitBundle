@@ -28,7 +28,7 @@ use const JSON_UNESCAPED_UNICODE;
  * and will insert an icon and open the corresponding modal.
  *
  * Modal shell markup (Bootstrap 4/5, Tailwind, Foundation) is loaded from Twig:
- *   {% include '@NowoFormKit/help_modal/shells.html.twig' %}
+ *   {% include '@NowoFormKitBundle/help_modal/shells.html.twig' %}
  * before the script. Override per framework in your app under
  * templates/bundles/NowoFormKitBundle/help_modal/shell_*.html.twig.
  * If templates are omitted, the script falls back to built-in HTML.

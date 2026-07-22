@@ -3,4 +3,4 @@
 # widgets win for radio/checkbox; see docs/USAGE.md "Custom static blocks".
 twig:
     form_themes:
-        - '@NowoFormKit/form/static_blocks.html.twig'
+        - '@NowoFormKitBundle/form/static_blocks.html.twig'

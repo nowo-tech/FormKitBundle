@@ -17,6 +17,7 @@
 | `NowoFormKitBundle.php` | Bundle entry | FR-BUNDLE-001 |
 | `DependencyInjection/Configuration.php` | Config tree | FR-CFG-001 |
 | `DependencyInjection/FormKitExtension.php` | DI extension | FR-CFG-002 |
+| `DependencyInjection/Compiler/TwigPathsPass.php` | Twig namespace paths | FR-BUNDLE-001 |
 | `DependencyInjection/FormOptionsMergerInjectorCompilerPass.php` | Merger injection | FR-DI-002 |
 
 ## CSS framework utilities

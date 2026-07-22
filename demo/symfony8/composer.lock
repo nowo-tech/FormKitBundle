@@ -705,7 +705,6 @@
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -994,7 +993,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/form-kit-bundle",
-                "reference": "f3b724eb800dd38db26510e63fb6fe929ff7d892"
+                "reference": "3d774a02009cb3fdfb33fb232a6709a27dce1ba9"
             },
             "require": {
                 "doctrine/collections": "^2.2",
@@ -1115,7 +1114,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/nowo-bundles/IconSelectorBundle",
-                "reference": "e4f779b4f9622365986450bd760492c5cb67bf75"
+                "reference": "10a9a8a01c664e89231aca7c22247dbc0d40a8de"
             },
             "require": {
                 "php": ">=8.1 <8.6",
@@ -1232,7 +1231,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/nowo-bundles/OtpInputBundle",
-                "reference": "33e4f089e336bc3ddc6b6219e1ece060eb3b5a43"
+                "reference": "86f6111b5fa63245eb9d29d9e9c0062f760669de"
             },
             "require": {
                 "php": ">=8.1 <8.6",
@@ -1578,7 +1577,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/nowo-bundles/PhoneInputBundle",
-                "reference": "3955dbe257090a02994004a455cef16d5f8d2459"
+                "reference": "70a708d639a4b424f2eb86ce48b28e844a2c5626"
             },
             "require": {
                 "php": ">=8.2 <8.6",
@@ -2117,12 +2116,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "fb19eedd2bb67ff8cf7a5502ad329e701d6398a3"
+                "reference": "326f797be0a3c8c50cbc844362b36dd7b8678421"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/fb19eedd2bb67ff8cf7a5502ad329e701d6398a3",
-                "reference": "fb19eedd2bb67ff8cf7a5502ad329e701d6398a3",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/326f797be0a3c8c50cbc844362b36dd7b8678421",
+                "reference": "326f797be0a3c8c50cbc844362b36dd7b8678421",
                 "shasum": ""
             },
             "require": {
@@ -2157,7 +2156,7 @@
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
                 "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.x"
             },
-            "time": "2026-07-08T07:01:06+00:00"
+            "time": "2026-07-22T06:50:52+00:00"
         },
         {
             "name": "psr/cache",
@@ -7378,12 +7377,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "da8bd407000b6ef1adfce829ac9921f12b544617"
+                "reference": "7f94646a3b5b1f1412e1044092d24e285ffd9071"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/da8bd407000b6ef1adfce829ac9921f12b544617",
-                "reference": "da8bd407000b6ef1adfce829ac9921f12b544617",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7f94646a3b5b1f1412e1044092d24e285ffd9071",
+                "reference": "7f94646a3b5b1f1412e1044092d24e285ffd9071",
                 "shasum": ""
             },
             "require": {
@@ -7451,7 +7450,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-13T10:17:57+00:00"
+            "time": "2026-07-21T11:07:40+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -7523,16 +7522,16 @@
     "packages-dev": [
         {
             "name": "nowo-tech/twig-inspector-bundle",
-            "version": "v1.0.36",
+            "version": "v1.0.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/TwigInspectorBundle.git",
-                "reference": "456043213d30938631b1c8548df7bde0f4aa3af1"
+                "reference": "87f257751802989a5fbe3e61da3cff3737edc928"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/TwigInspectorBundle/zipball/456043213d30938631b1c8548df7bde0f4aa3af1",
-                "reference": "456043213d30938631b1c8548df7bde0f4aa3af1",
+                "url": "https://api.github.com/repos/nowo-tech/TwigInspectorBundle/zipball/87f257751802989a5fbe3e61da3cff3737edc928",
+                "reference": "87f257751802989a5fbe3e61da3cff3737edc928",
                 "shasum": ""
             },
             "require": {
@@ -7560,7 +7559,7 @@
                 "symfony/yaml": "^6.0 || ^7.0 || ^8.0"
             },
             "suggest": {
-                "symfony/flex": "For automatic recipe installation (config and routes)"
+                "symfony/flex": "For automatic recipe installation (config and routes; registers this bundle for dev/test only — always install with composer require --dev)"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -7621,7 +7620,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-16T09:51:19+00:00"
+            "time": "2026-07-20T08:48:35+00:00"
         },
         {
             "name": "sensiolabs/typescript-bundle",
