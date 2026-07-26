@@ -17,3 +17,11 @@
 
 # Temporary data & var (e.g. Symfony cache, uploads)
 /var
+
+# Archives / compressed
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z

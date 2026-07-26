@@ -438,6 +438,8 @@ $this->buildFormFromArray($builder, [
 
 The extension sets `label_attr['data-nowo-help-modal']` to a JSON payload. The bundled script **`help-modal.js`** (built from TypeScript) scans `label[data-nowo-help-modal]`, injects the icon beside the label, and opens a modal. **Bootstrap 5** uses `window.bootstrap.Modal` when available; **Bootstrap 4** uses jQuery `.modal()`; **Tailwind** and **Foundation** use inline shells and `[data-help-modal-close]` buttons.
 
+Help modal roots are marked with `data-nowo-formkit-help-modal` and **always portaled to `document.body`**. A `MutationObserver` keeps watching the DOM so forms loaded later (Turbo / Live Component / AJAX) still get triggers, and if a help modal is re-injected inside a hidden/clipped container it is removed/replaced and moved to `body` again. Only Form Kit help modals are relocated — never generic `.modal` nodes.
+
 **0. Optional: render modal shell templates** (lets you override markup per framework; the script clones from `<template id="nowo-formkit-help-modal-shell-*">` or falls back to built-in HTML):
 
 ```twig
@@ -456,7 +458,8 @@ php bin/console assets:install public --symlink
 
 ```twig
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ...></script>
-<script defer src="{{ asset('bundles/nowoformkit/help-modal.js') }}"></script>
+<script defer src="{{ asset('help-modal.js', 'nowo_form_kit') }}"></script>
+<link rel="stylesheet" href="{{ asset('help-modal.css', 'nowo_form_kit') }}">
 ```
 
 **3. Enable on a field** (example with explicit title and HTML content):

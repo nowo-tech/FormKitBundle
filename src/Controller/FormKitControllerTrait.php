@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Controller;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use InvalidArgumentException;
 use LogicException;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
@@ -16,9 +17,15 @@ use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
+use Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\UX\Cropperjs\Form\CropperType;
+use Symfony\UX\Dropzone\Form\DropzoneType;
 
 use function array_key_exists;
 use function is_array;
@@ -263,7 +270,7 @@ trait FormKitControllerTrait
      */
     protected function addMultiSelectSelectAllType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
-        if (!class_exists(\Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle::class)) {
+        if (!class_exists(NowoSelectAllChoiceBundle::class)) {
             throw new LogicException('addMultiSelectSelectAllType() requires nowo-tech/select-all-choice-bundle. Use addMultiSelectType() or install the bundle.');
         }
 
@@ -325,11 +332,11 @@ trait FormKitControllerTrait
      */
     protected function addCKEditorFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
-        if (!class_exists(\FOS\CKEditorBundle\Form\Type\CKEditorType::class)) {
+        if (!class_exists(CKEditorType::class)) {
             throw new LogicException('addCKEditorFieldType() requires friendsofsymfony/ckeditor-bundle. Install it and run bin/console ckeditor:install.');
         }
 
-        $this->addFieldType($builder, $fieldName, \FOS\CKEditorBundle\Form\Type\CKEditorType::class, $options, $configName, $formName);
+        $this->addFieldType($builder, $fieldName, CKEditorType::class, $options, $configName, $formName);
     }
 
     /**
@@ -341,11 +348,11 @@ trait FormKitControllerTrait
      */
     protected function addDropzoneFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
-        if (!class_exists(\Symfony\UX\Dropzone\Form\DropzoneType::class)) {
+        if (!class_exists(DropzoneType::class)) {
             throw new LogicException('addDropzoneFieldType() requires symfony/ux-dropzone.');
         }
 
-        $this->addFieldType($builder, $fieldName, \Symfony\UX\Dropzone\Form\DropzoneType::class, $options, $configName, $formName);
+        $this->addFieldType($builder, $fieldName, DropzoneType::class, $options, $configName, $formName);
     }
 
     /**
@@ -357,11 +364,11 @@ trait FormKitControllerTrait
      */
     protected function addCropperFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
-        if (!class_exists(\Symfony\UX\Cropperjs\Form\CropperType::class)) {
+        if (!class_exists(CropperType::class)) {
             throw new LogicException('addCropperFieldType() requires symfony/ux-cropperjs.');
         }
 
-        $this->addFieldType($builder, $fieldName, \Symfony\UX\Cropperjs\Form\CropperType::class, $options, $configName, $formName);
+        $this->addFieldType($builder, $fieldName, CropperType::class, $options, $configName, $formName);
     }
 
     /**
@@ -479,7 +486,7 @@ trait FormKitControllerTrait
 
         $resolvedConfigName = $configName ?? $this->formKitConfigName;
 
-        $textareaType = \Symfony\Component\Form\Extension\Core\Type\TextareaType::class;
+        $textareaType = TextareaType::class;
 
         $merger = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
 
@@ -520,7 +527,7 @@ trait FormKitControllerTrait
 
         $resolvedConfigName = $configName ?? $this->formKitConfigName;
 
-        $checkboxType = \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class;
+        $checkboxType = CheckboxType::class;
         $merger       = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
 
         $mergedOptions = $merger->resolve(
@@ -556,7 +563,7 @@ trait FormKitControllerTrait
 
         $resolvedConfigName = $configName ?? $this->formKitConfigName;
 
-        $textType = \Symfony\Component\Form\Extension\Core\Type\TextType::class;
+        $textType = TextType::class;
         $merger   = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
 
         $mergedOptions = $merger->resolve(
@@ -597,7 +604,7 @@ trait FormKitControllerTrait
 
         $resolvedConfigName = $configName ?? $this->formKitConfigName;
 
-        $textareaType = \Symfony\Component\Form\Extension\Core\Type\TextareaType::class;
+        $textareaType = TextareaType::class;
         $merger       = $this->formKitOptionsMerger ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormOptionsMerger().');
 
         $mergedOptions = $merger->resolve(

@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
 use Nowo\FormKitBundle\Form\DataTransformer\JsonModelTransformer;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 use const NAN;
 
@@ -34,7 +35,7 @@ final class JsonModelTransformerTest extends TestCase
     {
         $t = new JsonModelTransformer(true, true);
 
-        $this->expectException(\Symfony\Component\Form\Exception\TransformationFailedException::class);
+        $this->expectException(TransformationFailedException::class);
         $t->reverseTransform(['not', 'json']);
     }
 
@@ -42,7 +43,7 @@ final class JsonModelTransformerTest extends TestCase
     {
         $t = new JsonModelTransformer(true, true);
 
-        $this->expectException(\Symfony\Component\Form\Exception\TransformationFailedException::class);
+        $this->expectException(TransformationFailedException::class);
         $t->reverseTransform('{invalid');
     }
 
@@ -50,7 +51,7 @@ final class JsonModelTransformerTest extends TestCase
     {
         $t = new JsonModelTransformer(true, true);
 
-        $this->expectException(\Symfony\Component\Form\Exception\TransformationFailedException::class);
+        $this->expectException(TransformationFailedException::class);
         $t->transform(NAN);
     }
 }

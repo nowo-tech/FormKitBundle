@@ -6,8 +6,10 @@ namespace Nowo\FormKitBundle\Tests\Unit;
 
 use Nowo\FormKitBundle\DependencyInjection\Compiler\TwigPathsPass;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
+use Nowo\FormKitBundle\DependencyInjection\FormOptionsMergerInjectorCompilerPass;
 use Nowo\FormKitBundle\NowoFormKitBundle;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class NowoFormKitBundleTest extends TestCase
 {
@@ -25,7 +27,7 @@ final class NowoFormKitBundleTest extends TestCase
     public function testBuildRegistersTwigPathsPass(): void
     {
         $bundle    = new NowoFormKitBundle();
-        $container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
+        $container = new ContainerBuilder();
 
         $bundle->build($container);
 
@@ -44,14 +46,14 @@ final class NowoFormKitBundleTest extends TestCase
     public function testBuildRegistersFormOptionsMergerInjectorCompilerPass(): void
     {
         $bundle    = new NowoFormKitBundle();
-        $container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
+        $container = new ContainerBuilder();
 
         $bundle->build($container);
 
         $passes = $container->getCompilerPassConfig()->getPasses();
         $found  = false;
         foreach ($passes as $pass) {
-            if ($pass instanceof \Nowo\FormKitBundle\DependencyInjection\FormOptionsMergerInjectorCompilerPass) {
+            if ($pass instanceof FormOptionsMergerInjectorCompilerPass) {
                 $found = true;
                 break;
             }

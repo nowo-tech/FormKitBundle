@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Attribute;
 
 use Attribute;
+use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use ReflectionObject;
 
 /**
  * Selects a named Form Kit profile (`nowo_form_kit.profiles.<name>`) for a form type.
  *
- * Prefer this on the form class instead of calling {@see \Nowo\FormKitBundle\Form\FormOptionsTrait::setFormKitConfigName()}
+ * Prefer this on the form class instead of calling {@see FormOptionsTrait::setFormKitConfigName()}
  * in `buildForm()`. An explicit `setFormKitConfigName()` call still wins.
  *
  * Example:
@@ -30,10 +31,10 @@ use ReflectionObject;
  * @copyright 2026 Nowo.tech
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class FormKitConfig
+final readonly class FormKitConfig
 {
     public function __construct(
-        public readonly string $name,
+        public string $name,
     ) {
     }
 

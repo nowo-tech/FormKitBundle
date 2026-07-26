@@ -6,7 +6,10 @@ namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
+use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use Nowo\FormKitBundle\Form\FormTypeMap;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class FormKitExtensionTest extends TestCase
@@ -44,8 +47,8 @@ final class FormKitExtensionTest extends TestCase
         self::assertSame('forms', $profiles['bootstrap']['translation_domain']);
         self::assertFalse($profiles['bootstrap']['constraint_message_convention']);
         self::assertSame([], $profiles['bootstrap']['by_form']);
-        self::assertTrue($container->hasDefinition(\Nowo\FormKitBundle\Form\FormOptionsMerger::class));
-        self::assertTrue($container->hasDefinition(\Nowo\FormKitBundle\Form\FormTypeMap::class));
+        self::assertTrue($container->hasDefinition(FormOptionsMerger::class));
+        self::assertTrue($container->hasDefinition(FormTypeMap::class));
     }
 
     public function testLoadBuildsLegacyDefaultProfileWhenProfilesAreMissing(): void
@@ -147,5 +150,28 @@ final class FormKitExtensionTest extends TestCase
     public function testGetAliasReturnsConfigurationAlias(): void
     {
         self::assertSame('nowo_form_kit', (new FormKitExtension())->getAlias());
+    }
+
+    public function testPrependRegistersAssetPackageWhenFrameworkIsPresent(): void
+    {
+        $container = new ContainerBuilder();
+        $container->registerExtension(new FrameworkExtension());
+
+        (new FormKitExtension())->prepend($container);
+
+        $configs = $container->getExtensionConfig('framework');
+        self::assertSame(
+            '/bundles/nowoformkit',
+            $configs[0]['assets']['packages']['nowo_form_kit']['base_path'],
+        );
+    }
+
+    public function testPrependSkipsWhenFrameworkExtensionIsMissing(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->prepend($container);
+
+        self::assertFalse($container->hasExtension('framework'));
+        self::assertSame([], $container->getExtensionConfig('framework'));
     }
 }

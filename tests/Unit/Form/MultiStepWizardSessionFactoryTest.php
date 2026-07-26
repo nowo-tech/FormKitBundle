@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
+use Nowo\FormKitBundle\Form\MultiStepWizardSession;
 use Nowo\FormKitBundle\Form\MultiStepWizardSessionFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,7 +23,7 @@ final class MultiStepWizardSessionFactoryTest extends TestCase
         ];
 
         $session = $factory->create($steps, 'wiz');
-        self::assertInstanceOf(\Nowo\FormKitBundle\Form\MultiStepWizardSession::class, $session);
+        self::assertInstanceOf(MultiStepWizardSession::class, $session);
         self::assertSame(['s1', 's2'], $session->getStepKeys());
     }
 }

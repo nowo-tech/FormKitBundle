@@ -40,7 +40,8 @@ nowo_form_kit:
                 row_attr:
                     class: 'mb-3'
 
-            # Used when a field option sets help_modal: true. Load help-modal.js (+ optional help-modal.css) after Bootstrap.
+            # Used when a field option sets help_modal: true.
+            # After assets:install, load: asset('help-modal.js', 'nowo_form_kit') (+ optional help-modal.css).
             help_modal:
                 framework: bootstrap5
                 # Clickable wrapper at end of label (after required *): circle style by default

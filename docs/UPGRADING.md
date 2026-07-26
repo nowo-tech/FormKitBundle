@@ -24,12 +24,33 @@ If your project runs on PHP 8.1 or Symfony 6.4 / 7.0–7.3, stay on **form-kit-b
    ```
 
 3. **Optional integrations** — `a2lix/translation-form-bundle` is no longer a hard dependency; install it only if you use the `translations` type (`^3.2` on PHP 8.2 / Symfony 7.4, `^4.0` on PHP 8.4+ / Symfony 7.4|8).
-4. **Help modal** — if you adopt `help_modal`, run `php bin/console assets:install public` and load `bundles/nowoformkit/help-modal.js` after your CSS framework; see [Usage — Help modal](USAGE.md#help-modal-optional).
+4. **Help modal** — if you adopt `help_modal`, run `php bin/console assets:install public` and load assets with the named package: `asset('help-modal.js', 'nowo_form_kit')` (optional CSS: `asset('help-modal.css', 'nowo_form_kit')`). Hard-coded `/bundles/nowoformkit/...` paths are obsolete; see [Usage — Help modal](USAGE.md#help-modal-optional).
 5. Review [CHANGELOG](CHANGELOG.md) for new helpers (choice presets, model transformers, **FormKitControllerTrait**) and demo pages as reference.
 
 No configuration key renames are required for existing YAML; public services and extension points remain compatible where the platform allows installation.
 
 ## 2.0.x patch releases
+
+### 2.0.17 (2026-07-26)
+
+**Help modal asset package (REQ-ASSETS-004):** the bundle registers Symfony asset package **`nowo_form_kit`** (`base_path: /bundles/nowoformkit`) via `FormKitExtension::prepend()`.
+
+Replace hard-coded paths:
+
+```twig
+{# Before #}
+<script defer src="{{ asset('bundles/nowoformkit/help-modal.js') }}"></script>
+
+{# After #}
+<script defer src="{{ asset('help-modal.js', 'nowo_form_kit') }}"></script>
+<link rel="stylesheet" href="{{ asset('help-modal.css', 'nowo_form_kit') }}">
+```
+
+Run `php bin/console assets:install` after upgrade. Do not duplicate `framework.assets.packages.nowo_form_kit` in the application config unless you intentionally override CDN/base URL.
+
+**Help modal JS:** rebuilt `help-modal.js` portals help modals to `document.body` and watches the DOM for forms loaded later (Turbo / Live / AJAX). No Twig API change.
+
+**Demos:** Symfony 8 image is PHP **8.5**; switch FrankenPHP classic vs worker with `FRANKENPHP_MODE` in `.env` (recreate container; no rebuild).
 
 ### 2.0.16 (2026-07-22)
 

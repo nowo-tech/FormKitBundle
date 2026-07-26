@@ -1,6 +1,6 @@
 /**
  * Help modal trigger: sits at the end of the label (after required suffix).
- * Load with: <link rel="stylesheet" href="{{ asset('bundles/nowoformkit/help-modal.css') }}"/>
+ * Load with: <link rel="stylesheet" href="{{ asset('help-modal.css', 'nowo_form_kit') }}"/>
  * (path depends on bundle public dir mapping)
  */
 .nowo-help-modal-trigger {

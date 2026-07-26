@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form\Type;
 
 use Nowo\FormKitBundle\Form\Type\StaticAlertType;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -46,7 +47,7 @@ final class StaticAlertTypeTest extends TestCase
     public function testBuildFormIsNoOp(): void
     {
         $type    = new StaticAlertType();
-        $builder = $this->createMock(\Symfony\Component\Form\FormBuilderInterface::class);
+        $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::never())->method('add');
 
         $type->buildForm($builder, ['message' => 'Hello']);

@@ -8,6 +8,7 @@ use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -42,7 +43,7 @@ class FormOptionsMergerTest extends TestCase
 
     public function testResolveUsesConventionForLabelPlaceholderHelp(): void
     {
-        $options = $this->merger->resolve('user_profile', 'email_address', \Symfony\Component\Form\Extension\Core\Type\TextType::class, []);
+        $options = $this->merger->resolve('user_profile', 'email_address', TextType::class, []);
 
         self::assertSame('user_profile.email_address.label', $options['label']);
         self::assertSame('user_profile.email_address.placeholder', $options['attr']['placeholder']);

@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form\Type;
 
 use Nowo\FormKitBundle\Form\Type\StaticSeparatorType;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class StaticSeparatorTypeTest extends TestCase
@@ -27,7 +28,7 @@ final class StaticSeparatorTypeTest extends TestCase
     public function testBuildFormIsNoOp(): void
     {
         $type    = new StaticSeparatorType();
-        $builder = $this->createMock(\Symfony\Component\Form\FormBuilderInterface::class);
+        $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::never())->method('add');
 
         $type->buildForm($builder, []);

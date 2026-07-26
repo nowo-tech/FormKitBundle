@@ -7,6 +7,7 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\DataTransformer\MoneyModelTransformer;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 final class MoneyModelTransformerTest extends TestCase
 {
@@ -63,7 +64,7 @@ final class MoneyModelTransformerTest extends TestCase
     {
         $t = new MoneyModelTransformer(2);
 
-        $this->expectException(\Symfony\Component\Form\Exception\TransformationFailedException::class);
+        $this->expectException(TransformationFailedException::class);
         $t->reverseTransform(['bad']);
     }
 
@@ -71,7 +72,7 @@ final class MoneyModelTransformerTest extends TestCase
     {
         $t = new MoneyModelTransformer(2);
 
-        $this->expectException(\Symfony\Component\Form\Exception\TransformationFailedException::class);
+        $this->expectException(TransformationFailedException::class);
         $t->reverseTransform('abc');
     }
 
@@ -89,7 +90,7 @@ final class MoneyModelTransformerTest extends TestCase
     {
         $t = new MoneyModelTransformer(2);
 
-        $this->expectException(\Symfony\Component\Form\Exception\TransformationFailedException::class);
+        $this->expectException(TransformationFailedException::class);
         $t->transform(['bad']);
     }
 
@@ -104,7 +105,7 @@ final class MoneyModelTransformerTest extends TestCase
     {
         $t = new MoneyModelTransformer(2);
 
-        $this->expectException(\Symfony\Component\Form\Exception\TransformationFailedException::class);
+        $this->expectException(TransformationFailedException::class);
         $t->transform('not-a-number');
     }
 }

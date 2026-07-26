@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use InvalidArgumentException;
 use LogicException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
@@ -14,15 +15,25 @@ use Nowo\FormKitBundle\Form\DataTransformer\MoneyModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\SwitchModelTransformer;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormOptionsTrait;
+use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormConfigInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\UX\Dropzone\Form\DropzoneType;
 
 use function array_key_exists;
 use function dirname;
@@ -161,7 +172,7 @@ final class FormOptionsTraitTest extends TestCase
         $merger  = $this->createMerger();
         $builder = $this->createMock(FormBuilderInterface::class);
 
-        $child = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child = $this->createMock(FormBuilder::class);
         $child->expects(self::once())
             ->method('addModelTransformer')
             ->with(self::isInstanceOf(BoolModelTransformer::class));
@@ -215,7 +226,7 @@ final class FormOptionsTraitTest extends TestCase
             ->method('add')
             ->with(
                 'enabled',
-                \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class,
+                CheckboxType::class,
                 self::isType('array'),
             );
 
@@ -226,7 +237,7 @@ final class FormOptionsTraitTest extends TestCase
     {
         $merger  = $this->createMerger();
         $builder = $this->createMock(FormBuilderInterface::class);
-        $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child   = $this->createMock(FormBuilder::class);
 
         $builder->expects(self::exactly(2))
             ->method('get')
@@ -337,7 +348,7 @@ final class FormOptionsTraitTest extends TestCase
         };
 
         $builder = $this->createMock(FormBuilderInterface::class);
-        $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child   = $this->createMock(FormBuilder::class);
 
         $child->expects(self::once())
             ->method('addModelTransformer')
@@ -355,7 +366,7 @@ final class FormOptionsTraitTest extends TestCase
     {
         $merger  = $this->createMerger();
         $builder = $this->createMock(FormBuilderInterface::class);
-        $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child   = $this->createMock(FormBuilder::class);
 
         $builder->expects(self::once())
             ->method('get')
@@ -403,7 +414,7 @@ final class FormOptionsTraitTest extends TestCase
     {
         $merger  = $this->createMerger();
         $builder = $this->createMock(FormBuilderInterface::class);
-        $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child   = $this->createMock(FormBuilder::class);
 
         $builder->expects(self::once())
             ->method('get')
@@ -457,7 +468,7 @@ final class FormOptionsTraitTest extends TestCase
     {
         $merger  = $this->createMerger();
         $builder = $this->createMock(FormBuilderInterface::class);
-        $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child   = $this->createMock(FormBuilder::class);
 
         $builder->expects(self::once())
             ->method('get')
@@ -570,7 +581,7 @@ final class FormOptionsTraitTest extends TestCase
         $calls = [];
         $builder->expects(self::exactly(9))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder): MockObject {
                 self::assertIsArray($opts);
                 $calls[] = [$name, $type];
 
@@ -589,13 +600,13 @@ final class FormOptionsTraitTest extends TestCase
 
         self::assertSame([
             ['full_name', TextType::class],
-            ['email_address', \Symfony\Component\Form\Extension\Core\Type\EmailType::class],
+            ['email_address', EmailType::class],
             ['message', TextareaType::class],
-            ['password', \Symfony\Component\Form\Extension\Core\Type\PasswordType::class],
+            ['password', PasswordType::class],
             ['website', UrlType::class],
             ['age', IntegerType::class],
             ['price', NumberType::class],
-            ['agree', \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class],
+            ['agree', CheckboxType::class],
             ['topic', ChoiceType::class],
         ], $calls);
     }
@@ -712,7 +723,7 @@ final class FormOptionsTraitTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::exactly(4))
             ->method('add')
-            ->willReturnCallback(static function (string $name, string $fqcn, array $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function (string $name, string $fqcn, array $opts) use (&$calls, $builder): MockObject {
                 $calls[] = [$name, $fqcn, $opts['expanded'] ?? null, $opts['multiple'] ?? null];
 
                 return $builder;
@@ -865,7 +876,7 @@ final class FormOptionsTraitTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::once())
             ->method('add')
-            ->with('document', \Symfony\UX\Dropzone\Form\DropzoneType::class, self::isType('array'));
+            ->with('document', DropzoneType::class, self::isType('array'));
 
         $type->run($builder);
     }
@@ -963,7 +974,7 @@ final class FormOptionsTraitTest extends TestCase
             ->method('add')
             ->with(
                 'break',
-                \Nowo\FormKitBundle\Form\Type\StaticHtmlType::class,
+                StaticHtmlType::class,
                 self::callback(static fn (array $opts): bool => $opts['html'] === '<div class="w-100"></div>'),
             );
 
@@ -1155,7 +1166,7 @@ final class FormOptionsTraitTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::once())
             ->method('add')
-            ->with('body', \FOS\CKEditorBundle\Form\Type\CKEditorType::class, self::isType('array'));
+            ->with('body', CKEditorType::class, self::isType('array'));
 
         $type->run($builder);
     }
@@ -1176,31 +1187,31 @@ final class FormOptionsTraitTest extends TestCase
                 return 'demo_form';
             }
 
-            public function attach(\Symfony\Component\Form\FormInterface $form, string $field): void
+            public function attach(FormInterface $form, string $field): void
             {
                 $this->dataTransformerSwitchConfiguration($form, $field, 1);
             }
         };
 
-        $childForm = $this->createMock(\Symfony\Component\Form\FormInterface::class);
-        $childForm->method('getConfig')->willReturn($this->createConfiguredMock(\Symfony\Component\Form\FormConfigInterface::class, [
+        $childForm = $this->createMock(FormInterface::class);
+        $childForm->method('getConfig')->willReturn($this->createConfiguredMock(FormConfigInterface::class, [
             'getOptions' => ['expanded' => true, 'multiple' => true],
         ]));
 
         $childBuilder = $this->createMock(FormBuilderInterface::class);
         $childBuilder->expects(self::once())->method('addModelTransformer')->with(self::isInstanceOf(SwitchModelTransformer::class));
-        $childBuilder->method('getForm')->willReturn($this->createMock(\Symfony\Component\Form\FormInterface::class));
+        $childBuilder->method('getForm')->willReturn($this->createMock(FormInterface::class));
 
-        $factory = $this->createMock(\Symfony\Component\Form\FormFactoryInterface::class);
+        $factory = $this->createMock(FormFactoryInterface::class);
         $factory->expects(self::once())
             ->method('createNamedBuilder')
             ->with('is_active', ChoiceType::class, null, ['expanded' => true, 'multiple' => true])
             ->willReturn($childBuilder);
 
-        $formConfig = $this->createMock(\Symfony\Component\Form\FormConfigInterface::class);
+        $formConfig = $this->createMock(FormConfigInterface::class);
         $formConfig->method('getFormFactory')->willReturn($factory);
 
-        $form = $this->createMock(\Symfony\Component\Form\FormInterface::class);
+        $form = $this->createMock(FormInterface::class);
         $form->expects(self::once())->method('get')->with('is_active')->willReturn($childForm);
         $form->expects(self::once())->method('remove')->with('is_active');
         $form->expects(self::once())->method('add');
@@ -1272,7 +1283,7 @@ final class FormOptionsTraitTest extends TestCase
         self::assertSame(TextType::class, $calls[0][1]);
         self::assertSame('demo_form.full_name.label', $calls[0][2]['label']);
         self::assertSame('email', $calls[1][0]);
-        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\EmailType::class, $calls[1][1]);
+        self::assertSame(EmailType::class, $calls[1][1]);
         self::assertArrayNotHasKey('label', $calls[1][2]);
     }
 

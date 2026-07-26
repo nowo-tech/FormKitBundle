@@ -5,6 +5,11 @@
  * Modal shells may be cloned from Twig-rendered `<template id="nowo-formkit-help-modal-shell-*">`
  * elements; if missing, minimal inline HTML fallbacks are used per framework.
  *
+ * Help modal roots are always portaled to `document.body` (direct child, last) so they remain
+ * visible even when the form lives inside a container that is later hidden, clipped, or replaced
+ * (Turbo / Live Component / AJAX). A MutationObserver keeps watching for new labels and for
+ * refreshed modal roots that need to be re-homed.
+ *
  * @packageDocumentation
  */
 
@@ -39,11 +44,29 @@ const log = createBundleLogger('form-kit-help-modal', {
 log.scriptLoaded();
 setBundleLogger(log);
 
+/**
+ * Marker on help-modal root elements only (never on arbitrary `.modal` nodes).
+ * Used by the portal observer so we only relocate Form Kit help modals.
+ */
+export const HELP_MODAL_ROOT_ATTR = 'data-nowo-formkit-help-modal';
+
+/** Labels that carry a help-modal JSON payload. */
+const HELP_MODAL_LABEL_SELECTOR = `label[data-nowo-help-modal]`;
+
+/** Help-modal roots previously marked by this script (or server markup that opts in). */
+const HELP_MODAL_ROOT_SELECTOR = `[${HELP_MODAL_ROOT_ATTR}]`;
+
 /** CSS selector for the title slot inside a shell template. */
 const TITLE_SLOT = '[data-nowo-help-modal-title]';
 
 /** CSS selector for the body slot inside a shell template. */
 const BODY_SLOT = '[data-nowo-help-modal-body]';
+
+/** Active MutationObserver instance (at most one per page / module load). */
+let domObserver: MutationObserver | null = null;
+
+/** Coalesce bursty DOM mutations (Live / Turbo morphs) into one scan. */
+let pendingDomScan: number | null = null;
 
 /** Supported CSS framework keys; drives shell template id and fallback markup. */
 type ShellKey = 'bootstrap5' | 'bootstrap4' | 'tailwind' | 'foundation';
@@ -194,6 +217,14 @@ function appendShellOrFallback(root: HTMLElement, shellKey: ShellKey, fallbackIn
 }
 
 /**
+ * Marks a root as a Form Kit help modal so the portal observer can identify it
+ * without matching arbitrary Bootstrap/Tailwind dialogs.
+ */
+function markHelpModalRoot(modal: HTMLElement): void {
+  modal.setAttribute(HELP_MODAL_ROOT_ATTR, '1');
+}
+
+/**
  * Builds a detached modal root element for the given framework, fills title/body, and returns it.
  *
  * @param data - Payload including `framework`, `id`, and HTML content.
@@ -208,6 +239,7 @@ export function createModalElement(data: HelpModalData): HTMLElement {
     modal.className = 'modal fade';
     modal.setAttribute('tabindex', '-1');
     modal.setAttribute('aria-hidden', 'true');
+    markHelpModalRoot(modal);
 
     appendShellOrFallback(modal, 'bootstrap5', fallbackBootstrap5InnerHtml());
     fillModalBody(modal, contentHtml);
@@ -223,6 +255,7 @@ export function createModalElement(data: HelpModalData): HTMLElement {
     modal.setAttribute('tabindex', '-1');
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-hidden', 'true');
+    markHelpModalRoot(modal);
 
     appendShellOrFallback(modal, 'bootstrap4', fallbackBootstrap4InnerHtml());
     fillModalBody(modal, contentHtml);
@@ -237,6 +270,7 @@ export function createModalElement(data: HelpModalData): HTMLElement {
     root.className = 'nowo-help-modal-tailwind';
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
+    markHelpModalRoot(root);
 
     appendShellOrFallback(root, 'tailwind', fallbackTailwindInnerHtml());
     fillModalBody(root, contentHtml);
@@ -251,6 +285,7 @@ export function createModalElement(data: HelpModalData): HTMLElement {
   root.className = 'nowo-help-modal-foundation';
   root.setAttribute('role', 'dialog');
   root.setAttribute('aria-modal', 'true');
+  markHelpModalRoot(root);
 
   appendShellOrFallback(root, 'foundation', fallbackFoundationInnerHtml());
   fillModalBody(root, contentHtml);
@@ -260,19 +295,89 @@ export function createModalElement(data: HelpModalData): HTMLElement {
 }
 
 /**
- * Appends the modal to `document.body` if needed, wires close handlers for non-Bootstrap UIs, then shows it.
+ * Removes stale help-modal roots that share `modal.id` (except `modal` itself).
+ * Needed when a form morph/refresh re-injects a modal while the previous portal copy still exists.
+ */
+function removeStaleHelpModalsById(modal: HTMLElement): void {
+  const id = modal.id;
+  if (!id) {
+    return;
+  }
+
+  document.querySelectorAll(HELP_MODAL_ROOT_SELECTOR).forEach((el) => {
+    if (el instanceof HTMLElement && el.id === id && el !== modal) {
+      getLogger().debug('Removing stale help modal before portal', { id });
+      el.remove();
+    }
+  });
+}
+
+/**
+ * Moves a help-modal root to the end of `document.body` so stacking contexts / hidden ancestors
+ * cannot hide it. Idempotent when the node is already the last child of body.
+ *
+ * @returns true when the node was moved (or stale siblings removed), false when already portaled.
+ */
+export function relocateHelpModalToBody(modal: HTMLElement): boolean {
+  markHelpModalRoot(modal);
+  removeStaleHelpModalsById(modal);
+
+  const alreadyPortaled =
+    modal.parentElement === document.body && document.body.lastElementChild === modal;
+
+  if (alreadyPortaled) {
+    return false;
+  }
+
+  document.body.appendChild(modal);
+  getLogger().debug('Help modal portaled to document.body', { id: modal.id });
+
+  return true;
+}
+
+/**
+ * Scans `root` (default: document) for marked help-modal roots and portals each to body.
+ * Also accepts a single Element that itself is a help-modal root.
+ */
+export function relocateAllHelpModalsToBody(root: ParentNode | Element = document): void {
+  const found = new Set<HTMLElement>();
+
+  if (root instanceof Element && root.matches(HELP_MODAL_ROOT_SELECTOR)) {
+    found.add(root as HTMLElement);
+  }
+
+  if ('querySelectorAll' in root) {
+    root.querySelectorAll(HELP_MODAL_ROOT_SELECTOR).forEach((el) => {
+      if (el instanceof HTMLElement) {
+        found.add(el);
+      }
+    });
+  }
+
+  found.forEach((modal) => {
+    relocateHelpModalToBody(modal);
+  });
+}
+
+/**
+ * Appends a fresh modal to `document.body` (always recreates so refreshed payloads win),
+ * wires close handlers for non-Bootstrap UIs, then shows it.
  *
  * Bootstrap 5 uses `window.bootstrap.Modal`; Bootstrap 4 uses jQuery's `.modal('show')`.
  * Tailwind/Foundation rely on visibility and `[data-help-modal-close]` buttons.
  */
 export function showModal(data: HelpModalData): void {
   getLogger().info('Help modal opened', { id: data.id, framework: data.framework });
-  const existing = document.getElementById(data.id);
-  const modalEl = existing ?? createModalElement(data);
 
-  if (!existing) {
-    document.body.appendChild(modalEl);
-  }
+  // Drop any previous portal / in-tree copy so a form refresh cannot leave a stale dialog.
+  document.querySelectorAll(HELP_MODAL_ROOT_SELECTOR).forEach((el) => {
+    if (el instanceof HTMLElement && el.id === data.id) {
+      el.remove();
+    }
+  });
+
+  const modalEl = createModalElement(data);
+  relocateHelpModalToBody(modalEl);
 
   // Wire close buttons for non-bootstrap frameworks.
   const closeEls = modalEl.querySelectorAll<HTMLElement>('[data-help-modal-close]');
@@ -322,11 +427,12 @@ function defaultTriggerClass(): string {
 
 /**
  * Finds all labels with `data-nowo-help-modal`, appends an icon trigger once per label, and binds open handlers.
+ * Safe to call repeatedly (e.g. after background form loads); skips labels that already have a trigger.
  */
 export function initHelpModal(): void {
   getLogger().debug('initHelpModal start');
 
-  const labels = Array.from(document.querySelectorAll<HTMLLabelElement>('label[data-nowo-help-modal]'));
+  const labels = Array.from(document.querySelectorAll<HTMLLabelElement>(HELP_MODAL_LABEL_SELECTOR));
   getLogger().debug('labels detected', { count: labels.length });
   labels.forEach((label) => {
     const raw = label.getAttribute('data-nowo-help-modal');
@@ -351,14 +457,19 @@ export function initHelpModal(): void {
     const open = (ev: Event): void => {
       ev.preventDefault();
       ev.stopPropagation();
-      showModal(data);
+      // Re-read payload on open so a morph that updated the attribute is honoured.
+      const latestRaw = label.getAttribute('data-nowo-help-modal');
+      const latest = latestRaw ? parseHelpModalData(latestRaw) : null;
+      showModal(latest ?? data);
     };
 
     wrap.addEventListener('click', open);
     wrap.addEventListener('keydown', (ev: KeyboardEvent) => {
       if (ev.key === 'Enter' || ev.key === ' ') {
         ev.preventDefault();
-        showModal(data);
+        const latestRaw = label.getAttribute('data-nowo-help-modal');
+        const latest = latestRaw ? parseHelpModalData(latestRaw) : null;
+        showModal(latest ?? data);
       }
     });
 
@@ -366,14 +477,113 @@ export function initHelpModal(): void {
   });
 }
 
-/** Runs {@link initHelpModal} on DOMContentLoaded or immediately if the document is already ready. */
+/**
+ * True when `node` is (or contains) a help-modal label or a marked help-modal root.
+ */
+function nodeNeedsHelpModalScan(node: Node): boolean {
+  if (!(node instanceof Element)) {
+    return false;
+  }
+
+  if (node.matches(HELP_MODAL_LABEL_SELECTOR) || node.matches(HELP_MODAL_ROOT_SELECTOR)) {
+    return true;
+  }
+
+  return (
+    node.querySelector(HELP_MODAL_LABEL_SELECTOR) !== null ||
+    node.querySelector(HELP_MODAL_ROOT_SELECTOR) !== null
+  );
+}
+
+/**
+ * Runs label init + portal scan. Debounced via rAF so morph bursts coalesce.
+ */
+function scheduleDomScan(): void {
+  if (pendingDomScan !== null) {
+    return;
+  }
+
+  pendingDomScan = window.requestAnimationFrame(() => {
+    pendingDomScan = null;
+    initHelpModal();
+    relocateAllHelpModalsToBody();
+  });
+}
+
+/**
+ * Continuously watches the document for:
+ * - labels with `data-nowo-help-modal` (forms loaded in background / Turbo / Live)
+ * - marked help-modal roots that appear outside `body` (or are re-injected after a refresh)
+ *
+ * Only elements with {@link HELP_MODAL_ROOT_ATTR} are relocated — never generic `.modal` nodes.
+ */
+export function startHelpModalDomObserver(): void {
+  if (domObserver !== null || typeof MutationObserver === 'undefined') {
+    return;
+  }
+
+  domObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes') {
+        const target = mutation.target;
+        if (
+          target instanceof Element &&
+          (target.matches(HELP_MODAL_LABEL_SELECTOR) || target.matches(HELP_MODAL_ROOT_SELECTOR))
+        ) {
+          scheduleDomScan();
+          return;
+        }
+        continue;
+      }
+
+      for (const node of mutation.addedNodes) {
+        if (nodeNeedsHelpModalScan(node)) {
+          scheduleDomScan();
+          return;
+        }
+      }
+    }
+  });
+
+  domObserver.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['data-nowo-help-modal', HELP_MODAL_ROOT_ATTR],
+  });
+
+  getLogger().debug('Help modal DOM observer started');
+}
+
+/** Stops the MutationObserver (tests / HMR). */
+export function stopHelpModalDomObserver(): void {
+  if (domObserver !== null) {
+    domObserver.disconnect();
+    domObserver = null;
+  }
+  if (pendingDomScan !== null) {
+    window.cancelAnimationFrame(pendingDomScan);
+    pendingDomScan = null;
+  }
+}
+
+/**
+ * Initial scan + continuous observation. Called on DOMContentLoaded or immediately if ready.
+ */
+export function bootstrapHelpModal(): void {
+  initHelpModal();
+  relocateAllHelpModalsToBody();
+  startHelpModalDomObserver();
+}
+
+/** Runs {@link bootstrapHelpModal} on DOMContentLoaded or immediately if the document is already ready. */
 export function runWhenReady(): void {
   if (document.readyState === 'loading') {
     getLogger().debug('DOM loading: wait DOMContentLoaded');
-    document.addEventListener('DOMContentLoaded', initHelpModal);
+    document.addEventListener('DOMContentLoaded', bootstrapHelpModal);
   } else {
     getLogger().debug('DOM ready: init immediately');
-    initHelpModal();
+    bootstrapHelpModal();
   }
 }
 

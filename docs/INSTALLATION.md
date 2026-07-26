@@ -66,7 +66,24 @@ nowo_form_kit:
             field_types: {}
 ```
 
-If omitted, the bundle uses a single default profile with `translation_domain: messages` and empty attr/row_attr. See [Configuration](CONFIGURATION.md). To use **help modal** in the browser, install bundle assets and load `bundles/nowoformkit/help-modal.js` after Bootstrap; see [Usage — Help modal](USAGE.md#help-modal-optional).
+If omitted, the bundle uses a single default profile with `translation_domain: messages` and empty attr/row_attr. See [Configuration](CONFIGURATION.md).
+
+### Help modal assets (REQ-ASSETS-004)
+
+1. After install/upgrade, publish bundle public files once:
+
+```bash
+php bin/console assets:install public
+```
+
+2. Load the script (and optional CSS) with the **`nowo_form_kit`** asset package registered by the bundle (`prepend()` → `framework.assets.packages.nowo_form_kit`, `base_path: /bundles/nowoformkit`):
+
+```twig
+<script defer src="{{ asset('help-modal.js', 'nowo_form_kit') }}"></script>
+<link rel="stylesheet" href="{{ asset('help-modal.css', 'nowo_form_kit') }}">
+```
+
+Do **not** hard-code `/bundles/nowoformkit/...` or duplicate the package in the app’s `framework.yaml`. See [Usage — Help modal](USAGE.md#help-modal-optional).
 
 ## Using in form types
 

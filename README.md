@@ -8,6 +8,10 @@ Symfony bundle to reduce repetitive form field options: convention-based transla
 
 **Minimum requirements: PHP 8.2 and Symfony 7.4.** Also compatible with Symfony 8.0 and 8.1 (require PHP 8.4+).
 
+![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
+
+This bundle is **FrankenPHP worker mode friendly**.
+
 ## Features
 
 - **Usage strategies:** **Options** (`FormOptionsTrait` + FQCN), **Kit** (`FormKitTrait` / `FormKitAbstractType` + snake_case), **Controller** (`FormKitControllerTrait`), **Wrapped** (`AbstractFormKitWrappedType`). See [Usage — strategies](docs/USAGE.md#usage-strategies).
@@ -68,7 +72,7 @@ class UserProfileType extends AbstractType
 
 ## Demos
 
-The bundle includes a **Symfony 8** demo that runs with **FrankenPHP** (Caddy + PHP in Docker). **`docker-compose`** defaults to **`APP_ENV=dev`**, so the entrypoint uses **Caddyfile.dev** (no PHP worker), and Twig/PHP changes are visible on refresh. **Worker mode** applies to a production-style setup — see [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md). The demo has:
+The bundle includes a **Symfony 8** demo that runs with **FrankenPHP** (Caddy + PHP in Docker). Runtime mode is controlled by **`FRANKENPHP_MODE`** in the demo `.env` (**default `worker`**; set `classic` for per-request PHP / easier hot-reload). Change the value and recreate the container (`docker compose up -d`) — no image rebuild. See [docs/DEMO-FRANKENPHP.md](docs/DEMO-FRANKENPHP.md). The demo has:
 
 - **Locale in the URL** — routes are under `/{locale}/…` (`en`, `es`, `fr`, `de`); `/` redirects to the default locale.
 - **FormType** example (contact, `buildFormFromArray`), **help modal** sample (`help-modal.js` + `assets:install`; include `@NowoFormKitBundle/help_modal/shells.html.twig` for overridable modal shells).

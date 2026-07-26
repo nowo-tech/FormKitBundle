@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\MultiStepFormBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -51,7 +52,7 @@ final class MultiStepFormBuilderTest extends TestCase
         $calls = [];
         $builder->expects(self::exactly(2))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, array $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($name, $type, array $opts) use (&$calls, $builder): MockObject {
                 self::assertIsArray($opts);
                 self::assertSame('messages', $opts['translation_domain'] ?? null);
                 $calls[] = [$name, $type];

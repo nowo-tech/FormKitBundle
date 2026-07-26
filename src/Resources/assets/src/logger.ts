@@ -114,6 +114,7 @@ export function getLogger(): BundleLogger {
  *
  * @param name - Short bundle id shown in every log line (e.g. `form-kit-help-modal`).
  * @param options - Optional build timestamp and verbosity flag.
+ * @returns A {@link BundleLogger} bound to `name`.
  */
 export function createBundleLogger(name: string, options: BundleLoggerOptions = {}): BundleLogger {
   const prefix = `[${name}]`;

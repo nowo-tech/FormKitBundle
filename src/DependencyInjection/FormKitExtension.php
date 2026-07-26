@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 use function sprintf;
@@ -19,11 +20,36 @@ use function sprintf;
  * in {@see Configuration} (beforeNormalization) into "default_profile" / "profiles".
  * During transition both new and legacy container parameters are set.
  *
+ * Registers the {@see Configuration::ALIAS} Symfony asset package for files under
+ * `src/Resources/public/` published by `assets:install` to `/bundles/nowoformkit/`.
+ *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-class FormKitExtension extends Extension
+class FormKitExtension extends Extension implements PrependExtensionInterface
 {
+    /**
+     * Registers the bundle asset package before FrameworkExtension processes assets.
+     *
+     * Load published files with {@code asset('help-modal.js', 'nowo_form_kit')} (and CSS).
+     */
+    public function prepend(ContainerBuilder $container): void
+    {
+        if (!$container->hasExtension('framework')) {
+            return;
+        }
+
+        $container->prependExtensionConfig('framework', [
+            'assets' => [
+                'packages' => [
+                    Configuration::ALIAS => [
+                        'base_path' => '/bundles/nowoformkit',
+                    ],
+                ],
+            ],
+        ]);
+    }
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();

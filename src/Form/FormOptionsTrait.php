@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use InvalidArgumentException;
 use LogicException;
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
@@ -14,6 +15,7 @@ use Nowo\FormKitBundle\Form\DataTransformer\MoneyModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\SwitchModelTransformer;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
+use Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -25,6 +27,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\UX\Cropperjs\Form\CropperType;
+use Symfony\UX\Dropzone\Form\DropzoneType;
 
 use function array_key_exists;
 use function is_array;
@@ -567,7 +571,7 @@ trait FormOptionsTrait
      */
     protected function addMultiSelectSelectAll(FormBuilderInterface $builder, string $name, array $options = []): void
     {
-        if (!class_exists(\Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle::class)) {
+        if (!class_exists(NowoSelectAllChoiceBundle::class)) {
             throw new LogicException('addMultiSelectSelectAll() requires nowo-tech/select-all-choice-bundle. Install it or use addMultiSelect() and pass select_all in options manually after installing the bundle.');
         }
 
@@ -635,11 +639,11 @@ trait FormOptionsTrait
      */
     protected function addCKEditorField(FormBuilderInterface $builder, string $name, array $options = []): void
     {
-        if (!class_exists(\FOS\CKEditorBundle\Form\Type\CKEditorType::class)) {
+        if (!class_exists(CKEditorType::class)) {
             throw new LogicException('addCKEditorField() requires friendsofsymfony/ckeditor-bundle. Install it and run bin/console ckeditor:install.');
         }
 
-        $this->addWithDefaults($builder, $name, \FOS\CKEditorBundle\Form\Type\CKEditorType::class, $options);
+        $this->addWithDefaults($builder, $name, CKEditorType::class, $options);
     }
 
     /**
@@ -653,11 +657,11 @@ trait FormOptionsTrait
      */
     protected function addDropzone(FormBuilderInterface $builder, string $name, array $options = []): void
     {
-        if (!class_exists(\Symfony\UX\Dropzone\Form\DropzoneType::class)) {
+        if (!class_exists(DropzoneType::class)) {
             throw new LogicException('addDropzone() requires symfony/ux-dropzone. Install it or use addWithDefaults() with your own upload type.');
         }
 
-        $this->addWithDefaults($builder, $name, \Symfony\UX\Dropzone\Form\DropzoneType::class, $options);
+        $this->addWithDefaults($builder, $name, DropzoneType::class, $options);
     }
 
     /**
@@ -682,11 +686,11 @@ trait FormOptionsTrait
      */
     protected function addCropper(FormBuilderInterface $builder, string $name, array $options = []): void
     {
-        if (!class_exists(\Symfony\UX\Cropperjs\Form\CropperType::class)) {
+        if (!class_exists(CropperType::class)) {
             throw new LogicException('addCropper() requires symfony/ux-cropperjs. Install it or use addWithDefaults() with CropperType when available.');
         }
 
-        $this->addWithDefaults($builder, $name, \Symfony\UX\Cropperjs\Form\CropperType::class, $options);
+        $this->addWithDefaults($builder, $name, CropperType::class, $options);
     }
 
     /**

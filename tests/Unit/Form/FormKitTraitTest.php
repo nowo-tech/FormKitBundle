@@ -10,7 +10,17 @@ use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormKitTrait;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 final class FormKitTraitTest extends TestCase
@@ -135,7 +145,7 @@ final class FormKitTraitTest extends TestCase
             ->method('add')
             ->with(
                 'q',
-                \Symfony\Component\Form\Extension\Core\Type\TextType::class,
+                TextType::class,
                 self::callback(static fn (array $options): bool => $options['translation_domain'] === 'compact_forms'
                     && $options['label'] === 'search_form.q.label'
                     && ($options['attr']['class'] ?? '') === 'form-control-sm'),
@@ -169,8 +179,8 @@ final class FormKitTraitTest extends TestCase
             ->with(
                 self::logicalOr('q', 'topic'),
                 self::logicalOr(
-                    \Symfony\Component\Form\Extension\Core\Type\TextType::class,
-                    \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class,
+                    TextType::class,
+                    ChoiceType::class,
                 ),
                 self::isType('array'),
             );
@@ -210,7 +220,7 @@ final class FormKitTraitTest extends TestCase
         $calls   = [];
         $builder->expects(self::exactly(9))
             ->method('add')
-            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): MockObject {
                 $calls[] = [$name, $fqcn];
                 self::assertIsArray($opts);
 
@@ -228,15 +238,15 @@ final class FormKitTraitTest extends TestCase
         $type->callAddChoice($builder, 'choice');
 
         self::assertSame([
-            ['text', \Symfony\Component\Form\Extension\Core\Type\TextType::class],
-            ['email', \Symfony\Component\Form\Extension\Core\Type\EmailType::class],
-            ['textarea', \Symfony\Component\Form\Extension\Core\Type\TextareaType::class],
-            ['password', \Symfony\Component\Form\Extension\Core\Type\PasswordType::class],
-            ['url', \Symfony\Component\Form\Extension\Core\Type\UrlType::class],
-            ['integer', \Symfony\Component\Form\Extension\Core\Type\IntegerType::class],
-            ['number', \Symfony\Component\Form\Extension\Core\Type\NumberType::class],
-            ['checkbox', \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class],
-            ['choice', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class],
+            ['text', TextType::class],
+            ['email', EmailType::class],
+            ['textarea', TextareaType::class],
+            ['password', PasswordType::class],
+            ['url', UrlType::class],
+            ['integer', IntegerType::class],
+            ['number', NumberType::class],
+            ['checkbox', CheckboxType::class],
+            ['choice', ChoiceType::class],
         ], $calls);
     }
 
@@ -260,15 +270,15 @@ final class FormKitTraitTest extends TestCase
         $type->buildWithBoundHelpers($builder);
 
         self::assertSame([
-            ['text', \Symfony\Component\Form\Extension\Core\Type\TextType::class],
-            ['email', \Symfony\Component\Form\Extension\Core\Type\EmailType::class],
-            ['textarea', \Symfony\Component\Form\Extension\Core\Type\TextareaType::class],
-            ['password', \Symfony\Component\Form\Extension\Core\Type\PasswordType::class],
-            ['url', \Symfony\Component\Form\Extension\Core\Type\UrlType::class],
-            ['integer', \Symfony\Component\Form\Extension\Core\Type\IntegerType::class],
-            ['number', \Symfony\Component\Form\Extension\Core\Type\NumberType::class],
-            ['checkbox', \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class],
-            ['choice', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class],
+            ['text', TextType::class],
+            ['email', EmailType::class],
+            ['textarea', TextareaType::class],
+            ['password', PasswordType::class],
+            ['url', UrlType::class],
+            ['integer', IntegerType::class],
+            ['number', NumberType::class],
+            ['checkbox', CheckboxType::class],
+            ['choice', ChoiceType::class],
         ], $calls);
     }
 

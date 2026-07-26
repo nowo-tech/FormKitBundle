@@ -9,6 +9,7 @@ use Nowo\FormKitBundle\Form\FormKitAbstractType;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 final class FormKitAbstractTypeTest extends TestCase
@@ -49,7 +50,7 @@ final class FormKitAbstractTypeTest extends TestCase
             ->method('add')
             ->with(
                 'name',
-                \Symfony\Component\Form\Extension\Core\Type\TextType::class,
+                TextType::class,
                 self::callback(static fn (array $options): bool => $options['label'] === 'contact_form.name.label'
                     && ($options['attr']['class'] ?? '') === 'form-control'),
             );

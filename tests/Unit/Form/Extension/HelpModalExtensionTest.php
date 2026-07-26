@@ -10,6 +10,7 @@ use RuntimeException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -200,7 +201,7 @@ final class HelpModalExtensionTest extends TestCase
     public function testConfigureOptionsAllowsNullBooleanOrArray(): void
     {
         $ext      = new HelpModalExtension([], 'default');
-        $resolver = new \Symfony\Component\OptionsResolver\OptionsResolver();
+        $resolver = new OptionsResolver();
         $ext->configureOptions($resolver);
 
         self::assertNull($resolver->resolve([])['help_modal']);

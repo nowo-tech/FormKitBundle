@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use LogicException;
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\UX\Cropperjs\Form\CropperType;
+use Symfony\UX\Dropzone\Form\DropzoneType;
 
 use function is_string;
 use function sprintf;
@@ -299,7 +301,7 @@ trait FormKitTrait
      */
     protected function addDropzone(FormBuilderInterface $builder, string $name, array $options = []): void
     {
-        if (!class_exists(\Symfony\UX\Dropzone\Form\DropzoneType::class)) {
+        if (!class_exists(DropzoneType::class)) {
             throw new LogicException('addDropzone() requires symfony/ux-dropzone. Install it or register a custom type in nowo_form_kit.type_map.');
         }
 
@@ -321,7 +323,7 @@ trait FormKitTrait
      */
     protected function addCropper(FormBuilderInterface $builder, string $name, array $options = []): void
     {
-        if (!class_exists(\Symfony\UX\Cropperjs\Form\CropperType::class)) {
+        if (!class_exists(CropperType::class)) {
             throw new LogicException('addCropper() requires symfony/ux-cropperjs. Install it or register a custom type in nowo_form_kit.type_map.');
         }
 

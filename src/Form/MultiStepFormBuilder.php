@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -47,7 +48,7 @@ final readonly class MultiStepFormBuilder
         ?string $configName = null
     ): FormInterface {
         $formName = $wizardName . '_' . $stepKey;
-        $builder  = $this->formFactory->createBuilder(\Symfony\Component\Form\Extension\Core\Type\FormType::class, $data, []);
+        $builder  = $this->formFactory->createBuilder(FormType::class, $data, []);
 
         foreach ($fieldsDefinition as $name => $definition) {
             if (is_string($definition)) {

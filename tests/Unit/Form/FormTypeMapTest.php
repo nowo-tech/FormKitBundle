@@ -6,6 +6,12 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\UX\Dropzone\Form\DropzoneType;
 
 use function dirname;
 
@@ -14,8 +20,8 @@ final class FormTypeMapTest extends TestCase
     public function testResolveReturnsFqcnForBuiltinType(): void
     {
         $map = new FormTypeMap([]);
-        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\TextType::class, $map->resolve('text'));
-        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\EmailType::class, $map->resolve('email'));
+        self::assertSame(TextType::class, $map->resolve('text'));
+        self::assertSame(EmailType::class, $map->resolve('email'));
     }
 
     public function testResolveReturnsNullForUnknownType(): void
@@ -45,9 +51,9 @@ final class FormTypeMapTest extends TestCase
     public function testResolveReturnsFqcnForExtendedBuiltinTypes(): void
     {
         $map = new FormTypeMap([]);
-        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\DateType::class, $map->resolve('date'));
-        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\MoneyType::class, $map->resolve('money'));
-        self::assertSame(\Symfony\Component\Form\Extension\Core\Type\CollectionType::class, $map->resolve('collection'));
+        self::assertSame(DateType::class, $map->resolve('date'));
+        self::assertSame(MoneyType::class, $map->resolve('money'));
+        self::assertSame(CollectionType::class, $map->resolve('collection'));
     }
 
     /**
@@ -61,7 +67,7 @@ final class FormTypeMapTest extends TestCase
 
         $map = new FormTypeMap([]);
 
-        self::assertSame(\Symfony\UX\Dropzone\Form\DropzoneType::class, $map->resolve('dropzone'));
+        self::assertSame(DropzoneType::class, $map->resolve('dropzone'));
         self::assertContains('dropzone', $map->typeNames());
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Controller;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use InvalidArgumentException;
 use LogicException;
 use Nowo\FormKitBundle\Controller\FormKitControllerTrait;
@@ -17,7 +18,9 @@ use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -27,6 +30,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use function array_key_exists;
@@ -270,7 +274,7 @@ final class FormKitControllerTraitTest extends TestCase
         $calls   = [];
         $builder->expects(self::exactly(9))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder): MockObject {
                 self::assertIsArray($opts);
                 $calls[] = [$name, $type];
 
@@ -323,13 +327,13 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->setFormKitFormName('controller_contact');
 
         $builder      = $this->createMock(FormBuilderInterface::class);
-        $child        = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child        = $this->createMock(FormBuilder::class);
         $transformers = [];
         $adds         = [];
 
         $child->expects(self::exactly(2))
             ->method('addModelTransformer')
-            ->willReturnCallback(static function ($t) use (&$transformers, $child): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($t) use (&$transformers, $child): MockObject {
                 $transformers[] = $t;
 
                 return $child;
@@ -341,7 +345,7 @@ final class FormKitControllerTraitTest extends TestCase
 
         $builder->expects(self::exactly(2))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$adds, $builder): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$adds, $builder): MockObject {
                 $adds[] = ['name' => $name, 'type' => $type, 'opts' => $opts];
 
                 return $builder;
@@ -395,7 +399,7 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->setFormKitFormName('controller_contact');
 
         $builder = $this->createMock(FormBuilderInterface::class);
-        $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child   = $this->createMock(FormBuilder::class);
 
         $builder->expects(self::once())
             ->method('get')
@@ -453,7 +457,7 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->setFormKitFormName('controller_contact');
 
         $builder = $this->createMock(FormBuilderInterface::class);
-        $child   = $this->createMock(\Symfony\Component\Form\FormBuilder::class);
+        $child   = $this->createMock(FormBuilder::class);
 
         $adds         = [];
         $transformers = [];
@@ -464,7 +468,7 @@ final class FormKitControllerTraitTest extends TestCase
 
         $child->expects(self::exactly(3))
             ->method('addModelTransformer')
-            ->willReturnCallback(static function ($t) use (&$transformers, $child): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($t) use (&$transformers, $child): MockObject {
                 $transformers[] = $t;
 
                 return $child;
@@ -472,7 +476,7 @@ final class FormKitControllerTraitTest extends TestCase
 
         $builder->expects(self::exactly(3))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$adds, $builder): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$adds, $builder): MockObject {
                 $adds[] = [$name, $type];
                 self::assertIsArray($opts);
 
@@ -490,7 +494,7 @@ final class FormKitControllerTraitTest extends TestCase
         ], $adds);
 
         self::assertCount(3, $transformers);
-        self::assertContainsOnlyInstancesOf(\Symfony\Component\Form\DataTransformerInterface::class, $transformers);
+        self::assertContainsOnlyInstancesOf(DataTransformerInterface::class, $transformers);
         self::assertInstanceOf(BoolModelTransformer::class, $transformers[0]);
         self::assertInstanceOf(MoneyModelTransformer::class, $transformers[1]);
         self::assertInstanceOf(CsvModelTransformer::class, $transformers[2]);
@@ -721,7 +725,7 @@ final class FormKitControllerTraitTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::exactly(4))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, array $opts) use (&$calls, $builder): \PHPUnit\Framework\MockObject\MockObject {
+            ->willReturnCallback(static function ($name, $type, array $opts) use (&$calls, $builder): MockObject {
                 $calls[] = [$name, $opts['expanded'] ?? null, $opts['multiple'] ?? null];
 
                 return $builder;
@@ -838,7 +842,7 @@ final class FormKitControllerTraitTest extends TestCase
             ->method('add')
             ->with(
                 'body',
-                \FOS\CKEditorBundle\Form\Type\CKEditorType::class,
+                CKEditorType::class,
                 self::isType('array'),
             );
 

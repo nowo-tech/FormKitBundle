@@ -36,6 +36,7 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\WeekType;
+use Symfony\UX\Dropzone\Form\DropzoneType;
 
 /**
  * Maps snake_case type names to Symfony FormType FQCNs.
@@ -91,8 +92,8 @@ final class FormTypeMap
      * @var array<string, string>
      */
     private const OPTIONAL = [
-        'dropzone'     => \Symfony\UX\Dropzone\Form\DropzoneType::class,
-        'cropper'      => 'Symfony\UX\Cropperjs\Form\CropperType',
+        'dropzone'     => DropzoneType::class,
+        'cropper'      => \Symfony\UX\Cropperjs\Form\CropperType::class,
         'translations' => 'A2lix\TranslationFormBundle\Form\Type\TranslationsType',
     ];
 

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.17] - 2026-07-26
+
+### Added
+
+- **REQ-ASSETS-004** — `FormKitExtension` implements `PrependExtensionInterface` and registers the `nowo_form_kit` asset package (`base_path: /bundles/nowoformkit`). Load help-modal assets with `asset('help-modal.js', 'nowo_form_kit')` / `asset('help-modal.css', 'nowo_form_kit')`.
+- **REQ-DOCS-017** — FrankenPHP Friendly Worker Mode banner in README (`docs/images/frankenphp-friendly.png`).
+- **REQ-CS-005** — `nowo-tech/phpstan-frankenphp` in `require-dev` with `ruleset-classic` + `ruleset-worker` in `phpstan.neon.dist`.
+- **Help modal portal** — `help-modal.ts` MutationObserver keeps Form Kit help modals on `document.body` for dynamic/background forms; stale duplicates by id are removed on refresh.
+
+### Changed
+
+- **REQ-DEMO-010** — Symfony 8 demo uses `dunglas/frankenphp:1-php8.5-alpine`; `FRANKENPHP_MODE` (`classic` \| `worker`, default `worker`) in `.env.example` / Compose / entrypoint.
+- **Docs / demo / recipe** — Help modal examples use the named asset package (no hard-coded `/bundles/nowoformkit/...` paths).
+- **PHP CS Fixer** — `fully_qualified_strict_types.import_symbols` enabled; related `use` import cleanups in src/tests.
+
 ## [2.0.16] - 2026-07-22
 
 ### Added
@@ -256,6 +271,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.17]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.17
 [2.0.16]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.16
 [2.0.15]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.15
 [2.0.14]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.14
