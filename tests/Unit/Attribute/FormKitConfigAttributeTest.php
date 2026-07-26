@@ -90,7 +90,7 @@ final class FormKitConfigAttributeTest extends TestCase
             ->with(
                 'title',
                 TextType::class,
-                self::callback(static fn(array $options): bool => ($options['attr']['class'] ?? null) === 'form-control-lg'),
+                self::callback(static fn (array $options): bool => ($options['attr']['class'] ?? null) === 'form-control-lg'),
             );
 
         $type->run($builder);

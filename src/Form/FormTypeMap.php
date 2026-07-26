@@ -36,6 +36,7 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\WeekType;
+use Symfony\UX\Cropperjs\Form\CropperType;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
 /**
@@ -93,7 +94,7 @@ final class FormTypeMap
      */
     private const OPTIONAL = [
         'dropzone'     => DropzoneType::class,
-        'cropper'      => \Symfony\UX\Cropperjs\Form\CropperType::class,
+        'cropper'      => CropperType::class,
         'translations' => 'A2lix\TranslationFormBundle\Form\Type\TranslationsType',
     ];
 
