@@ -134,9 +134,9 @@ trait FormOptionsTrait
      *
      * Useful for helpers that still require an explicit builder (e.g. addAutocompleteField, addCKEditorField).
      *
-     * @return FormBuilderInterface<mixed>
-     *
      * @throws LogicException when called outside withBuilder()
+     *
+     * @return FormBuilderInterface<mixed>
      */
     protected function boundBuilder(): FormBuilderInterface
     {
@@ -185,7 +185,7 @@ trait FormOptionsTrait
         string $type,
         array $options = []
     ): void {
-        /** @var class-string<FormTypeInterface<mixed>> $type */
+        /* @var class-string<FormTypeInterface<mixed>> $type */
         $builder->add($name, $type, $this->resolveFieldOptions($name, $type, $options));
     }
 
@@ -247,9 +247,9 @@ trait FormOptionsTrait
      * @param FormBuilderInterface<mixed>|FormInterface<mixed> $builder
      * @param array<string, mixed> $options
      *
-     * @return FormBuilderInterface<mixed>|FormInterface<mixed>
-     *
      * @throws InvalidArgumentException
+     *
+     * @return FormBuilderInterface<mixed>|FormInterface<mixed>
      */
     protected function addTranslations(FormBuilderInterface|FormInterface $builder, array $options): FormBuilderInterface|FormInterface
     {
@@ -347,7 +347,7 @@ trait FormOptionsTrait
                 }
                 $options = $definition;
                 unset($options['type']);
-                /** @var class-string<FormTypeInterface<mixed>> $type */
+                /* @var class-string<FormTypeInterface<mixed>> $type */
                 $this->addWithDefaults($builder, $name, $type, $options);
             }
         }

@@ -147,7 +147,7 @@ final class ConstraintDefinitionFactoryTest extends TestCase
         self::assertCount(1, $created);
         self::assertSame(
             'Symfony\\Component\\Validator\\Constraints\\NoCtorCoverageConstraint',
-            $created[0]::class
+            $created[0]::class,
         );
     }
 

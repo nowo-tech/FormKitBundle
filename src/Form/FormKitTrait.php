@@ -91,9 +91,9 @@ trait FormKitTrait
     /**
      * Builder currently bound by {@see withBuilder()}.
      *
-     * @return FormBuilderInterface<mixed>
-     *
      * @throws LogicException when called outside withBuilder()
+     *
+     * @return FormBuilderInterface<mixed>
      */
     protected function boundBuilder(): FormBuilderInterface
     {
@@ -136,7 +136,7 @@ trait FormKitTrait
         if ($fqcn === null) {
             throw new InvalidArgumentException(sprintf('Unknown form type snake_case name "%s". Register it in nowo_form_kit.type_map or use a built-in type.', $typeSnakeCase));
         }
-        /** @var class-string<FormTypeInterface<mixed>> $fqcn */
+        /* @var class-string<FormTypeInterface<mixed>> $fqcn */
         $builder->add($name, $fqcn, $this->mergeFieldOptions($name, $typeSnakeCase, $options));
     }
 

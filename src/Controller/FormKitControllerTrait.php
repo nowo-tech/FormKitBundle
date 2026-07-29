@@ -847,9 +847,9 @@ trait FormKitControllerTrait
      * - If $type looks like an FQCN (contains backslash) return it.
      * - Otherwise resolve snake_case using FormTypeMap.
      *
-     * @return class-string<FormTypeInterface<mixed>>
-     *
      * @throws InvalidArgumentException when FormTypeMap is missing or type cannot be resolved
+     *
+     * @return class-string<FormTypeInterface<mixed>>
      */
     private function resolveTypeFqcn(string $type): string
     {
@@ -858,7 +858,7 @@ trait FormKitControllerTrait
                 throw new InvalidArgumentException(sprintf('Unknown form type "%s". Use a form type FQCN or a registered snake_case alias.', $type));
             }
 
-            /** @var class-string<FormTypeInterface<mixed>> $type */
+            /* @var class-string<FormTypeInterface<mixed>> $type */
             return $type;
         }
 
@@ -869,7 +869,7 @@ trait FormKitControllerTrait
             throw new InvalidArgumentException(sprintf('Unknown form type "%s". Register it in nowo_form_kit.type_map or use a built-in type.', $type));
         }
 
-        /** @var class-string<FormTypeInterface<mixed>> $fqcn */
+        /* @var class-string<FormTypeInterface<mixed>> $fqcn */
         return $fqcn;
     }
 }

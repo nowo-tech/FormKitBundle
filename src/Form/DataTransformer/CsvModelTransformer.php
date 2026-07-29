@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form\DataTransformer;
 
-use function explode;
-use function implode;
 use function array_map;
 use function array_values;
+use function explode;
+use function implode;
 use function is_array;
 use function is_string;
 use function trim;

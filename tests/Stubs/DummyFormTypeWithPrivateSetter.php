@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Stubs;
 
+use LogicException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 
@@ -22,7 +23,7 @@ final class DummyFormTypeWithPrivateSetter
         $this->setFormOptionsMerger(new FormOptionsMerger([], 'default', new ConstraintDefinitionFactory()));
 
         if (!$this->storedMerger instanceof FormOptionsMerger) {
-            throw new \LogicException('Private setter was not exercised.');
+            throw new LogicException('Private setter was not exercised.');
         }
     }
 }

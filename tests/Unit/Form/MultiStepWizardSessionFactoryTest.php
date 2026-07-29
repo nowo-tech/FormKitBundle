@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
-use Nowo\FormKitBundle\Form\MultiStepWizardSession;
 use Nowo\FormKitBundle\Form\MultiStepWizardSessionFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RequestStack;
