@@ -12,6 +12,7 @@ use function array_key_exists;
 use function array_key_first;
 use function class_exists;
 use function count;
+use function is_a;
 use function is_array;
 use function is_string;
 use function sprintf;
@@ -95,14 +96,27 @@ final class ConstraintDefinitionFactory
     /**
      * @param array<string, mixed> $options
      */
+    /**
+     * @param class-string<Constraint> $class
+     * @param array<string, mixed> $options
+     */
     private function instantiate(string $class, array $options, ?string $messageKeyPrefix, string $shortName): Constraint
     {
         $options = $this->applyMessageConvention($class, $options, $messageKeyPrefix, $shortName);
 
-        return new $class(...$options);
+        /** @var Constraint $constraint */
+        $constraint = new $class(...$options);
+
+        return $constraint;
     }
 
     /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
+    /**
+     * @param class-string<Constraint> $class
      * @param array<string, mixed> $options
      *
      * @return array<string, mixed>
@@ -130,6 +144,9 @@ final class ConstraintDefinitionFactory
         return $options;
     }
 
+    /**
+     * @param class-string<Constraint> $class
+     */
     private function constructorAccepts(string $class, string $paramName): bool
     {
         $ctor = (new ReflectionClass($class))->getConstructor();
@@ -154,6 +171,9 @@ final class ConstraintDefinitionFactory
         return $fallback;
     }
 
+    /**
+     * @return class-string<Constraint>
+     */
     private function resolveClass(string $name): string
     {
         if (str_contains($name, '\\')) {
@@ -163,6 +183,9 @@ final class ConstraintDefinitionFactory
             if (!class_exists($name)) {
                 throw new InvalidArgumentException(sprintf('Constraint class "%s" does not exist.', $name));
             }
+            if (!is_a($name, Constraint::class, true)) {
+                throw new InvalidArgumentException(sprintf('Constraint class "%s" must extend %s.', $name, Constraint::class));
+            }
 
             return $name;
         }
@@ -170,6 +193,9 @@ final class ConstraintDefinitionFactory
         $fqcn = self::CONSTRAINTS_PREFIX . $name;
         if (!class_exists($fqcn)) {
             throw new InvalidArgumentException(sprintf('Unknown constraint "%s". Use a Symfony Validator constraint short name (e.g. NotBlank) or a full class under %s.', $name, self::CONSTRAINTS_PREFIX));
+        }
+        if (!is_a($fqcn, Constraint::class, true)) {
+            throw new InvalidArgumentException(sprintf('Constraint class "%s" must extend %s.', $fqcn, Constraint::class));
         }
 
         return $fqcn;

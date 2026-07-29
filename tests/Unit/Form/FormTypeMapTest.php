@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\UX\Cropperjs\Form\CropperType;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
 use function dirname;
@@ -32,8 +33,8 @@ final class FormTypeMapTest extends TestCase
 
     public function testResolveUsesConfigOverride(): void
     {
-        $map = new FormTypeMap(['custom' => 'App\Form\Type\CustomType']);
-        self::assertSame('App\Form\Type\CustomType', $map->resolve('custom'));
+        $map = new FormTypeMap(['custom' => TextType::class]);
+        self::assertSame(TextType::class, $map->resolve('custom'));
     }
 
     public function testTypeNamesReturnsKeys(): void
@@ -69,5 +70,15 @@ final class FormTypeMapTest extends TestCase
 
         self::assertSame(DropzoneType::class, $map->resolve('dropzone'));
         self::assertContains('dropzone', $map->typeNames());
+    }
+
+    public function testOptionalTypesCanBeResolvedInSameProcessOnceStubsAreLoaded(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $map = new FormTypeMap([]);
+
+        self::assertSame(DropzoneType::class, $map->resolve('dropzone'));
+        self::assertSame(CropperType::class, $map->resolve('cropper'));
     }
 }

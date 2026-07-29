@@ -32,15 +32,15 @@ final class NowoFormKitBundleTest extends TestCase
         $bundle->build($container);
 
         $passes = $container->getCompilerPassConfig()->getPasses();
+        $found  = false;
         foreach ($passes as $pass) {
             if ($pass instanceof TwigPathsPass) {
-                self::assertTrue(true);
-
-                return;
+                $found = true;
+                break;
             }
         }
 
-        self::fail('TwigPathsPass was not registered.');
+        self::assertTrue($found);
     }
 
     public function testBuildRegistersFormOptionsMergerInjectorCompilerPass(): void

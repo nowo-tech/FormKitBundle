@@ -148,4 +148,41 @@ final class FormOptionsMergerTest extends TestCase
         self::assertInstanceOf(NotBlank::class, $merged['constraints'][0]);
         self::assertSame('user_profile.full_name.constraints.NotBlank', $merged['constraints'][0]->message);
     }
+
+    public function testResolveUsesSnakeCaseFallbackForByFormFieldOverrides(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => ['attr' => [], 'row_attr' => []],
+                    'field_types'        => [],
+                    'by_form'            => [
+                        'profile' => [
+                            'fields' => [
+                                'full_name' => [
+                                    'attr' => ['autocomplete' => 'name'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('profile', 'fullName', 'text');
+
+        self::assertSame('name', $merged['attr']['autocomplete']);
+    }
+
+    public function testResolveKeepsConventionPlaceholderWhenExplicitlySetToNull(): void
+    {
+        $merged = $this->createMerger()->resolve('demo_form', 'name', 'text', [
+            'placeholder' => null,
+        ]);
+
+        self::assertSame('demo_form.name.placeholder', $merged['attr']['placeholder']);
+    }
 }

@@ -2,6 +2,17 @@
 
 The bundle is configured under the root key `nowo_form_kit`. Multiple profiles can coexist; each is identified by a name and has an `alias` and the usual options.
 
+## Table of contents
+
+- [Structure](#structure)
+- [Cascade order](#cascade-order)
+- [Per-form defaults (`by_form`)](#per-form-defaults-by_form)
+- [Form type extensions (global)](#form-type-extensions-global)
+- [Example with multiple profiles](#example-with-multiple-profiles)
+- [Suggested optional Composer packages](#suggested-optional-composer-packages)
+- [Optional and custom types (type_map)](#optional-and-custom-types-type_map)
+- [Using a specific profile in a form type](#using-a-specific-profile-in-a-form-type)
+
 ## Structure
 
 | Option | Type | Description |

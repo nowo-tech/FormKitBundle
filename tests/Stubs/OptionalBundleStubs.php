@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace Symfony\UX\Dropzone\Form;
 
+use Symfony\Component\Form\AbstractType;
+
 if (!class_exists(DropzoneType::class)) {
-    final class DropzoneType
+    /** @extends AbstractType<mixed> */
+    final class DropzoneType extends AbstractType
     {
     }
 }
 
 namespace Symfony\UX\Cropperjs\Form;
 
+use Symfony\Component\Form\AbstractType;
+
 if (!class_exists(CropperType::class)) {
-    final class CropperType
+    /** @extends AbstractType<mixed> */
+    final class CropperType extends AbstractType
     {
     }
 }
@@ -28,8 +34,11 @@ if (!class_exists(NowoSelectAllChoiceBundle::class)) {
 
 namespace FOS\CKEditorBundle\Form\Type;
 
+use Symfony\Component\Form\AbstractType;
+
 if (!class_exists(CKEditorType::class)) {
-    final class CKEditorType
+    /** @extends AbstractType<mixed> */
+    final class CKEditorType extends AbstractType
     {
     }
 }

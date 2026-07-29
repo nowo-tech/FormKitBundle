@@ -22,6 +22,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\UX\Cropperjs\Form\CropperType;
+use Symfony\UX\Dropzone\Form\DropzoneType;
+
+use function dirname;
 
 final class FormKitTraitTest extends TestCase
 {
@@ -51,86 +55,9 @@ final class FormKitTraitTest extends TestCase
         );
     }
 
-    private function createType(): object
+    private function createType(): FormKitTraitTestType
     {
-        return new class {
-            use FormKitTrait;
-
-            public function getBlockPrefix(): string
-            {
-                return 'search_form';
-            }
-
-            public function addSnakeField(FormBuilderInterface $builder, string $name, string $type, array $options = []): void
-            {
-                $this->addField($builder, $name, $type, $options);
-            }
-
-            public function addFromArray(FormBuilderInterface $builder, array $fields): void
-            {
-                $this->buildFormFromArray($builder, $fields);
-            }
-
-            public function callAddText(FormBuilderInterface $builder, string $name, array $options = []): void
-            {
-                $this->addText($builder, $name, $options);
-            }
-
-            public function callAddEmail(FormBuilderInterface $builder, string $name): void
-            {
-                $this->addEmail($builder, $name);
-            }
-
-            public function callAddTextarea(FormBuilderInterface $builder, string $name): void
-            {
-                $this->addTextarea($builder, $name);
-            }
-
-            public function callAddPassword(FormBuilderInterface $builder, string $name): void
-            {
-                $this->addPassword($builder, $name);
-            }
-
-            public function callAddUrl(FormBuilderInterface $builder, string $name): void
-            {
-                $this->addUrl($builder, $name);
-            }
-
-            public function callAddInteger(FormBuilderInterface $builder, string $name): void
-            {
-                $this->addInteger($builder, $name);
-            }
-
-            public function callAddNumber(FormBuilderInterface $builder, string $name): void
-            {
-                $this->addNumber($builder, $name);
-            }
-
-            public function callAddCheckbox(FormBuilderInterface $builder, string $name): void
-            {
-                $this->addCheckbox($builder, $name);
-            }
-
-            public function callAddChoice(FormBuilderInterface $builder, string $name): void
-            {
-                $this->addChoice($builder, $name);
-            }
-
-            public function buildWithBoundHelpers(FormBuilderInterface $builder): void
-            {
-                $this->withBuilder($builder, function (): void {
-                    $this->addTextField('text');
-                    $this->addEmailField('email');
-                    $this->addTextareaField('textarea');
-                    $this->addPasswordField('password');
-                    $this->addUrlField('url');
-                    $this->addIntegerField('integer');
-                    $this->addNumberField('number');
-                    $this->addCheckboxField('checkbox');
-                    $this->addChoiceField('choice');
-                });
-            }
-        };
+        return new FormKitTraitTestType();
     }
 
     public function testAddFieldResolvesSnakeCaseAndAppliesConfig(): void
@@ -301,5 +228,151 @@ final class FormKitTraitTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('No form builder is bound');
         $type->callBoundBuilder();
+    }
+
+    public function testBoundBuilderHelpersCoverNamedArrayAndOptionalFields(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $type = $this->createType();
+        $type->setFormOptionsMerger($this->createMerger());
+        $type->setFormTypeMap(new FormTypeMap([]));
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $calls   = [];
+        $builder->expects(self::exactly(4))
+            ->method('add')
+            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): FormBuilderInterface {
+                $calls[] = [$name, $fqcn];
+                self::assertIsArray($opts);
+
+                return $builder;
+            });
+
+        $type->buildWithOptionalBoundHelpers($builder);
+
+        self::assertSame([
+            ['custom', TextType::class],
+            ['topic', ChoiceType::class],
+            ['document', DropzoneType::class],
+            ['avatar', CropperType::class],
+        ], $calls);
+    }
+}
+
+final class FormKitTraitTestType
+{
+    use FormKitTrait;
+
+    public function getBlockPrefix(): string
+    {
+        return 'search_form';
+    }
+
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
+    public function addSnakeField(FormBuilderInterface $builder, string $name, string $type, array $options = []): void
+    {
+        $this->addField($builder, $name, $type, $options);
+    }
+
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $fields
+     */
+    public function addFromArray(FormBuilderInterface $builder, array $fields): void
+    {
+        $this->buildFormFromArray($builder, $fields);
+    }
+
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
+    public function callAddText(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addText($builder, $name, $options);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callAddEmail(FormBuilderInterface $builder, string $name): void
+    {
+        $this->addEmail($builder, $name);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callAddTextarea(FormBuilderInterface $builder, string $name): void
+    {
+        $this->addTextarea($builder, $name);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callAddPassword(FormBuilderInterface $builder, string $name): void
+    {
+        $this->addPassword($builder, $name);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callAddUrl(FormBuilderInterface $builder, string $name): void
+    {
+        $this->addUrl($builder, $name);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callAddInteger(FormBuilderInterface $builder, string $name): void
+    {
+        $this->addInteger($builder, $name);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callAddNumber(FormBuilderInterface $builder, string $name): void
+    {
+        $this->addNumber($builder, $name);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callAddCheckbox(FormBuilderInterface $builder, string $name): void
+    {
+        $this->addCheckbox($builder, $name);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callAddChoice(FormBuilderInterface $builder, string $name): void
+    {
+        $this->addChoice($builder, $name);
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function buildWithBoundHelpers(FormBuilderInterface $builder): void
+    {
+        $this->withBuilder($builder, function (): void {
+            $this->addTextField('text');
+            $this->addEmailField('email');
+            $this->addTextareaField('textarea');
+            $this->addPasswordField('password');
+            $this->addUrlField('url');
+            $this->addIntegerField('integer');
+            $this->addNumberField('number');
+            $this->addCheckboxField('checkbox');
+            $this->addChoiceField('choice');
+        });
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function buildWithOptionalBoundHelpers(FormBuilderInterface $builder): void
+    {
+        $this->withBuilder($builder, function (): void {
+            $this->addNamedField('custom', 'text');
+            $this->buildFieldsFromArray([
+                'topic' => [
+                    'type'    => 'choice',
+                    'choices' => ['Support' => 'support'],
+                ],
+            ]);
+            $this->addDropzoneField('document');
+            $this->addCropperField('avatar');
+        });
     }
 }

@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use LogicException;
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\UX\Cropperjs\Form\CropperType;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
@@ -28,7 +29,7 @@ trait FormKitTrait
     protected FormOptionsMerger $formOptionsMerger;
     protected FormTypeMap $formTypeMap;
 
-    /** Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
+    /** @var FormBuilderInterface<mixed>|null Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
     private ?FormBuilderInterface $formKitBoundBuilder = null;
 
     /** Profile name (key in nowo_form_kit.profiles) to use; null = default_profile */
@@ -72,6 +73,7 @@ trait FormKitTrait
      *
      * Nested calls restore the previous builder (or null) when the inner callback returns.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param callable(): void $callback
      */
     protected function withBuilder(FormBuilderInterface $builder, callable $callback): void
@@ -88,6 +90,8 @@ trait FormKitTrait
 
     /**
      * Builder currently bound by {@see withBuilder()}.
+     *
+     * @return FormBuilderInterface<mixed>
      *
      * @throws LogicException when called outside withBuilder()
      */
@@ -121,6 +125,7 @@ trait FormKitTrait
     /**
      * Add a field by snake_case type name (must exist in type map). Options are merged in cascade.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options Field-specific options
      *
      * @throws InvalidArgumentException When type is not in the map
@@ -131,6 +136,7 @@ trait FormKitTrait
         if ($fqcn === null) {
             throw new InvalidArgumentException(sprintf('Unknown form type snake_case name "%s". Register it in nowo_form_kit.type_map or use a built-in type.', $typeSnakeCase));
         }
+        /** @var class-string<FormTypeInterface<mixed>> $fqcn */
         $builder->add($name, $fqcn, $this->mergeFieldOptions($name, $typeSnakeCase, $options));
     }
 
@@ -151,7 +157,8 @@ trait FormKitTrait
      * - A string: the snake_case type (e.g. 'text', 'email').
      * - An array with required key "type" (snake_case) and any other options for that field.
      *
-     * @param array<string, array{type: string, ...}|string> $fields e.g. ['full_name' => 'text', 'topic' => ['type' => 'choice', 'choices' => [...]]]
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, array{type?: string, ...}|string> $fields e.g. ['full_name' => 'text', 'topic' => ['type' => 'choice', 'choices' => [...]]]
      */
     protected function buildFormFromArray(FormBuilderInterface $builder, array $fields): void
     {
@@ -160,7 +167,7 @@ trait FormKitTrait
                 $this->addField($builder, $name, $definition, []);
             } else {
                 $type = $definition['type'] ?? null;
-                if ($type === null || $type === '') {
+                if (!is_string($type) || $type === '') {
                     throw new InvalidArgumentException(sprintf('Field "%s" must have a non-empty "type" key.', $name));
                 }
                 $options = $definition;
@@ -173,7 +180,7 @@ trait FormKitTrait
     /**
      * Like {@see buildFormFromArray()} using the builder from {@see withBuilder()}.
      *
-     * @param array<string, array{type: string, ...}|string> $fields
+     * @param array<string, array{type?: string, ...}|string> $fields
      */
     protected function buildFieldsFromArray(array $fields): void
     {
@@ -182,55 +189,82 @@ trait FormKitTrait
 
     // --- Phase 2: add-by-type helpers (no type class needed, only field name + options) ---
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addText(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'text', $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addEmail(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'email', $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addTextarea(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'textarea', $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addPassword(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'password', $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addUrl(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'url', $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addInteger(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'integer', $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addNumber(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'number', $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addCheckbox(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'checkbox', $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addChoice(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addField($builder, $name, 'choice', $options);
@@ -295,6 +329,7 @@ trait FormKitTrait
     /**
      * Optional UX Dropzone (`dropzone` in FormTypeMap). Requires `symfony/ux-dropzone`.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
      *
      * @throws LogicException when the package is not installed / type not in the map
@@ -317,6 +352,7 @@ trait FormKitTrait
     /**
      * Optional UX Cropper.js (`cropper` in FormTypeMap). Requires `symfony/ux-cropperjs`.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
      *
      * @throws LogicException when the package is not installed / type not in the map

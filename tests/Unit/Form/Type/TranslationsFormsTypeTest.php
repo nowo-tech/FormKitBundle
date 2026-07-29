@@ -9,6 +9,7 @@ namespace A2lix\TranslationFormBundle\Form\Type {
     // Minimal stub so unit tests can exercise the wrapper even when
     // a2lix/translation-form-bundle is not installed in the test environment.
     if (!class_exists(__NAMESPACE__ . '\\TranslationsFormsType')) {
+        /** @extends AbstractType<mixed> */
         class TranslationsFormsType extends AbstractType
         {
             public function configureOptions(OptionsResolver $resolver): void

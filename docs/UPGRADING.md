@@ -2,6 +2,33 @@
 
 This document describes how to upgrade between major versions of Form Kit Bundle.
 
+## Table of contents
+
+- [2.0.0 (2026-06-11)](#200-2026-06-11)
+  - [Breaking: raised platform requirements](#breaking-raised-platform-requirements)
+  - [Upgrade steps (from 1.x)](#upgrade-steps-from-1x)
+- [2.0.x patch releases](#20x-patch-releases)
+  - [2.0.18 (2026-07-29)](#2018-2026-07-29)
+  - [2.0.17 (2026-07-26)](#2017-2026-07-26)
+  - [2.0.16 (2026-07-22)](#2016-2026-07-22)
+  - [2.0.15 (2026-07-20)](#2015-2026-07-20)
+  - [2.0.14 (2026-07-20)](#2014-2026-07-20)
+  - [2.0.13 (2026-07-20)](#2013-2026-07-20)
+  - [2.0.12 (2026-07-20)](#2012-2026-07-20)
+  - [2.0.11 (2026-07-18)](#2011-2026-07-18)
+  - [2.0.10 (2026-07-18)](#2010-2026-07-18)
+  - [2.0.9 (2026-07-18)](#209-2026-07-18)
+  - [2.0.8 (2026-07-18)](#208-2026-07-18)
+  - [2.0.7 (2026-07-09)](#207-2026-07-09)
+  - [2.0.6 (2026-07-09)](#206-2026-07-09)
+  - [2.0.5 (2026-07-03)](#205-2026-07-03)
+  - [2.0.4 (2026-07-03)](#204-2026-07-03)
+  - [2.0.3 (2026-07-03)](#203-2026-07-03)
+  - [2.0.2 (2026-06-11)](#202-2026-06-11)
+  - [2.0.1 (2026-06-11)](#201-2026-06-11)
+- [1.x](#1x)
+  - [1.0.0 (2025-03-03)](#100-2025-03-03)
+
 ## 2.0.0 (2026-06-11)
 
 ### Breaking: raised platform requirements
@@ -30,6 +57,11 @@ If your project runs on PHP 8.1 or Symfony 6.4 / 7.0–7.3, stay on **form-kit-b
 No configuration key renames are required for existing YAML; public services and extension points remain compatible where the platform allows installation.
 
 ## 2.0.x patch releases
+
+### 2.0.18 (2026-07-29)
+
+- **Repository / QA** — Empty PHPStan baseline ([PHPSTAN.md](PHPSTAN.md)); `make coverage-check` / `check-open-prs` / `demo-smoke`; CI fails on direct Symfony deprecations from this package. No YAML or public API rename for integrators.
+- **Constraint FQCNs** — Invalid constraint class names (not extending Symfony `Constraint`) now throw `InvalidArgumentException` from `ConstraintDefinitionFactory`.
 
 ### 2.0.17 (2026-07-26)
 

@@ -4,6 +4,10 @@ If you discover a security-related issue, please report it privately (e.g. by em
 
 This bundle does not process user credentials or sensitive data itself; it only merges form options and translation keys. Security of your application remains your responsibility (CSRF, validation, etc.).
 
+## Help modal HTML (frontend)
+
+`help-modal.js` may set `innerHTML` for `title_html`, `content`, and `icon_html` from **developer-controlled** form/YAML options (not end-user input). Treat those fields as trusted markup: do not pass unsanitized visitor content. Prefer plain `title` / escaped text when the value is not intentionally HTML. Integrators using a strict CSP should allow the bundled script (and optional CSS) from the `nowo_form_kit` asset package.
+
 ## Release security checklist (12.4.1)
 
 Before tagging a release, confirm:

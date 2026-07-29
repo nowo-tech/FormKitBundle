@@ -31,6 +31,8 @@ final class ConstraintDefinitionFactoryTest extends TestCase
             ['Email' => ['mode' => Email::VALIDATION_MODE_HTML5]],
         ]);
 
+        self::assertInstanceOf(NotBlank::class, $c[0]);
+        self::assertInstanceOf(Email::class, $c[1]);
         self::assertSame('custom', $c[0]->message);
         self::assertSame(Email::VALIDATION_MODE_HTML5, $c[1]->mode);
     }
@@ -94,9 +96,23 @@ final class ConstraintDefinitionFactoryTest extends TestCase
             'user_profile.email',
         );
 
+        self::assertInstanceOf(NotBlank::class, $created[0]);
+        self::assertInstanceOf(Length::class, $created[1]);
         self::assertSame('user_profile.email.constraints.NotBlank', $created[0]->message);
         self::assertSame('user_profile.email.constraints.Length.max', $created[1]->maxMessage);
         self::assertSame(10, $created[1]->max);
+    }
+
+    public function testAppliesMinMessageConventionForLengthConstraints(): void
+    {
+        $created = (new ConstraintDefinitionFactory())->create(
+            [['Length' => ['min' => 3]]],
+            'user_profile.password',
+        );
+
+        self::assertInstanceOf(Length::class, $created[0]);
+        self::assertSame(3, $created[0]->min);
+        self::assertSame('user_profile.password.constraints.Length.min', $created[0]->minMessage);
     }
 
     public function testDoesNotOverrideExplicitMessageWhenPrefixSet(): void
@@ -106,6 +122,7 @@ final class ConstraintDefinitionFactoryTest extends TestCase
             'user_profile.email',
         );
 
+        self::assertInstanceOf(NotBlank::class, $created[0]);
         self::assertSame('keep_me', $created[0]->message);
     }
 
@@ -114,6 +131,47 @@ final class ConstraintDefinitionFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         (new ConstraintDefinitionFactory())->create([
             'Symfony\\Component\\Validator\\Constraints\\TotallyMissingConstraint',
+        ]);
+    }
+
+    public function testMessageConventionSkipsInjectionWhenConstraintHasNoConstructor(): void
+    {
+        if (!class_exists('Symfony\\Component\\Validator\\Constraints\\NoCtorCoverageConstraint')) {
+            eval('namespace Symfony\\Component\\Validator\\Constraints; final class NoCtorCoverageConstraint extends \\Symfony\\Component\\Validator\\Constraint {}');
+        }
+
+        $created = (new ConstraintDefinitionFactory())->create([
+            'Symfony\\Component\\Validator\\Constraints\\NoCtorCoverageConstraint',
+        ], 'user_profile.email');
+
+        self::assertCount(1, $created);
+        self::assertSame(
+            'Symfony\\Component\\Validator\\Constraints\\NoCtorCoverageConstraint',
+            $created[0]::class
+        );
+    }
+
+    public function testRejectsValidatorFqcnThatDoesNotExtendConstraint(): void
+    {
+        if (!class_exists('Symfony\\Component\\Validator\\Constraints\\FakeCoverageConstraintLikeClass')) {
+            eval('namespace Symfony\\Component\\Validator\\Constraints; final class FakeCoverageConstraintLikeClass {}');
+        }
+
+        $this->expectException(InvalidArgumentException::class);
+        (new ConstraintDefinitionFactory())->create([
+            'Symfony\\Component\\Validator\\Constraints\\FakeCoverageConstraintLikeClass',
+        ]);
+    }
+
+    public function testRejectsValidatorShortNameWhenResolvedClassDoesNotExtendConstraint(): void
+    {
+        if (!class_exists('Symfony\\Component\\Validator\\Constraints\\FakeCoverageConstraintLikeClass')) {
+            eval('namespace Symfony\\Component\\Validator\\Constraints; final class FakeCoverageConstraintLikeClass {}');
+        }
+
+        $this->expectException(InvalidArgumentException::class);
+        (new ConstraintDefinitionFactory())->create([
+            'FakeCoverageConstraintLikeClass',
         ]);
     }
 }

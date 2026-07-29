@@ -15,13 +15,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Use it inside forms rendered by the form_renderer loop for notices or help text.
  * Configure the appearance via the form theme block "static_alert_row".
  */
+/**
+ * @extends AbstractType<mixed>
+ */
 final class StaticAlertType extends AbstractType
 {
+    /** @param FormBuilderInterface<mixed> $builder */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // No children: this type only renders static HTML via the row block.
     }
 
+    /**
+     * @param FormInterface<mixed> $form
+     * @param array<string, mixed> $options
+     */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['message']            = $options['message'];

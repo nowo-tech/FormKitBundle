@@ -5,7 +5,95 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Table of contents
+
+- [[Unreleased]](#unreleased)
+- [[2.0.18] - 2026-07-29](#2018-2026-07-29)
+  - [Added](#added)
+  - [Changed](#changed)
+  - [Fixed](#fixed)
+- [[2.0.17] - 2026-07-26](#2017-2026-07-26)
+  - [Added](#added)
+  - [Changed](#changed)
+- [[2.0.16] - 2026-07-22](#2016-2026-07-22)
+  - [Added](#added)
+  - [Changed](#changed)
+- [[2.0.15] - 2026-07-20](#2015-2026-07-20)
+  - [Added](#added)
+  - [Changed](#changed)
+- [[2.0.14] - 2026-07-20](#2014-2026-07-20)
+  - [Added](#added)
+- [[2.0.13] - 2026-07-20](#2013-2026-07-20)
+  - [Changed](#changed)
+- [[2.0.12] - 2026-07-20](#2012-2026-07-20)
+  - [Changed](#changed)
+- [[2.0.11] - 2026-07-18](#2011-2026-07-18)
+  - [Changed](#changed)
+- [[2.0.10] - 2026-07-18](#2010-2026-07-18)
+  - [Added](#added)
+  - [Changed](#changed)
+- [[2.0.9] - 2026-07-18](#209-2026-07-18)
+  - [Removed](#removed)
+  - [Changed](#changed)
+- [[2.0.8] - 2026-07-18](#208-2026-07-18)
+  - [Added](#added)
+  - [Changed](#changed)
+- [[2.0.7] - 2026-07-09](#207-2026-07-09)
+  - [Fixed](#fixed)
+  - [Changed](#changed)
+- [[2.0.6] - 2026-07-09](#206-2026-07-09)
+  - [Added](#added)
+  - [Changed](#changed)
+- [[2.0.5] - 2026-07-03](#205-2026-07-03)
+  - [Fixed](#fixed)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+- [[2.0.4] - 2026-07-03](#204-2026-07-03)
+  - [Fixed](#fixed)
+- [[2.0.3] - 2026-07-03](#203-2026-07-03)
+  - [Added](#added)
+  - [Changed](#changed)
+  - [Fixed](#fixed)
+  - [Documentation](#documentation)
+- [[2.0.2] - 2026-06-11](#202-2026-06-11)
+  - [Fixed](#fixed)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+- [[2.0.1] - 2026-06-11](#201-2026-06-11)
+  - [Removed](#removed)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+- [[2.0.0] - 2026-06-11](#200-2026-06-11)
+  - [Added](#added)
+  - [Changed](#changed)
+  - [Documentation](#documentation)
+- [[1.0.0] - 2025-03-03](#100-2025-03-03)
+  - [Added](#added)
+  - [Changed](#changed)
+
 ## [Unreleased]
+
+## [2.0.18] - 2026-07-29
+
+### Added
+
+- **`docs/PHPSTAN.md`** — PHPStan level 8 policy: empty baseline (`ignoreErrors: []`); fix findings in code/tests instead of silencing.
+- **QA Make targets** — `coverage-check` (fail if Lines &lt; 99%, REQ-TEST-003), `check-open-prs` (REQ-REL-003), `demo-smoke` (REQ-TEST-011); wired into `release-check`.
+- **Scripts** — `.scripts/coverage-fail-under.sh`, `.scripts/check-open-prs.sh`.
+- **PHPUnit / CI** — `SYMFONY_DEPRECATIONS_HELPER=max[direct]=0` (REQ-SF-005) in `phpunit.xml.dist` and CI test jobs.
+- **PHPUnit** — Broader coverage for traits, controller trait, constraint factory, TwigPathsPass, FormKitExtension.
+
+### Changed
+
+- **PHPStan** — Cleared `phpstan-baseline.neon` suppressions; PHPDoc and small type-safe cleanups across `src/` (traits, mergers, CSS utilities, constraints, static types).
+- **Docs** — Table of contents on CHANGELOG, UPGRADING, INSTALLATION, CONFIGURATION, ROADMAP, SECURITY notes, GITHUB_CI, SPEC-DRIVEN-DEVELOPMENT; README coverage badge **99.4%**.
+- **Dev dependencies** — `friendsofphp/php-cs-fixer` **3.95.15 → 3.95.17**; `rector/rector` **2.5.7 → 2.5.8**; `phpstan/phpstan` **2.2.5 → 2.2.6** (Dependabot).
+- **Flex recipe stubs** — Comment URLs point to GitHub repo **FormKitBundle**.
+
+### Fixed
+
+- **`.github/SECURITY.md`** — Correct product name (Form Kit Bundle).
+- **`ConstraintDefinitionFactory`** — Reject FQCNs that do not extend Symfony `Constraint`.
 
 ## [2.0.17] - 2026-07-26
 
@@ -271,6 +359,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.18]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.18
 [2.0.17]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.17
 [2.0.16]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.16
 [2.0.15]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.15

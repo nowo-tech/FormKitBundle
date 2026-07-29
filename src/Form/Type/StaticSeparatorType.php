@@ -11,8 +11,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Renders a horizontal rule (hr) in the form flow. Use with form_renderer loop.
  */
+/**
+ * @extends AbstractType<mixed>
+ */
 final class StaticSeparatorType extends AbstractType
 {
+    /** @param FormBuilderInterface<mixed> $builder */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
     }

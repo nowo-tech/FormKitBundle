@@ -6,7 +6,6 @@ namespace Nowo\FormKitBundle\Css;
 
 use InvalidArgumentException;
 
-use function array_values;
 use function in_array;
 use function preg_split;
 use function sprintf;
@@ -39,11 +38,11 @@ final readonly class CssClassUtilities
      */
     public function normalizeColumnClasses(array $classes): string
     {
-        return match ($this->framework) {
-            CssFramework::Bootstrap->value  => BootstrapCssClassUtilities::normalizeColumnClasses($classes),
-            CssFramework::Tailwind->value   => TailwindCssClassUtilities::normalizeColumnClasses($classes),
-            CssFramework::Foundation->value => FoundationCssClassUtilities::normalizeColumnClasses($classes),
-            CssFramework::None->value       => NullCssClassUtilities::normalizeColumnClasses($classes),
+        return match (CssFramework::from($this->framework)) {
+            CssFramework::Bootstrap  => BootstrapCssClassUtilities::normalizeColumnClasses($classes),
+            CssFramework::Tailwind   => TailwindCssClassUtilities::normalizeColumnClasses($classes),
+            CssFramework::Foundation => FoundationCssClassUtilities::normalizeColumnClasses($classes),
+            CssFramework::None       => NullCssClassUtilities::normalizeColumnClasses($classes),
         };
     }
 
@@ -51,18 +50,18 @@ final readonly class CssClassUtilities
     {
         $parts = preg_split('/\s+/', trim($classString), -1, PREG_SPLIT_NO_EMPTY);
         /** @var list<string> $list */
-        $list = $parts !== false ? array_values($parts) : [];
+        $list = $parts !== false ? $parts : [];
 
         return $this->normalizeColumnClasses($list);
     }
 
     public function orderClasses(string $classString): string
     {
-        return match ($this->framework) {
-            CssFramework::Bootstrap->value  => BootstrapCssClassUtilities::orderClasses($classString),
-            CssFramework::Tailwind->value   => TailwindCssClassUtilities::orderClasses($classString),
-            CssFramework::Foundation->value => FoundationCssClassUtilities::orderClasses($classString),
-            CssFramework::None->value       => NullCssClassUtilities::orderClasses($classString),
+        return match (CssFramework::from($this->framework)) {
+            CssFramework::Bootstrap  => BootstrapCssClassUtilities::orderClasses($classString),
+            CssFramework::Tailwind   => TailwindCssClassUtilities::orderClasses($classString),
+            CssFramework::Foundation => FoundationCssClassUtilities::orderClasses($classString),
+            CssFramework::None       => NullCssClassUtilities::orderClasses($classString),
         };
     }
 }

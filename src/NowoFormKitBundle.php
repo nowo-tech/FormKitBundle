@@ -25,7 +25,11 @@ class NowoFormKitBundle extends Bundle
 {
     public function getContainerExtension(): ?ExtensionInterface
     {
-        return $this->extension ??= new FormKitExtension();
+        if ($this->extension === null || $this->extension === false) {
+            $this->extension = new FormKitExtension();
+        }
+
+        return $this->extension;
     }
 
     public function build(ContainerBuilder $container): void

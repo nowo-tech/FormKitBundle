@@ -127,6 +127,7 @@ final class HelpModalExtensionTest extends TestCase
     public function testBuildViewUsesUxIconRendererWhenUxIconIsSetAndRendererProvided(): void
     {
         $renderer = new class {
+            /** @param array<string, mixed> $attributes */
             public function renderIcon(string $name, array $attributes = []): string
             {
                 return '<svg data-test-icon="' . $name . '" class="' . ($attributes['class'] ?? '') . '"></svg>';
@@ -251,6 +252,7 @@ final class HelpModalExtensionTest extends TestCase
     public function testBuildViewFallsBackWhenUxIconRendererThrows(): void
     {
         $renderer = new class {
+            /** @param array<string, mixed> $attributes */
             public function renderIcon(string $name, array $attributes = []): string
             {
                 throw new RuntimeException('icon failure');

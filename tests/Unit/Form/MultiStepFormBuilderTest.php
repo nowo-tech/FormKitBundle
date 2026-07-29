@@ -53,7 +53,6 @@ final class MultiStepFormBuilderTest extends TestCase
         $builder->expects(self::exactly(2))
             ->method('add')
             ->willReturnCallback(static function ($name, $type, array $opts) use (&$calls, $builder): MockObject {
-                self::assertIsArray($opts);
                 self::assertSame('messages', $opts['translation_domain'] ?? null);
                 $calls[] = [$name, $type];
 

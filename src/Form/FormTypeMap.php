@@ -90,7 +90,7 @@ final class FormTypeMap
      * Optional types (Symfony UX, A2lix, etc.). Only added when the class exists.
      * Autocomplete is not a standalone FormType; use entity attributes instead.
      *
-     * @var array<string, string>
+     * @var array{dropzone: string, cropper: string, translations: string}
      */
     private const OPTIONAL = [
         'dropzone'     => DropzoneType::class,
@@ -104,6 +104,7 @@ final class FormTypeMap
     /** @param array<string, string> $typeMap From config (nowo_form_kit.type_map) */
     public function __construct(array $typeMap = [])
     {
+        /** @var array<string, string> $optionalResolved */
         $optionalResolved = [];
         foreach (self::OPTIONAL as $name => $fqcn) {
             if (class_exists($fqcn)) {
@@ -116,7 +117,10 @@ final class FormTypeMap
     /** @return class-string|null */
     public function resolve(string $snakeCaseType): ?string
     {
-        return $this->map[$snakeCaseType] ?? null;
+        /** @var class-string|null $resolved */
+        $resolved = $this->map[$snakeCaseType] ?? null;
+
+        return $resolved;
     }
 
     /** @return list<string> */

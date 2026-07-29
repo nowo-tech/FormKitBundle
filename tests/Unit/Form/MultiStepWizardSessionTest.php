@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class MultiStepWizardSessionTest extends TestCase
 {
+    /**
+     * @param array{index: int, data: array<string, array<string, mixed>>} $bag
+     */
     private function createSession(array $bag): SessionInterface
     {
         $session = $this->createMock(SessionInterface::class);

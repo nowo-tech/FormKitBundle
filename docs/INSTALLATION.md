@@ -2,6 +2,18 @@
 
 This guide covers installing Form Kit Bundle in a Symfony application.
 
+## Table of contents
+
+- [Requirements](#requirements)
+  - [PHP and Symfony matrix](#php-and-symfony-matrix)
+- [Install with Composer](#install-with-composer)
+- [Register the bundle](#register-the-bundle)
+  - [With Symfony Flex](#with-symfony-flex)
+  - [Manual registration](#manual-registration)
+  - [Help modal assets (REQ-ASSETS-004)](#help-modal-assets-req-assets-004)
+- [Using in form types](#using-in-form-types)
+- [Next steps](#next-steps)
+
 ## Requirements
 
 - **PHP** >= 8.2 (minimum)

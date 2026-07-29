@@ -39,6 +39,7 @@ final class FormKitAbstractTypeTest extends TestCase
                 return 'contact_form';
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function buildDemoField(FormBuilderInterface $builder): void
             {
                 $this->addText($builder, 'name');

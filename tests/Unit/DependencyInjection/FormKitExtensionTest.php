@@ -37,6 +37,7 @@ final class FormKitExtensionTest extends TestCase
             ],
         ]], $container);
 
+        /** @var array<string, array<string, mixed>> $profiles */
         $profiles = $container->getParameter('nowo_form_kit.profiles');
         self::assertSame('bootstrap', $container->getParameter('nowo_form_kit.default_profile'));
         // BC legacy parameters
@@ -67,6 +68,7 @@ final class FormKitExtensionTest extends TestCase
             ],
         ]], $container);
 
+        /** @var array<string, array<string, mixed>> $profiles */
         $profiles = $container->getParameter('nowo_form_kit.profiles');
         self::assertArrayHasKey('default', $profiles);
         self::assertSame('messages', $profiles['default']['translation_domain']);
@@ -74,6 +76,58 @@ final class FormKitExtensionTest extends TestCase
         self::assertSame('legacy_help', $profiles['default']['field_types']['text']['help']);
         self::assertFalse($profiles['default']['constraint_message_convention']);
         self::assertSame([], $profiles['default']['by_form']);
+    }
+
+    public function testLoadBuildsFallbackDefaultProfileWhenProfilesAreExplicitlyEmpty(): void
+    {
+        $container = new ContainerBuilder();
+        $extension = new FormKitExtension();
+
+        $extension->load([[
+            'default_profile'       => 'default',
+            'profiles'              => [],
+            'translation_domain'    => 'messages',
+            'required_label_suffix' => ' *',
+            'help_modal'            => ['framework' => 'foundation6'],
+            'defaults'              => [
+                'attr'     => ['class' => 'input'],
+                'row_attr' => ['class' => 'row'],
+            ],
+            'field_types' => [
+                'text' => ['help' => 'legacy_help'],
+            ],
+            'by_form' => [
+                'contact' => [
+                    'defaults' => ['attr' => ['autocomplete' => 'on']],
+                ],
+            ],
+        ]], $container);
+
+        /** @var array<string, array<string, mixed>> $profiles */
+        $profiles = $container->getParameter('nowo_form_kit.profiles');
+
+        self::assertSame('messages', $profiles['default']['translation_domain']);
+        self::assertSame(' *', $profiles['default']['required_label_suffix']);
+        self::assertSame('foundation6', $profiles['default']['help_modal']['framework']);
+        self::assertSame('input', $profiles['default']['defaults']['attr']['class']);
+        self::assertSame('legacy_help', $profiles['default']['field_types']['text']['help']);
+        self::assertSame(['autocomplete' => 'on'], $profiles['default']['by_form']['contact']['defaults']['attr']);
+    }
+
+    public function testLoadBuildsFallbackDefaultProfileWhenNoConfigsAreProvided(): void
+    {
+        $container = new ContainerBuilder();
+        $extension = new FormKitExtension();
+
+        $extension->load([], $container);
+
+        /** @var array<string, array<string, mixed>> $profiles */
+        $profiles = $container->getParameter('nowo_form_kit.profiles');
+
+        self::assertSame('default', $container->getParameter('nowo_form_kit.default_profile'));
+        self::assertSame('messages', $profiles['default']['translation_domain']);
+        self::assertSame([], $profiles['default']['defaults']['attr']);
+        self::assertSame([], $profiles['default']['defaults']['row_attr']);
     }
 
     public function testLoadAcceptsLegacyYamlKeys(): void
@@ -97,7 +151,9 @@ final class FormKitExtensionTest extends TestCase
         ]], $container);
 
         self::assertSame('bootstrap', $container->getParameter('nowo_form_kit.default_profile'));
-        self::assertArrayHasKey('bootstrap', $container->getParameter('nowo_form_kit.profiles'));
+        /** @var array<string, array<string, mixed>> $profiles */
+        $profiles = $container->getParameter('nowo_form_kit.profiles');
+        self::assertArrayHasKey('bootstrap', $profiles);
     }
 
     public function testLoadSetsCssFrameworkParameter(): void

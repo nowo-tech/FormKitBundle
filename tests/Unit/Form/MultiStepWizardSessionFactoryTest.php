@@ -23,7 +23,6 @@ final class MultiStepWizardSessionFactoryTest extends TestCase
         ];
 
         $session = $factory->create($steps, 'wiz');
-        self::assertInstanceOf(MultiStepWizardSession::class, $session);
         self::assertSame(['s1', 's2'], $session->getStepKeys());
     }
 }

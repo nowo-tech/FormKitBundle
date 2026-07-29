@@ -20,7 +20,7 @@ final readonly class MultiStepWizardSessionFactory
     }
 
     /**
-     * @param array<string, array{label: string, fields: array}> $steps Step key => ['label' => '...', 'fields' => [...]]
+     * @param array<string, array{label: string, fields: array<string, array<string, mixed>|string>}> $steps Step key => ['label' => '...', 'fields' => [...]]
      */
     public function create(array $steps, string $wizardName): MultiStepWizardSession
     {

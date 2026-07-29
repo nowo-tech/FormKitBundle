@@ -2,6 +2,14 @@
 
 This document outlines the planned direction for Form Kit Bundle. Items are grouped by horizon and are subject to change based on feedback and maintainer capacity.
 
+## Table of contents
+
+- [Current state (v2.x)](#current-state-v2x)
+- [Short term](#short-term)
+- [Medium term](#medium-term)
+- [Long term / ideas](#long-term-ideas)
+- [Non-goals](#non-goals)
+
 ---
 
 ## Current state (v2.x)

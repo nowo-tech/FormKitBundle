@@ -14,12 +14,20 @@ final readonly class FormKitOptionMerger
         private bool $autoLabel,
         private bool $autoPlaceholder,
         private bool $autoHelp,
+        /** @var array<string, mixed> $optionsConfig */
         private array $optionsConfig,
+        /** @var array<string, mixed> $attrConfig */
         private array $attrConfig,
+        /** @var array<string, mixed> $rowAttrConfig */
         private array $rowAttrConfig,
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $explicitOptions
+     *
+     * @return array<string, mixed>
+     */
     public function merge(string $formNameSnake, string $fieldName, string $fieldTypeSnake, array $explicitOptions = []): array
     {
         $opts = $this->mergeCascade($formNameSnake, $fieldName, $fieldTypeSnake, $explicitOptions);
@@ -29,6 +37,11 @@ final readonly class FormKitOptionMerger
         return $opts;
     }
 
+    /**
+     * @param array<string, mixed> $explicitOptions
+     *
+     * @return array<string, mixed>
+     */
     private function mergeCascade(string $formNameSnake, string $fieldName, string $fieldTypeSnake, array $explicitOptions): array
     {
         $minimum = $this->optionsConfig['minimum'] ?? [];
@@ -45,6 +58,9 @@ final readonly class FormKitOptionMerger
         );
     }
 
+    /**
+     * @param array<string, mixed> $opts
+     */
     private function applyAutoTranslationKeys(string $formNameSnake, string $fieldName, array &$opts): void
     {
         $prefix = $formNameSnake . '.' . $fieldName . '.';
@@ -65,6 +81,9 @@ final readonly class FormKitOptionMerger
         }
     }
 
+    /**
+     * @param array<string, mixed> $opts
+     */
     private function applyAttrAndRowAttr(string $fieldTypeSnake, array &$opts): void
     {
         $attrDefault = $this->attrConfig['default'] ?? [];

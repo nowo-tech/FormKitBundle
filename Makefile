@@ -9,7 +9,7 @@ RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 
 COMPOSER ?= composer
 
-.PHONY: help install test test-coverage coverage-php-percent test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos composer-sync rector rector-dry phpstan check-no-cursor-coauthor strip-cursor-coauthor-from-history setup-hooks
+.PHONY: help install test test-coverage coverage-php-percent coverage-check test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos demo-smoke composer-sync rector rector-dry phpstan check-no-cursor-coauthor check-open-prs strip-cursor-coauthor-from-history setup-hooks
 .PHONY: demo-up-symfony8
 .PHONY: up down down-dev up-symfony8 build shell demo-install demo-down
 
@@ -29,15 +29,18 @@ help:
 	@echo "  assets-test    Alias of test-ts (Vitest + coverage summary)"
 	@echo "  test           Run PHPUnit tests"
 	@echo "  test-coverage  Run PHPUnit with coverage + print global PHP %% (Lines)"
+	@echo "  coverage-check Run coverage and fail if Lines < 99%% (REQ-TEST-003)"
 	@echo "  cs-check       Check code style (PHP-CS-Fixer)"
 	@echo "  cs-fix         Fix code style"
 	@echo "  rector         Apply Rector refactoring"
 	@echo "  rector-dry     Run Rector in dry-run mode"
 	@echo "  phpstan        Run PHPStan static analysis"
 	@echo "  qa             Run all QA (cs-check + test)"
-	@echo "  release-check  Pre-release: git hygiene, cs-fix, cs-check, rector-dry, phpstan, test-coverage, test-ts, demo healthchecks"
+	@echo "  release-check  Pre-release: git hygiene, open PRs, cs-fix, cs-check, rector-dry, phpstan, coverage-check, test-ts, demo healthchecks"
+	@echo "  demo-smoke     Boot demos and assert HTTP 200 (REQ-TEST-011)"
 	@echo "  setup-hooks    Install local git hooks (.githooks; REQ-GIT-001)"
 	@echo "  check-no-cursor-coauthor  Fail if history has Cursor co-author trailers"
+	@echo "  check-open-prs Fail if unresolved open GitHub PRs (REQ-REL-003)"
 	@echo "  composer-sync  Validate composer.json and align composer.lock (no install)"
 	@echo "  clean          Remove vendor, cache, coverage"
 	@echo "  update         Update composer.lock"
@@ -72,6 +75,10 @@ test-coverage: install
 	$(COMPOSE) exec $(SERVICE_PHP) composer test-coverage | tee coverage-php.txt
 	sh ./.scripts/php-coverage-percent.sh coverage-php.txt
 
+coverage-check: ensure-up
+	@$(COMPOSE) exec -T $(SERVICE_PHP) sh -lc 'composer test-coverage | tee coverage-php.txt'
+	@./.scripts/coverage-fail-under.sh coverage-php.txt 99
+
 cs-check: install
 	$(RUN) composer cs-check
 
@@ -90,10 +97,14 @@ phpstan: install
 qa: install
 	$(RUN) composer qa
 
-release-check: check-no-cursor-coauthor ensure-up composer-sync cs-fix cs-check rector-dry phpstan test-coverage test-ts release-check-demos
+release-check: check-no-cursor-coauthor check-open-prs ensure-up composer-sync cs-fix cs-check rector-dry phpstan coverage-check test-ts release-check-demos
 
 release-check-demos:
 	@$(MAKE) -C demo release-check
+
+# REQ-TEST-011: boot demos and assert HTTP 200
+demo-smoke:
+	@if [ -f demo/Makefile ]; then $(MAKE) -C demo release-verify; else echo "No demo/Makefile"; exit 1; fi
 
 composer-sync: ensure-up
 	$(RUN) composer validate --strict
@@ -191,6 +202,10 @@ setup-hooks:
 check-no-cursor-coauthor:
 	@chmod +x .scripts/check-no-cursor-coauthor.sh
 	@./.scripts/check-no-cursor-coauthor.sh HEAD
+
+check-open-prs:
+	@chmod +x .scripts/check-open-prs.sh
+	@GH_REPO=nowo-tech/FormKitBundle ./.scripts/check-open-prs.sh
 
 strip-cursor-coauthor-from-history:
 	@chmod +x .scripts/strip-cursor-coauthor-from-history.sh

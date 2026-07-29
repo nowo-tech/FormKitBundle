@@ -78,4 +78,40 @@ final class TwigPathsPassTest extends TestCase
 
         self::assertFalse($container->hasDefinition('twig.loader.native'));
     }
+
+    public function testProcessFallsBackToFilesystemLoaderDefinition(): void
+    {
+        $container = new ContainerBuilder();
+        $loader    = new Definition();
+        $container->setDefinition('twig.loader.filesystem', $loader);
+
+        (new TwigPathsPass())->process($container);
+
+        self::assertSame('addPath', $loader->getMethodCalls()[0][0]);
+    }
+
+    public function testProcessFallsBackToNativeFilesystemLoaderDefinition(): void
+    {
+        $container = new ContainerBuilder();
+        $loader    = new Definition();
+        $container->setDefinition('twig.loader.native_filesystem', $loader);
+
+        (new TwigPathsPass())->process($container);
+
+        self::assertSame('addPath', $loader->getMethodCalls()[0][0]);
+    }
+
+    public function testProcessResolvesNativeAliasChains(): void
+    {
+        $container = new ContainerBuilder();
+        $loader    = new Definition();
+        $container->setDefinition('twig.loader.real', $loader);
+        $container->setAlias('twig.loader.native', new Alias('twig.loader.alias_one'));
+        $container->setAlias('twig.loader.alias_one', new Alias('twig.loader.alias_two'));
+        $container->setAlias('twig.loader.alias_two', new Alias('twig.loader.real'));
+
+        (new TwigPathsPass())->process($container);
+
+        self::assertSame('addPath', $loader->getMethodCalls()[0][0]);
+    }
 }

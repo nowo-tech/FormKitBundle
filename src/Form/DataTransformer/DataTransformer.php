@@ -11,6 +11,8 @@ use Symfony\Component\Form\DataTransformerInterface;
  *
  * Extends Symfony's {@see DataTransformerInterface} to keep compatibility with
  * the Form component while allowing project-wide type-hinting.
+ *
+ * @extends DataTransformerInterface<mixed, mixed>
  */
 interface DataTransformer extends DataTransformerInterface
 {

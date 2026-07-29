@@ -37,7 +37,7 @@ final class TailwindCssClassUtilities
             }
 
             if (preg_match($colPattern, $class, $m)) {
-                $bp    = $m[1] ?? '';
+                $bp    = $m[1];
                 $width = (int) $m[2];
 
                 if (!isset($byBreakpoint[$bp]) || $width > $byBreakpoint[$bp]['width']) {

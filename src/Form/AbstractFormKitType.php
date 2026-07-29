@@ -16,6 +16,9 @@ use Symfony\Component\Form\AbstractType;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
+/**
+ * @extends AbstractType<mixed>
+ */
 abstract class AbstractFormKitType extends AbstractType
 {
     use FormOptionsTrait;

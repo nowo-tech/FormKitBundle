@@ -30,10 +30,13 @@ final class FormOptionsMerger
     /**
      * @param array<string, array{
      *     translation_domain: string,
-     *     defaults: array{attr: array, row_attr: array},
-     *     field_types: array,
+     *     defaults: array{attr: array<string, mixed>, row_attr: array<string, mixed>},
+     *     field_types: array<string, array<string, mixed>>,
      *     constraint_message_convention?: bool,
-     *     by_form?: array
+     *     by_form?: array<string, array{
+     *         defaults?: array{attr?: array<string, mixed>, row_attr?: array<string, mixed>},
+     *         fields?: array<string, array<string, mixed>>
+     *     }>
      * }> $profiles
      */
     public function __construct(
@@ -78,9 +81,9 @@ final class FormOptionsMerger
             'help'               => $baseKey . '.help',
             'attr'               => array_merge(
                 ['placeholder' => $baseKey . '.placeholder'],
-                $defaults['attr'] ?? [],
+                $defaults['attr'],
             ),
-            'row_attr' => $defaults['row_attr'] ?? [],
+            'row_attr' => $defaults['row_attr'],
         ];
 
         $typeShortName = $this->typeToShortName($type);
@@ -95,16 +98,16 @@ final class FormOptionsMerger
         $formDefaults       = [];
         $formField          = [];
         $formConstraintDefs = [];
-        if (isset($byFormMap[$formName]) && is_array($byFormMap[$formName])) {
+        if (isset($byFormMap[$formName])) {
             $formEntry    = $byFormMap[$formName];
             $formDefaults = [
                 'attr'     => $formEntry['defaults']['attr'] ?? [],
                 'row_attr' => $formEntry['defaults']['row_attr'] ?? [],
             ];
             $fields = $formEntry['fields'] ?? [];
-            if (isset($fields[$fieldName]) && is_array($fields[$fieldName])) {
+            if (isset($fields[$fieldName])) {
                 $formField = $fields[$fieldName];
-            } elseif (isset($fields[$fieldNameSnake]) && is_array($fields[$fieldNameSnake])) {
+            } elseif (isset($fields[$fieldNameSnake])) {
                 $formField = $fields[$fieldNameSnake];
             }
             if (isset($formField['constraints']) && is_array($formField['constraints'])) {
@@ -129,6 +132,8 @@ final class FormOptionsMerger
 
         $constraintDefs = array_merge($typeConstraintDefs, $formConstraintDefs, $optionsConstraints);
         if ($constraintDefs !== []) {
+            /** @var list<mixed> $constraintDefs */
+            $constraintDefs        = $constraintDefs;
             $messagePrefix         = $messageConvention ? $baseKey : null;
             $merged['constraints'] = $this->constraintDefinitionFactory->create($constraintDefs, $messagePrefix);
         }

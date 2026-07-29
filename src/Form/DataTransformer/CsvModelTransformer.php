@@ -6,6 +6,8 @@ namespace Nowo\FormKitBundle\Form\DataTransformer;
 
 use function explode;
 use function implode;
+use function array_map;
+use function array_values;
 use function is_array;
 use function is_string;
 use function trim;
@@ -60,7 +62,10 @@ final readonly class CsvModelTransformer implements DataTransformer
             $tokens[] = $s;
         }
 
-        return implode($this->separator, $tokens);
+        /** @var non-empty-string $separator */
+        $separator = $this->separator !== '' ? $this->separator : ',';
+
+        return implode($separator, $tokens);
     }
 
     /**
@@ -73,7 +78,10 @@ final readonly class CsvModelTransformer implements DataTransformer
         }
 
         if (is_array($value)) {
-            return $value;
+            /** @var list<string> $tokens */
+            $tokens = array_values(array_map(static fn (mixed $token): string => (string) $token, $value));
+
+            return $tokens;
         }
 
         if (!is_string($value)) {
@@ -85,7 +93,10 @@ final readonly class CsvModelTransformer implements DataTransformer
             return [];
         }
 
-        $parts = explode($this->separator, $trimmed);
+        /** @var non-empty-string $separator */
+        $separator = $this->separator !== '' ? $this->separator : ',';
+
+        $parts = explode($separator, $trimmed);
         $out   = [];
         foreach ($parts as $part) {
             $token = $this->trimTokens ? trim($part) : $part;

@@ -27,6 +27,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\UX\Cropperjs\Form\CropperType;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
@@ -49,7 +50,7 @@ trait FormOptionsTrait
 {
     private FormOptionsMerger $formOptionsMerger;
 
-    /** Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
+    /** @var FormBuilderInterface<mixed>|null Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
     private ?FormBuilderInterface $formKitBoundBuilder = null;
 
     /** Profile name (key in nowo_form_kit.profiles) to use; null = default_profile */
@@ -58,7 +59,7 @@ trait FormOptionsTrait
     /** True after setFormKitConfigName() or after resolving #[FormKitConfig]. */
     private bool $formKitConfigNameResolved = false;
 
-    /** Optional override for translation defaults used by addTranslations(). */
+    /** @var array<string, mixed> Optional override for translation defaults used by addTranslations(). */
     private array $formKitTranslationsDefaults = [];
 
     /**
@@ -113,6 +114,7 @@ trait FormOptionsTrait
      *
      * Nested calls restore the previous builder (or null) when the inner callback returns.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param callable(): void $callback
      */
     protected function withBuilder(FormBuilderInterface $builder, callable $callback): void
@@ -132,6 +134,8 @@ trait FormOptionsTrait
      *
      * Useful for helpers that still require an explicit builder (e.g. addAutocompleteField, addCKEditorField).
      *
+     * @return FormBuilderInterface<mixed>
+     *
      * @throws LogicException when called outside withBuilder()
      */
     protected function boundBuilder(): FormBuilderInterface
@@ -148,7 +152,7 @@ trait FormOptionsTrait
      *
      * Useful in FormEvents listeners where you only have a FormInterface and call $form->add(...).
      *
-     * @param class-string|string $type Form type FQCN or short name understood by FormOptionsMerger
+     * @param class-string $type Form type FQCN
      * @param array<string, mixed> $options Field-specific options (override convention; use false to disable label/placeholder/help)
      *
      * @return array<string, mixed>
@@ -171,6 +175,8 @@ trait FormOptionsTrait
      * translation keys "form_snake.field_snake.label", ".placeholder", ".help" unless
      * you pass false for any of them in $options. Uses the profile set via setFormKitConfigName() or default_profile.
      *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param class-string $type
      * @param array<string, mixed> $options Field-specific options (override convention; use false to disable label/placeholder/help)
      */
     protected function addWithDefaults(
@@ -179,6 +185,7 @@ trait FormOptionsTrait
         string $type,
         array $options = []
     ): void {
+        /** @var class-string<FormTypeInterface<mixed>> $type */
         $builder->add($name, $type, $this->resolveFieldOptions($name, $type, $options));
     }
 
@@ -211,6 +218,7 @@ trait FormOptionsTrait
     /**
      * Inserts a full-width line break for flex/grid layouts (default: Bootstrap `w-100` div).
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options Extra field options merged with defaults (label/placeholder/help disabled)
      */
     protected function addFieldBreak(FormBuilderInterface $builder, ?string $fieldName = null, ?string $html = null, array $options = []): void
@@ -236,7 +244,10 @@ trait FormOptionsTrait
      * 2) protected method resolveFormKitTranslationsLocaleContext(array $options): array (if exists)
      * 3) fallback defaults: default_locale = "en", enabled_locales = ["en"]
      *
+     * @param FormBuilderInterface<mixed>|FormInterface<mixed> $builder
      * @param array<string, mixed> $options
+     *
+     * @return FormBuilderInterface<mixed>|FormInterface<mixed>
      *
      * @throws InvalidArgumentException
      */
@@ -251,7 +262,7 @@ trait FormOptionsTrait
         $enabledLocales  = $localeContext['enabled_locales'] ?? [$defaultLocale];
         $requiredLocales = [$defaultLocale];
 
-        if (array_key_exists('required_locales', $localeContext) && is_array($localeContext['required_locales'])) {
+        if (array_key_exists('required_locales', $localeContext)) {
             $requiredLocales = $localeContext['required_locales'];
         }
 
@@ -321,7 +332,8 @@ trait FormOptionsTrait
      * - A string: the form type FQCN (e.g. TextType::class).
      * - An array with required key "type" (FQCN) and any other options for that field.
      *
-     * @param array<string, array{type: string, ...}|string> $fields e.g. ['full_name' => TextType::class, 'topic' => ['type' => ChoiceType::class, 'choices' => [...]]]
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, array{type?: string, ...}|class-string> $fields e.g. ['full_name' => TextType::class, 'topic' => ['type' => ChoiceType::class, 'choices' => [...]]]
      */
     protected function buildFormFromArray(FormBuilderInterface $builder, array $fields): void
     {
@@ -330,11 +342,12 @@ trait FormOptionsTrait
                 $this->addWithDefaults($builder, $name, $definition, []);
             } else {
                 $type = $definition['type'] ?? null;
-                if ($type === null || $type === '') {
+                if (!is_string($type) || $type === '') {
                     throw new InvalidArgumentException(sprintf('Field "%s" must have a non-empty "type" key.', $name));
                 }
                 $options = $definition;
                 unset($options['type']);
+                /** @var class-string<FormTypeInterface<mixed>> $type */
                 $this->addWithDefaults($builder, $name, $type, $options);
             }
         }
@@ -342,55 +355,82 @@ trait FormOptionsTrait
 
     // --- Phase 2: add-by-type helpers (field name + options only, no type class) ---
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addText(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, TextType::class, $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addEmail(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, EmailType::class, $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addTextarea(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, TextareaType::class, $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addPassword(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, PasswordType::class, $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addUrl(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, UrlType::class, $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addInteger(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, IntegerType::class, $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addNumber(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, NumberType::class, $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addCheckbox(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, CheckboxType::class, $options);
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     */
     protected function addChoice(FormBuilderInterface $builder, string $name, array $options = []): void
     {
         $this->addWithDefaults($builder, $name, ChoiceType::class, $options);
@@ -412,7 +452,7 @@ trait FormOptionsTrait
     /**
      * Like {@see buildFormFromArray()} using the builder from {@see withBuilder()}.
      *
-     * @param array<string, array{type: string, ...}|string> $fields
+     * @param array<string, array{type?: string, ...}|class-string> $fields
      */
     protected function buildFieldsFromArray(array $fields): void
     {
@@ -536,6 +576,7 @@ trait FormOptionsTrait
     /**
      * Native &lt;select&gt; (single): ChoiceType collapsed, not multiple.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options merged after defaults (choices required in practice)
      */
     protected function addSelect(FormBuilderInterface $builder, string $name, array $options = []): void
@@ -550,6 +591,7 @@ trait FormOptionsTrait
     /**
      * Native &lt;select multiple&gt;: ChoiceType collapsed + multiple.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
      */
     protected function addMultiSelect(FormBuilderInterface $builder, string $name, array $options = []): void
@@ -565,6 +607,7 @@ trait FormOptionsTrait
      * Same as {@see addMultiSelect()} but enables "Select all" (collapsed or checkboxes)
      * when **nowo-tech/select-all-choice-bundle** is installed (`select_all` option).
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
      *
      * @throws LogicException when the Select All Choice bundle is not installed
@@ -586,6 +629,7 @@ trait FormOptionsTrait
     /**
      * Radio list: ChoiceType expanded, not multiple.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
      */
     protected function addChoiceRadios(FormBuilderInterface $builder, string $name, array $options = []): void
@@ -602,6 +646,7 @@ trait FormOptionsTrait
     /**
      * Checkbox group (multiple): ChoiceType expanded + multiple.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
      */
     protected function addChoiceCheckboxes(FormBuilderInterface $builder, string $name, array $options = []): void
@@ -619,6 +664,7 @@ trait FormOptionsTrait
      * Adds any form type by FQCN with Form Kit merged options (labels, attr, etc.).
      * Typical use: Symfony UX Autocomplete field class extending BaseEntityAutocompleteType.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param class-string $formTypeFqcn
      * @param array<string, mixed> $options
      */
@@ -633,6 +679,7 @@ trait FormOptionsTrait
      * Requires the optional Composer package `friendsofsymfony/ckeditor-bundle`. Pass CKEditor-specific
      * options (e.g. `config_name`, `config`) in `$options`; label, placeholder, and help follow Form Kit conventions.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options Field options merged via FormOptionsMerger
      *
      * @throws LogicException when the CKEditor bundle class is not available (package not installed)
@@ -651,6 +698,7 @@ trait FormOptionsTrait
      *
      * Requires the optional Composer package `symfony/ux-dropzone`.
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
      *
      * @throws LogicException when `symfony/ux-dropzone` is not installed
@@ -680,6 +728,7 @@ trait FormOptionsTrait
      * Requires `symfony/ux-cropperjs`. Pass Cropper-specific options such as `public_url`
      * (and typically inject `CropperInterface` in the controller to build crop options).
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
      *
      * @throws LogicException when `symfony/ux-cropperjs` is not installed
@@ -710,6 +759,9 @@ trait FormOptionsTrait
      * Expected use:
      * - Model value: int/bool|null (1/0 or true/false)
      * - View value inside ChoiceType: array containing switchValue (ChoiceType expanded+multiple)
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $fieldConfiguration
      */
     protected function addSwitchType(
         FormBuilderInterface $builder,
@@ -787,9 +839,9 @@ trait FormOptionsTrait
         }
 
         // Concatenate classes.
-        $rowClass   = trim(($existingRowAttr['class'] ?? '') . ' ' . ($rowAttrBase['class'] ?? ''));
-        $attrClass  = trim(($existingAttr['class'] ?? '') . ' ' . ($attrBase['class'] ?? ''));
-        $labelClass = trim(($existingLabelAttr['class'] ?? '') . ' ' . ($labelAttrBase['class'] ?? ''));
+        $rowClass   = trim(($existingRowAttr['class'] ?? '') . ' ' . $rowAttrBase['class']);
+        $attrClass  = trim(($existingAttr['class'] ?? '') . ' ' . $attrBase['class']);
+        $labelClass = trim(($existingLabelAttr['class'] ?? '') . ' ' . $labelAttrBase['class']);
 
         $fieldConfiguration['row_attr']          = array_merge($rowAttrBase, $existingRowAttr);
         $fieldConfiguration['row_attr']['class'] = $rowClass;
@@ -818,6 +870,8 @@ trait FormOptionsTrait
      * Optional helper if you add switch fields dynamically in events with FormInterface.
      *
      * For regular buildForm usage, prefer addSwitchType() which installs the transformer automatically.
+     *
+     * @param FormBuilderInterface<mixed>|FormInterface<mixed> $formOrBuilder
      */
     protected function dataTransformerSwitchConfiguration(FormBuilderInterface|FormInterface $formOrBuilder, string $fieldName, int $switchValue = 1): void
     {
@@ -855,6 +909,7 @@ trait FormOptionsTrait
      *
      * Any other keys are passed to TextareaType (and merged by conventions via FormOptionsMerger).
      *
+     * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $fieldConfiguration
      */
     protected function addJsonType(
@@ -889,6 +944,9 @@ trait FormOptionsTrait
      *
      * View:
      * - boolean for CheckboxType
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $fieldConfiguration
      */
     protected function addBoolType(
         FormBuilderInterface $builder,
@@ -927,6 +985,9 @@ trait FormOptionsTrait
      * - money_scale: int (default 2)
      *
      * Defaults `required` to false. After merge, placeholder is stripped from root and from `attr` (merger copies it there).
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $fieldConfiguration
      */
     protected function addMoneyType(
         FormBuilderInterface $builder,
@@ -967,6 +1028,9 @@ trait FormOptionsTrait
      * - csv_separator: string (default ",")
      * - csv_trim_tokens: bool (default true)
      * - csv_allow_empty_tokens: bool (default false)
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $fieldConfiguration
      */
     protected function addCsvType(
         FormBuilderInterface $builder,

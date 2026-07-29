@@ -14,12 +14,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Renders arbitrary HTML in the form flow (e.g. a flex/grid line break). Not mapped.
  * Theme block `static_html_row` in `form/static_blocks.html.twig`.
  */
+/**
+ * @extends AbstractType<mixed>
+ */
 final class StaticHtmlType extends AbstractType
 {
+    /** @param FormBuilderInterface<mixed> $builder */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
     }
 
+    /**
+     * @param FormInterface<mixed> $form
+     * @param array<string, mixed> $options
+     */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['html'] = $options['html'];

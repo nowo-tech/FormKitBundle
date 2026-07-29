@@ -47,6 +47,7 @@ final class FormKitConfigAttributeTest extends TestCase
                 return 'attr_demo';
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function run(FormBuilderInterface $builder): void
             {
                 $this->addText($builder, 'title');
@@ -118,6 +119,9 @@ final class FormKitConfigAttributeTest extends TestCase
     }
 }
 
+/**
+ * @extends AbstractType<mixed>
+ */
 #[FormKitConfig('from_parent')]
 abstract class FormKitConfigParentStub extends AbstractType
 {

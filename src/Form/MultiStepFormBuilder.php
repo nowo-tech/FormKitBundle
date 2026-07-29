@@ -7,7 +7,8 @@ namespace Nowo\FormKitBundle\Form;
 use InvalidArgumentException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormInterface as SymfonyFormInterface;
+use Symfony\Component\Form\FormTypeInterface;
 
 use function is_string;
 use function sprintf;
@@ -35,10 +36,10 @@ final readonly class MultiStepFormBuilder
     /**
      * Creates a form containing only the fields for the given step.
      *
-     * @param array<string, array{type: string, ...}|string> $fieldsDefinition Same as buildFormFromArray (name => FQCN or name => ['type' => ..., ...])
+     * @param array<string, array{type?: string, ...}|string> $fieldsDefinition Same as buildFormFromArray (name => FQCN or name => ['type' => ..., ...])
      * @param array<string, mixed> $data Initial data for this step's fields
      *
-     * @return FormInterface Form with only this step's fields, ready for handleRequest
+     * @return SymfonyFormInterface<mixed> Form with only this step's fields, ready for handleRequest
      */
     public function createStepForm(
         string $wizardName,
@@ -46,7 +47,7 @@ final readonly class MultiStepFormBuilder
         array $fieldsDefinition,
         array $data = [],
         ?string $configName = null
-    ): FormInterface {
+    ): SymfonyFormInterface {
         $formName = $wizardName . '_' . $stepKey;
         $builder  = $this->formFactory->createBuilder(FormType::class, $data, []);
 
@@ -54,15 +55,17 @@ final readonly class MultiStepFormBuilder
             if (is_string($definition)) {
                 $type    = $definition;
                 $options = $this->formOptionsMerger->resolve($formName, $name, $type, [], $configName);
+                /** @var class-string<FormTypeInterface<mixed>> $type */
                 $builder->add($name, $type, $options);
             } else {
                 $type = $definition['type'] ?? null;
-                if ($type === null || $type === '') {
+                if (!is_string($type) || $type === '') {
                     throw new InvalidArgumentException(sprintf('Multi-step field "%s" must have a non-empty "type" key.', $name));
                 }
                 $fieldOptions = $definition;
                 unset($fieldOptions['type']);
                 $options = $this->formOptionsMerger->resolve($formName, $name, $type, $fieldOptions, $configName);
+                /** @var class-string<FormTypeInterface<mixed>> $type */
                 $builder->add($name, $type, $options);
             }
         }

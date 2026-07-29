@@ -23,6 +23,9 @@ use Symfony\Component\Form\AbstractType;
  *   }
  *   // In your form: $this->addWithDefaults($builder, 'document', DropzoneFieldType::class, []);
  */
+/**
+ * @extends AbstractType<mixed>
+ */
 abstract class AbstractFormKitWrappedType extends AbstractType
 {
     /**
@@ -40,7 +43,7 @@ abstract class AbstractFormKitWrappedType extends AbstractType
     public function getBlockPrefix(): string
     {
         $shortName   = (new ReflectionClass($this))->getShortName();
-        $withoutType = preg_replace('/Type$/', '', $shortName);
+        $withoutType = (string) preg_replace('/Type$/', '', $shortName);
 
         return $this->camelCaseToSnakeCase($withoutType);
     }

@@ -20,6 +20,7 @@ use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -32,6 +33,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\UX\Cropperjs\Form\CropperType;
+use Symfony\UX\Dropzone\Form\DropzoneType;
 
 use function array_key_exists;
 use function dirname;
@@ -82,6 +85,10 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $builder
+             * @param array<string, mixed> $options
+             */
             public function addText(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
             {
                 $this->addTextType($builder, $fieldName, $options, $configName, $formName);
@@ -121,6 +128,10 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $builder
+             * @param array<string, mixed> $options
+             */
             public function addTextField(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
             {
                 $this->addTextType($builder, $fieldName, $options, $configName, $formName);
@@ -155,6 +166,10 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $builder
+             * @param array<string, mixed> $fields
+             */
             public function build(FormBuilderInterface $builder, array $fields, ?string $configName = null, ?string $formName = null): void
             {
                 $this->buildFormFromArray($builder, $fields, $configName, $formName);
@@ -195,6 +210,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addTextField(FormBuilderInterface $builder, string $fieldName): void
             {
                 $this->addTextType($builder, $fieldName);
@@ -222,6 +238,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addFieldTypePublic(FormBuilderInterface $builder, string $fieldName, string $type): void
             {
                 $this->addFieldType($builder, $fieldName, $type);
@@ -251,6 +268,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addAny(FormBuilderInterface $builder, string $name, string $method): void
             {
                 match ($method) {
@@ -318,6 +336,10 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $b
+             * @param array<string, mixed> $cfg
+             */
             public function addSwitchPublic(FormBuilderInterface $b, string $field, array $cfg = []): void
             {
                 $this->addSwitchType($b, $field, $cfg);
@@ -390,6 +412,10 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $b
+             * @param array<string, mixed> $cfg
+             */
             public function addJsonPublic(FormBuilderInterface $b, string $field, array $cfg = []): void
             {
                 $this->addJsonType($b, $field, $cfg);
@@ -438,16 +464,28 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $b
+             * @param array<string, mixed> $cfg
+             */
             public function addBoolPublic(FormBuilderInterface $b, string $field, array $cfg = []): void
             {
                 $this->addBoolType($b, $field, $cfg);
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $b
+             * @param array<string, mixed> $cfg
+             */
             public function addMoneyPublic(FormBuilderInterface $b, string $field, array $cfg = []): void
             {
                 $this->addMoneyType($b, $field, $cfg);
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $b
+             * @param array<string, mixed> $cfg
+             */
             public function addCsvPublic(FormBuilderInterface $b, string $field, array $cfg = []): void
             {
                 $this->addCsvType($b, $field, $cfg);
@@ -519,6 +557,7 @@ final class FormKitControllerTraitTest extends TestCase
                 return 'block_prefix_form';
             }
 
+            /** @param FormBuilderInterface<mixed> $b */
             public function addTextPublic(FormBuilderInterface $b, string $field): void
             {
                 $this->addTextType($b, $field);
@@ -551,6 +590,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $b */
             public function addFieldPublic(FormBuilderInterface $b, string $field, string $type): void
             {
                 $this->addFieldType($b, $field, $type);
@@ -571,6 +611,37 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->addFieldPublic($builder, 'name', TextType::class);
     }
 
+    public function testAddFieldTypeRejectsExistingClassThatIsNotAFormType(): void
+    {
+        $merger = $this->createMerger();
+        $map    = new FormTypeMap([]);
+
+        $subject = new class($merger, $map) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            /** @param FormBuilderInterface<mixed> $b */
+            public function addFieldPublic(FormBuilderInterface $b, string $field, string $type): void
+            {
+                $this->addFieldType($b, $field, $type);
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/^Unknown form type "Symfony\\\\Component\\\\HttpKernel\\\\Bundle\\\\Bundle"/');
+
+        $subject->addFieldPublic($builder, 'name', Bundle::class);
+    }
+
     public function testAddTranslationsUsesResolverMethod(): void
     {
         $merger = $this->createMerger();
@@ -586,6 +657,11 @@ final class FormKitControllerTraitTest extends TestCase
             }
 
             /** @return array{default_locale: string, enabled_locales: array<int, string>} */
+            /**
+             * @param array<string, mixed> $options
+             *
+             * @return array{default_locale: string, enabled_locales: array<int, string>}
+             */
             protected function resolveFormKitTranslationsLocaleContext(array $options): array
             {
                 return [
@@ -594,6 +670,10 @@ final class FormKitControllerTraitTest extends TestCase
                 ];
             }
 
+            /**
+             * @param FormBuilderInterface<mixed> $builder
+             * @param array<string, mixed> $options
+             */
             public function addTranslationsPublic(FormBuilderInterface $builder, array $options): void
             {
                 $this->addTranslations($builder, $options);
@@ -635,7 +715,7 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->setFormKitTranslationsDefaults(['row_attr' => ['class' => 'row']]);
         $subject->setFormKitTranslationsLocaleResolver(static fn (): array => ['default_locale' => 'de', 'enabled_locales' => ['de']]);
 
-        self::assertTrue(true);
+        self::assertSame('compact', (fn (): ?string => $this->formKitConfigName)->call($subject));
     }
 
     public function testMergeSubFormAndRemoveFieldOptionKeysDelegateToHelper(): void
@@ -649,11 +729,22 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /**
+             * @param array<string, mixed> $cfg
+             *
+             * @return array<string, mixed>
+             */
             public function merge(array $cfg): array
             {
                 return $this->mergeSubFormFieldOptions($cfg);
             }
 
+            /**
+             * @param array<string, mixed> $cfg
+             * @param list<string> $keys
+             *
+             * @return array<string, mixed>
+             */
             public function remove(array $cfg, array $keys): array
             {
                 return $this->removeFieldOptionKeys($cfg, $keys);
@@ -678,6 +769,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addBreak(FormBuilderInterface $builder): void
             {
                 $this->addFieldBreak($builder, 'break_one', '<hr />');
@@ -710,6 +802,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function run(FormBuilderInterface $builder): void
             {
                 $this->addSelectType($builder, 'country', ['choices' => ['es' => 'ES']]);
@@ -759,6 +852,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addSelectAll(FormBuilderInterface $builder): void
             {
                 $this->addMultiSelectSelectAllType($builder, 'roles', ['choices' => ['r' => 'R']]);
@@ -791,6 +885,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addAutocomplete(FormBuilderInterface $builder): void
             {
                 $this->addAutocompleteFieldType($builder, 'user', TextType::class, ['attr' => ['data-autocomplete' => '1']]);
@@ -829,6 +924,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addEditor(FormBuilderInterface $builder): void
             {
                 $this->addCKEditorFieldType($builder, 'body');
@@ -860,6 +956,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addTranslationsPublic(FormBuilderInterface $builder): void
             {
                 $this->addTranslations($builder, [
@@ -896,6 +993,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function build(FormBuilderInterface $builder): void
             {
                 $this->buildFormFromArray($builder, [
@@ -929,6 +1027,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addSelectAll(FormBuilderInterface $builder): void
             {
                 $this->addMultiSelectSelectAllType($builder, 'roles');
@@ -958,6 +1057,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addEditor(FormBuilderInterface $builder): void
             {
                 $this->addCKEditorFieldType($builder, 'body');
@@ -982,6 +1082,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->setFormTypeMap($map);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addTranslationsPublic(FormBuilderInterface $builder): void
             {
                 $this->addTranslations($builder, []);
@@ -1003,9 +1104,10 @@ final class FormKitControllerTraitTest extends TestCase
             {
                 $this->setFormOptionsMerger($merger);
                 $this->setFormTypeMap($map);
-                $this->setFormKitTranslationsLocaleResolver(static fn (): string => 'invalid');
+                $this->setFormKitTranslationsLocaleResolver(static fn (array $options, object $subject): string => 'invalid');
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addTranslationsPublic(FormBuilderInterface $builder): void
             {
                 $this->addTranslations($builder, ['form_type' => 'App\\Form\\TranslationItemType']);
@@ -1034,12 +1136,13 @@ final class FormKitControllerTraitTest extends TestCase
             {
                 $this->setFormOptionsMerger($merger);
                 $this->setFormTypeMap($map);
-                $this->setFormKitTranslationsLocaleResolver(static fn (): array => [
+                $this->setFormKitTranslationsLocaleResolver(static fn (array $options, object $subject): array => [
                     'default_locale'  => 'fr',
                     'enabled_locales' => ['fr', 'en'],
                 ]);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addTranslationsPublic(FormBuilderInterface $builder): void
             {
                 $this->addTranslations($builder, ['form_type' => 'App\\Form\\TranslationItemType']);
@@ -1058,5 +1161,47 @@ final class FormKitControllerTraitTest extends TestCase
             ->willReturn($builder);
 
         $subject->addTranslationsPublic($builder);
+    }
+
+    public function testAddDropzoneAndCropperFieldTypeAddFieldsWhenOptionalStubsAreLoaded(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            /** @param FormBuilderInterface<mixed> $builder */
+            public function addOptionalFields(FormBuilderInterface $builder): void
+            {
+                $this->addDropzoneFieldType($builder, 'document');
+                $this->addCropperFieldType($builder, 'avatar');
+            }
+        };
+
+        $subject->setFormKitFormName('controller_contact');
+
+        $calls   = [];
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::exactly(2))
+            ->method('add')
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder): MockObject {
+                self::assertIsArray($opts);
+                $calls[] = [$name, $type];
+
+                return $builder;
+            });
+
+        $subject->addOptionalFields($builder);
+
+        self::assertSame([
+            ['document', DropzoneType::class],
+            ['avatar', CropperType::class],
+        ], $calls);
     }
 }

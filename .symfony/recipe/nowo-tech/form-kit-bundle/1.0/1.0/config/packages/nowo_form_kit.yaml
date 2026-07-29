@@ -1,4 +1,4 @@
-# Form Kit Bundle — https://github.com/nowo-tech/form-kit-bundle
+# Form Kit Bundle — https://github.com/nowo-tech/FormKitBundle
 #
 # Top-level keys:
 #   default_profile  — Name of the entry under `profiles` to use when a form does not call setFormKitConfigName().

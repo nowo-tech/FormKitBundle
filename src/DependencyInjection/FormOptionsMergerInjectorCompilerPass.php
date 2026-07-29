@@ -10,7 +10,6 @@ use ReflectionNamedType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Throwable;
 
 /**
  * Injects FormOptionsMerger into all form types that have setFormOptionsMerger().
@@ -40,11 +39,7 @@ final class FormOptionsMergerInjectorCompilerPass implements CompilerPassInterfa
             if (!class_exists($class)) {
                 continue;
             }
-            try {
-                $refl = new ReflectionClass($class);
-            } catch (Throwable) {
-                continue;
-            }
+            $refl = new ReflectionClass($class);
             if (!$refl->hasMethod('setFormOptionsMerger')) {
                 continue;
             }

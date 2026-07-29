@@ -30,6 +30,7 @@ final class AbstractFormKitTypeTest extends TestCase
                 $this->setFormOptionsMerger($merger);
             }
 
+            /** @param FormBuilderInterface<mixed> $builder */
             public function addName(FormBuilderInterface $builder): void
             {
                 $this->addWithDefaults($builder, 'name', TextType::class);

@@ -17,6 +17,7 @@ use Symfony\Component\Form\FormView;
 final class RequiredLabelSuffixExtension extends AbstractTypeExtension
 {
     public function __construct(
+        /** @var array<string, array<string, mixed>> $profiles */
         private readonly array $profiles,
         private readonly string $defaultProfileName,
     ) {

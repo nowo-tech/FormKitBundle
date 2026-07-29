@@ -41,7 +41,7 @@ final class BootstrapCssClassUtilities
                 $bp    = $m[1] ?? '';
                 $width = isset($m[2]) ? (int) $m[2] : 0;
 
-                if (!isset($byBreakpoint[$bp]) || $width > ($byBreakpoint[$bp]['width'] ?? -1)) {
+                if (!isset($byBreakpoint[$bp]) || $width > $byBreakpoint[$bp]['width']) {
                     $byBreakpoint[$bp] = ['class' => $class, 'width' => $width];
                 }
             } else {

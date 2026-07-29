@@ -26,7 +26,7 @@ final class MultiStepWizardSession
     private readonly string $sessionKey;
 
     /**
-     * @param array<string, array{label: string, fields: array}> $steps Step key => [label, fields]
+     * @param array<string, array{label: string, fields: array<string, array<string, mixed>|string>}> $steps Step key => [label, fields]
      */
     public function __construct(
         private array $steps,
@@ -121,7 +121,7 @@ final class MultiStepWizardSession
         return $this->steps[$stepKey]['fields'] ?? [];
     }
 
-    /** @return array<string, array{label: string, fields: array}> */
+    /** @return array<string, array{label: string, fields: array<string, array<string, mixed>|string>}> */
     public function getSteps(): array
     {
         return $this->steps;
