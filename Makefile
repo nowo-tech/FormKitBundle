@@ -3,7 +3,9 @@
 #
 COMPOSE_FILE := docker-compose.yml
 COMPOSE_PROJECT_DIR := $(CURDIR)
-COMPOSE := docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_PROJECT_DIR)
+# Prefer Compose V2 plugin (GitHub Actions / modern Docker Desktop); fall back to docker-compose V1 (REQ-MAKE-010).
+COMPOSE_BIN := $(shell docker compose version >/dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+COMPOSE := $(COMPOSE_BIN) -f $(COMPOSE_FILE) --project-directory $(COMPOSE_PROJECT_DIR)
 SERVICE_PHP := php
 RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 
@@ -19,7 +21,7 @@ help:
 	@echo "Usage: make <target>"
 	@echo ""
 	@echo "Targets:"
-	@echo "  up             Start root container (docker-compose at bundle root)"
+	@echo "  up             Start root container ($(COMPOSE) at bundle root)"
 	@echo "  down           Stop root container"
 	@echo "  build          Rebuild root Docker image (no cache)"
 	@echo "  shell          Open shell in root container"
@@ -163,7 +165,7 @@ demo-up-symfony8:
 	fi
 	@echo "✅ demo/symfony8 ready"
 
-# Root docker-compose (bundle dev: install, test, cs-check, etc.)
+# Root $(COMPOSE) (bundle dev: install, test, cs-check, etc.)
 up:
 	$(COMPOSE) build
 	$(COMPOSE) up -d
@@ -213,4 +215,5 @@ strip-cursor-coauthor-from-history:
 
 # REQ-MAKE-008: update-deps (REQ-MAKE-008)
 BUNDLE_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-include $(BUNDLE_ROOT)/../.scripts/Makefile.update-deps.mk
+# Optional: monorepo helper absent on standalone GitHub Actions checkout (REQ-MAKE-009).
+-include $(BUNDLE_ROOT)/../.scripts/Makefile.update-deps.mk

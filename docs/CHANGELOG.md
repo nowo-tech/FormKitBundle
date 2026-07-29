@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.0.19] - 2026-07-29](#2019-2026-07-29)
+  - [Changed](#changed)
 - [[2.0.18] - 2026-07-29](#2018-2026-07-29)
   - [Added](#added)
   - [Changed](#changed)
@@ -72,6 +74,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.0.19] - 2026-07-29
+
+### Changed
+
+- **Makefiles (REQ-MAKE-009 / REQ-MAKE-010)** — Prefer Docker Compose V2 (`docker compose`) with V1 fallback; optional `-include` of monorepo `update-deps` helpers so standalone CI checkouts do not fail when `../.scripts/` is absent.
+- **PHP CS Fixer** — Import/`use` cleanups after 2.0.18 (traits, transformers, tests); no behaviour change.
 
 ## [2.0.18] - 2026-07-29
 
@@ -359,6 +368,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.19]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.19
 [2.0.18]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.18
 [2.0.17]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.17
 [2.0.16]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.16
