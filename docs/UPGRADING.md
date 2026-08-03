@@ -8,6 +8,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [Breaking: raised platform requirements](#breaking-raised-platform-requirements)
   - [Upgrade steps (from 1.x)](#upgrade-steps-from-1x)
 - [2.0.x patch releases](#20x-patch-releases)
+  - [2.0.20 (2026-08-04)](#2020-2026-08-04)
   - [2.0.19 (2026-07-29)](#2019-2026-07-29)
   - [2.0.18 (2026-07-29)](#2018-2026-07-29)
   - [2.0.17 (2026-07-26)](#2017-2026-07-26)
@@ -58,6 +59,11 @@ If your project runs on PHP 8.1 or Symfony 6.4 / 7.0–7.3, stay on **form-kit-b
 No configuration key renames are required for existing YAML; public services and extension points remain compatible where the platform allows installation.
 
 ## 2.0.x patch releases
+
+### 2.0.20 (2026-08-04)
+
+- **Dev dependencies / CI** — PHP CS Fixer, Rector, PHPStan, phpstan-frankenphp, and `actions/stale` bumps. No Composer package API change for **form-kit-bundle** consumers.
+- **Demos only** — Symfony 8 demo pulls Nowo special-field bundles from Packagist; the `/var/nowo-bundles` Docker volume is no longer required.
 
 ### 2.0.19 (2026-07-29)
 

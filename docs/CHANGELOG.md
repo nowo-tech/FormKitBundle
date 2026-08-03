@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.0.20] - 2026-08-04](#2020-2026-08-04)
+  - [Changed](#changed)
 - [[2.0.19] - 2026-07-29](#2019-2026-07-29)
   - [Changed](#changed)
 - [[2.0.18] - 2026-07-29](#2018-2026-07-29)
@@ -74,6 +76,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.0.20] - 2026-08-04
+
+### Changed
+
+- **Dev dependencies** — `friendsofphp/php-cs-fixer` **3.95.17 → 3.95.18**; `rector/rector` **2.5.8 → 2.5.9**; `phpstan/phpstan` **2.2.6 → 2.2.7**; `nowo-tech/phpstan-frankenphp` **1.0.1 → 1.0.2**; GitHub Action `actions/stale` **10 → 11** (Dependabot).
+- **demo/symfony8** — Nowo special-field widgets install from **Packagist** (`^1.0` / `^2.0`) instead of path repos under `/var/nowo-bundles`; removed that Compose volume; `prefer-stable: true`; refreshed `composer.lock` and `config/reference.php`.
+- **demo/README** — Documents Packagist-based Nowo widget packages (no sibling-path mount required).
 
 ## [2.0.19] - 2026-07-29
 
@@ -368,6 +378,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **a2lix/translation-form-bundle** constraint relaxed to `^3.2 || ^4.0` so PHP 8.2 projects can use 3.x (4.x requires PHP 8.4).
 - **Makefile:** Docker Compose now uses `--project-directory $(CURDIR)` so `/app` in the container always mounts the bundle root; added `down-dev` target to stop the dev container.
 
+[2.0.20]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.20
 [2.0.19]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.19
 [2.0.18]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.18
 [2.0.17]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.0.17

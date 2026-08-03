@@ -10,7 +10,6 @@ services:
     volumes:
       - .:/app
       - ../..:/var/form-kit-bundle
-      - ../../..:/var/nowo-bundles:ro
       - ./docker/frankenphp/Caddyfile.dev:/etc/frankenphp/Caddyfile.dev
       - ./docker/php-dev.ini:/usr/local/etc/php/conf.d/99-dev.ini:ro
       - composer-cache:/root/.composer/cache

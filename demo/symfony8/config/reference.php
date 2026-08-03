@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 // This file is auto-generated and is for apps only. Bundles SHOULD NOT rely on its content.
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
@@ -138,7 +136,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     http_method_override?: bool|Param, // Set true to enable support for the '_method' request parameter to determine the intended HTTP method on POST requests. // Default: false
  *     allowed_http_method_override?: null|list<string|Param>,
  *     trust_x_sendfile_type_header?: scalar|Param|null, // Set true to enable support for xsendfile in binary file responses. // Default: "%env(bool:default::SYMFONY_TRUST_X_SENDFILE_TYPE_HEADER)%"
- *     ide?: scalar|Param|null, // Deprecated: Setting the "framework.ide.ide" configuration option is deprecated, use the "SYMFONY_IDE" env var instead. // Default: "%env(default::SYMFONY_IDE)%"
+ *     ide?: scalar|Param|null, // Default: "%env(default::SYMFONY_IDE)%"
  *     test?: bool|Param,
  *     default_locale?: scalar|Param|null, // Default: "en"
  *     set_locale_from_accept_language?: bool|Param, // Whether to use the Accept-Language HTTP header to set the Request locale (only when the "_locale" request attribute is not passed). // Default: false
@@ -188,9 +186,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         enabled?: bool|Param, // Default: false
  *         hinclude_default_template?: scalar|Param|null, // Default: null
  *         path?: scalar|Param|null, // Default: "/_fragment"
- *     },
- *     uri_signer?: array{ // URI signer configuration
- *         expiration?: int|Param, // Default expiration of signed URIs, in seconds. // Default: null
  *     },
  *     profiler?: bool|array{ // Profiler configuration
  *         enabled?: bool|Param, // Default: false
@@ -488,7 +483,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             no_proxy?: scalar|Param|null, // A comma separated list of hosts that do not require a proxy to be reached.
  *             timeout?: float|Param, // The idle timeout, defaults to the "default_socket_timeout" ini parameter.
  *             max_duration?: float|Param, // The maximum execution time for the request+response as a whole.
- *             max_connect_duration?: float|Param, // The maximum duration allowed for DNS + TCP + TLS connection; a value lower than or equal to 0 means unlimited.
  *             bindto?: scalar|Param|null, // A network interface name, IP address, a host name or a UNIX socket to bind to.
  *             verify_peer?: bool|Param, // Indicates if the peer should be verified in a TLS context.
  *             verify_host?: bool|Param, // Indicates if the host should exist as a certificate common name.
@@ -542,7 +536,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             no_proxy?: scalar|Param|null, // A comma separated list of hosts that do not require a proxy to be reached.
  *             timeout?: float|Param, // The idle timeout, defaults to the "default_socket_timeout" ini parameter.
  *             max_duration?: float|Param, // The maximum execution time for the request+response as a whole.
- *             max_connect_duration?: float|Param, // The maximum duration allowed for DNS + TCP + TLS connection; a value lower than or equal to 0 means unlimited.
  *             bindto?: scalar|Param|null, // A network interface name, IP address, a host name or a UNIX socket to bind to.
  *             verify_peer?: bool|Param, // Indicates if the peer should be verified in a TLS context.
  *             verify_host?: bool|Param, // Indicates if the host should exist as a certificate common name.
@@ -1052,7 +1045,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         form_theme?: scalar|Param|null, // Base Symfony form layout (must match twig.form_themes in your app). // Default: "form_div_layout.html.twig"
  *         debug?: bool|Param, // When true, the browser console receives detailed logs from the bundle script. // Default: false
  *         preset?: scalar|Param|null, // Editor feature preset: standard, simple, minimal, emoji, typography, variables (plugins + toolbar). Use upload_url with preset standard for server-side image uploads. // Default: "standard"
- *         theme?: scalar|Param|null, // Chrome palette for the demo/widget wrapper: light, dark, or auto. // Default: "light"
+ *         theme?: scalar|Param|null, // Chrome palette for the demo/widget wrapper: light, dark, or auto (EditorTheme). // Default: "light"
  *         upload_url?: scalar|Param|null, // POST endpoint URL for image uploads (CKEditor SimpleUploadAdapter). Empty disables uploads. // Default: null
  *     }>,
  * }

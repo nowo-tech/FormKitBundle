@@ -8,15 +8,15 @@
     "a2lix/translation-form-bundle": "^4.0",
     "doctrine/collections": "^2.2",
     "friendsofsymfony/ckeditor-bundle": "^2.5",
-    "nowo-tech/ckeditor5-editor-bundle": "@dev",
+    "nowo-tech/ckeditor5-editor-bundle": "^1.0",
     "nowo-tech/form-kit-bundle": "@dev",
-    "nowo-tech/icon-selector-bundle": "@dev",
-    "nowo-tech/otp-input-bundle": "@dev",
-    "nowo-tech/password-strength-bundle": "@dev",
-    "nowo-tech/password-toggle-bundle": "@dev",
-    "nowo-tech/phone-input-bundle": "@dev",
+    "nowo-tech/icon-selector-bundle": "^1.0",
+    "nowo-tech/otp-input-bundle": "^1.0",
+    "nowo-tech/password-strength-bundle": "^2.0",
+    "nowo-tech/password-toggle-bundle": "^2.0",
+    "nowo-tech/phone-input-bundle": "^1.0",
     "nowo-tech/select-all-choice-bundle": "^1.0",
-    "nowo-tech/tiptap-editor-bundle": "@dev",
+    "nowo-tech/tiptap-editor-bundle": "^1.0",
     "pentatrion/vite-bundle": "^8.2",
     "symfony/asset": "^8.0",
     "symfony/asset-mapper": "8.1.*",
@@ -85,14 +85,8 @@
       "options": {
         "symlink": true
       }
-    },
-    { "type": "path", "url": "/var/nowo-bundles/OtpInputBundle" },
-    { "type": "path", "url": "/var/nowo-bundles/PhoneInputBundle" },
-    { "type": "path", "url": "/var/nowo-bundles/PasswordToggleBundle" },
-    { "type": "path", "url": "/var/nowo-bundles/PasswordStrengthBundle" },
-    { "type": "path", "url": "/var/nowo-bundles/IconSelectorBundle" },
-    { "type": "path", "url": "/var/nowo-bundles/TiptapEditorBundle" },
-    { "type": "path", "url": "/var/nowo-bundles/Ckeditor5EditorBundle" }
+    }
   ],
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
