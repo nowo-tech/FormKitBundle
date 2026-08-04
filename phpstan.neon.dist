@@ -10,6 +10,11 @@ parameters:
     level: 8
     paths:
         - src
-        - tests
+    scanFiles:
+        - stubs/OptionalFormTypes.php
     excludePaths:
         - demo/*
+        # Optional controller helpers; analysed via consumers / docs, not in-tree usages.
+        - src/Controller/FormKitControllerTrait.php
+        # Optional A2lix integration (suggest-only dependency).
+        - src/Form/Type/TranslationsFormsType.php

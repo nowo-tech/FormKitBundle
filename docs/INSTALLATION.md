@@ -104,6 +104,16 @@ Do **not** hard-code `/bundles/nowoformkit/...` or duplicate the package in the 
 3. Optionally call `setFormKitConfigName('profile_name')` to use a different profile than `default_profile`.
 4. Add translation keys for `{form_snake}.{field_snake}.label`, `.placeholder`, `.help` in your translation domain.
 
+## Twig Extra Bundle (REQ-TWIG-004)
+
+This package ships Twig templates. Host applications **must** install and enable Twig Extra:
+
+```bash
+composer require twig/extra-bundle twig/string-extra
+```
+
+Register `Twig\Extra\TwigExtraBundle\TwigExtraBundle` in `config/bundles.php` (Flex usually does this). Demos already include the same stack. The package `release-check` runs `make check-twig-extra` to guard this contract.
+
 ## Next steps
 
 - [Configuration](CONFIGURATION.md)

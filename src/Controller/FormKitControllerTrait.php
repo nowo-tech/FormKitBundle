@@ -431,8 +431,6 @@ trait FormKitControllerTrait
      *
      * @param FormBuilderInterface<mixed>|FormInterface<mixed> $builder
      * @param array<string, mixed> $options
-     *
-     * @return FormBuilderInterface<mixed>|FormInterface<mixed>
      */
     protected function addTranslations(
         FormBuilderInterface|FormInterface $builder,

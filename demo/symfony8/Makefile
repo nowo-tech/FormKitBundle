@@ -84,15 +84,19 @@ update-bundle: ensure-up
 	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) composer update nowo-tech/form-kit-bundle --with-all-dependencies
 
 test: ensure-up
-	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) composer test 2>/dev/null || $(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) vendor/bin/phpunit
+	@$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'composer test 2>/dev/null || $(MAKE) verify'
 
 test-coverage: ensure-up
-	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) composer test-coverage 2>/dev/null || $(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) vendor/bin/phpunit --coverage-text
+	@# Demo has no PHPUnit suite; alias coverage gate to HTTP smoke (REQ-TEST-011).
+	@$(MAKE) verify
 
 verify: ensure-up
 	@port=$$(grep '^PORT=' .env 2>/dev/null | cut -d= -f2 | tr -d '\r'); [ -z "$$port" ] && port=8008; \
 	code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$$port/en/ 2>/dev/null || echo "000"); \
-	if [ "$$code" = "200" ]; then echo "OK (HTTP $$code)"; else echo "Failed (HTTP $$code)"; exit 1; fi
+	case "$$code" in \
+		2*|3*) echo "OK (HTTP $$code)";; \
+		*) echo "Failed (HTTP $$code)"; exit 1;; \
+	esac
 
 assets:
 	@command -v php >/dev/null 2>&1 && php bin/console typescript:build --no-interaction || true

@@ -1,109 +1,121 @@
 {
-  "name": "nowo-tech/form-kit-bundle",
-  "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global → field type → form → field). Symfony 7.4|8.",
-  "type": "symfony-bundle",
-  "license": "MIT",
-  "keywords": [
-    "symfony",
-    "bundle",
-    "form",
-    "form-type",
-    "options",
-    "translation",
-    "convention",
-    "label",
-    "placeholder",
-    "help"
-  ],
-  "homepage": "https://github.com/nowo-tech/FormKitBundle",
-  "support": {
-    "issues": "https://github.com/nowo-tech/FormKitBundle/issues",
-    "source": "https://github.com/nowo-tech/FormKitBundle"
-  },
-  "authors": [
-    {
-      "name": "Héctor Franco Aceituno",
-      "email": "hectorfranco@nowo.tech",
-      "homepage": "https://github.com/HecFranco",
-      "role": "Developer"
+    "name": "nowo-tech/form-kit-bundle",
+    "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global → field type → form → field). Symfony 7.4|8.",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "keywords": [
+        "symfony",
+        "bundle",
+        "form",
+        "form-type",
+        "options",
+        "translation",
+        "convention",
+        "label",
+        "placeholder",
+        "help"
+    ],
+    "homepage": "https://github.com/nowo-tech/FormKitBundle",
+    "support": {
+        "issues": "https://github.com/nowo-tech/FormKitBundle/issues",
+        "source": "https://github.com/nowo-tech/FormKitBundle"
     },
-    {
-      "name": "Nowo.tech",
-      "homepage": "https://nowo.tech"
+    "authors": [
+        {
+            "name": "Héctor Franco Aceituno",
+            "email": "hectorfranco@nowo.tech",
+            "homepage": "https://github.com/HecFranco",
+            "role": "Developer"
+        },
+        {
+            "name": "Nowo.tech",
+            "homepage": "https://nowo.tech"
+        }
+    ],
+    "require": {
+        "doctrine/collections": "^2.2",
+        "php": ">=8.2 <8.6",
+        "symfony/config": "^7.4 || ^8.0",
+        "symfony/dependency-injection": "^7.4 || ^8.0",
+        "symfony/form": "^7.4 || ^8.0",
+        "symfony/http-kernel": "^7.4 || ^8.0",
+        "symfony/translation": "^7.4 || ^8.0",
+        "symfony/validator": "^7.4 || ^8.0",
+        "symfony/yaml": "^7.4 || ^8.0",
+        "twig/extra-bundle": "^3.12",
+        "twig/string-extra": "^3.12"
+    },
+    "suggest": {
+        "a2lix/translation-form-bundle": "For the optional \"translations\" type in FormTypeMap (^3.2 on PHP 8.2/Symfony 7.4, ^4.0 on PHP 8.4+/Symfony 7.4|8)",
+        "nowo-tech/select-all-choice-bundle": "For addMultiSelectSelectAll() / addMultiSelectSelectAllType() (\"Select all\" on ChoiceType multiple)",
+        "friendsofsymfony/ckeditor-bundle": "For addCKEditorField() / addCKEditorFieldType() (CKEditor 4 in forms)",
+        "symfony/ux-autocomplete": "Entity autocomplete fields; use addAutocompleteField() / addAutocompleteFieldType() with your autocomplete FormType FQCN",
+        "symfony/ux-dropzone": "For addDropzone() / addDropzoneField() / addDropzoneFieldType() (drag-and-drop file upload)",
+        "symfony/ux-cropperjs": "For addCropper() / addCropperField() / addCropperFieldType() (image crop widget)",
+        "symfony/ux-live-component": "Optional Live Component forms; see the demo /conditional-fields-live page and USAGE conditional-fields section",
+        "symfony/ux-icons": "For help_modal.ux_icon (IconRendererInterface) instead of icon_html only"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95.11",
+        "nowo-tech/phpstan-frankenphp": "^1.0",
+        "phpstan/extension-installer": "^1.2",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
+        "phpunit/phpunit": "^10.0",
+        "rector/rector": "^2.0",
+        "symfony/framework-bundle": "^7.4 || ^8.0",
+        "vincentlanglet/twig-cs-fixer": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nowo\\FormKitBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nowo\\FormKitBundle\\Tests\\": "tests/"
+        }
+    },
+    "archive": {
+        "exclude": [
+            "/demo",
+            "/.cursor"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --colors=always --coverage-html coverage --coverage-clover coverage.xml --coverage-text",
+        "cs-check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "vendor/bin/php-cs-fixer fix",
+        "phpstan": "phpstan analyse --memory-limit=512M",
+        "rector": "rector process",
+        "rector-dry": "rector process --dry-run --no-progress-bar",
+        "qa": [
+            "@cs-check",
+            "@test"
+        ],
+        "twig:lint": "twig-cs-fixer lint --config=.twig-cs-fixer.php",
+        "twig:fix": "twig-cs-fixer fix --config=.twig-cs-fixer.php",
+        "twig:fix:check": "twig-cs-fixer lint --config=.twig-cs-fixer.php --fix"
+    },
+    "scripts-descriptions": {
+        "test": "Run PHPUnit tests",
+        "test-coverage": "Run PHPUnit tests with code coverage",
+        "cs-check": "Check code style with PHP-CS-Fixer",
+        "cs-fix": "Fix code style with PHP-CS-Fixer",
+        "phpstan": "Run PHPStan static analysis",
+        "rector": "Apply Rector refactoring",
+        "rector-dry": "Run Rector in dry-run mode",
+        "qa": "Run all quality assurance checks"
     }
-  ],
-  "require": {
-    "php": ">=8.2 <8.6",
-    "doctrine/collections": "^2.2",
-    "symfony/config": "^7.4 || ^8.0",
-    "symfony/dependency-injection": "^7.4 || ^8.0",
-    "symfony/form": "^7.4 || ^8.0",
-    "symfony/http-kernel": "^7.4 || ^8.0",
-    "symfony/translation": "^7.4 || ^8.0",
-    "symfony/validator": "^7.4 || ^8.0",
-    "symfony/yaml": "^7.4 || ^8.0"
-  },
-  "suggest": {
-    "a2lix/translation-form-bundle": "For the optional \"translations\" type in FormTypeMap (^3.2 on PHP 8.2/Symfony 7.4, ^4.0 on PHP 8.4+/Symfony 7.4|8)",
-    "nowo-tech/select-all-choice-bundle": "For addMultiSelectSelectAll() / addMultiSelectSelectAllType() (\"Select all\" on ChoiceType multiple)",
-    "friendsofsymfony/ckeditor-bundle": "For addCKEditorField() / addCKEditorFieldType() (CKEditor 4 in forms)",
-    "symfony/ux-autocomplete": "Entity autocomplete fields; use addAutocompleteField() / addAutocompleteFieldType() with your autocomplete FormType FQCN",
-    "symfony/ux-dropzone": "For addDropzone() / addDropzoneField() / addDropzoneFieldType() (drag-and-drop file upload)",
-    "symfony/ux-cropperjs": "For addCropper() / addCropperField() / addCropperFieldType() (image crop widget)",
-    "symfony/ux-live-component": "Optional Live Component forms; see the demo /conditional-fields-live page and USAGE conditional-fields section",
-    "symfony/ux-icons": "For help_modal.ux_icon (IconRendererInterface) instead of icon_html only"
-  },
-  "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.95.11",
-    "nowo-tech/phpstan-frankenphp": "^1.0",
-    "phpstan/extension-installer": "^1.2",
-    "phpstan/phpstan": "^2.0",
-    "phpstan/phpstan-phpunit": "^2.0",
-    "phpstan/phpstan-symfony": "^2.0",
-    "phpunit/phpunit": "^10.0",
-    "rector/rector": "^2.0",
-    "symfony/framework-bundle": "^7.4 || ^8.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Nowo\\FormKitBundle\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Nowo\\FormKitBundle\\Tests\\": "tests/"
-    }
-  },
-  "archive": {
-    "exclude": ["/demo", "/.cursor"]
-  },
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "composer/package-versions-deprecated": true,
-      "phpstan/extension-installer": true
-    }
-  },
-  "minimum-stability": "stable",
-  "prefer-stable": true,
-  "scripts": {
-    "test": "vendor/bin/phpunit",
-    "test-coverage": "vendor/bin/phpunit --colors=always --coverage-html coverage --coverage-clover coverage.xml --coverage-text",
-    "cs-check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
-    "cs-fix": "vendor/bin/php-cs-fixer fix",
-    "phpstan": "phpstan analyse --memory-limit=512M",
-    "rector": "rector process",
-    "rector-dry": "rector process --dry-run --no-progress-bar",
-    "qa": ["@cs-check", "@test"]
-  },
-  "scripts-descriptions": {
-    "test": "Run PHPUnit tests",
-    "test-coverage": "Run PHPUnit tests with code coverage",
-    "cs-check": "Check code style with PHP-CS-Fixer",
-    "cs-fix": "Fix code style with PHP-CS-Fixer",
-    "phpstan": "Run PHPStan static analysis",
-    "rector": "Apply Rector refactoring",
-    "rector-dry": "Run Rector in dry-run mode",
-    "qa": "Run all quality assurance checks"
-  }
 }

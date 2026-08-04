@@ -53,9 +53,9 @@ final readonly class MultiStepFormBuilder
 
         foreach ($fieldsDefinition as $name => $definition) {
             if (is_string($definition)) {
+                /** @var class-string<FormTypeInterface<mixed>> $type */
                 $type    = $definition;
                 $options = $this->formOptionsMerger->resolve($formName, $name, $type, [], $configName);
-                /* @var class-string<FormTypeInterface<mixed>> $type */
                 $builder->add($name, $type, $options);
             } else {
                 $type = $definition['type'] ?? null;
@@ -64,8 +64,8 @@ final readonly class MultiStepFormBuilder
                 }
                 $fieldOptions = $definition;
                 unset($fieldOptions['type']);
+                /** @var class-string<FormTypeInterface<mixed>> $type */
                 $options = $this->formOptionsMerger->resolve($formName, $name, $type, $fieldOptions, $configName);
-                /* @var class-string<FormTypeInterface<mixed>> $type */
                 $builder->add($name, $type, $options);
             }
         }

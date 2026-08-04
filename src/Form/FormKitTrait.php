@@ -136,8 +136,9 @@ trait FormKitTrait
         if ($fqcn === null) {
             throw new InvalidArgumentException(sprintf('Unknown form type snake_case name "%s". Register it in nowo_form_kit.type_map or use a built-in type.', $typeSnakeCase));
         }
-        /* @var class-string<FormTypeInterface<mixed>> $fqcn */
-        $builder->add($name, $fqcn, $this->mergeFieldOptions($name, $typeSnakeCase, $options));
+        /** @var class-string<FormTypeInterface<mixed>> $typeFqcn */
+        $typeFqcn = $fqcn;
+        $builder->add($name, $typeFqcn, $this->mergeFieldOptions($name, $typeSnakeCase, $options));
     }
 
     /**

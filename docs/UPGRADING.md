@@ -4,6 +4,8 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Table of contents
 
+- [Unreleased](#unreleased)
+- [To 2.1.0](#to-210)
 - [2.0.0 (2026-06-11)](#200-2026-06-11)
   - [Breaking: raised platform requirements](#breaking-raised-platform-requirements)
   - [Upgrade steps (from 1.x)](#upgrade-steps-from-1x)
@@ -30,6 +32,33 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [2.0.1 (2026-06-11)](#201-2026-06-11)
 - [1.x](#1x)
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
+
+
+## Unreleased
+
+## To 2.1.0
+
+From **2.0.20** — Adds required Twig Extra (REQ-TWIG-004) and Twig-CS-Fixer. Register TwigExtraBundle if Flex did not.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+php bin/console cache:clear
+```
+
+### Twig Extra Bundle (REQ-TWIG-004)
+
+Hosts that render this bundle's Twig templates must install:
+
+```bash
+composer require twig/extra-bundle twig/string-extra
+```
+
+and enable `Twig\Extra\TwigExtraBundle\TwigExtraBundle`. Flex recipes usually register it automatically.
+
+### Twig-CS-Fixer (maintainers)
+
+Package maintainers: `composer twig:lint` / `composer twig:fix` use `.twig-cs-fixer.php` over `src/` (and `templates/` when present).
+
 
 ## 2.0.0 (2026-06-11)
 

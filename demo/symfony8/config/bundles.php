@@ -26,6 +26,7 @@ use Symfony\UX\Icons\UXIconsBundle;
 use Symfony\UX\LiveComponent\LiveComponentBundle;
 use Symfony\UX\StimulusBundle\StimulusBundle;
 use Symfony\UX\TwigComponent\TwigComponentBundle;
+use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
 
 return [
     FrameworkBundle::class            => ['all' => true],
@@ -53,4 +54,5 @@ return [
     NowoCkeditor5EditorBundle::class  => ['all' => true],
     TwigComponentBundle::class        => ['all' => true],
     LiveComponentBundle::class        => ['all' => true],
+    TwigExtraBundle::class            => ['all' => true],
 ];

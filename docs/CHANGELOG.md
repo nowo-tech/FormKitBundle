@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.1.0] - 2026-08-04](#210-2026-08-04)
 - [[2.0.20] - 2026-08-04](#2020-2026-08-04)
   - [Changed](#changed)
 - [[2.0.19] - 2026-07-29](#2019-2026-07-29)
@@ -76,6 +77,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.1.0] - 2026-08-04
+
+### Changed
+
+- **PHPStan:** analyse `src/` only (align with UiKit); exclude unused `FormKitControllerTrait` from the scan path. Clear remaining `class-string` / `list` typing for Form builder helpers.
+- **PHPStan stubs:** `stubs/OptionalFormTypes.php` for optional UX / A2lix / CKEditor form type FQCNs (still Composer `suggest` only at runtime).
+- Demo `test-coverage` aliases HTTP smoke (`make verify`) — the demo has no PHPUnit suite; healthchecks accept HTTP **2xx/3xx**.
+
+### Added
+- **REQ-TWIG-004:** require `twig/extra-bundle` + `twig/string-extra`; `make check-twig-extra` in `release-check`; demos register `TwigExtraBundle`.
+- **Twig-CS-Fixer:** `vincentlanglet/twig-cs-fixer`, `.twig-cs-fixer.php`, `composer twig:lint` / `twig:fix`.
+
+[2.1.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.1.0
 
 ## [2.0.20] - 2026-08-04
 

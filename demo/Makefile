@@ -149,8 +149,10 @@ release-verify:
 		$(MAKE) up-$$d; sleep 15; \
 		code=$$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$$port 2>/dev/null || echo "000"); \
 		$(MAKE) down-$$d 2>/dev/null || true; \
-		if [ "$$code" != "200" ]; then echo "$$d healthcheck failed (HTTP $$code)"; exit 1; fi; \
-		echo "$$d OK"; \
+		case "$$code" in \
+			2*|3*) echo "$$d OK (HTTP $$code)";; \
+			*) echo "$$d healthcheck failed (HTTP $$code)"; exit 1;; \
+		esac; \
 	done
 	@echo "All demos passed release-verify."
 

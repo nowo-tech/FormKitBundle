@@ -176,7 +176,7 @@ trait FormOptionsTrait
      * you pass false for any of them in $options. Uses the profile set via setFormKitConfigName() or default_profile.
      *
      * @param FormBuilderInterface<mixed> $builder
-     * @param class-string $type
+     * @param class-string<FormTypeInterface<mixed>> $type
      * @param array<string, mixed> $options Field-specific options (override convention; use false to disable label/placeholder/help)
      */
     protected function addWithDefaults(
@@ -185,7 +185,6 @@ trait FormOptionsTrait
         string $type,
         array $options = []
     ): void {
-        /* @var class-string<FormTypeInterface<mixed>> $type */
         $builder->add($name, $type, $this->resolveFieldOptions($name, $type, $options));
     }
 
@@ -249,7 +248,7 @@ trait FormOptionsTrait
      *
      * @throws InvalidArgumentException
      *
-     * @return FormBuilderInterface<mixed>|FormInterface<mixed>
+     * @phpstan-return FormBuilderInterface<mixed>|FormInterface<mixed>
      */
     protected function addTranslations(FormBuilderInterface|FormInterface $builder, array $options): FormBuilderInterface|FormInterface
     {
@@ -339,7 +338,9 @@ trait FormOptionsTrait
     {
         foreach ($fields as $name => $definition) {
             if (is_string($definition)) {
-                $this->addWithDefaults($builder, $name, $definition, []);
+                /** @var class-string<FormTypeInterface<mixed>> $typeFqcn */
+                $typeFqcn = $definition;
+                $this->addWithDefaults($builder, $name, $typeFqcn, []);
             } else {
                 $type = $definition['type'] ?? null;
                 if (!is_string($type) || $type === '') {
@@ -347,8 +348,9 @@ trait FormOptionsTrait
                 }
                 $options = $definition;
                 unset($options['type']);
-                /* @var class-string<FormTypeInterface<mixed>> $type */
-                $this->addWithDefaults($builder, $name, $type, $options);
+                /** @var class-string<FormTypeInterface<mixed>> $typeFqcn */
+                $typeFqcn = $type;
+                $this->addWithDefaults($builder, $name, $typeFqcn, $options);
             }
         }
     }
@@ -441,7 +443,7 @@ trait FormOptionsTrait
     /**
      * Like {@see addWithDefaults()} using the builder from {@see withBuilder()}.
      *
-     * @param class-string $type
+     * @param class-string<FormTypeInterface<mixed>> $type
      * @param array<string, mixed> $options
      */
     protected function addTypedField(string $name, string $type, array $options = []): void
@@ -665,7 +667,7 @@ trait FormOptionsTrait
      * Typical use: Symfony UX Autocomplete field class extending BaseEntityAutocompleteType.
      *
      * @param FormBuilderInterface<mixed> $builder
-     * @param class-string $formTypeFqcn
+     * @param class-string<FormTypeInterface<mixed>> $formTypeFqcn
      * @param array<string, mixed> $options
      */
     protected function addAutocompleteField(FormBuilderInterface $builder, string $name, string $formTypeFqcn, array $options = []): void

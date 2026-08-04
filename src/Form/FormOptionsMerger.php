@@ -130,10 +130,8 @@ final class FormOptionsMerger
 
         $merged = $this->removeExplicitFalseConventionKeys($merged, $options);
 
-        $constraintDefs = array_merge($typeConstraintDefs, $formConstraintDefs, $optionsConstraints);
+        $constraintDefs = array_values(array_merge($typeConstraintDefs, $formConstraintDefs, $optionsConstraints));
         if ($constraintDefs !== []) {
-            /** @var list<mixed> $constraintDefs */
-            $constraintDefs        = $constraintDefs;
             $messagePrefix         = $messageConvention ? $baseKey : null;
             $merged['constraints'] = $this->constraintDefinitionFactory->create($constraintDefs, $messagePrefix);
         }
