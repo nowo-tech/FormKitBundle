@@ -61,6 +61,8 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
                 Configuration::DEFAULT_PROFILE_NAME => [
                     'alias'                         => Configuration::DEFAULT_PROFILE_NAME,
                     'translation_domain'            => $config['translation_domain'],
+                    'auto_placeholder'              => $config['auto_placeholder'] ?? true,
+                    'auto_help'                     => $config['auto_help'] ?? true,
                     'required_label_suffix'         => $config['required_label_suffix'] ?? null,
                     'help_modal'                    => $config['help_modal'] ?? [],
                     'defaults'                      => $config['defaults'],
@@ -75,6 +77,8 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         foreach ($profilesMap as $name => $c) {
             $normalized[$name] = [
                 'translation_domain'            => $c['translation_domain'],
+                'auto_placeholder'              => (bool) ($c['auto_placeholder'] ?? true),
+                'auto_help'                     => (bool) ($c['auto_help'] ?? true),
                 'required_label_suffix'         => $c['required_label_suffix'] ?? null,
                 'help_modal'                    => $c['help_modal'] ?? [],
                 'defaults'                      => $c['defaults'],

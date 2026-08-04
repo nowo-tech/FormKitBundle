@@ -57,6 +57,8 @@ final class Configuration implements ConfigurationInterface
                             self::DEFAULT_PROFILE_NAME => [
                                 'alias'                         => self::DEFAULT_PROFILE_NAME,
                                 'translation_domain'            => $config['translation_domain'] ?? 'messages',
+                                'auto_placeholder'              => $config['auto_placeholder'] ?? true,
+                                'auto_help'                     => $config['auto_help'] ?? true,
                                 'required_label_suffix'         => $config['required_label_suffix'] ?? null,
                                 'help_modal'                    => $config['help_modal'] ?? [],
                                 'defaults'                      => $config['defaults'] ?? ['attr' => [], 'row_attr' => []],
@@ -67,6 +69,8 @@ final class Configuration implements ConfigurationInterface
                         ];
                         unset(
                             $config['translation_domain'],
+                            $config['auto_placeholder'],
+                            $config['auto_help'],
                             $config['required_label_suffix'],
                             $config['help_modal'],
                             $config['defaults'],
@@ -114,6 +118,14 @@ final class Configuration implements ConfigurationInterface
                             ->end()
                             ->scalarNode('translation_domain')
                                 ->defaultValue('messages')
+                            ->end()
+                            ->booleanNode('auto_placeholder')
+                                ->info('When true (default), unset placeholders become {form}.{field}.placeholder translation keys. Set false for kits that only set explicit labels.')
+                                ->defaultTrue()
+                            ->end()
+                            ->booleanNode('auto_help')
+                                ->info('When true (default), unset help becomes {form}.{field}.help translation keys. Set false to avoid raw missing-help keys in the UI.')
+                                ->defaultTrue()
                             ->end()
                             ->scalarNode('required_label_suffix')
                                 ->info('Appended to the label when the field is required (e.g. " *"). Empty or null to disable.')

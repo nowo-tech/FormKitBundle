@@ -30,6 +30,8 @@ final class FormOptionsMerger
     /**
      * @param array<string, array{
      *     translation_domain: string,
+     *     auto_placeholder?: bool,
+     *     auto_help?: bool,
      *     defaults: array{attr: array<string, mixed>, row_attr: array<string, mixed>},
      *     field_types: array<string, array<string, mixed>>,
      *     constraint_message_convention?: bool,
@@ -71,20 +73,26 @@ final class FormOptionsMerger
         $fieldTypes        = $config['field_types'];
         $byFormMap         = $config['by_form'] ?? [];
         $messageConvention = (bool) ($config['constraint_message_convention'] ?? false);
+        $autoPlaceholder   = (bool) ($config['auto_placeholder'] ?? true);
+        $autoHelp          = (bool) ($config['auto_help'] ?? true);
 
         $fieldNameSnake = $this->camelCaseToSnakeCase($fieldName);
         $baseKey        = $formName . '.' . $fieldNameSnake;
 
+        $baseAttr = $defaults['attr'];
+        if ($autoPlaceholder) {
+            $baseAttr = array_merge(['placeholder' => $baseKey . '.placeholder'], $baseAttr);
+        }
+
         $base = [
             'translation_domain' => $translationDomain,
             'label'              => $baseKey . '.label',
-            'help'               => $baseKey . '.help',
-            'attr'               => array_merge(
-                ['placeholder' => $baseKey . '.placeholder'],
-                $defaults['attr'],
-            ),
-            'row_attr' => $defaults['row_attr'],
+            'attr'               => $baseAttr,
+            'row_attr'           => $defaults['row_attr'],
         ];
+        if ($autoHelp) {
+            $base['help'] = $baseKey . '.help';
+        }
 
         $typeShortName = $this->typeToShortName($type);
         $typeDefaults  = $fieldTypes[$typeShortName] ?? $fieldTypes[$type] ?? [];

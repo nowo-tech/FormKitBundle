@@ -185,6 +185,13 @@ trait FormOptionsTrait
         string $type,
         array $options = []
     ): void {
+        if (!array_key_exists('translation_domain', $options)) {
+            $formDomain = $builder->getOption('translation_domain');
+            if (is_string($formDomain) && $formDomain !== '') {
+                $options['translation_domain'] = $formDomain;
+            }
+        }
+
         $builder->add($name, $type, $this->resolveFieldOptions($name, $type, $options));
     }
 

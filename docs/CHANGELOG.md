@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.2.0] - 2026-08-05](#220-2026-08-05)
 - [[2.1.0] - 2026-08-04](#210-2026-08-04)
 - [[2.0.20] - 2026-08-04](#2020-2026-08-04)
   - [Changed](#changed)
@@ -77,6 +78,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.2.0] - 2026-08-05
+
+### Added
+
+- Profile options **`auto_placeholder`** and **`auto_help`** (default `true`): when `false`, FormOptionsMerger does not inject `{form}.{field}.placeholder` / `.help` convention keys (kits can set labels only without empty help keys in the UI).
+- **`FormOptionsTrait::addWithDefaults()`** inherits the form-level `translation_domain` into field options when the field does not set one, so AuthKit/host form domains win over the profile default.
+
+[2.2.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.2.0
 
 ## [2.1.0] - 2026-08-04
 

@@ -185,4 +185,53 @@ final class FormOptionsMergerTest extends TestCase
 
         self::assertSame('demo_form.name.placeholder', $merged['attr']['placeholder']);
     }
+
+    public function testResolveSkipsAutoHelpAndPlaceholderWhenProfileDisablesThem(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'kit' => [
+                    'translation_domain' => 'KitBundle',
+                    'auto_placeholder'   => false,
+                    'auto_help'          => false,
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
+                        'row_attr' => ['class' => 'mb-3'],
+                    ],
+                    'field_types' => [],
+                ],
+            ],
+            'kit',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('login_form', 'email', 'email', [], 'kit');
+
+        self::assertArrayNotHasKey('help', $merged);
+        self::assertArrayNotHasKey('placeholder', $merged['attr'] ?? []);
+        self::assertSame('login_form.email.label', $merged['label']);
+    }
+
+    public function testResolveAllowsFieldOptionsToOverrideDisabledAutoHelp(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'kit' => [
+                    'translation_domain' => 'KitBundle',
+                    'auto_placeholder'   => false,
+                    'auto_help'          => false,
+                    'defaults'           => ['attr' => [], 'row_attr' => []],
+                    'field_types'        => [],
+                ],
+            ],
+            'kit',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('login_form', 'email', 'email', [
+            'help' => 'login_form.email.help',
+        ], 'kit');
+
+        self::assertSame('login_form.email.help', $merged['help']);
+    }
 }
