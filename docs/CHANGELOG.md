@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.3.0] - 2026-08-14](#230-2026-08-14)
 - [[2.2.0] - 2026-08-05](#220-2026-08-05)
 - [[2.1.0] - 2026-08-04](#210-2026-08-04)
 - [[2.0.20] - 2026-08-04](#2020-2026-08-04)
@@ -78,6 +79,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.3.0] - 2026-08-14
+
+### Added
+
+- Profile / `by_form` **`defaults.label`**, **`defaults.placeholder`**, **`defaults.help`**, and **`defaults.required`**: optional scalar defaults applied to every field (same cascade as `attr` / `row_attr`). Example: filter profiles can set `label: false` and `required: false` once instead of repeating under each `field_types.*`.
+- **`field_types.*.required`** and **`by_form.*.fields.*.required`**: declare a default `required` flag in YAML (overridable by later layers / PHP options).
+- Profile **`defaults.help_attr`** (and peers on `field_types` / `by_form`) for Symfony `help_attr` chrome.
+
+[2.3.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.3.0
 
 ## [2.2.0] - 2026-08-05
 

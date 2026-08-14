@@ -24,8 +24,13 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `profiles.<name>.required_label_suffix` | `string\|null` | Appended to the label when the field is required (e.g. ` *`). `null` or empty disables. **`RequiredLabelSuffixExtension`** reads this from the profile whose key equals **`default_profile`** (not from the form’s `setFormKitConfigName()`), and injects `required_label_suffix` into the view for all forms. |
 | `profiles.<name>.defaults.attr` | `array` | Default HTML attributes for every field (e.g. `class: form-control`). |
 | `profiles.<name>.defaults.row_attr` | `array` | Default HTML attributes for the form row wrapper (e.g. `class: mb-3`). |
-| `profiles.<name>.field_types` | `array` | Per-field-type default options. Key = short type name (e.g. `text`, `email`) or FQCN. Value = options array (may include `constraints`). |
-| `profiles.<name>.by_form` | `array` | Per-form defaults keyed by form name / block prefix (e.g. `user_profile`). Each entry may set `defaults.attr` / `defaults.row_attr` and `fields.<field>` overrides (including `constraints`). Merged **after** `field_types`, **before** per-field options. |
+| `profiles.<name>.defaults.help_attr` | `array` | Default HTML attributes for field help (`help_attr`, e.g. `class` for muted small copy). |
+| `profiles.<name>.defaults.label` | `string\|bool` | Optional. Default `label` for every field (e.g. `false` to suppress). When set, overrides the `{form}.{field}.label` convention. Overridable per `field_types` / `by_form` / PHP. |
+| `profiles.<name>.defaults.placeholder` | `string\|bool` | Optional. Default `placeholder` (e.g. `false` to suppress). When set, overrides `auto_placeholder`. |
+| `profiles.<name>.defaults.help` | `string\|bool` | Optional. Default `help` (e.g. `false` to suppress). When set, overrides `auto_help`. |
+| `profiles.<name>.defaults.required` | `bool` | Optional. Default `required` for every field. Overridable per `field_types` / `by_form` / PHP. |
+| `profiles.<name>.field_types` | `array` | Per-field-type default options. Key = short type name (e.g. `text`, `email`) or FQCN. Value = options array (may include `label`, `placeholder`, `help`, `required`, `constraints`). |
+| `profiles.<name>.by_form` | `array` | Per-form defaults keyed by form name / block prefix (e.g. `user_profile`). Each entry may set `defaults.attr` / `defaults.row_attr` / `defaults.help_attr` / `defaults.label` / `defaults.required` (and peers) and `fields.<field>` overrides (including `constraints`). Merged **after** `field_types`, **before** per-field options. |
 | `profiles.<name>.constraint_message_convention` | `bool` | When `true`, constraints without an explicit `message` (or `minMessage`/`maxMessage` when `min`/`max` are set) get keys `{form}.{field}.constraints.{Name}` (and `.min` / `.max` suffixes for Length-style). Put those keys in the **validators** catalog. Default: `false`. |
 | `profiles.<name>.help_modal` | `array` | Default options when a field sets `help_modal: true` (merged with per-field overrides). Keys: `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` (with **symfony/ux-icons**), `trigger_class`, `aria_label`, `title` / `title_html`, `content`. See [Usage — Help modal](USAGE.md#help-modal-optional). |
 | `type_map` | `array` | Additional form type names (snake_case) => FQCN. Merged with built-in and optional types (e.g. Dropzone, Cropper, A2lix Translations when the package is installed). Use for custom types or to override. |
@@ -152,4 +157,4 @@ App\Form\MyBootstrapFormType:
         - setFormKitConfigName: ['bootstrap']
 ```
 
-Convention-based keys (label, placeholder, help) are derived from `{form_snake}.{field_snake}.label`, etc., unless you pass `label: false`, `placeholder: false` or `help: false` in the field options.
+Convention-based keys (label, placeholder, help) are derived from `{form_snake}.{field_snake}.label`, etc., unless you pass `label: false`, `placeholder: false` or `help: false` in the field options — or set the same keys once under `profiles.<name>.defaults` (or `by_form.<form>.defaults`).

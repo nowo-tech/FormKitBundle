@@ -50,6 +50,103 @@ final class FormOptionsMergerTest extends TestCase
         self::assertInstanceOf(NotBlank::class, $merged['constraints'][0]);
     }
 
+    public function testResolveAppliesHelpAttrFromDefaults(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
+                        'attr'      => ['class' => 'form-control'],
+                        'row_attr'  => ['class' => 'mb-3'],
+                        'help_attr' => ['class' => 'text-xs text-muted'],
+                    ],
+                    'field_types' => [],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('demo_form', 'name', 'text');
+
+        self::assertSame('text-xs text-muted', $merged['help_attr']['class']);
+    }
+
+    public function testResolveAppliesLabelAndRequiredFromDefaults(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
+                        'attr'     => ['class' => 'form-control'],
+                        'row_attr' => ['class' => 'mb-3'],
+                        'label'    => false,
+                        'required' => false,
+                    ],
+                    'field_types' => [],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('demo_form', 'name', 'text');
+
+        self::assertFalse($merged['label']);
+        self::assertFalse($merged['required']);
+        self::assertSame('demo_form.name.placeholder', $merged['attr']['placeholder']);
+    }
+
+    public function testResolveFieldOptionsOverrideDefaultsRequired(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
+                        'attr'     => [],
+                        'row_attr' => [],
+                        'required' => false,
+                    ],
+                    'field_types' => [],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('demo_form', 'per_page', 'choice', [
+            'required' => true,
+        ]);
+
+        self::assertTrue($merged['required']);
+    }
+
+    public function testResolveClearsAttrPlaceholderWhenDefaultsPlaceholderIsFalse(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
+                        'attr'        => ['class' => 'form-control'],
+                        'row_attr'    => [],
+                        'placeholder' => false,
+                    ],
+                    'field_types' => [],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('demo_form', 'name', 'text');
+
+        self::assertArrayNotHasKey('placeholder', $merged['attr'] ?? []);
+    }
+
     public function testResolveAppliesPlaceholderFromMergedOptionsWhenAttrHasNoPlaceholder(): void
     {
         $merged = $this->createMerger()->resolve('demo_form', 'name', 'text', [

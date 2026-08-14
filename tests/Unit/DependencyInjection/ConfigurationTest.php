@@ -118,4 +118,33 @@ final class ConfigurationTest extends TestCase
         self::assertSame('input', $processed['profiles']['default']['defaults']['attr']['class']);
         self::assertSame('legacy_help', $processed['profiles']['default']['field_types']['text']['help']);
     }
+
+    public function testAcceptsLabelAndRequiredUnderDefaultsAndFieldTypes(): void
+    {
+        $processor     = new Processor();
+        $configuration = new Configuration();
+
+        $processed = $processor->processConfiguration($configuration, [[
+            'profiles' => [
+                'filter' => [
+                    'alias'    => 'filter',
+                    'defaults' => [
+                        'attr'     => ['class' => 'input'],
+                        'row_attr' => [],
+                        'label'    => false,
+                        'required' => false,
+                    ],
+                    'field_types' => [
+                        'choice' => [
+                            'required' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ]]);
+
+        self::assertFalse($processed['profiles']['filter']['defaults']['label']);
+        self::assertFalse($processed['profiles']['filter']['defaults']['required']);
+        self::assertTrue($processed['profiles']['filter']['field_types']['choice']['required']);
+    }
 }

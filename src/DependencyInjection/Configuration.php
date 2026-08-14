@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -61,7 +63,7 @@ final class Configuration implements ConfigurationInterface
                                 'auto_help'                     => $config['auto_help'] ?? true,
                                 'required_label_suffix'         => $config['required_label_suffix'] ?? null,
                                 'help_modal'                    => $config['help_modal'] ?? [],
-                                'defaults'                      => $config['defaults'] ?? ['attr' => [], 'row_attr' => []],
+                                'defaults'                      => $config['defaults'] ?? ['attr' => [], 'row_attr' => [], 'help_attr' => []],
                                 'field_types'                   => $config['field_types'] ?? [],
                                 'constraint_message_convention' => $config['constraint_message_convention'] ?? false,
                                 'by_form'                       => $config['by_form'] ?? [],
@@ -159,87 +161,15 @@ final class Configuration implements ConfigurationInterface
                                     ->end()
                                 ->end()
                             ->end()
-                            ->arrayNode('defaults')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->arrayNode('attr')
-                                        ->defaultValue([])
-                                        ->useAttributeAsKey('name')
-                                        ->scalarPrototype()->end()
-                                    ->end()
-                                    ->arrayNode('row_attr')
-                                        ->defaultValue([])
-                                        ->useAttributeAsKey('name')
-                                        ->scalarPrototype()->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('field_types')
-                                ->defaultValue([])
-                                ->useAttributeAsKey('name')
-                                ->arrayPrototype()
-                                    ->children()
-                                        ->arrayNode('attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                                        ->arrayNode('row_attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                                        ->scalarNode('label')->end()
-                                        ->scalarNode('placeholder')->end()
-                                        ->scalarNode('help')->end()
-                                        ->scalarNode('translation_domain')->end()
-                                        ->arrayNode('constraints')
-                                            ->info('Symfony Validator constraints for this field type (short names like NotBlank, Email, or { NotBlank: { message: "..." } } per entry). See ConstraintDefinitionFactory.')
-                                            ->defaultValue([])
-                                            ->prototype('variable')->end()
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
+                            ->append($this->createDefaultsNode())
+                            ->append($this->createFieldTypesNode())
                             ->booleanNode('constraint_message_convention')
                                 ->info('When true, constraints without an explicit "message" get key {form_snake}.{field_snake}.constraints.{ConstraintName} (put translations in the validators catalog). Default: false.')
                                 ->defaultFalse()
                             ->end()
-                            ->arrayNode('by_form')
-                                ->info('Per-form option defaults keyed by form name / block prefix (e.g. user_profile). Merged after field_types, before per-field options.')
-                                ->defaultValue([])
-                                ->useAttributeAsKey('name')
-                                ->arrayPrototype()
-                                    ->children()
-                                        ->arrayNode('defaults')
-                                            ->addDefaultsIfNotSet()
-                                            ->children()
-                                                ->arrayNode('attr')
-                                                    ->defaultValue([])
-                                                    ->useAttributeAsKey('name')
-                                                    ->scalarPrototype()->end()
-                                                ->end()
-                                                ->arrayNode('row_attr')
-                                                    ->defaultValue([])
-                                                    ->useAttributeAsKey('name')
-                                                    ->scalarPrototype()->end()
-                                                ->end()
-                                            ->end()
-                                        ->end()
-                                        ->arrayNode('fields')
-                                            ->info('Per-field overrides for this form (key = field name as used in add*()).')
-                                            ->defaultValue([])
-                                            ->useAttributeAsKey('name')
-                                            ->arrayPrototype()
-                                                ->children()
-                                                    ->arrayNode('attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                                                    ->arrayNode('row_attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                                                    ->scalarNode('label')->end()
-                                                    ->scalarNode('placeholder')->end()
-                                                    ->scalarNode('help')->end()
-                                                    ->scalarNode('translation_domain')->end()
-                                                    ->arrayNode('constraints')
-                                                        ->defaultValue([])
-                                                        ->prototype('variable')->end()
-                                                    ->end()
-                                                ->end()
-                                            ->end()
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
+                            ->append($this->createByFormNode(
+                                'Per-form option defaults keyed by form name / block prefix (e.g. user_profile). Merged after field_types, before per-field options.'
+                            ))
                         ->end()
                     ->end()
                 ->end()
@@ -275,71 +205,111 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('defaults')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->arrayNode('attr')->defaultValue([])->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                        ->arrayNode('row_attr')->defaultValue([])->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                    ->end()
-                ->end()
-                ->arrayNode('field_types')
-                    ->defaultValue([])
-                    ->useAttributeAsKey('name')
-                    ->arrayPrototype()
-                        ->children()
-                            ->arrayNode('attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                            ->arrayNode('row_attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                            ->scalarNode('label')->end()
-                            ->scalarNode('placeholder')->end()
-                            ->scalarNode('help')->end()
-                            ->scalarNode('translation_domain')->end()
-                            ->arrayNode('constraints')
-                                ->defaultValue([])
-                                ->prototype('variable')->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
+                ->append($this->createDefaultsNode())
+                ->append($this->createFieldTypesNode())
                 ->booleanNode('constraint_message_convention')
                     ->info('(Legacy) Used when profiles is not set')
                     ->defaultFalse()
                 ->end()
-                ->arrayNode('by_form')
-                    ->info('(Legacy) Per-form defaults when profiles is not set')
-                    ->defaultValue([])
-                    ->useAttributeAsKey('name')
-                    ->arrayPrototype()
-                        ->children()
-                            ->arrayNode('defaults')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->arrayNode('attr')->defaultValue([])->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                                    ->arrayNode('row_attr')->defaultValue([])->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('fields')
-                                ->defaultValue([])
-                                ->useAttributeAsKey('name')
-                                ->arrayPrototype()
-                                    ->children()
-                                        ->arrayNode('attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                                        ->arrayNode('row_attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
-                                        ->scalarNode('label')->end()
-                                        ->scalarNode('placeholder')->end()
-                                        ->scalarNode('help')->end()
-                                        ->scalarNode('translation_domain')->end()
-                                        ->arrayNode('constraints')
-                                            ->defaultValue([])
-                                            ->prototype('variable')->end()
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
+                ->append($this->createByFormNode('(Legacy) Per-form defaults when profiles is not set'))
             ->end();
 
         return $treeBuilder;
+    }
+
+    private function createDefaultsNode(): ArrayNodeDefinition
+    {
+        $node     = new ArrayNodeDefinition('defaults');
+        $children = $node->addDefaultsIfNotSet()->children();
+        $this->appendDefaultsChildren($children);
+
+        return $node;
+    }
+
+    private function createFieldTypesNode(): ArrayNodeDefinition
+    {
+        $node     = new ArrayNodeDefinition('field_types');
+        $children = $node
+            ->defaultValue([])
+            ->useAttributeAsKey('name')
+            ->arrayPrototype()
+                ->children();
+        $this->appendFieldOptionChildren($children);
+
+        return $node;
+    }
+
+    private function createByFormNode(string $info): ArrayNodeDefinition
+    {
+        $node           = new ArrayNodeDefinition('by_form');
+        $fieldsChildren = $node
+            ->info($info)
+            ->defaultValue([])
+            ->useAttributeAsKey('name')
+            ->arrayPrototype()
+                ->children()
+                    ->append($this->createDefaultsNode())
+                    ->arrayNode('fields')
+                        ->info('Per-field overrides for this form (key = field name as used in add*()).')
+                        ->defaultValue([])
+                        ->useAttributeAsKey('name')
+                        ->arrayPrototype()
+                            ->children();
+        $this->appendFieldOptionChildren($fieldsChildren);
+
+        return $node;
+    }
+
+    private function appendDefaultsChildren(NodeBuilder $children): void
+    {
+        $children
+            ->arrayNode('attr')
+                ->defaultValue([])
+                ->useAttributeAsKey('name')
+                ->scalarPrototype()->end()
+            ->end()
+            ->arrayNode('row_attr')
+                ->defaultValue([])
+                ->useAttributeAsKey('name')
+                ->scalarPrototype()->end()
+            ->end()
+            ->arrayNode('help_attr')
+                ->info('Default HTML attributes for form help (Symfony help_attr).')
+                ->defaultValue([])
+                ->useAttributeAsKey('name')
+                ->scalarPrototype()->end()
+            ->end()
+            ->scalarNode('label')
+                ->info('Default label for every field (e.g. false to suppress). When set, overrides the {form}.{field}.label convention.')
+            ->end()
+            ->scalarNode('placeholder')
+                ->info('Default placeholder for every field (e.g. false to suppress). When set, overrides auto_placeholder convention.')
+            ->end()
+            ->scalarNode('help')
+                ->info('Default help for every field (e.g. false to suppress). When set, overrides auto_help convention.')
+            ->end()
+            ->booleanNode('required')
+                ->info('Default required flag for every field. Overridable via field_types, by_form, or PHP options.')
+            ->end();
+    }
+
+    private function appendFieldOptionChildren(NodeBuilder $children): void
+    {
+        $children
+            ->arrayNode('attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
+            ->arrayNode('row_attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
+            ->arrayNode('help_attr')->useAttributeAsKey('name')->scalarPrototype()->end()->end()
+            ->scalarNode('label')->end()
+            ->scalarNode('placeholder')->end()
+            ->scalarNode('help')->end()
+            ->booleanNode('required')
+                ->info('Default required flag for this field type / field. Overridable by later cascade layers or PHP options.')
+            ->end()
+            ->scalarNode('translation_domain')->end()
+            ->arrayNode('constraints')
+                ->info('Symfony Validator constraints for this field type (short names like NotBlank, Email, or { NotBlank: { message: "..." } } per entry). See ConstraintDefinitionFactory.')
+                ->defaultValue([])
+                ->prototype('variable')->end()
+            ->end();
     }
 }

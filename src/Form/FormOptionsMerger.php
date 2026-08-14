@@ -27,16 +27,35 @@ use function sprintf;
  */
 final class FormOptionsMerger
 {
+    /** @var list<string> */
+    private const SCALAR_DEFAULT_KEYS = ['label', 'placeholder', 'help', 'required'];
+
     /**
      * @param array<string, array{
      *     translation_domain: string,
      *     auto_placeholder?: bool,
      *     auto_help?: bool,
-     *     defaults: array{attr: array<string, mixed>, row_attr: array<string, mixed>},
+     *     defaults: array{
+     *         attr: array<string, mixed>,
+     *         row_attr: array<string, mixed>,
+     *         help_attr?: array<string, mixed>,
+     *         label?: mixed,
+     *         placeholder?: mixed,
+     *         help?: mixed,
+     *         required?: bool
+     *     },
      *     field_types: array<string, array<string, mixed>>,
      *     constraint_message_convention?: bool,
      *     by_form?: array<string, array{
-     *         defaults?: array{attr?: array<string, mixed>, row_attr?: array<string, mixed>},
+     *         defaults?: array{
+     *             attr?: array<string, mixed>,
+     *             row_attr?: array<string, mixed>,
+     *             help_attr?: array<string, mixed>,
+     *             label?: mixed,
+     *             placeholder?: mixed,
+     *             help?: mixed,
+     *             required?: bool
+     *         },
      *         fields?: array<string, array<string, mixed>>
      *     }>
      * }> $profiles
@@ -89,10 +108,12 @@ final class FormOptionsMerger
             'label'              => $baseKey . '.label',
             'attr'               => $baseAttr,
             'row_attr'           => $defaults['row_attr'],
+            'help_attr'          => $defaults['help_attr'] ?? [],
         ];
         if ($autoHelp) {
             $base['help'] = $baseKey . '.help';
         }
+        $base = $this->applyScalarDefaults($base, $defaults);
 
         $typeShortName = $this->typeToShortName($type);
         $typeDefaults  = $fieldTypes[$typeShortName] ?? $fieldTypes[$type] ?? [];
@@ -107,12 +128,14 @@ final class FormOptionsMerger
         $formField          = [];
         $formConstraintDefs = [];
         if (isset($byFormMap[$formName])) {
-            $formEntry    = $byFormMap[$formName];
-            $formDefaults = [
-                'attr'     => $formEntry['defaults']['attr'] ?? [],
-                'row_attr' => $formEntry['defaults']['row_attr'] ?? [],
+            $formEntry      = $byFormMap[$formName];
+            $formDefaults   = [
+                'attr'      => $formEntry['defaults']['attr'] ?? [],
+                'row_attr'  => $formEntry['defaults']['row_attr'] ?? [],
+                'help_attr' => $formEntry['defaults']['help_attr'] ?? [],
             ];
-            $fields = $formEntry['fields'] ?? [];
+            $formDefaults = $this->applyScalarDefaults($formDefaults, $formEntry['defaults'] ?? []);
+            $fields       = $formEntry['fields'] ?? [];
             if (isset($fields[$fieldName])) {
                 $formField = $fields[$fieldName];
             } elseif (isset($fields[$fieldNameSnake])) {
@@ -184,6 +207,25 @@ final class FormOptionsMerger
     }
 
     /**
+     * Copies optional scalar defaults (label / placeholder / help / required) onto a merge layer.
+     *
+     * @param array<string, mixed> $target
+     * @param array<string, mixed> $source
+     *
+     * @return array<string, mixed>
+     */
+    private function applyScalarDefaults(array $target, array $source): array
+    {
+        foreach (self::SCALAR_DEFAULT_KEYS as $key) {
+            if (array_key_exists($key, $source)) {
+                $target[$key] = $source[$key];
+            }
+        }
+
+        return $target;
+    }
+
+    /**
      * Normalizes legacy/custom "placeholder" root option to attr.placeholder.
      * This keeps backward compatibility and avoids invalid options on types like TextType.
      *
@@ -200,7 +242,10 @@ final class FormOptionsMerger
 
         unset($merged['placeholder']);
 
-        if ($hasExplicitPlaceholder && $explicitPlaceholder === false) {
+        $placeholderToApply = $hasExplicitPlaceholder ? $explicitPlaceholder : $placeholder;
+
+        // false from PHP options, profile defaults, or field_types clears attr.placeholder.
+        if ($placeholderToApply === false) {
             if (isset($merged['attr']) && is_array($merged['attr'])) {
                 unset($merged['attr']['placeholder']);
             }
@@ -208,8 +253,7 @@ final class FormOptionsMerger
             return $merged;
         }
 
-        $placeholderToApply = $hasExplicitPlaceholder ? $explicitPlaceholder : $placeholder;
-        if ($placeholderToApply !== null && $placeholderToApply !== false) {
+        if ($placeholderToApply !== null) {
             $merged['attr'] = (isset($merged['attr']) && is_array($merged['attr'])) ? $merged['attr'] : [];
             if (!array_key_exists('placeholder', $merged['attr'])) {
                 $merged['attr']['placeholder'] = $placeholderToApply;
@@ -220,8 +264,10 @@ final class FormOptionsMerger
     }
 
     /**
-     * If user passed label => false or help => false, remove those keys
+     * If user passed label => false or help => false in field options, remove those keys
      * so the form component does not use the convention key.
+     *
+     * Profile / field_types {@code label: false} is left as boolean false (Symfony suppresses the label).
      *
      * @param array<string, mixed> $merged
      * @param array<string, mixed> $options

@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.3.0](#to-230)
 - [To 2.1.0](#to-210)
 - [2.0.0 (2026-06-11)](#200-2026-06-11)
   - [Breaking: raised platform requirements](#breaking-raised-platform-requirements)
@@ -35,6 +36,28 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## To 2.3.0
+
+### Profile `defaults` scalars (`label` / `placeholder` / `help` / `required`)
+
+Optional keys under `profiles.<name>.defaults` (and `by_form.<form>.defaults`). No host change required unless you want to collapse repeated `field_types.*.label: false` (or set a profile-wide `required: false`).
+
+```yaml
+nowo_form_kit:
+    profiles:
+        filter:
+            defaults:
+                label: false
+                required: false
+```
+
+`field_types` / PHP options still override. `placeholder: false` / `help: false` in defaults also suppress the auto convention keys.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+php bin/console cache:clear
+```
 
 ## To 2.1.0
 
