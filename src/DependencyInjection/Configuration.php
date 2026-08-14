@@ -168,7 +168,7 @@ final class Configuration implements ConfigurationInterface
                                 ->defaultFalse()
                             ->end()
                             ->append($this->createByFormNode(
-                                'Per-form option defaults keyed by form name / block prefix (e.g. user_profile). Merged after field_types, before per-field options.'
+                                'Per-form option defaults keyed by form name / block prefix (e.g. user_profile). Merged after field_types, before per-field options.',
                             ))
                         ->end()
                     ->end()

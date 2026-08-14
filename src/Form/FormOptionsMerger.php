@@ -128,8 +128,8 @@ final class FormOptionsMerger
         $formField          = [];
         $formConstraintDefs = [];
         if (isset($byFormMap[$formName])) {
-            $formEntry      = $byFormMap[$formName];
-            $formDefaults   = [
+            $formEntry    = $byFormMap[$formName];
+            $formDefaults = [
                 'attr'      => $formEntry['defaults']['attr'] ?? [],
                 'row_attr'  => $formEntry['defaults']['row_attr'] ?? [],
                 'help_attr' => $formEntry['defaults']['help_attr'] ?? [],
