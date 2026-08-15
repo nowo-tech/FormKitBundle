@@ -19,6 +19,7 @@
   - [Steps definition](#steps-definition)
   - [Services](#services)
   - [Controller example](#controller-example)
+- [CSRF-only and GET filter forms](CSRF.md)
 - [Form renderer component (Twig)](#form-renderer-component-twig)
 - [Layout examples (Bootstrap and Tailwind)](#layout-examples-bootstrap-and-tailwind)
   - [Bootstrap 5 example](#bootstrap-5-example)

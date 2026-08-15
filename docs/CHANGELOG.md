@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.4.0] - 2026-08-15](#240-2026-08-15)
 - [[2.3.0] - 2026-08-14](#230-2026-08-14)
 - [[2.2.0] - 2026-08-05](#220-2026-08-05)
 - [[2.1.0] - 2026-08-04](#210-2026-08-04)
@@ -79,6 +80,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.4.0] - 2026-08-15
+
+### Added
+
+- **CSRF-only forms:** `CsrfOnlyType`, `HiddenFieldsCsrfType`, and `CsrfOnlyFormFactory` (`create` / `createNamed` / `createWithFields`) for single-action POSTs with flat or nested CSRF tokens and optional typed fields.
+- **GET filters:** `AbstractGetFilterType` (profile `filter`, CSRF off, method GET), `GetFilterFormFactory` (rootless form name), and `SearchQueryType` (`q` search field).
+- Built-in FormTypeMap entry **`search`** → Symfony `SearchType`.
+- Documentation: [docs/CSRF.md](CSRF.md).
+
+[2.4.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.4.0
 
 ## [2.3.0] - 2026-08-14
 

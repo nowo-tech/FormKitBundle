@@ -28,6 +28,7 @@ use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -76,6 +77,7 @@ final class FormTypeMap
         'range'         => RangeType::class,
         'repeated'      => RepeatedType::class,
         'reset'         => ResetType::class,
+        'search'        => SearchType::class,
         'submit'        => SubmitType::class,
         'tel'           => TelType::class,
         'text'          => TextType::class,

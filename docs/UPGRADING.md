@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.4.0](#to-240)
 - [To 2.3.0](#to-230)
 - [To 2.1.0](#to-210)
 - [2.0.0 (2026-06-11)](#200-2026-06-11)
@@ -36,6 +37,23 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## To 2.4.0
+
+### CSRF-only and GET filter helpers
+
+No breaking changes. Optional new APIs for hosts that previously duplicated CSRF-only / GET filter form helpers:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+php bin/console cache:clear
+```
+
+- Prefer `Nowo\FormKitBundle\Form\CsrfOnlyFormFactory` over app-local CSRF-only factories.
+- Prefer `Nowo\FormKitBundle\Form\AbstractGetFilterType` + a `filter` profile for GET list filters.
+- See [CSRF.md](CSRF.md).
+
+If you already map `search` in `nowo_form_kit.type_map`, you can drop the host override — Form Kit now ships it built-in.
 
 ## To 2.3.0
 

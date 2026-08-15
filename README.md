@@ -22,7 +22,8 @@ This bundle is **FrankenPHP worker mode friendly**.
 - **Choice presets:** `addSelect()`, `addMultiSelect()`, `addChoiceRadios()`, `addChoiceCheckboxes()`, plus `addMultiSelectSelectAll()` when **nowo-tech/select-all-choice-bundle** is installed (optional Composer **suggest**).
 - **FQCN helpers:** `addAutocompleteField()` for Symfony UX Autocomplete types, `addCKEditorField()` when **friendsofsymfony/ckeditor-bundle** is installed; `addDropzone()` / `addCropper()` when the UX packages are installed.
 - **Model transformers:** `addSwitchType()`, `addJsonType()`, `addBoolType()`, `addMoneyType()`, `addCsvType()` (same helpers on **FormKitControllerTrait** with `*Type` suffix).
-- **Optional types:** FormTypeMap includes core Symfony types plus optional UX (Dropzone, Cropper) and A2lix when installed. Extend via `type_map`.
+- **Optional types:** FormTypeMap includes core Symfony types (including `search`) plus optional UX (Dropzone, Cropper) and A2lix when installed. Extend via `type_map`.
+- **CSRF-only / GET filters:** `CsrfOnlyFormFactory`, `AbstractGetFilterType`, `GetFilterFormFactory`, `SearchQueryType`. See [docs/CSRF.md](docs/CSRF.md).
 - **Form type extensions:** **InputGroupExtension**, **RequiredLabelSuffixExtension**, **HelpModalExtension**. See [Configuration](docs/CONFIGURATION.md) and [Usage](docs/USAGE.md#help-modal-optional).
 
 ## Installation

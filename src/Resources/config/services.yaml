@@ -22,6 +22,18 @@ services:
   Nowo\FormKitBundle\Form\MultiStepFormBuilder: ~
   Nowo\FormKitBundle\Form\MultiStepWizardSessionFactory: ~
 
+  Nowo\FormKitBundle\Form\CsrfOnlyFormFactory: ~
+  Nowo\FormKitBundle\Form\GetFilterFormFactory: ~
+
+  Nowo\FormKitBundle\Form\Type\CsrfOnlyType:
+    tags: ['form.type']
+
+  Nowo\FormKitBundle\Form\Type\HiddenFieldsCsrfType:
+    tags: ['form.type']
+
+  Nowo\FormKitBundle\Form\Type\SearchQueryType:
+    tags: ['form.type']
+
   Nowo\FormKitBundle\Form\Extension\InputGroupExtension:
     tags: ['form.type_extension']
 

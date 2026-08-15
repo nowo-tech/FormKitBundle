@@ -47,6 +47,7 @@ final class FormTypeMapTest extends TestCase
         self::assertContains('money', $names);
         self::assertContains('collection', $names);
         self::assertContains('tel', $names);
+        self::assertContains('search', $names);
     }
 
     public function testResolveReturnsFqcnForExtendedBuiltinTypes(): void
