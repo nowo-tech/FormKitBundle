@@ -23,6 +23,8 @@ This bundle is **FrankenPHP worker mode friendly**.
 - **FQCN helpers:** `addAutocompleteField()` for Symfony UX Autocomplete types, `addCKEditorField()` when **friendsofsymfony/ckeditor-bundle** is installed; `addDropzone()` / `addCropper()` when the UX packages are installed.
 - **Model transformers:** `addSwitchType()`, `addJsonType()`, `addBoolType()`, `addMoneyType()`, `addCsvType()` (same helpers on **FormKitControllerTrait** with `*Type` suffix).
 - **Optional types:** FormTypeMap includes core Symfony types (including `search`) plus optional UX (Dropzone, Cropper) and A2lix when installed. Extend via `type_map`.
+- **Multi-step wizard:** `MultiStepFormBuilder` for stepped forms (see the Symfony 8 demo).
+- **Constraint message convention:** `constraint_message_convention` plus `#[FormKitConfig]` / static field types (`StaticAlertType`, …).
 - **CSRF-only / GET filters:** `CsrfOnlyFormFactory`, `AbstractGetFilterType`, `GetFilterFormFactory`, `SearchQueryType`. See [docs/CSRF.md](docs/CSRF.md).
 - **Form type extensions:** **InputGroupExtension**, **RequiredLabelSuffixExtension**, **HelpModalExtension**. See [Configuration](docs/CONFIGURATION.md) and [Usage](docs/USAGE.md#help-modal-optional).
 
