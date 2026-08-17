@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.4.1](#to-241)
 - [To 2.4.0](#to-240)
 - [To 2.3.0](#to-230)
 - [To 2.1.0](#to-210)
@@ -37,6 +38,16 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## To 2.4.1
+
+### SubmitType / ButtonType / ResetType and `help_attr`
+
+No host change required. Upgrade if CI or runtime fails with `The option "help_attr" does not exist` on `SubmitType` after FormKit ≥ 2.3.0 (profile defaults always included `help_attr`).
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 ## To 2.4.0
 

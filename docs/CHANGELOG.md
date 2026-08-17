@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.4.1] - 2026-08-17](#241-2026-08-17)
 - [[2.4.0] - 2026-08-15](#240-2026-08-15)
 - [[2.3.0] - 2026-08-14](#230-2026-08-14)
 - [[2.2.0] - 2026-08-05](#220-2026-08-05)
@@ -80,6 +81,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.4.1] - 2026-08-17
+
+### Fixed
+
+- **Submit/Button/Reset:** `FormOptionsMerger` no longer passes `help` / `help_attr` (and other FormType-only options) to Symfony button types. FormKit 2.3.0 always injected `help_attr` from profile defaults, which broke hosts using `addWithDefaults(..., SubmitType::class)` (OptionsResolver: option `help_attr` does not exist).
+
+[2.4.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.4.1
 
 ## [2.4.0] - 2026-08-15
 

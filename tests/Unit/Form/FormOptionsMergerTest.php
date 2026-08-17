@@ -73,6 +73,36 @@ final class FormOptionsMergerTest extends TestCase
         self::assertSame('text-xs text-muted', $merged['help_attr']['class']);
     }
 
+    public function testResolveStripsHelpOptionsForSubmitType(): void
+    {
+        $merger = new FormOptionsMerger(
+            [
+                'default' => [
+                    'translation_domain' => 'messages',
+                    'defaults'           => [
+                        'attr'      => ['class' => 'form-control'],
+                        'row_attr'  => ['class' => 'mb-3'],
+                        'help_attr' => ['class' => 'text-xs text-muted'],
+                    ],
+                    'field_types' => [],
+                ],
+            ],
+            'default',
+            new ConstraintDefinitionFactory(),
+        );
+
+        $merged = $merger->resolve('demo_form', 'save', 'submit', [
+            'label' => 'Save',
+            'attr'  => ['class' => 'btn'],
+        ]);
+
+        self::assertSame('Save', $merged['label']);
+        self::assertSame('btn', $merged['attr']['class']);
+        self::assertArrayNotHasKey('help_attr', $merged);
+        self::assertArrayNotHasKey('help', $merged);
+        self::assertArrayNotHasKey('placeholder', $merged['attr']);
+    }
+
     public function testResolveAppliesLabelAndRequiredFromDefaults(): void
     {
         $merger = new FormOptionsMerger(

@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 
 use function array_key_exists;
+use function in_array;
 use function is_array;
 use function sprintf;
 
@@ -167,7 +168,7 @@ final class FormOptionsMerger
             $merged['constraints'] = $this->constraintDefinitionFactory->create($constraintDefs, $messagePrefix);
         }
 
-        return $merged;
+        return $this->stripButtonIncompatibleOptions($merged, $typeShortName);
     }
 
     /**
@@ -258,6 +259,39 @@ final class FormOptionsMerger
             if (!array_key_exists('placeholder', $merged['attr'])) {
                 $merged['attr']['placeholder'] = $placeholderToApply;
             }
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Button/Submit/Reset types do not accept FormType help options (help, help_attr, …).
+     * Drop FormKit defaults that would make OptionsResolver throw.
+     *
+     * @param array<string, mixed> $merged
+     *
+     * @return array<string, mixed>
+     */
+    private function stripButtonIncompatibleOptions(array $merged, string $typeShortName): array
+    {
+        if (!in_array($typeShortName, ['button', 'submit', 'reset'], true)) {
+            return $merged;
+        }
+
+        foreach ([
+            'help',
+            'help_attr',
+            'help_html',
+            'help_translation_parameters',
+            'error_bubbling',
+            'required',
+            'constraints',
+        ] as $key) {
+            unset($merged[$key]);
+        }
+
+        if (isset($merged['attr']) && is_array($merged['attr'])) {
+            unset($merged['attr']['placeholder']);
         }
 
         return $merged;
