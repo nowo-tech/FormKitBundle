@@ -5,6 +5,7 @@ use A2lix\TranslationFormBundle\A2lixTranslationFormBundle;
 use FOS\CKEditorBundle\FOSCKEditorBundle;
 use Nowo\Ckeditor5EditorBundle\NowoCkeditor5EditorBundle;
 use Nowo\FormKitBundle\NowoFormKitBundle;
+use Nowo\HotReloadBundle\NowoHotReloadBundle;
 use Nowo\IconSelectorBundle\NowoIconSelectorBundle;
 use Nowo\OtpInputBundle\NowoOtpInputBundle;
 use Nowo\PasswordStrengthBundle\PasswordStrengthBundle;
@@ -12,7 +13,6 @@ use Nowo\PasswordToggleBundle\NowoPasswordToggleBundle;
 use Nowo\PhoneInputBundle\NowoPhoneInputBundle;
 use Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle;
 use Nowo\TiptapEditorBundle\NowoTiptapEditorBundle;
-use Nowo\HotReloadBundle\NowoHotReloadBundle;
 use Nowo\TwigInspectorBundle\NowoTwigInspectorBundle;
 use Pentatrion\ViteBundle\PentatrionViteBundle;
 use Sensiolabs\TypeScriptBundle\SensiolabsTypeScriptBundle;
@@ -36,7 +36,7 @@ return [
     SensiolabsTypeScriptBundle::class => ['dev' => true, 'test' => true],
     DebugBundle::class                => ['dev' => true, 'test' => true],
     WebProfilerBundle::class          => ['dev' => true, 'test' => true],
-    NowoHotReloadBundle::class    => ['dev' => true, 'test' => true],
+    NowoHotReloadBundle::class        => ['dev' => true, 'test' => true],
     NowoTwigInspectorBundle::class    => ['dev' => true, 'test' => true],
     StimulusBundle::class             => ['all' => true],
     AutocompleteBundle::class         => ['all' => true],
