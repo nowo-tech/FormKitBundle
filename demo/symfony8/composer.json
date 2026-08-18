@@ -40,6 +40,7 @@
         "twig/string-extra": "^3.12"
     },
     "require-dev": {
+        "nowo-tech/hot-reload-bundle": "^1.4",
         "nowo-tech/twig-inspector-bundle": "^1.0",
         "sensiolabs/typescript-bundle": "^0.2.2",
         "symfony/debug-bundle": "8.1.*",

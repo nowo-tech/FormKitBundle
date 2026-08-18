@@ -51,6 +51,7 @@ The main difference between development and production is:
 The demo applications are configured for **local development and debugging**:
 
 - **Symfony Web Profiler** and **Debug bundle** — enabled in `dev` and `test` environments.
+- **Nowo Twig Inspector** (`nowo-tech/twig-inspector-bundle`) and **Nowo Hot Reload** (`nowo-tech/hot-reload-bundle`) — required together on FrankenPHP demos (dev/test only; Caddyfile Mercure + `hot_reload`, plus `worker { watch }` in worker mode). Do not enable Hot Reload in production.
 - **Form Kit Bundle** (`Nowo\FormKitBundle\NowoFormKitBundle`) — the bundle under test; enabled in the demos.
 - **Bundle public assets** — the demo entrypoint runs `php bin/console assets:install public --symlink` so files land under `public/bundles/nowoformkit/`. Load them with the named package: `asset('help-modal.js', 'nowo_form_kit')` (and optional `help-modal.css`).
 
