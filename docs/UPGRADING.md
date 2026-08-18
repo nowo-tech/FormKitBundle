@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.4.2](#to-242)
 - [To 2.4.1](#to-241)
 - [To 2.4.0](#to-240)
 - [To 2.3.0](#to-230)
@@ -38,6 +39,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## To 2.4.2
+
+From **2.4.1** — No application upgrade steps. **Demos only:** Hot Reload Bundle `^1.4` (FrankenPHP Mercure/`hot_reload`, `dev`/`test`).
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 ## To 2.4.1
 
