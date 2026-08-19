@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.4.3] - 2026-08-19](#243-2026-08-19)
 - [[2.4.2] - 2026-08-18](#242-2026-08-18)
 - [[2.4.1] - 2026-08-17](#241-2026-08-17)
 - [[2.4.0] - 2026-08-15](#240-2026-08-15)
@@ -82,6 +83,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.4.3] - 2026-08-19
+
+### Added
+
+- **`FormKitExtension::prepend()`:** registers a built-in `filter` profile when the host omits `nowo_form_kit.profiles.filter`, so `AbstractGetFilterType` resolves in apps without a custom filter profile.
+
+### Security
+
+- **CI:** run `composer audit --locked` after dependency install (REQ-SEC / P3).
+
+[2.4.3]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.4.3
 
 ## [2.4.2] - 2026-08-18
 
