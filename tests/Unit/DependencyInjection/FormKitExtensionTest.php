@@ -128,6 +128,9 @@ final class FormKitExtensionTest extends TestCase
         self::assertSame('messages', $profiles['default']['translation_domain']);
         self::assertSame([], $profiles['default']['defaults']['attr']);
         self::assertSame([], $profiles['default']['defaults']['row_attr']);
+        self::assertArrayHasKey('filter', $profiles);
+        self::assertFalse($profiles['filter']['defaults']['label']);
+        self::assertFalse($profiles['filter']['defaults']['required']);
     }
 
     public function testLoadAcceptsLegacyYamlKeys(): void
@@ -154,6 +157,7 @@ final class FormKitExtensionTest extends TestCase
         /** @var array<string, array<string, mixed>> $profiles */
         $profiles = $container->getParameter('nowo_form_kit.profiles');
         self::assertArrayHasKey('bootstrap', $profiles);
+        self::assertArrayHasKey('filter', $profiles);
     }
 
     public function testLoadSetsCssFrameworkParameter(): void

@@ -88,6 +88,10 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
             ];
         }
 
+        if (!isset($normalized['filter'])) {
+            $normalized['filter'] = $this->builtInFilterProfile();
+        }
+
         $defaultProfile = $config['default_profile'];
         if (!isset($normalized[$defaultProfile])) {
             throw new InvalidArgumentException(sprintf('nowo_form_kit.default_profile "%s" must be a key in nowo_form_kit.profiles. Available: %s.', $defaultProfile, implode(', ', array_keys($normalized))));
@@ -103,6 +107,32 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
+    }
+
+    /**
+     * Built-in profile for {@see \Nowo\FormKitBundle\Form\AbstractGetFilterType}.
+     *
+     * @return array<string, mixed>
+     */
+    private function builtInFilterProfile(): array
+    {
+        return [
+            'translation_domain'            => 'messages',
+            'auto_placeholder'              => true,
+            'auto_help'                     => true,
+            'required_label_suffix'         => null,
+            'help_modal'                    => [],
+            'defaults'                      => [
+                'label'     => false,
+                'required'  => false,
+                'attr'      => [],
+                'row_attr'  => [],
+                'help_attr' => [],
+            ],
+            'field_types'                   => [],
+            'constraint_message_convention' => false,
+            'by_form'                       => [],
+        ];
     }
 
     public function getAlias(): string
