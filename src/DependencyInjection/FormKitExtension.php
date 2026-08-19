@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\DependencyInjection;
 
 use InvalidArgumentException;
+use Nowo\FormKitBundle\Form\AbstractGetFilterType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -110,19 +111,19 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
     }
 
     /**
-     * Built-in profile for {@see \Nowo\FormKitBundle\Form\AbstractGetFilterType}.
+     * Built-in profile for {@see AbstractGetFilterType}.
      *
      * @return array<string, mixed>
      */
     private function builtInFilterProfile(): array
     {
         return [
-            'translation_domain'            => 'messages',
-            'auto_placeholder'              => true,
-            'auto_help'                     => true,
-            'required_label_suffix'         => null,
-            'help_modal'                    => [],
-            'defaults'                      => [
+            'translation_domain'    => 'messages',
+            'auto_placeholder'      => true,
+            'auto_help'             => true,
+            'required_label_suffix' => null,
+            'help_modal'            => [],
+            'defaults'              => [
                 'label'     => false,
                 'required'  => false,
                 'attr'      => [],
