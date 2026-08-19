@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.4.4] - 2026-08-19](#244-2026-08-19)
 - [[2.4.3] - 2026-08-19](#243-2026-08-19)
 - [[2.4.2] - 2026-08-18](#242-2026-08-18)
 - [[2.4.1] - 2026-08-17](#241-2026-08-17)
@@ -83,6 +84,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.4.4] - 2026-08-19
+
+### Changed
+
+- **Maintainer:** demo reference PHP CS Fixer alignment.
+
+[2.4.4]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.4.4
 
 ## [2.4.3] - 2026-08-19
 
