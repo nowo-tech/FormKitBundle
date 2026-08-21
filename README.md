@@ -92,6 +92,7 @@ Developer-facing docs and comments (Markdown, PHPDoc, JSDoc) are **English only*
 
 - [Installation](docs/INSTALLATION.md)
 - [Configuration](docs/CONFIGURATION.md)
+- [PSR evaluation (REQ-CS-007)](docs/PSR.md)
 - [Usage](docs/USAGE.md)
 - [Flex recipe](docs/RECIPE.md)
 - [Contributing](docs/CONTRIBUTING.md)
