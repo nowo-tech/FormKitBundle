@@ -4,6 +4,8 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Table of contents
 
+
+- [From 2.4.4 to 2.4.5](#from-244-to-245)
 - [Unreleased](#unreleased)
 - [To 2.4.4](#to-244)
 - [To 2.4.3](#to-243)

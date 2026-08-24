@@ -85,6 +85,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [2.4.5] - 2026-08-24
+
+### Changed
+
+- **QA:** add `phpstan-frankenphp` extension (REQ-CS-005).
+- **Docs:** PHP-FIG PSR evaluation (REQ-CS-007).
+
+### Notes
+
+- **No API or configuration changes** for integrators unless noted above.
+
+[2.4.5]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.4.5
+
 ## [2.4.4] - 2026-08-19
 
 ### Changed
