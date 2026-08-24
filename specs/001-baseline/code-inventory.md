@@ -2,7 +2,7 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/form-kit-bundle`  
-**Last audited**: 2026-07-18
+**Last audited**: 2026-08-24
 
 ## Symfony config
 
@@ -35,7 +35,7 @@
 
 | Source file | Spec section | Requirement IDs |
 | --- | --- | --- |
-| `Controller/FormKitControllerTrait.php` | Controller field helpers | FR-CTRL-001 |
+| `Controller/FormKitControllerTrait.php` | Controller field helpers; optional nowo-tech `*FieldType` | FR-CTRL-001, FR-FORM-012 |
 
 ## Form — core API
 
@@ -44,13 +44,13 @@
 | `Form/AbstractFormKitType.php` | Base form type | FR-FORM-001 |
 | `Form/AbstractFormKitWrappedType.php` | Wrapped type base | FR-FORM-001 |
 | `Form/FormKitAbstractType.php` | Snake_case type base | FR-FORM-001 |
-| `Form/FormKitTrait.php` | Type-map trait; `withBuilder` / `add*Field` / `addNamedField` / `#[FormKitConfig]` | FR-FORM-001, FR-FORM-009 |
-| `Form/FormOptionsTrait.php` | FQCN helper trait; `withBuilder` / `add*Field` / `resolveFieldOptions` / `#[FormKitConfig]` | FR-FORM-001, FR-FORM-009, FR-FORM-010 |
+| `Form/FormKitTrait.php` | Type-map trait; `withBuilder` / `add*Field` / `addNamedField` / `#[FormKitConfig]`; optional nowo-tech helpers | FR-FORM-001, FR-FORM-009, FR-FORM-012 |
+| `Form/FormOptionsTrait.php` | FQCN helper trait; `withBuilder` / `add*Field` / `resolveFieldOptions` / `#[FormKitConfig]`; optional nowo-tech helpers | FR-FORM-001, FR-FORM-009, FR-FORM-010, FR-FORM-012 |
 | `Attribute/FormKitConfig.php` | Named config attribute | FR-FORM-011 |
 | `Form/FormOptionsMerger.php` | Cascading merge service | FR-FORM-002 |
 | `Form/FormKitOptionMerger.php` | Kit-specific merge | FR-FORM-002 |
 | `Form/FormFieldOptionsHelper.php` | Label/placeholder/help keys | FR-FORM-003 |
-| `Form/FormTypeMap.php` | Built-in + config type map | FR-FORM-004 |
+| `Form/FormTypeMap.php` | Built-in + config type map; optional nowo-tech snake_case entries | FR-FORM-004, FR-FORM-012 |
 
 ## Form — extensions
 

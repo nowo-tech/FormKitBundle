@@ -583,10 +583,10 @@ demo_pages:
   nowo_special_fields:
     page_title: 'Nowo special fields - Form Kit Demo'
     heading: 'Nowo special fields'
-    intro: 'Showcase of <strong>nowo-tech</strong> ecosystem form widgets wired through <code>FormOptionsTrait::addWithDefaults()</code> — same translation keys and merge pipeline as built-in helpers.'
+    intro: 'Showcase of <strong>nowo-tech</strong> form widgets via optional Form Kit helpers (<code>addOtp()</code>, <code>addPhone()</code>, …) — same translation keys and merge pipeline as built-in helpers. Composer <code>suggest</code> only; install the packages you need.'
     usage_1: '<code>otp-input-bundle</code>, <code>phone-input-bundle</code>, <code>password-toggle-bundle</code>, <code>password-strength-bundle</code> (toggle alone, strength alone, and <strong>combined</strong> on one field).'
-    usage_2: '<code>icon-selector-bundle</code>, <code>tiptap-editor-bundle</code>, <code>ckeditor5-editor-bundle</code>.'
-    usage_3: 'Combined password: <code>PasswordStrengthType</code> with <code>use_password_toggle =&gt; true</code> (PasswordToggleBundle must be installed; demo YAML already sets this).'
+    usage_2: '<code>icon-selector-bundle</code>, <code>tag-input-bundle</code>, <code>tiptap-editor-bundle</code>, <code>ckeditor5-editor-bundle</code>, <code>slide-to-confirm-bundle</code>.'
+    usage_3: 'Combined password: <code>addPasswordStrengthField()</code> with <code>use_password_toggle =&gt; true</code> (PasswordToggleBundle must be installed). Distinct from <code>addCKEditorField()</code> (FOS CKEditor 4) and <code>addPassword()</code> (Symfony PasswordType).'
     normalized_title: 'Submitted data (normalized)'
 
 nowo_special_fields_demo:
@@ -614,6 +614,10 @@ nowo_special_fields_demo:
     label: Application icon
     placeholder: Search icons…
     help: 'Icon picker (<code>nowo-tech/icon-selector-bundle</code>) with heroicons and Bootstrap Icons.'
+  keywords:
+    label: Keywords
+    placeholder: Add tags and press Enter
+    help: 'Tagify tags via <code>nowo-tech/tag-input-bundle</code> (<code>addTagInputField()</code>).'
   article_body:
     label: Article body (Tiptap)
     placeholder: ''
@@ -622,6 +626,10 @@ nowo_special_fields_demo:
     label: Page content (CKEditor 5)
     placeholder: ''
     help: 'Rich text with <code>nowo-tech/ckeditor5-editor-bundle</code> (GPL OSS build).'
+  confirm_slide:
+    label: Confirm
+    placeholder: ''
+    help: 'Slide-to-confirm via <code>nowo-tech/slide-to-confirm-bundle</code> (gate profile; does not auto-submit).'
 
 # Keys consumed by Nowo widget bundles (translation_domain: messages)
 tiptap_placeholder: 'Start writing…'

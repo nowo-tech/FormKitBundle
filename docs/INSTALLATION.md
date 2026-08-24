@@ -39,6 +39,8 @@ composer require nowo-tech/form-kit-bundle
 
 Use a constraint such as `^2.0` to stay on the current major version.
 
+Optional nowo-tech form widgets (OTP, phone, password toggle/strength, icon selector, CKEditor 5, Tiptap, tag input, slide-to-confirm, select-all choice) are **Composer suggest** only. Install the packages you need; Form Kit helpers throw `LogicException` if a suggested class is missing. See [Configuration — suggested packages](CONFIGURATION.md#suggested-optional-composer-packages).
+
 ## Register the bundle
 
 ### With Symfony Flex

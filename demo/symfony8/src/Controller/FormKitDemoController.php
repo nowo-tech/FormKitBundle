@@ -269,7 +269,7 @@ class FormKitDemoController extends AbstractController
     }
 
     /**
-     * Nowo special fields — OTP, phone, password toggle/strength, icon selector, Tiptap, CKEditor 5.
+     * Nowo special fields — OTP, phone, password, icon selector, tags, Tiptap, CKEditor 5, slide-to-confirm.
      */
     #[Route(path: '/nowo-special-fields', name: 'form_demo_nowo_special_fields', methods: ['GET', 'POST'])]
     public function nowoSpecialFieldsDemo(Request $request): Response

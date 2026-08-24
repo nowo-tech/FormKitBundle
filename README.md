@@ -21,8 +21,9 @@ This bundle is **FrankenPHP worker mode friendly**.
 - **Options strategy helpers:** `addText()`, `addEmail()`, … Prefer **`withBuilder($builder, …)` + `addTextField()`** (**bound-builder**). Or **array-build** with `buildFormFromArray()`.
 - **Choice presets:** `addSelect()`, `addMultiSelect()`, `addChoiceRadios()`, `addChoiceCheckboxes()`, plus `addMultiSelectSelectAll()` when **nowo-tech/select-all-choice-bundle** is installed (optional Composer **suggest**).
 - **FQCN helpers:** `addAutocompleteField()` for Symfony UX Autocomplete types, `addCKEditorField()` when **friendsofsymfony/ckeditor-bundle** is installed; `addDropzone()` / `addCropper()` when the UX packages are installed.
+- **Nowo-tech widgets (optional):** `addOtp()`, `addPhone()`, `addPasswordToggle()`, `addPasswordStrength()`, `addIconSelector()`, `addCkeditor5Editor()`, `addTiptapEditor()`, `addTagInput()`, `addSlideToConfirm()` — Composer **suggest** only; `LogicException` if the package is missing.
 - **Model transformers:** `addSwitchType()`, `addJsonType()`, `addBoolType()`, `addMoneyType()`, `addCsvType()` (same helpers on **FormKitControllerTrait** with `*Type` suffix).
-- **Optional types:** FormTypeMap includes core Symfony types (including `search`) plus optional UX (Dropzone, Cropper) and A2lix when installed. Extend via `type_map`.
+- **Optional types:** FormTypeMap includes core Symfony types (including `search`) plus optional UX (Dropzone, Cropper), A2lix, and nowo-tech widgets when installed. Extend via `type_map`.
 - **Multi-step wizard:** `MultiStepFormBuilder` for stepped forms (see the Symfony 8 demo).
 - **Constraint message convention:** `constraint_message_convention` plus `#[FormKitConfig]` / static field types (`StaticAlertType`, …).
 - **CSRF-only / GET filters:** `CsrfOnlyFormFactory`, `AbstractGetFilterType`, `GetFilterFormFactory`, `SearchQueryType`. See [docs/CSRF.md](docs/CSRF.md).
@@ -80,7 +81,7 @@ The bundle includes a **Symfony 8** demo that runs with **FrankenPHP** (Caddy + 
 - **Locale in the URL** — routes are under `/{locale}/…` (`en`, `es`, `fr`, `de`); `/` redirects to the default locale.
 - **FormType** example (contact, `buildFormFromArray`), **help modal** sample (`help-modal.js` + `assets:install`; include `@NowoFormKitBundle/help_modal/shells.html.twig` for overridable modal shells).
 - Form built in the **controller** (`FormKitControllerTrait` / `FormOptionsMerger::resolve()`).
-- **Search**, **example**, **Dropzone**, **Cropper**, **translations** (A2lix), **nested**, **data transformers**, **choice fields**, **conditional fields** (incl. Live Component), **Kit API patterns** (snake_case `FormKitAbstractType` + named config), **Nowo special fields** (OTP, phone, password, icon selector, Tiptap, CKEditor 5 — see [demo/README.md](demo/README.md)), **CKEditor** (FOSCKEditorBundle), **UX Autocomplete**, **multi-step** wizard.
+- **Search**, **example**, **Dropzone**, **Cropper**, **translations** (A2lix), **nested**, **data transformers**, **choice fields**, **conditional fields** (incl. Live Component), **Kit API patterns** (snake_case `FormKitAbstractType` + named config), **Nowo special fields** (OTP, phone, password, icon selector, tags, Tiptap, CKEditor 5, slide-to-confirm — see [demo/README.md](demo/README.md)), **CKEditor** (FOSCKEditorBundle), **UX Autocomplete**, **multi-step** wizard.
 
 Run a demo via Docker/Make from the bundle root; see [demo/README.md](demo/README.md) and [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 

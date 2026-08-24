@@ -525,10 +525,10 @@ demo_pages:
   nowo_special_fields:
     page_title: 'Nowo-Spezialfelder - Form Kit Demo'
     heading: 'Nowo-Spezialfelder'
-    intro: 'Showcase der <strong>nowo-tech</strong>-Formular-Widgets über <code>FormOptionsTrait::addWithDefaults()</code> — dieselben Übersetzungsschlüssel und Merge-Pipeline wie eingebaute Helfer.'
+    intro: 'Showcase der <strong>nowo-tech</strong>-Widgets über optionale Form-Kit-Helfer (<code>addOtp()</code>, <code>addPhone()</code>, …). Nur Composer-<code>suggest</code>.'
     usage_1: '<code>nowo-tech/otp-input-bundle</code> (OTP-Ziffern), <code>phone-input-bundle</code> (E.164 + Länderauswahl), <code>password-toggle-bundle</code> und <code>password-strength-bundle</code>.'
-    usage_2: '<code>icon-selector-bundle</code> (Tom Select + Icons), <code>tiptap-editor-bundle</code> und <code>ckeditor5-editor-bundle</code> für Rich Text (GPL CKEditor 5).'
-    usage_3: 'Auch anderswo in dieser Demo: <code>select-all-choice-bundle</code>, FOS CKEditor 4, UX Autocomplete, Dropzone, Cropper, A2lix-Übersetzungen.'
+    usage_2: '<code>icon-selector-bundle</code>, <code>tag-input-bundle</code>, <code>tiptap-editor-bundle</code>, <code>ckeditor5-editor-bundle</code>, <code>slide-to-confirm-bundle</code>.'
+    usage_3: 'Kombiniertes Passwort: <code>addPasswordStrengthField()</code> mit <code>use_password_toggle =&gt; true</code>. Unterschiedlich von <code>addCKEditorField()</code> (CKEditor 4) und <code>addPassword()</code>.'
     normalized_title: 'Gesendete Daten (normalisiert)'
 
 nowo_special_fields_demo:
@@ -556,6 +556,10 @@ nowo_special_fields_demo:
     label: Anwendungsicon
     placeholder: Icons suchen…
     help: 'Icon-Auswahl (<code>nowo-tech/icon-selector-bundle</code>) mit Heroicons und Bootstrap Icons.'
+  keywords:
+    label: Schlagwörter
+    placeholder: Tags hinzufügen und Enter drücken
+    help: 'Tagify-Tags über <code>nowo-tech/tag-input-bundle</code> (<code>addTagInputField()</code>).'
   article_body:
     label: Artikeltext (Tiptap)
     placeholder: ''
@@ -564,6 +568,10 @@ nowo_special_fields_demo:
     label: Seiteninhalt (CKEditor 5)
     placeholder: ''
     help: 'Rich Text mit <code>nowo-tech/ckeditor5-editor-bundle</code> (GPL-OSS-Build).'
+  confirm_slide:
+    label: Bestätigen
+    placeholder: ''
+    help: 'Slide-to-confirm über <code>nowo-tech/slide-to-confirm-bundle</code> (Gate-Profil; sendet das Formular nicht).'
 
 tiptap_placeholder: 'Schreiben Sie los…'
 ckeditor5_placeholder: 'Seiteninhalt eingeben…'

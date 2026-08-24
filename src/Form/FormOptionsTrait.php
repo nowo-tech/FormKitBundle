@@ -7,6 +7,7 @@ namespace Nowo\FormKitBundle\Form;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use InvalidArgumentException;
 use LogicException;
+use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\CsvModelTransformer;
@@ -15,7 +16,15 @@ use Nowo\FormKitBundle\Form\DataTransformer\MoneyModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\SwitchModelTransformer;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
+use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\OtpInputBundle\Form\OtpType;
+use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
+use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
+use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle;
+use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
+use Nowo\TagInputBundle\Form\TagType;
+use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -32,6 +41,7 @@ use Symfony\UX\Cropperjs\Form\CropperType;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
 use function array_key_exists;
+use function class_exists;
 use function is_array;
 use function is_string;
 use function sprintf;
@@ -759,6 +769,205 @@ trait FormOptionsTrait
     protected function addCropperField(string $name, array $options = []): void
     {
         $this->addCropper($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech OTP digits field. Requires `nowo-tech/otp-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addOtp(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, OtpType::class, 'nowo-tech/otp-input-bundle', 'addOtp', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addOtpField(string $name, array $options = []): void
+    {
+        $this->addOtp($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech international phone field. Requires `nowo-tech/phone-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addPhone(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, PhoneType::class, 'nowo-tech/phone-input-bundle', 'addPhone', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addPhoneField(string $name, array $options = []): void
+    {
+        $this->addPhone($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech show/hide password field. Requires `nowo-tech/password-toggle-bundle`.
+     *
+     * Distinct from {@see addPassword()} (Symfony `PasswordType`).
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addPasswordToggle(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, PasswordToggleType::class, 'nowo-tech/password-toggle-bundle', 'addPasswordToggle', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addPasswordToggleField(string $name, array $options = []): void
+    {
+        $this->addPasswordToggle($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech password strength meter. Requires `nowo-tech/password-strength-bundle`.
+     *
+     * Pass `use_password_toggle => true` to combine with PasswordToggleBundle when that package is also installed.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addPasswordStrength(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, PasswordStrengthType::class, 'nowo-tech/password-strength-bundle', 'addPasswordStrength', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addPasswordStrengthField(string $name, array $options = []): void
+    {
+        $this->addPasswordStrength($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech icon picker. Requires `nowo-tech/icon-selector-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addIconSelector(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, IconSelectorType::class, 'nowo-tech/icon-selector-bundle', 'addIconSelector', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addIconSelectorField(string $name, array $options = []): void
+    {
+        $this->addIconSelector($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech CKEditor 5 field. Requires `nowo-tech/ckeditor5-editor-bundle`.
+     *
+     * Distinct from {@see addCKEditorField()} (FOSCKEditorBundle / CKEditor 4).
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addCkeditor5Editor(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, Ckeditor5EditorType::class, 'nowo-tech/ckeditor5-editor-bundle', 'addCkeditor5Editor', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addCkeditor5EditorField(string $name, array $options = []): void
+    {
+        $this->addCkeditor5Editor($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech Tiptap editor. Requires `nowo-tech/tiptap-editor-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addTiptapEditor(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, TiptapEditorType::class, 'nowo-tech/tiptap-editor-bundle', 'addTiptapEditor', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addTiptapEditorField(string $name, array $options = []): void
+    {
+        $this->addTiptapEditor($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech Tagify tags field. Requires `nowo-tech/tag-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addTagInput(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, TagType::class, 'nowo-tech/tag-input-bundle', 'addTagInput', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addTagInputField(string $name, array $options = []): void
+    {
+        $this->addTagInput($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech slide-to-confirm control. Requires `nowo-tech/slide-to-confirm-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addSlideToConfirm(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, SlideToConfirmType::class, 'nowo-tech/slide-to-confirm-bundle', 'addSlideToConfirm', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addSlideToConfirmField(string $name, array $options = []): void
+    {
+        $this->addSlideToConfirm($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param class-string<FormTypeInterface<mixed>> $type
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when `$type` is not available
+     */
+    private function addOptionalSuggestedType(
+        FormBuilderInterface $builder,
+        string $name,
+        string $type,
+        string $package,
+        string $helper,
+        array $options,
+    ): void {
+        if (!class_exists($type)) {
+            throw new LogicException(sprintf('%s() requires %s. Install it or use addWithDefaults() with the type FQCN when available.', $helper, $package));
+        }
+
+        $this->addWithDefaults($builder, $name, $type, $options);
     }
 
     /**

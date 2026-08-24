@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.5.0] - 2026-08-24](#250-2026-08-24)
+- [[2.4.5] - 2026-08-24](#245-2026-08-24)
 - [[2.4.4] - 2026-08-19](#244-2026-08-19)
 - [[2.4.3] - 2026-08-19](#243-2026-08-19)
 - [[2.4.2] - 2026-08-18](#242-2026-08-18)
@@ -85,6 +87,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-08-24
+
+### Added
+
+- **Optional nowo-tech form widgets** — Composer **suggest** + `FormTypeMap` entries + helpers on `FormOptionsTrait` / `FormKitTrait` / `FormKitControllerTrait` (throw `LogicException` if the package is missing): OTP, phone, password toggle/strength, icon selector, CKEditor 5, Tiptap, tag input, slide-to-confirm. Distinct from Symfony `addPassword()` and FOS `addCKEditorField()` (CKEditor 4).
+- **Demo `/nowo-special-fields`** — uses the new helpers; adds **TagInputBundle** and **SlideToConfirmBundle**.
+
+### Changed
+
+- **demo/symfony8** — lockfile includes `nowo-tech/tag-input-bundle` and `nowo-tech/slide-to-confirm-bundle`; Live Component routes use prefix `/{_locale}/_components` so they do not swallow locale demo pages.
+
+[2.5.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.5.0
 
 ## [2.4.5] - 2026-08-24
 

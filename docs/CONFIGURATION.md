@@ -120,7 +120,16 @@ The bundle core has no hard dependency on UX or third-party form integrations. C
 |-------------------|---------|
 | **a2lix/translation-form-bundle** | `translations` type in FormTypeMap; `addTranslations()` on traits |
 | **nowo-tech/select-all-choice-bundle** | `addMultiSelectSelectAll()` / `addMultiSelectSelectAllType()` (`select_all` on `ChoiceType` multiple) |
-| **friendsofsymfony/ckeditor-bundle** | `addCKEditorField()` / `addCKEditorFieldType()` (rich text) |
+| **nowo-tech/otp-input-bundle** | `addOtp()` / `addOtpField()` / `addOtpFieldType()` (`otp` in FormTypeMap) |
+| **nowo-tech/phone-input-bundle** | `addPhone()` / `addPhoneField()` / `addPhoneFieldType()` (`phone`) |
+| **nowo-tech/password-toggle-bundle** | `addPasswordToggle()` / `addPasswordToggleField()` / `addPasswordToggleFieldType()` (`password_toggle`; distinct from Symfony `addPassword()`) |
+| **nowo-tech/password-strength-bundle** | `addPasswordStrength()` / `addPasswordStrengthField()` / `addPasswordStrengthFieldType()` (`password_strength`) |
+| **nowo-tech/icon-selector-bundle** | `addIconSelector()` / `addIconSelectorField()` / `addIconSelectorFieldType()` (`icon_selector`) |
+| **nowo-tech/ckeditor5-editor-bundle** | `addCkeditor5Editor()` / `addCkeditor5EditorField()` / `addCkeditor5EditorFieldType()` (`ckeditor5`; distinct from FOS `addCKEditorField()`) |
+| **nowo-tech/tiptap-editor-bundle** | `addTiptapEditor()` / `addTiptapEditorField()` / `addTiptapEditorFieldType()` (`tiptap`) |
+| **nowo-tech/tag-input-bundle** | `addTagInput()` / `addTagInputField()` / `addTagInputFieldType()` (`tag`) |
+| **nowo-tech/slide-to-confirm-bundle** | `addSlideToConfirm()` / `addSlideToConfirmField()` / `addSlideToConfirmFieldType()` (`slide_to_confirm`) |
+| **friendsofsymfony/ckeditor-bundle** | `addCKEditorField()` / `addCKEditorFieldType()` (CKEditor 4) |
 | **symfony/ux-autocomplete** | Use with `addAutocompleteField()` / `addAutocompleteFieldType()` and your autocomplete FormType FQCN |
 | **symfony/ux-dropzone** | `addDropzone()` / `addDropzoneField()` / `addDropzoneFieldType()` |
 | **symfony/ux-cropperjs** | `addCropper()` / `addCropperField()` / `addCropperFieldType()` |
@@ -135,7 +144,7 @@ The bundle registers a **FormTypeMap** that resolves snake_case type names to fo
 
 **Built-in (always):** `text`, `email`, `textarea`, `password`, `url`, `integer`, `number`, `checkbox`, `choice`, `date`, `datetime`, `time`, `birthday`, `week`, `money`, `percent`, `currency`, `locale`, `language`, `country`, `timezone`, `file`, `hidden`, `tel`, `color`, `range`, `collection`, `repeated`, `submit`, `button`, `reset`, `date_interval`.
 
-**Optional (when the class exists):** `dropzone` (UX Dropzone), `cropper` (UX Cropper.js), `translations` (A2lix). You can add more in config:
+**Optional (when the class exists):** `dropzone` (UX Dropzone), `cropper` (UX Cropper.js), `translations` (A2lix), `otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `tag`, `slide_to_confirm` (nowo-tech widgets). You can add more in config:
 
 ```yaml
 nowo_form_kit:

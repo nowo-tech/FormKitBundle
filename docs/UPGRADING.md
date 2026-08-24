@@ -5,8 +5,9 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 
-- [From 2.4.4 to 2.4.5](#from-244-to-245)
+- [From 2.4.5 to 2.5.0](#from-245-to-250)
 - [Unreleased](#unreleased)
+- [To 2.4.5](#to-245)
 - [To 2.4.4](#to-244)
 - [To 2.4.3](#to-243)
 - [To 2.4.2](#to-242)
@@ -43,6 +44,28 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## From 2.4.5 to 2.5.0
+
+Optional nowo-tech widget helpers (`addOtp()`, `addPhone()`, `addPasswordToggle()`, `addPasswordStrength()`, `addIconSelector()`, `addCkeditor5Editor()`, `addTiptapEditor()`, `addTagInput()`, `addSlideToConfirm()` and `*Field` / `*FieldType` variants). Install only the packages you need (`composer suggest`). No host change required; Symfony `addPassword()` and FOS `addCKEditorField()` are unchanged.
+
+Notes when using the new helpers:
+
+- **`addTagInput()`** — do not pass `placeholder => false` (`TagType` expects a string).
+- **`addSlideToConfirm()`** — the type defaults to `mapped: false`; set `mapped => true` when the value must land on the model. It has no `placeholder` option.
+- **`addPasswordToggle()` / `addCkeditor5Editor()`** — distinct from Symfony `addPassword()` and FOS `addCKEditorField()` (CKEditor 4).
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+## To 2.4.5
+
+From **2.4.4** — No application upgrade steps.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 ## To 2.4.4
 

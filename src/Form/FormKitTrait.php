@@ -6,12 +6,22 @@ namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
 use LogicException;
+use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
+use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\OtpInputBundle\Form\OtpType;
+use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
+use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
+use Nowo\PhoneInputBundle\Form\Type\PhoneType;
+use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
+use Nowo\TagInputBundle\Form\TagType;
+use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\UX\Cropperjs\Form\CropperType;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
+use function class_exists;
 use function is_string;
 use function sprintf;
 
@@ -371,5 +381,205 @@ trait FormKitTrait
     protected function addCropperField(string $name, array $options = []): void
     {
         $this->addCropper($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech OTP (`otp` in FormTypeMap). Requires `nowo-tech/otp-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addOtp(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'otp', OtpType::class, 'nowo-tech/otp-input-bundle', 'addOtp', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addOtpField(string $name, array $options = []): void
+    {
+        $this->addOtp($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech phone (`phone` in FormTypeMap). Requires `nowo-tech/phone-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addPhone(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'phone', PhoneType::class, 'nowo-tech/phone-input-bundle', 'addPhone', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addPhoneField(string $name, array $options = []): void
+    {
+        $this->addPhone($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech password toggle (`password_toggle` in FormTypeMap).
+     * Requires `nowo-tech/password-toggle-bundle`. Distinct from {@see addPassword()}.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addPasswordToggle(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'password_toggle', PasswordToggleType::class, 'nowo-tech/password-toggle-bundle', 'addPasswordToggle', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addPasswordToggleField(string $name, array $options = []): void
+    {
+        $this->addPasswordToggle($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech password strength (`password_strength` in FormTypeMap).
+     * Requires `nowo-tech/password-strength-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addPasswordStrength(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'password_strength', PasswordStrengthType::class, 'nowo-tech/password-strength-bundle', 'addPasswordStrength', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addPasswordStrengthField(string $name, array $options = []): void
+    {
+        $this->addPasswordStrength($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech icon selector (`icon_selector` in FormTypeMap).
+     * Requires `nowo-tech/icon-selector-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addIconSelector(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'icon_selector', IconSelectorType::class, 'nowo-tech/icon-selector-bundle', 'addIconSelector', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addIconSelectorField(string $name, array $options = []): void
+    {
+        $this->addIconSelector($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech CKEditor 5 (`ckeditor5` in FormTypeMap).
+     * Requires `nowo-tech/ckeditor5-editor-bundle`. Distinct from FOSCKEditorBundle (CKEditor 4).
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addCkeditor5Editor(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'ckeditor5', Ckeditor5EditorType::class, 'nowo-tech/ckeditor5-editor-bundle', 'addCkeditor5Editor', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addCkeditor5EditorField(string $name, array $options = []): void
+    {
+        $this->addCkeditor5Editor($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech Tiptap editor (`tiptap` in FormTypeMap).
+     * Requires `nowo-tech/tiptap-editor-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addTiptapEditor(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'tiptap', TiptapEditorType::class, 'nowo-tech/tiptap-editor-bundle', 'addTiptapEditor', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addTiptapEditorField(string $name, array $options = []): void
+    {
+        $this->addTiptapEditor($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech Tagify field (`tag` in FormTypeMap). Requires `nowo-tech/tag-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addTagInput(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'tag', TagType::class, 'nowo-tech/tag-input-bundle', 'addTagInput', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addTagInputField(string $name, array $options = []): void
+    {
+        $this->addTagInput($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech slide-to-confirm (`slide_to_confirm` in FormTypeMap).
+     * Requires `nowo-tech/slide-to-confirm-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addSlideToConfirm(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'slide_to_confirm', SlideToConfirmType::class, 'nowo-tech/slide-to-confirm-bundle', 'addSlideToConfirm', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addSlideToConfirmField(string $name, array $options = []): void
+    {
+        $this->addSlideToConfirm($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param class-string<FormTypeInterface<mixed>> $typeFqcn
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when `$typeFqcn` is not available
+     */
+    private function addOptionalMappedField(
+        FormBuilderInterface $builder,
+        string $name,
+        string $snakeCase,
+        string $typeFqcn,
+        string $package,
+        string $helper,
+        array $options,
+    ): void {
+        if (!class_exists($typeFqcn)) {
+            throw new LogicException(sprintf('%s() requires %s. Install it or register a custom type in nowo_form_kit.type_map.', $helper, $package));
+        }
+
+        $this->addField($builder, $name, $snakeCase, $options);
     }
 }

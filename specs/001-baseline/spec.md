@@ -37,6 +37,10 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 
 **Given** `FormKitTrait` or `FormOptionsTrait`, **When** integrator calls `addEmail()`, `addChoice()`, `addSwitchType()`, etc., **Then** mapped Symfony types and transformers apply with merged options and constraint definitions from config.
 
+### US-03d — Optional nowo-tech widgets (P2)
+
+**Given** Composer **suggest** packages such as `nowo-tech/otp-input-bundle` (and peer nowo-tech form widgets), **When** the integrator calls `addOtp()` / `addOtpField()` / `addOtpFieldType()` (and peers: phone, password toggle/strength, icon selector, CKEditor 5, Tiptap, tag input, slide-to-confirm), **Then** Form Kit adds the corresponding FormType through the same merge pipeline. **And** if the package is not installed, the helper throws `LogicException`. **And** `FormTypeMap` registers snake_case names (`otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `tag`, `slide_to_confirm`) only when those classes exist. **And** Symfony `addPassword()` / FOS `addCKEditorField()` stay distinct from `addPasswordToggle()` / `addCkeditor5Editor()`. **And** **demo/symfony8** `/nowo-special-fields` uses those helpers, including TagInput and SlideToConfirm.
+
 ### US-03b — Bound-builder helpers (P1)
 
 **Given** a form type using `FormOptionsTrait` or `FormKitTrait`, **When** `buildForm` calls `withBuilder($builder, fn () => …)` and inside it `addTextField('full_name')` (and peer `add*Field` helpers), **Then** fields are added on the bound builder with the same merge pipeline as `addText($builder, …)` and no per-call `$builder` argument is required. **And** `boundBuilder()` returns that builder for helpers that still need an explicit builder (e.g. `addAutocompleteField`). **And** calling `add*Field` / `boundBuilder()` outside `withBuilder` throws `LogicException`.
@@ -93,6 +97,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 - **FR-FORM-009**: Bound-builder API on `FormOptionsTrait` / `FormKitTrait`: `withBuilder()`, `boundBuilder()`, `add*Field()` / `buildFieldsFromArray()` / `addTypedField()` (and FormKit `addNamedField()`), preserving BC for existing `addText($builder, …)` helpers.
 - **FR-FORM-010**: `FormOptionsTrait::resolveFieldOptions()` exposes the same merge as `addWithDefaults` for use with `FormInterface::add` in form event listeners (conditional fields).
 - **FR-FORM-011**: `#[FormKitConfig('name')]` on a form type selects `nowo_form_kit.profiles.<name>` unless `setFormKitConfigName()` was called.
+- **FR-FORM-012**: Optional nowo-tech widget helpers (`addOtp`, `addPhone`, `addPasswordToggle`, `addPasswordStrength`, `addIconSelector`, `addCkeditor5Editor`, `addTiptapEditor`, `addTagInput`, `addSlideToConfirm` and `*Field` / `*FieldType` variants) are Composer **suggest** only: `class_exists` gate, `LogicException` when missing, `FormTypeMap` optional entries, no hard `require`.
 
 ### Multi-step wizard
 
@@ -111,13 +116,14 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 - **SC-002**: Config keys match [`docs/CONFIGURATION.md`](../../docs/CONFIGURATION.md).
 - **SC-003**: `composer qa` / CI green.
 - **SC-004**: Bound-builder helpers and `resolveFieldOptions` are covered by unit tests; conditional-field patterns are documented in [`docs/USAGE.md`](../../docs/USAGE.md) and demonstrated in demos.
+- **SC-005**: Optional nowo-tech helpers throw when the package is missing and add fields when stubs/classes exist; documented in USAGE / CONFIGURATION; demo `/nowo-special-fields` uses the helpers including TagInput and SlideToConfirm.
 
 ---
 
 ## Explicit non-goals
 
 - Rendering forms outside Symfony Form component.
-- Bundling optional third-party field types (CKEditor, UX Autocomplete, Select All Choice) — Composer **suggest** only.
+- Bundling optional third-party field types (FOS CKEditor 4, UX Autocomplete, Select All Choice, nowo-tech OTP/phone/password/icon/CKEditor 5/Tiptap/tag/slide widgets) — Composer **suggest** + helpers only; packages are not required.
 - A first-class field option such as `when` / `visible_if` for show/hide — use Symfony `FormEvents`, build-time `if`, UI toggling, or Live Components (documented under Conditional fields in USAGE).
 
 ---

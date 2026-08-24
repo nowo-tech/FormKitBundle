@@ -4,7 +4,16 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
+use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Form\FormTypeMap;
+use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\OtpInputBundle\Form\OtpType;
+use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
+use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
+use Nowo\PhoneInputBundle\Form\Type\PhoneType;
+use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
+use Nowo\TagInputBundle\Form\TagType;
+use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -81,5 +90,14 @@ final class FormTypeMapTest extends TestCase
 
         self::assertSame(DropzoneType::class, $map->resolve('dropzone'));
         self::assertSame(CropperType::class, $map->resolve('cropper'));
+        self::assertSame(OtpType::class, $map->resolve('otp'));
+        self::assertSame(PhoneType::class, $map->resolve('phone'));
+        self::assertSame(PasswordToggleType::class, $map->resolve('password_toggle'));
+        self::assertSame(PasswordStrengthType::class, $map->resolve('password_strength'));
+        self::assertSame(IconSelectorType::class, $map->resolve('icon_selector'));
+        self::assertSame(Ckeditor5EditorType::class, $map->resolve('ckeditor5'));
+        self::assertSame(TiptapEditorType::class, $map->resolve('tiptap'));
+        self::assertSame(TagType::class, $map->resolve('tag'));
+        self::assertSame(SlideToConfirmType::class, $map->resolve('slide_to_confirm'));
     }
 }

@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
+use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\OtpInputBundle\Form\OtpType;
+use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
+use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
+use Nowo\PhoneInputBundle\Form\Type\PhoneType;
+use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
+use Nowo\TagInputBundle\Form\TagType;
+use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -89,15 +98,24 @@ final class FormTypeMap
     ];
 
     /**
-     * Optional types (Symfony UX, A2lix, etc.). Only added when the class exists.
+     * Optional types (Symfony UX, A2lix, nowo-tech widgets). Only added when the class exists.
      * Autocomplete is not a standalone FormType; use entity attributes instead.
      *
-     * @var array{dropzone: string, cropper: string, translations: string}
+     * @var array<string, string>
      */
     private const OPTIONAL = [
-        'dropzone'     => DropzoneType::class,
-        'cropper'      => CropperType::class,
-        'translations' => 'A2lix\TranslationFormBundle\Form\Type\TranslationsType',
+        'dropzone'          => DropzoneType::class,
+        'cropper'           => CropperType::class,
+        'translations'      => 'A2lix\TranslationFormBundle\Form\Type\TranslationsType',
+        'otp'               => OtpType::class,
+        'phone'             => PhoneType::class,
+        'password_toggle'   => PasswordToggleType::class,
+        'password_strength' => PasswordStrengthType::class,
+        'icon_selector'     => IconSelectorType::class,
+        'ckeditor5'         => Ckeditor5EditorType::class,
+        'tiptap'            => TiptapEditorType::class,
+        'tag'               => TagType::class,
+        'slide_to_confirm'  => SlideToConfirmType::class,
     ];
 
     /** @var array<string, string> */

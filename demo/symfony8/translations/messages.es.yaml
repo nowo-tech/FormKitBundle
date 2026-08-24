@@ -568,10 +568,10 @@ demo_pages:
   nowo_special_fields:
     page_title: 'Campos especiales Nowo - Demo Form Kit'
     heading: 'Campos especiales Nowo'
-    intro: 'Muestra de widgets del ecosistema <strong>nowo-tech</strong> con <code>FormOptionsTrait::addWithDefaults()</code>.'
+    intro: 'Muestra de widgets del ecosistema <strong>nowo-tech</strong> con helpers opcionales de Form Kit (<code>addOtp()</code>, <code>addPhone()</code>, …). Solo Composer <code>suggest</code>; instala los paquetes que necesites.'
     usage_1: 'OTP, teléfono, password-toggle, password-strength (solo toggle, solo fuerza, y <strong>combinados</strong> en un campo).'
-    usage_2: 'Icon selector, Tiptap y CKEditor 5.'
-    usage_3: 'Combinado: <code>PasswordStrengthType</code> con <code>use_password_toggle =&gt; true</code> (PasswordToggleBundle instalado).'
+    usage_2: 'Icon selector, Tag Input, Tiptap, CKEditor 5 y Slide to Confirm.'
+    usage_3: 'Combinado: <code>addPasswordStrengthField()</code> con <code>use_password_toggle =&gt; true</code>. Distinto de <code>addCKEditorField()</code> (FOS CKEditor 4) y <code>addPassword()</code> (PasswordType de Symfony).'
     normalized_title: 'Datos enviados (normalizados)'
 
 nowo_special_fields_demo:
@@ -599,6 +599,10 @@ nowo_special_fields_demo:
     label: Icono de la aplicación
     placeholder: Buscar iconos…
     help: 'Selector de iconos (<code>nowo-tech/icon-selector-bundle</code>) con heroicons y Bootstrap Icons.'
+  keywords:
+    label: Palabras clave
+    placeholder: Añade etiquetas y pulsa Enter
+    help: 'Tags Tagify con <code>nowo-tech/tag-input-bundle</code> (<code>addTagInputField()</code>).'
   article_body:
     label: Cuerpo del artículo (Tiptap)
     placeholder: ''
@@ -607,6 +611,10 @@ nowo_special_fields_demo:
     label: Contenido de página (CKEditor 5)
     placeholder: ''
     help: 'Texto enriquecido con <code>nowo-tech/ckeditor5-editor-bundle</code> (build OSS GPL).'
+  confirm_slide:
+    label: Confirmar
+    placeholder: ''
+    help: 'Slide-to-confirm con <code>nowo-tech/slide-to-confirm-bundle</code> (perfil gate; no envía el formulario al deslizar).'
 
 tiptap_placeholder: 'Empieza a escribir…'
 ckeditor5_placeholder: 'Escribe el contenido de la página…'

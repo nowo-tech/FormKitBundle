@@ -65,7 +65,7 @@ You can inject **FormOptionsMerger** and call `resolve($formName, $fieldName, $t
 
 If you build forms in controllers (without a Symfony `FormType`), use this trait.
 
-It provides helpers like `addTextType()`, `addEmailType()`, `addChoiceType()`, choice presets (`addSelectType`, `addMultiSelectType`, `addChoiceRadiosType`, `addChoiceCheckboxesType`, `addMultiSelectSelectAllType`), `addAutocompleteFieldType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, plus transformer presets like:
+It provides helpers like `addTextType()`, `addEmailType()`, `addChoiceType()`, choice presets (`addSelectType`, `addMultiSelectType`, `addChoiceRadiosType`, `addChoiceCheckboxesType`, `addMultiSelectSelectAllType`), `addAutocompleteFieldType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, optional nowo-tech widgets (`addOtpFieldType`, `addPhoneFieldType`, `addPasswordToggleFieldType`, `addPasswordStrengthFieldType`, `addIconSelectorFieldType`, `addCkeditor5EditorFieldType`, `addTiptapEditorFieldType`, `addTagInputFieldType`, `addSlideToConfirmFieldType`), plus transformer presets like:
 - `addSwitchType()` (model int/bool <-> ChoiceType switch)
 - `addJsonType()` (model array <-> JSON textarea)
 - `addBoolType()` (model 0/1 <-> CheckboxType)
@@ -171,7 +171,7 @@ $this->buildFormFromArray($builder, [
 
 **Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect` / `addSelectField`, `addMultiSelect` / `addMultiSelectField`, `addChoiceRadios` / `addChoiceRadiosField`, `addChoiceCheckboxes` / `addChoiceCheckboxesField`. Radios and checkbox groups clear the global `form-control` class on the widget root and disable `placeholder` by default so Bootstrap 5 `form-check` markup renders correctly. **`addMultiSelectSelectAll`** / **`addMultiSelectSelectAllField`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
 
-**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle**. **`addDropzone` / `addDropzoneField`** require **symfony/ux-dropzone**. **`addCropper` / `addCropperField`** require **symfony/ux-cropperjs** (pass Cropper options such as `public_url`). All run through the same merge pipeline and throw `LogicException` if the package is missing. Inside `withBuilder()`, use the `*Field` variants or pass `$this->boundBuilder()`. Generic bound helper: `addTypedField($name, $typeFqcn, $options)`. On **FormKitTrait**, the same Dropzone/Cropper helpers resolve the `dropzone` / `cropper` entries in **FormTypeMap**.
+**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle** (CKEditor 4). **`addDropzone` / `addDropzoneField`** require **symfony/ux-dropzone**. **`addCropper` / `addCropperField`** require **symfony/ux-cropperjs** (pass Cropper options such as `public_url`). **Nowo-tech widgets** (optional Composer **suggest**, `LogicException` if missing): `addOtp`, `addPhone`, `addPasswordToggle` (not Symfony `addPassword()`), `addPasswordStrength`, `addIconSelector`, `addCkeditor5Editor` (not FOS `addCKEditorField()`), `addTiptapEditor`, `addTagInput` (do not pass `placeholder => false`; `TagType` expects a string), `addSlideToConfirm` (defaults to `mapped: false`; set `mapped => true` to bind the value). All run through the same merge pipeline. Inside `withBuilder()`, use the `*Field` variants or pass `$this->boundBuilder()`. Generic bound helper: `addTypedField($name, $typeFqcn, $options)`. On **FormKitTrait**, the same helpers resolve snake_case entries in **FormTypeMap** (`otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `tag`, `slide_to_confirm`, plus `dropzone` / `cropper`).
 
 **Model transformers:** `addSwitchType` / `addSwitchField`, `addJsonType` / `addJsonField`, `addBoolType` / `addBoolField`, `addMoneyType` / `addMoneyField`, `addCsvType` / `addCsvField`.
 
@@ -179,7 +179,7 @@ $this->buildFormFromArray($builder, [
 
 The form block prefix (e.g. `user_profile` for `UserProfileType`) is used automatically. Field names are used as-is for the translation key segment (use snake_case for consistency: `full_name`, `email_address`).
 
-Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` / `*FieldType` suffix (e.g. `addSelectType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`).
+Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` / `*FieldType` suffix (e.g. `addSelectType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, `addOtpFieldType`, `addCkeditor5EditorFieldType`).
 
 ## Conditional fields (show one field or another)
 

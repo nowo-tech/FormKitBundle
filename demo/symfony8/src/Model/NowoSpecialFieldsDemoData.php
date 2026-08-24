@@ -21,7 +21,12 @@ final class NowoSpecialFieldsDemoData
 
     public ?string $appIcon = null;
 
+    /** @var list<string> */
+    public array $keywords = [];
+
     public ?string $articleBody = null;
 
     public ?string $pageContent = null;
+
+    public bool $confirmSlide = false;
 }

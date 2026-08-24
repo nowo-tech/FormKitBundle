@@ -12,6 +12,8 @@ use Nowo\PasswordStrengthBundle\PasswordStrengthBundle;
 use Nowo\PasswordToggleBundle\NowoPasswordToggleBundle;
 use Nowo\PhoneInputBundle\NowoPhoneInputBundle;
 use Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle;
+use Nowo\SlideToConfirmBundle\NowoSlideToConfirmBundle;
+use Nowo\TagInputBundle\NowoTagInputBundle;
 use Nowo\TiptapEditorBundle\NowoTiptapEditorBundle;
 use Nowo\TwigInspectorBundle\NowoTwigInspectorBundle;
 use Pentatrion\ViteBundle\PentatrionViteBundle;
@@ -54,6 +56,8 @@ return [
     UXIconsBundle::class              => ['all' => true],
     NowoTiptapEditorBundle::class     => ['all' => true],
     NowoCkeditor5EditorBundle::class  => ['all' => true],
+    NowoTagInputBundle::class         => ['all' => true],
+    NowoSlideToConfirmBundle::class   => ['all' => true],
     TwigComponentBundle::class        => ['all' => true],
     LiveComponentBundle::class        => ['all' => true],
     TwigExtraBundle::class            => ['all' => true],

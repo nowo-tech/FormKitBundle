@@ -6,10 +6,19 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
 use InvalidArgumentException;
 use LogicException;
+use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormKitTrait;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
+use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\OtpInputBundle\Form\OtpType;
+use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
+use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
+use Nowo\PhoneInputBundle\Form\Type\PhoneType;
+use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
+use Nowo\TagInputBundle\Form\TagType;
+use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -258,6 +267,78 @@ final class FormKitTraitTest extends TestCase
             ['avatar', CropperType::class],
         ], $calls);
     }
+
+    /**
+     * @return list<array{0: string, 1: string}>
+     */
+    public static function provideMissingNowoInputHelpers(): array
+    {
+        return [
+            ['addOtp', 'nowo-tech/otp-input-bundle'],
+            ['addPhone', 'nowo-tech/phone-input-bundle'],
+            ['addPasswordToggle', 'nowo-tech/password-toggle-bundle'],
+            ['addPasswordStrength', 'nowo-tech/password-strength-bundle'],
+            ['addIconSelector', 'nowo-tech/icon-selector-bundle'],
+            ['addCkeditor5Editor', 'nowo-tech/ckeditor5-editor-bundle'],
+            ['addTiptapEditor', 'nowo-tech/tiptap-editor-bundle'],
+            ['addTagInput', 'nowo-tech/tag-input-bundle'],
+            ['addSlideToConfirm', 'nowo-tech/slide-to-confirm-bundle'],
+        ];
+    }
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState false
+     *
+     * @dataProvider provideMissingNowoInputHelpers
+     */
+    public function testNowoInputHelpersThrowWhenBundleMissing(string $method, string $package): void
+    {
+        $type = $this->createType();
+        $type->setFormOptionsMerger($this->createMerger());
+        $type->setFormTypeMap(new FormTypeMap([]));
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage($package);
+        $type->callNamedHelper($builder, $method);
+    }
+
+    public function testNowoInputHelpersAddFieldsWhenStubsAreLoaded(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $type = $this->createType();
+        $type->setFormOptionsMerger($this->createMerger());
+        $type->setFormTypeMap(new FormTypeMap([]));
+
+        $calls   = [];
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::exactly(9))
+            ->method('add')
+            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): FormBuilderInterface {
+                $calls[] = [$name, $fqcn];
+                self::assertIsArray($opts);
+
+                return $builder;
+            });
+
+        $type->buildWithNowoBoundHelpers($builder);
+
+        self::assertSame([
+            ['otp', OtpType::class],
+            ['phone', PhoneType::class],
+            ['password_toggle', PasswordToggleType::class],
+            ['password_strength', PasswordStrengthType::class],
+            ['icon', IconSelectorType::class],
+            ['ckeditor5', Ckeditor5EditorType::class],
+            ['tiptap', TiptapEditorType::class],
+            ['tags', TagType::class],
+            ['confirm', SlideToConfirmType::class],
+        ], $calls);
+    }
 }
 
 final class FormKitTraitTestType
@@ -374,5 +455,27 @@ final class FormKitTraitTestType
             $this->addDropzoneField('document');
             $this->addCropperField('avatar');
         });
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function buildWithNowoBoundHelpers(FormBuilderInterface $builder): void
+    {
+        $this->withBuilder($builder, function (): void {
+            $this->addOtpField('otp');
+            $this->addPhoneField('phone');
+            $this->addPasswordToggleField('password_toggle');
+            $this->addPasswordStrengthField('password_strength');
+            $this->addIconSelectorField('icon');
+            $this->addCkeditor5EditorField('ckeditor5');
+            $this->addTiptapEditorField('tiptap');
+            $this->addTagInputField('tags');
+            $this->addSlideToConfirmField('confirm');
+        });
+    }
+
+    /** @param FormBuilderInterface<mixed> $builder */
+    public function callNamedHelper(FormBuilderInterface $builder, string $method): void
+    {
+        $this->{$method}($builder, 'field');
     }
 }
