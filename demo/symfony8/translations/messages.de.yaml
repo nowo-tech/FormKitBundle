@@ -573,6 +573,13 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Slide-to-confirm über <code>nowo-tech/slide-to-confirm-bundle</code> (Gate-Profil; sendet das Formular nicht).'
 
+# Von Nowo-Widgets genutzte Schlüssel (translation_domain: messages)
+'Country prefix': 'Ländervorwahl'
+'Search country or prefix…': 'Land oder Vorwahl suchen…'
+'No countries found': 'Keine Länder gefunden'
+form.slide_to_unlock: 'Zum Entsperren schieben'
+form.unlocked: 'Entsperrt'
+form.hint.gate: 'Schieben Sie, um die Senden-Schaltfläche freizugeben.'
 tiptap_placeholder: 'Schreiben Sie los…'
 ckeditor5_placeholder: 'Seiteninhalt eingeben…'
 requirement.min_length: 'Mindestens 8 Zeichen'

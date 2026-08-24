@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.5.1] - 2026-08-24](#251-2026-08-24)
 - [[2.5.0] - 2026-08-24](#250-2026-08-24)
 - [[2.4.5] - 2026-08-24](#245-2026-08-24)
 - [[2.4.4] - 2026-08-19](#244-2026-08-19)
@@ -86,6 +87,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.5.1] - 2026-08-24
+
+### Fixed
+
+- **Demo `/nowo-special-fields`** — Asset Mapper 404s: recompile `public/assets` on Docker/Makefile `up`/`install`; stop importing Select All controller from `vendor/` in `stimulus_bootstrap.ts`; load Nowo widget CSS/JS via `stylesheets` / `page_scripts` blocks **after** the Stimulus importmap; use named asset packages where required.
+- **Demo slide-to-confirm** — Custom form theme hides the native Bootstrap checkbox beside the slider (`SlideToConfirmType` extends `CheckboxType`).
+- **Demo translations (EN, ES, FR, DE)** — PhoneInput and SlideToConfirm gate-profile keys in domain `messages` (`Country prefix`, `form.slide_to_unlock`, etc.).
+
+### Notes
+
+- **No API or configuration changes** for integrators unless noted above.
+
+[2.5.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.5.1
 
 ## [2.5.0] - 2026-08-24
 

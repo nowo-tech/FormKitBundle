@@ -1,7 +1,5 @@
 import { startStimulusApp } from '@symfony/stimulus-bundle';
 
-import SelectAllController from '../vendor/nowo-tech/select-all-choice-bundle/src/Resources/assets/controllers/select_all_controller';
-
 /** Stimulus app instance (controllers from controllers/ and controllers.json). */
 export const app = startStimulusApp(
     require.context(
@@ -10,8 +8,6 @@ export const app = startStimulusApp(
       /\.(j|t)sx?$/
     )
   );
-  
-  
-// Controller from nowo-tech/select-all-choice-bundle (must match data-controller="select-all")
-app.register('select-all', SelectAllController);
-  
+
+// Select-all choice: standalone script in base.html.twig (select-all-choice.js via named asset package).
+// Do not import the bundle controller from vendor/ here — Asset Mapper does not expose that path.

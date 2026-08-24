@@ -43,6 +43,7 @@ up:
 	@echo "Installing dependencies..."
 	@$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'COMPOSER_MEMORY_LIMIT=-1 composer install --no-interaction'
 	@$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) php bin/console assets:install public --symlink --no-interaction 2>/dev/null || true
+	@$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'rm -rf public/assets && php bin/console asset-map:compile --no-interaction' 2>/dev/null || true
 	@PORT=$$(grep "^PORT=" .env 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
 	[ -z "$$PORT" ] && PORT=$$(grep "^PORT=" .env.example 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
 	echo "Demo started at: http://localhost:$$PORT"
@@ -64,11 +65,13 @@ ensure-up:
 		sleep 5; \
 		$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'COMPOSER_MEMORY_LIMIT=-1 composer install --no-interaction'; \
 		$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) php bin/console assets:install public --symlink --no-interaction 2>/dev/null || true; \
+		$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'rm -rf public/assets && php bin/console asset-map:compile --no-interaction' 2>/dev/null || true; \
 	fi
 
 install: ensure-up
 	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'COMPOSER_MEMORY_LIMIT=-1 composer install --no-interaction'
 	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) php bin/console assets:install public --symlink --no-interaction 2>/dev/null || true
+	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'rm -rf public/assets && php bin/console asset-map:compile --no-interaction' 2>/dev/null || true
 	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'test -f package.json && pnpm install || true'
 
 shell: ensure-up

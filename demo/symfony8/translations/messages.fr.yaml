@@ -562,6 +562,13 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Slide-to-confirm via <code>nowo-tech/slide-to-confirm-bundle</code> (profil gate ; n’envoie pas le formulaire).'
 
+# Clés consommées par les widgets Nowo (translation_domain: messages)
+'Country prefix': 'Indicatif pays'
+'Search country or prefix…': 'Rechercher un pays ou un indicatif…'
+'No countries found': 'Aucun pays trouvé'
+form.slide_to_unlock: 'Glissez pour déverrouiller'
+form.unlocked: 'Déverrouillé'
+form.hint.gate: 'Glissez pour déverrouiller le bouton d''envoi.'
 tiptap_placeholder: 'Commencez à écrire…'
 ckeditor5_placeholder: 'Rédigez le contenu de la page…'
 requirement.min_length: 'Au moins 8 caractères'

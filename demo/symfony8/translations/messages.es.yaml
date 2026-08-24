@@ -616,6 +616,13 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Slide-to-confirm con <code>nowo-tech/slide-to-confirm-bundle</code> (perfil gate; no envía el formulario al deslizar).'
 
+# Claves consumidas por widgets Nowo (translation_domain: messages)
+'Country prefix': 'Prefijo de país'
+'Search country or prefix…': 'Buscar país o prefijo…'
+'No countries found': 'No se encontraron países'
+form.slide_to_unlock: 'Desliza para desbloquear'
+form.unlocked: 'Desbloqueado'
+form.hint.gate: 'Desliza para desbloquear el botón de envío.'
 tiptap_placeholder: 'Empieza a escribir…'
 ckeditor5_placeholder: 'Escribe el contenido de la página…'
 requirement.min_length: 'Al menos 8 caracteres'

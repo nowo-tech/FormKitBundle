@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 
+- [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
 - [Unreleased](#unreleased)
 - [To 2.4.5](#to-245)
@@ -44,6 +45,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## From 2.5.0 to 2.5.1
+
+From **2.5.0** — No application upgrade steps. Demo-only fixes for `/nowo-special-fields` (Asset Mapper, widget assets, slide-to-confirm form theme, widget translation keys).
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 ## From 2.4.5 to 2.5.0
 

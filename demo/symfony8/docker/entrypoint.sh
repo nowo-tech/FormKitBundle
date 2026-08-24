@@ -43,6 +43,9 @@ if [ -f bin/console ]; then
 	php bin/console ckeditor:install --no-interaction --no-progress-bar --clear=drop --tag=4.22.1 2>/dev/null || true
 	php bin/console importmap:install --no-interaction 2>/dev/null || true
 	php bin/console assets:install public --symlink --no-interaction 2>/dev/null || true
+	# Drop stale compiled Asset Mapper output (e.g. old stimulus_bootstrap importing vendor/ paths).
+	rm -rf public/assets 2>/dev/null || true
+	php bin/console asset-map:compile --no-interaction 2>/dev/null || true
 	php bin/console typescript:build --no-interaction 2>/dev/null || true
 fi
 

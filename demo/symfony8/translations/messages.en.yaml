@@ -632,6 +632,12 @@ nowo_special_fields_demo:
     help: 'Slide-to-confirm via <code>nowo-tech/slide-to-confirm-bundle</code> (gate profile; does not auto-submit).'
 
 # Keys consumed by Nowo widget bundles (translation_domain: messages)
+'Country prefix': 'Country prefix'
+'Search country or prefix…': 'Search country or prefix…'
+'No countries found': 'No countries found'
+form.slide_to_unlock: 'Slide to unlock'
+form.unlocked: 'Unlocked'
+form.hint.gate: 'Slide to unlock the submit button.'
 tiptap_placeholder: 'Start writing…'
 ckeditor5_placeholder: 'Write page content…'
 requirement.min_length: 'At least 8 characters'

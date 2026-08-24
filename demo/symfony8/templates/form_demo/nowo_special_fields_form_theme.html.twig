@@ -1,7 +1,7 @@
 {# Fixes icon_selector_widget duplicate id/name when Form Kit merges attr onto the widget root. #}
 {% block icon_selector_widget %}
+{# IconSelectorType already sets data-controller; only merge missing option attrs. #}
 {% set attr = attr|merge({
-    'data-controller': (attr['data-controller']|default('') ~ ' icon-selector')|trim,
     'data-icon-selector-mode-value': form.vars.mode|default('direct'),
     'data-icon-selector-icons-url-value': form.vars.icons_api_path|default('/api/icon-selector/icons'),
 }) %}
@@ -13,4 +13,34 @@
            {{ block('widget_attributes') }} />
     <div data-icon-selector-target="picker" class="icon-selector-picker mt-2" aria-hidden="true"></div>
 </div>
+{% endblock %}
+
+{# SlideToConfirmType extends CheckboxType: Bootstrap checkbox_row adds form-check + form-check-input,
+   which shows a native checkbox beside the slider. Use a normal row and a visually hidden input class only. #}
+{% block nowo_slide_to_confirm_row %}
+<div{% with {attr: row_attr|merge({class: (row_attr.class|default('')|replace({'form-check': ''})|trim)})} %}{% if attr|length %}{{ block('attributes') }}{% endif %}{% endwith %}>
+    {{- form_label(form) -}}
+    {{- form_widget(form) -}}
+    {{- form_help(form) -}}
+    {{- form_errors(form) -}}
+</div>
+{% endblock %}
+
+{% block nowo_slide_to_confirm_widget %}
+{% set widget_attributes %}
+ id="{{ id }}" name="{{ full_name }}"
+ {%- if disabled %} disabled="disabled"{% endif -%}
+ {%- if required %} required="required"{% endif -%}
+{%- for attrname, attrvalue in attr -%}
+    {%- if attrname != 'class' -%}
+    {{- ' ' -}}
+    {%- if attrvalue is same as(true) -%}
+        {{- attrname -}}="{{ attrname }}"
+    {%- elseif attrvalue is not same as(false) -%}
+        {{- attrname }}="{{ attrvalue }}"
+    {%- endif -%}
+    {%- endif -%}
+{%- endfor -%}
+{% endset %}
+{{ include('@NowoSlideToConfirmBundle/Form/_slide_to_confirm_widget.html.twig', {widget_attributes: widget_attributes}) }}
 {% endblock %}
