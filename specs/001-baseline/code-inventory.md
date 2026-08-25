@@ -2,7 +2,7 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/form-kit-bundle`  
-**Last audited**: 2026-08-24
+**Last audited**: 2026-08-25
 
 ## Symfony config
 

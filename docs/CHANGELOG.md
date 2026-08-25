@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.5.2] - 2026-08-25](#252-2026-08-25)
 - [[2.5.1] - 2026-08-24](#251-2026-08-24)
 - [[2.5.0] - 2026-08-24](#250-2026-08-24)
 - [[2.4.5] - 2026-08-24](#245-2026-08-24)
@@ -87,6 +88,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.5.2] - 2026-08-25
+
+### Fixed
+
+- **`static_blocks` `form_label_content`** — Guard `required is defined` before appending `required_label_suffix`. Symfony Submit/Button/Reset widgets call this block without `required`; Twig `strict_variables` (debug) threw `RuntimeError`.
+
+### Notes
+
+- **No API or configuration changes** for integrators unless noted above.
+
+[2.5.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.5.2
 
 ## [2.5.1] - 2026-08-24
 

@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 
+- [From 2.5.1 to 2.5.2](#from-251-to-252)
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
 - [Unreleased](#unreleased)
@@ -45,6 +46,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## From 2.5.1 to 2.5.2
+
+From **2.5.1** — No application upgrade steps. Hosts that register `@NowoFormKitBundle/form/static_blocks.html.twig` with Twig `strict_variables` no longer 500 when rendering Submit/Button/Reset widgets.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 ## From 2.5.0 to 2.5.1
 

@@ -21,7 +21,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `profiles` | `array` | Named profiles. Key = profile name (e.g. `default`, `bootstrap`). Each value has: |
 | `profiles.<name>.alias` | `string` | **Required.** Alias for this profile (e.g. for reference in form types or UI). |
 | `profiles.<name>.translation_domain` | `string` | Translation domain for labels, placeholders, help. Default: `messages`. |
-| `profiles.<name>.required_label_suffix` | `string\|null` | Appended to the label when the field is required (e.g. ` *`). `null` or empty disables. **`RequiredLabelSuffixExtension`** reads this from the profile whose key equals **`default_profile`** (not from the form’s `setFormKitConfigName()`), and injects `required_label_suffix` into the view for all forms. |
+| `profiles.<name>.required_label_suffix` | `string\|null` | Appended to the label when the field is required (e.g. ` *`). `null` or empty disables. **`RequiredLabelSuffixExtension`** reads this from the profile whose key equals **`default_profile`** (not from the form’s `setFormKitConfigName()`), and injects `required_label_suffix` into the view for all forms. The `static_blocks` theme skips the suffix when `required` is not in the block scope (Submit/Button/Reset). |
 | `profiles.<name>.defaults.attr` | `array` | Default HTML attributes for every field (e.g. `class: form-control`). |
 | `profiles.<name>.defaults.row_attr` | `array` | Default HTML attributes for the form row wrapper (e.g. `class: mb-3`). |
 | `profiles.<name>.defaults.help_attr` | `array` | Default HTML attributes for field help (`help_attr`, e.g. `class` for muted small copy). |
@@ -80,7 +80,7 @@ The bundle registers these **form type extensions** (they apply to all field typ
 | Extension | Purpose |
 |-----------|---------|
 | **InputGroupExtension** | Options `input_group_prefix` and `input_group_suffix` for Bootstrap-style input groups (requires the bundle form theme; see [Usage](USAGE.md#input-group-icon-at-start-or-end)). |
-| **RequiredLabelSuffixExtension** | Appends `required_label_suffix` from the profile named **`default_profile`** to required field labels. |
+| **RequiredLabelSuffixExtension** | Appends `required_label_suffix` from the profile named **`default_profile`** to required field labels. The `static_blocks` theme does not apply it to Submit/Button/Reset (`required` is undefined in `form_label_content`). |
 | **HelpModalExtension** | Option `help_modal` (`false`, `true`, or array): injects JSON into `label[data-nowo-help-modal]` for the frontend script; see [Usage](USAGE.md#help-modal-optional). |
 
 ## Example with multiple profiles

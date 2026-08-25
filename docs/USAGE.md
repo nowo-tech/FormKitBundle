@@ -380,6 +380,8 @@ twig:
     # Other bundle themes (Select All Choice, CKEditor, …) after Bootstrap 5
 ```
 
+This theme also appends `required_label_suffix` inside the label. It checks `required is defined` first: Symfony Submit/Button/Reset widgets call `form_label_content` without that variable, which would 500 under Twig `strict_variables`.
+
 **2. Add the types to your form** (e.g. in `buildFormFromArray` or with `addWithDefaults`):
 
 ```php
@@ -481,7 +483,7 @@ Or rely on config defaults only: `'help_modal' => true`.
 The bundle provides Twig templates under `src/Resources/views/`:
 
 - `components/form_renderer.html.twig` — helper include for rendering a form with buttons.
-- `form/static_blocks.html.twig` — form theme used by `StaticSeparatorType` and `StaticAlertType` (and helpers like input-group prefix/suffix).
+- `form/static_blocks.html.twig` — form theme used by `StaticSeparatorType` and `StaticAlertType` (and helpers like input-group prefix/suffix). `form_label_content` appends `required_label_suffix` only when `required` is defined and true, so Submit/Button/Reset widgets (which call this block without `required`) work with Twig `strict_variables`.
 - `help_modal/shells.html.twig` — includes `<template>` fragments for help-modal shells (Bootstrap 4/5, Tailwind, Foundation); optional if you rely on the script’s built-in HTML fallbacks.
 
 You can override any Twig template provided by the bundle by placing a file with the **same path** inside your project’s `templates/bundles/` directory. Symfony will use your template instead of the bundle’s.
