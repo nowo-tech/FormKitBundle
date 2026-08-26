@@ -667,16 +667,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.13.0",
+            "version": "2.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "dad89620b7a6edb60c15858442eb2e408b45d8f4"
+                "reference": "95e7828100de18b4e269fb1703be530082d5166d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/dad89620b7a6edb60c15858442eb2e408b45d8f4",
-                "reference": "dad89620b7a6edb60c15858442eb2e408b45d8f4",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/95e7828100de18b4e269fb1703be530082d5166d",
+                "reference": "95e7828100de18b4e269fb1703be530082d5166d",
                 "shasum": ""
             },
             "require": {
@@ -766,7 +766,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.13.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.13.1"
             },
             "funding": [
                 {
@@ -782,7 +782,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-16T22:23:49+00:00"
+            "time": "2026-08-24T09:13:11+00:00"
         },
         {
             "name": "intervention/image",
@@ -870,16 +870,16 @@
         },
         {
             "name": "nowo-tech/ckeditor5-editor-bundle",
-            "version": "v1.4.0",
+            "version": "v1.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/CKEditor5EditorBundle.git",
-                "reference": "3823ae29c6fa93ae6ded1ca8624353cfdf379c9c"
+                "reference": "9af27acb315395f8aee6324769dee01eaa9b3fa9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/CKEditor5EditorBundle/zipball/3823ae29c6fa93ae6ded1ca8624353cfdf379c9c",
-                "reference": "3823ae29c6fa93ae6ded1ca8624353cfdf379c9c",
+                "url": "https://api.github.com/repos/nowo-tech/CKEditor5EditorBundle/zipball/9af27acb315395f8aee6324769dee01eaa9b3fa9",
+                "reference": "9af27acb315395f8aee6324769dee01eaa9b3fa9",
                 "shasum": ""
             },
             "require": {
@@ -907,7 +907,7 @@
                 "phpunit/phpunit": "^11.0",
                 "rector/rector": "^2.0",
                 "symfony/yaml": "^6.4 || ^7.0 || ^8.0",
-                "vincentlanglet/twig-cs-fixer": "^3.0"
+                "vincentlanglet/twig-cs-fixer": "^4.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -950,7 +950,7 @@
                 "issues": "https://github.com/nowo-tech/Ckeditor5EditorBundle/issues",
                 "source": "https://github.com/nowo-tech/Ckeditor5EditorBundle"
             },
-            "time": "2026-08-04T11:00:02+00:00"
+            "time": "2026-08-24T16:03:00+00:00"
         },
         {
             "name": "nowo-tech/form-kit-bundle",
@@ -958,7 +958,7 @@
             "dist": {
                 "type": "path",
                 "url": "/var/form-kit-bundle",
-                "reference": "50e1e8569fe0e109be95d19a0d3e12b43e93767b"
+                "reference": "74347a3711ee510019b6fcc0651a5ff2b3101ee5"
             },
             "require": {
                 "doctrine/collections": "^2.2",
@@ -1097,20 +1097,20 @@
         },
         {
             "name": "nowo-tech/icon-selector-bundle",
-            "version": "v1.0.15",
+            "version": "v1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/IconSelectorBundle.git",
-                "reference": "2f8f928d8a770166e0061004cfefd2649213da65"
+                "reference": "cffbbdbf18e38b5420cd2e5b6c147f7560ca9de2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/IconSelectorBundle/zipball/2f8f928d8a770166e0061004cfefd2649213da65",
-                "reference": "2f8f928d8a770166e0061004cfefd2649213da65",
+                "url": "https://api.github.com/repos/nowo-tech/IconSelectorBundle/zipball/cffbbdbf18e38b5420cd2e5b6c147f7560ca9de2",
+                "reference": "cffbbdbf18e38b5420cd2e5b6c147f7560ca9de2",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1 <8.6",
+                "php": ">=8.2 <8.6",
                 "symfony/config": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dependency-injection": "^6.0 || ^7.0 || ^8.0",
                 "symfony/form": "^6.0 || ^7.0 || ^8.0",
@@ -1119,7 +1119,9 @@
                 "symfony/http-kernel": "^6.0 || ^7.0 || ^8.0",
                 "symfony/routing": "^6.0 || ^7.0 || ^8.0",
                 "symfony/twig-bundle": "^6.0 || ^7.0 || ^8.0",
-                "symfony/ux-icons": "^1.0 || ^2.0 || ^3.0"
+                "symfony/ux-icons": "^1.0 || ^2.0 || ^3.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -1133,7 +1135,8 @@
                 "symfony/browser-kit": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dom-crawler": "^6.0 || ^7.0 || ^8.0",
                 "symfony/http-client": "^6.0 || ^7.0 || ^8.0",
-                "symfony/yaml": "^6.0 || ^7.0 || ^8.0"
+                "symfony/yaml": "^6.0 || ^7.0 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^4.0"
             },
             "suggest": {
                 "symfony/http-client": "Required when use_iconify_collection is true (to fetch full icon lists from api.iconify.design)"
@@ -1184,30 +1187,32 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-29T14:44:39+00:00"
+            "time": "2026-08-24T16:03:03+00:00"
         },
         {
             "name": "nowo-tech/otp-input-bundle",
-            "version": "v1.3.0",
+            "version": "v1.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/OTPInputBundle.git",
-                "reference": "cdd57cadbd938202a6f2ac54ac8fef6808daeaa1"
+                "reference": "7f4c4eef849e9c4a90faa8a57509e923629b0491"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/OTPInputBundle/zipball/cdd57cadbd938202a6f2ac54ac8fef6808daeaa1",
-                "reference": "cdd57cadbd938202a6f2ac54ac8fef6808daeaa1",
+                "url": "https://api.github.com/repos/nowo-tech/OTPInputBundle/zipball/7f4c4eef849e9c4a90faa8a57509e923629b0491",
+                "reference": "7f4c4eef849e9c4a90faa8a57509e923629b0491",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1 <8.6",
+                "php": ">=8.2 <8.6",
                 "symfony/config": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dependency-injection": "^6.0 || ^7.0 || ^8.0",
                 "symfony/form": "^6.0 || ^7.0 || ^8.0",
                 "symfony/framework-bundle": "^6.0 || ^7.0 || ^8.0",
                 "symfony/http-kernel": "^6.0 || ^7.0 || ^8.0",
-                "symfony/twig-bundle": "^6.0 || ^7.0 || ^8.0"
+                "symfony/twig-bundle": "^6.0 || ^7.0 || ^8.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -1220,7 +1225,8 @@
                 "rector/rector": "^2.0",
                 "symfony/browser-kit": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dom-crawler": "^6.0 || ^7.0 || ^8.0",
-                "symfony/yaml": "^6.0 || ^7.0 || ^8.0"
+                "symfony/yaml": "^6.0 || ^7.0 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^4.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -1267,24 +1273,24 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-29T12:59:26+00:00"
+            "time": "2026-08-24T16:03:08+00:00"
         },
         {
             "name": "nowo-tech/password-strength-bundle",
-            "version": "v2.1.0",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/PasswordStrengthBundle.git",
-                "reference": "72f39b465fccb0bca204a4d2a1175b1d42aac832"
+                "reference": "0f771243f1443d06bc1e020c8364b143514ea1b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/PasswordStrengthBundle/zipball/72f39b465fccb0bca204a4d2a1175b1d42aac832",
-                "reference": "72f39b465fccb0bca204a4d2a1175b1d42aac832",
+                "url": "https://api.github.com/repos/nowo-tech/PasswordStrengthBundle/zipball/0f771243f1443d06bc1e020c8364b143514ea1b2",
+                "reference": "0f771243f1443d06bc1e020c8364b143514ea1b2",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1 <8.6",
+                "php": ">=8.2 <8.6",
                 "symfony/config": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dependency-injection": "^6.0 || ^7.0 || ^8.0",
                 "symfony/form": "^6.0 || ^7.0 || ^8.0",
@@ -1293,7 +1299,9 @@
                 "symfony/http-kernel": "^6.0 || ^7.0 || ^8.0",
                 "symfony/translation": "^6.0 || ^7.0 || ^8.0",
                 "symfony/twig-bundle": "^6.0 || ^7.0 || ^8.0",
-                "symfony/validator": "^6.0 || ^7.0 || ^8.0"
+                "symfony/validator": "^6.0 || ^7.0 || ^8.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -1307,7 +1315,8 @@
                 "rector/rector": "^2.0",
                 "symfony/browser-kit": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dom-crawler": "^6.0 || ^7.0 || ^8.0",
-                "symfony/yaml": "^6.0 || ^7.0 || ^8.0"
+                "symfony/yaml": "^6.0 || ^7.0 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^4.0"
             },
             "suggest": {
                 "nowo-tech/password-toggle-bundle": "Show/hide password visibility toggle integrated with strength fields"
@@ -1362,27 +1371,29 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-29T13:03:26+00:00"
+            "time": "2026-08-24T16:03:10+00:00"
         },
         {
             "name": "nowo-tech/password-toggle-bundle",
-            "version": "v2.0.5",
+            "version": "v2.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/PasswordToggleBundle.git",
-                "reference": "b0ce968537628f34762cc5c7a17204b283edfe5e"
+                "reference": "3ceb653339100cd67db4f666bcf970e887497746"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/PasswordToggleBundle/zipball/b0ce968537628f34762cc5c7a17204b283edfe5e",
-                "reference": "b0ce968537628f34762cc5c7a17204b283edfe5e",
+                "url": "https://api.github.com/repos/nowo-tech/PasswordToggleBundle/zipball/3ceb653339100cd67db4f666bcf970e887497746",
+                "reference": "3ceb653339100cd67db4f666bcf970e887497746",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2 <8.6",
                 "symfony/form": "^7.0 || ^8.0",
                 "symfony/framework-bundle": "^7.0 || ^8.0",
-                "symfony/twig-bundle": "^7.0 || ^8.0"
+                "symfony/twig-bundle": "^7.0 || ^8.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -1399,7 +1410,8 @@
                 "symfony/http-client": "^7.0 || ^8.0",
                 "symfony/http-kernel": "^7.0 || ^8.0",
                 "symfony/ux-icons": "^2.0 || ^3.0",
-                "symfony/yaml": "^7.0 || ^8.0"
+                "symfony/yaml": "^7.0 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^4.0"
             },
             "suggest": {
                 "symfony/asset": "Required to use the named asset package nowo_password_toggle (asset('css/toggle_password.css', 'nowo_password_toggle')).",
@@ -1450,20 +1462,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-29T13:19:17+00:00"
+            "time": "2026-08-24T16:03:10+00:00"
         },
         {
             "name": "nowo-tech/phone-input-bundle",
-            "version": "v1.1.5",
+            "version": "v1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/PhoneInputBundle.git",
-                "reference": "c89344ce50006f075378a31faf82cbc582790b77"
+                "reference": "4f4069aedd670165b907d69a0f9d3756caaed5b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/PhoneInputBundle/zipball/c89344ce50006f075378a31faf82cbc582790b77",
-                "reference": "c89344ce50006f075378a31faf82cbc582790b77",
+                "url": "https://api.github.com/repos/nowo-tech/PhoneInputBundle/zipball/4f4069aedd670165b907d69a0f9d3756caaed5b7",
+                "reference": "4f4069aedd670165b907d69a0f9d3756caaed5b7",
                 "shasum": ""
             },
             "require": {
@@ -1471,7 +1483,9 @@
                 "symfony/form": "^6.0 || ^7.0 || ^8.0",
                 "symfony/framework-bundle": "^6.0 || ^7.0 || ^8.0",
                 "symfony/twig-bundle": "^6.0 || ^7.0 || ^8.0",
-                "symfony/validator": "^6.4 || ^7.0 || ^8.0"
+                "symfony/validator": "^6.4 || ^7.0 || ^8.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -1485,7 +1499,8 @@
                 "symfony/asset": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dependency-injection": "^6.4 || ^7.0 || ^8.0",
                 "symfony/http-kernel": "^6.4 || ^7.0 || ^8.0",
-                "symfony/yaml": "^6.0 || ^7.0 || ^8.0"
+                "symfony/yaml": "^6.0 || ^7.0 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^4.0"
             },
             "suggest": {
                 "giggsey/libphonenumber-for-php": "Optional E.164 validation and formatting via libphonenumber",
@@ -1536,24 +1551,24 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-29T14:49:10+00:00"
+            "time": "2026-08-24T16:03:10+00:00"
         },
         {
             "name": "nowo-tech/select-all-choice-bundle",
-            "version": "v1.4.12",
+            "version": "v1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/SelectAllChoiceBundle.git",
-                "reference": "bb70a51c01471266eb990fb5fefd2f6383c9afd4"
+                "reference": "0fe08655536ecfa48b130a9d0a52596b41f5e687"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/SelectAllChoiceBundle/zipball/bb70a51c01471266eb990fb5fefd2f6383c9afd4",
-                "reference": "bb70a51c01471266eb990fb5fefd2f6383c9afd4",
+                "url": "https://api.github.com/repos/nowo-tech/SelectAllChoiceBundle/zipball/0fe08655536ecfa48b130a9d0a52596b41f5e687",
+                "reference": "0fe08655536ecfa48b130a9d0a52596b41f5e687",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1 <8.6",
+                "php": ">=8.2 <8.6",
                 "symfony/asset": "^6.0 || ^7.0 || ^8.0",
                 "symfony/config": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dependency-injection": "^6.0 || ^7.0 || ^8.0",
@@ -1561,7 +1576,9 @@
                 "symfony/framework-bundle": "^6.0 || ^7.0 || ^8.0",
                 "symfony/http-kernel": "^6.0 || ^7.0 || ^8.0",
                 "symfony/translation": "^6.0 || ^7.0 || ^8.0",
-                "symfony/twig-bundle": "^6.0 || ^7.0 || ^8.0"
+                "symfony/twig-bundle": "^6.0 || ^7.0 || ^8.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -1571,7 +1588,8 @@
                 "phpstan/phpstan-symfony": "^2.0",
                 "phpunit/phpunit": "^10.0",
                 "rector/rector": "^2.0",
-                "symfony/yaml": "^6.0 || ^7.0 || ^8.0"
+                "symfony/yaml": "^6.0 || ^7.0 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^4.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -1611,7 +1629,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-29T15:05:51+00:00"
+            "time": "2026-08-24T16:03:11+00:00"
         },
         {
             "name": "nowo-tech/slide-to-confirm-bundle",
@@ -1787,16 +1805,16 @@
         },
         {
             "name": "nowo-tech/tiptap-editor-bundle",
-            "version": "v1.2.3",
+            "version": "v1.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/TiptapEditorBundle.git",
-                "reference": "0a6a3a9d5bcc9fc4d5724243c7534424419f0565"
+                "reference": "272813719e507627a48b7aafd7bc559c6db98af9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/TiptapEditorBundle/zipball/0a6a3a9d5bcc9fc4d5724243c7534424419f0565",
-                "reference": "0a6a3a9d5bcc9fc4d5724243c7534424419f0565",
+                "url": "https://api.github.com/repos/nowo-tech/TiptapEditorBundle/zipball/272813719e507627a48b7aafd7bc559c6db98af9",
+                "reference": "272813719e507627a48b7aafd7bc559c6db98af9",
                 "shasum": ""
             },
             "require": {
@@ -1809,7 +1827,9 @@
                 "symfony/http-foundation": "^6.4 || ^7.0 || ^8.0",
                 "symfony/http-kernel": "^6.4 || ^7.0 || ^8.0",
                 "symfony/routing": "^6.4 || ^7.0 || ^8.0",
-                "symfony/twig-bundle": "^6.4 || ^7.0 || ^8.0"
+                "symfony/twig-bundle": "^6.4 || ^7.0 || ^8.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
@@ -1820,7 +1840,8 @@
                 "phpstan/phpstan-symfony": "^2.0",
                 "phpunit/phpunit": "^11.0",
                 "rector/rector": "^2.0",
-                "symfony/yaml": "^6.4 || ^7.0 || ^8.0"
+                "symfony/yaml": "^6.4 || ^7.0 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^4.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -1864,7 +1885,7 @@
                 "issues": "https://github.com/nowo-tech/TiptapEditorBundle/issues",
                 "source": "https://github.com/nowo-tech/TiptapEditorBundle"
             },
-            "time": "2026-08-03T13:28:53+00:00"
+            "time": "2026-08-24T16:03:11+00:00"
         },
         {
             "name": "pentatrion/vite-bundle",
@@ -2576,16 +2597,16 @@
         },
         {
             "name": "symfony/asset-mapper",
-            "version": "v8.1.2",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset-mapper.git",
-                "reference": "b71e9e1273542cff11b4ca7a7864e74dcfd90669"
+                "reference": "b13fd8210675bafac7e782569d0cafac860f2e8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/asset-mapper/zipball/b71e9e1273542cff11b4ca7a7864e74dcfd90669",
-                "reference": "b71e9e1273542cff11b4ca7a7864e74dcfd90669",
+                "url": "https://api.github.com/repos/symfony/asset-mapper/zipball/b13fd8210675bafac7e782569d0cafac860f2e8f",
+                "reference": "b13fd8210675bafac7e782569d0cafac860f2e8f",
                 "shasum": ""
             },
             "require": {
@@ -2633,7 +2654,7 @@
             "description": "Maps directories of assets & makes them available in a public directory with versioned filenames.",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/asset-mapper/tree/v8.1.2"
+                "source": "https://github.com/symfony/asset-mapper/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -2653,7 +2674,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-26T10:31:34+00:00"
+            "time": "2026-08-14T13:31:31+00:00"
         },
         {
             "name": "symfony/cache",
@@ -2914,16 +2935,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v8.1.2",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "535e18a1b8925f6c01a55b171d157ab66c2ace15"
+                "reference": "d07c06839e33047e2c894a6793248f3fb66c8129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/535e18a1b8925f6c01a55b171d157ab66c2ace15",
-                "reference": "535e18a1b8925f6c01a55b171d157ab66c2ace15",
+                "url": "https://api.github.com/repos/symfony/console/zipball/d07c06839e33047e2c894a6793248f3fb66c8129",
+                "reference": "d07c06839e33047e2c894a6793248f3fb66c8129",
                 "shasum": ""
             },
             "require": {
@@ -2990,7 +3011,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v8.1.2"
+                "source": "https://github.com/symfony/console/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -3010,7 +3031,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-27T13:58:19+00:00"
+            "time": "2026-08-21T14:29:57+00:00"
         },
         {
             "name": "symfony/dependency-injection",
@@ -3166,16 +3187,16 @@
         },
         {
             "name": "symfony/doctrine-bridge",
-            "version": "v8.1.2",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/doctrine-bridge.git",
-                "reference": "58a0868918824c408d1373876a3a4db3ff3ceabe"
+                "reference": "1f2acb6df169495f4993851c01bf98a44fa2c59e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/doctrine-bridge/zipball/58a0868918824c408d1373876a3a4db3ff3ceabe",
-                "reference": "58a0868918824c408d1373876a3a4db3ff3ceabe",
+                "url": "https://api.github.com/repos/symfony/doctrine-bridge/zipball/1f2acb6df169495f4993851c01bf98a44fa2c59e",
+                "reference": "1f2acb6df169495f4993851c01bf98a44fa2c59e",
                 "shasum": ""
             },
             "require": {
@@ -3192,7 +3213,8 @@
                 "doctrine/dbal": "<4.3",
                 "doctrine/lexer": "<1.1",
                 "doctrine/orm": "<3.4",
-                "symfony/property-info": "<8.0"
+                "symfony/property-info": "<8.0",
+                "symfony/validator": "<7.4.17|>=8.0,<8.1.5"
             },
             "require-dev": {
                 "doctrine/collections": "^1.8|^2.0",
@@ -3246,7 +3268,7 @@
             "description": "Provides integration for Doctrine with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/doctrine-bridge/tree/v8.1.2"
+                "source": "https://github.com/symfony/doctrine-bridge/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -3266,7 +3288,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-22T15:42:13+00:00"
+            "time": "2026-08-21T19:39:55+00:00"
         },
         {
             "name": "symfony/dotenv",
@@ -4038,16 +4060,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v8.1.3",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "ae15c8c6f5c4f4adbe7da2a2d69b349eb6e407dd"
+                "reference": "9f941ed000bb11f16dc7eafed98a7b646d3b3e5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/ae15c8c6f5c4f4adbe7da2a2d69b349eb6e407dd",
-                "reference": "ae15c8c6f5c4f4adbe7da2a2d69b349eb6e407dd",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/9f941ed000bb11f16dc7eafed98a7b646d3b3e5d",
+                "reference": "9f941ed000bb11f16dc7eafed98a7b646d3b3e5d",
                 "shasum": ""
             },
             "require": {
@@ -4070,7 +4092,7 @@
             "require-dev": {
                 "amphp/http-client": "^5.3.2",
                 "amphp/http-tunnel": "^2.0",
-                "guzzlehttp/guzzle": "^7.10",
+                "guzzlehttp/guzzle": "^7.10|^8.0",
                 "nyholm/psr7": "^1.0",
                 "php-http/httplug": "^1.0|^2.0",
                 "psr/http-client": "^1.0",
@@ -4111,7 +4133,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v8.1.3"
+                "source": "https://github.com/symfony/http-client/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -4131,7 +4153,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-29T16:43:23+00:00"
+            "time": "2026-08-21T17:47:34+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -4408,16 +4430,16 @@
         },
         {
             "name": "symfony/intl",
-            "version": "v8.1.1",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/intl.git",
-                "reference": "e2883a541b3cf5a2daff70170a420155d97e65e4"
+                "reference": "9a8ba3a0af4db32bf228ca841c319d5dc97f7d02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/intl/zipball/e2883a541b3cf5a2daff70170a420155d97e65e4",
-                "reference": "e2883a541b3cf5a2daff70170a420155d97e65e4",
+                "url": "https://api.github.com/repos/symfony/intl/zipball/9a8ba3a0af4db32bf228ca841c319d5dc97f7d02",
+                "reference": "9a8ba3a0af4db32bf228ca841c319d5dc97f7d02",
                 "shasum": ""
             },
             "require": {
@@ -4473,7 +4495,7 @@
                 "localization"
             ],
             "support": {
-                "source": "https://github.com/symfony/intl/tree/v8.1.1"
+                "source": "https://github.com/symfony/intl/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -4493,7 +4515,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-05T06:23:12+00:00"
+            "time": "2026-08-21T17:47:34+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -5559,16 +5581,16 @@
         },
         {
             "name": "symfony/security-core",
-            "version": "v8.1.2",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-core.git",
-                "reference": "19c44915fdc73b41a720ea0d00b90beb777cc300"
+                "reference": "5fdd9ad1449af76d537bcea471aaabaf8dbe92e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/19c44915fdc73b41a720ea0d00b90beb777cc300",
-                "reference": "19c44915fdc73b41a720ea0d00b90beb777cc300",
+                "url": "https://api.github.com/repos/symfony/security-core/zipball/5fdd9ad1449af76d537bcea471aaabaf8dbe92e7",
+                "reference": "5fdd9ad1449af76d537bcea471aaabaf8dbe92e7",
                 "shasum": ""
             },
             "require": {
@@ -5618,7 +5640,7 @@
             "description": "Symfony Security Component - Core Library",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/security-core/tree/v8.1.2"
+                "source": "https://github.com/symfony/security-core/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -5638,7 +5660,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-19T19:49:09+00:00"
+            "time": "2026-08-21T17:47:34+00:00"
         },
         {
             "name": "symfony/security-csrf",
@@ -7232,16 +7254,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v8.1.2",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "faabdbe998e8c5c599dceffa27aa265b185c0736"
+                "reference": "b3fc9e8888eeb9daddc33bfbd15d282a61f543cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/faabdbe998e8c5c599dceffa27aa265b185c0736",
-                "reference": "faabdbe998e8c5c599dceffa27aa265b185c0736",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/b3fc9e8888eeb9daddc33bfbd15d282a61f543cd",
+                "reference": "b3fc9e8888eeb9daddc33bfbd15d282a61f543cd",
                 "shasum": ""
             },
             "require": {
@@ -7284,7 +7306,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v8.1.2"
+                "source": "https://github.com/symfony/yaml/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -7304,7 +7326,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-22T15:42:13+00:00"
+            "time": "2026-08-21T12:16:08+00:00"
         },
         {
             "name": "twig/extra-bundle",
@@ -7597,16 +7619,16 @@
     "packages-dev": [
         {
             "name": "nowo-tech/hot-reload-bundle",
-            "version": "v1.4.0",
+            "version": "v1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/HotReloadBundle.git",
-                "reference": "8c65ae0f3b06bf06564cac08bedad395c9d2afb5"
+                "reference": "2311313bca7d1c5a65f8322b4b95bae30fab9417"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/HotReloadBundle/zipball/8c65ae0f3b06bf06564cac08bedad395c9d2afb5",
-                "reference": "8c65ae0f3b06bf06564cac08bedad395c9d2afb5",
+                "url": "https://api.github.com/repos/nowo-tech/HotReloadBundle/zipball/2311313bca7d1c5a65f8322b4b95bae30fab9417",
+                "reference": "2311313bca7d1c5a65f8322b4b95bae30fab9417",
                 "shasum": ""
             },
             "require": {
@@ -7678,24 +7700,24 @@
                 "issues": "https://github.com/nowo-tech/HotReloadBundle/issues",
                 "source": "https://github.com/nowo-tech/HotReloadBundle"
             },
-            "time": "2026-08-18T07:33:43+00:00"
+            "time": "2026-08-24T16:03:01+00:00"
         },
         {
             "name": "nowo-tech/twig-inspector-bundle",
-            "version": "v1.0.41",
+            "version": "v1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/TwigInspectorBundle.git",
-                "reference": "aefd5ed0abe0ba265b09295d9cf4eccac7181efd"
+                "reference": "67838d79f0093b66720a39efa9ed0ba6176b5995"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/TwigInspectorBundle/zipball/aefd5ed0abe0ba265b09295d9cf4eccac7181efd",
-                "reference": "aefd5ed0abe0ba265b09295d9cf4eccac7181efd",
+                "url": "https://api.github.com/repos/nowo-tech/TwigInspectorBundle/zipball/67838d79f0093b66720a39efa9ed0ba6176b5995",
+                "reference": "67838d79f0093b66720a39efa9ed0ba6176b5995",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1 <8.6",
+                "php": ">=8.2 <8.6",
                 "symfony/config": "^6.0 || ^7.0 || ^8.0",
                 "symfony/console": "^6.0 || ^7.0 || ^8.0",
                 "symfony/dependency-injection": "^6.0 || ^7.0 || ^8.0",
@@ -7705,6 +7727,8 @@
                 "symfony/http-kernel": "^6.0 || ^7.0 || ^8.0",
                 "symfony/routing": "^6.0 || ^7.0 || ^8.0",
                 "symfony/web-profiler-bundle": "^6.0 || ^7.0 || ^8.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12",
                 "twig/twig": "^3.8 || ^4.0"
             },
             "require-dev": {
@@ -7717,7 +7741,9 @@
                 "rector/rector": "^2.0",
                 "symfony/framework-bundle": "^6.0 || ^7.0 || ^8.0",
                 "symfony/twig-bundle": "^6.0 || ^7.0 || ^8.0",
-                "symfony/yaml": "^6.0 || ^7.0 || ^8.0"
+                "symfony/yaml": "^6.0 || ^7.0 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^4.0",
+                "webmozart/assert": "^1.11"
             },
             "suggest": {
                 "symfony/flex": "For automatic recipe installation (config and routes; registers this bundle for dev/test only — always install with composer require --dev)"
@@ -7784,7 +7810,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-29T17:43:04+00:00"
+            "time": "2026-08-24T16:03:11+00:00"
         },
         {
             "name": "sensiolabs/typescript-bundle",
@@ -7984,16 +8010,16 @@
         },
         {
             "name": "symfony/web-profiler-bundle",
-            "version": "v8.1.2",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-profiler-bundle.git",
-                "reference": "4fefaa6da65846e2c5cd242c9f8e2676465e233b"
+                "reference": "4ae952afc65cb63fc74067633466bd8295cdcebc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/4fefaa6da65846e2c5cd242c9f8e2676465e233b",
-                "reference": "4fefaa6da65846e2c5cd242c9f8e2676465e233b",
+                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/4ae952afc65cb63fc74067633466bd8295cdcebc",
+                "reference": "4ae952afc65cb63fc74067633466bd8295cdcebc",
                 "shasum": ""
             },
             "require": {
@@ -8045,7 +8071,7 @@
                 "dev"
             ],
             "support": {
-                "source": "https://github.com/symfony/web-profiler-bundle/tree/v8.1.2"
+                "source": "https://github.com/symfony/web-profiler-bundle/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -8065,7 +8091,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-09T17:23:48+00:00"
+            "time": "2026-08-22T09:06:25+00:00"
         }
     ],
     "aliases": [],
