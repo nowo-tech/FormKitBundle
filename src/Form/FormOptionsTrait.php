@@ -87,7 +87,12 @@ trait FormOptionsTrait
         $this->formOptionsMerger = $formOptionsMerger;
     }
 
-    /** Set which profile to use (key in profiles); null uses default_profile. Overrides #[FormKitConfig]. */
+    /**
+     * Set which profile to use (key in profiles); null uses default_profile. Overrides #[FormKitConfig].
+     *
+     * FrankenPHP worker: form types are shared services — call from the constructor / DI
+     * (or unconditionally at the start of {@code buildForm()}), never with request-dependent values.
+     */
     public function setFormKitConfigName(?string $configName): void
     {
         $this->formKitConfigName         = $configName;
@@ -107,13 +112,24 @@ trait FormOptionsTrait
         return $this->formKitConfigName;
     }
 
-    /** @param array<string, mixed> $defaults */
+    /**
+     * Static translation field defaults. Call from the constructor / DI only
+     * (FrankenPHP worker: form types are shared; value persists for the worker lifetime).
+     *
+     * @param array<string, mixed> $defaults
+     */
     public function setFormKitTranslationsDefaults(array $defaults): void
     {
         $this->formKitTranslationsDefaults = $defaults;
     }
 
-    /** @param callable|null $resolver */
+    /**
+     * Locale resolver for {@see addTranslations()}. Call from the constructor / DI only.
+     * The callable must read the current request/locale at call time (e.g. via RequestStack),
+     * not capture a Request / user / tenant from construction time.
+     *
+     * @param callable|null $resolver
+     */
     public function setFormKitTranslationsLocaleResolver($resolver): void
     {
         $this->formKitTranslationsLocaleResolver = $resolver;

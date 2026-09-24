@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 
+- [From 2.5.2 to 2.5.3](#from-252-to-253)
 - [From 2.5.1 to 2.5.2](#from-251-to-252)
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
@@ -46,6 +47,21 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## From 2.5.2 to 2.5.3
+
+From **2.5.2** — No application upgrade steps for normal usage.
+
+FrankenPHP worker (kernel reused / `FRANKENPHP_RESET_KERNEL` unset or `0`):
+
+- Keep calling `setFormKitFormName()` / `setFormKitConfigName()` / translations setters from the **constructor** (or pass names per `add*Type()` call). Do not set them inside an action with request-dependent values.
+- Create `MultiStepWizardSession` via the factory **inside the action** (session is now resolved from `RequestStack` on each access).
+
+See [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 ## From 2.5.1 to 2.5.2
 

@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Usage strategies](#usage-strategies)
+- [FrankenPHP worker mode](#frankenphp-worker-mode)
 - [FormOptionsMerger service](#formoptionsmerger-service)
 - [Controller strategy](#controller-strategy)
 - [Options strategy (FormOptionsTrait)](#options-strategy-formoptionstrait)
@@ -48,6 +49,19 @@ Form Kit exposes four **usage strategies**. Pick one entry point; all share the 
 
 In docs and issues you can say e.g. “use the **Options** strategy with **bound-builder**” or “demo page uses **Kit** + **named-config**”.
 
+## FrankenPHP worker mode
+
+This bundle is compatible with FrankenPHP **worker** when the Symfony kernel is **reused** between requests (`FRANKENPHP_RESET_KERNEL` unset or `0` — the Runtime default). Bundle services hold only compiled configuration; they do not need `kernel.reset`.
+
+Rules for integrators (shared form types and controllers survive for the worker lifetime):
+
+1. Call `setFormKitFormName()`, `setFormKitConfigName()`, and translations setters **only** from the constructor / DI (or unconditionally at the start of `buildForm()`). Prefer `#[FormKitConfig('…')]` for the profile.
+2. Pass request-dependent names via the `$formName` / `$configName` arguments on `add*Type()` / field helpers, or via form options — never stash them on the trait after reading the current request.
+3. Locale resolvers must read the current locale/request **at call time** (e.g. inject `RequestStack`), not capture a `Request` / user / tenant when the setter runs.
+4. Create `MultiStepWizardSession` with `MultiStepWizardSessionFactory::create()` **inside the action**; do not keep the object on a shared service property.
+
+Full audit: [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md). Demo runtime: [DEMO-FRANKENPHP.md](DEMO-FRANKENPHP.md).
+
 ## FormOptionsMerger service
 
 The **FormOptionsMerger** resolves final options for each field with cascading merge. It uses the configured `profiles` and `default_profile`: the selected profile (or the one passed to `resolve()`) provides `translation_domain`, `defaults`, `field_types`, and optional `by_form`.
@@ -75,7 +89,7 @@ Those:
 - resolve the Symfony FQCN for the field type via `FormTypeMap` (so you do not need to import `TextType`, `EmailType`, ...)
 - merge options via `FormOptionsMerger` (YAML defaults + convention-based label/placeholder/help)
 - support two ways to choose the `$formName` used for conventions:
-  - fix it once with `setFormKitFormName('controller_contact')`
+  - fix it once in the **constructor** with `setFormKitFormName('controller_contact')` (required under FrankenPHP worker — do not call setters inside an action)
   - or pass `$formName` per call (last argument on `add*Type()` methods)
 
 Example:
@@ -542,7 +556,7 @@ $steps = [
   Builds a form containing only the fields for that step, with options merged via FormOptionsMerger (convention keys `{wizardName}_{stepKey}.{field_snake}.label`, etc.).
 
 - **MultiStepWizardSessionFactory::create(** `array $steps`, `string $wizardName` **): MultiStepWizardSession**  
-  Returns a session-backed wizard that stores current step index and collected data per step. Use it to get the current step key, set step data after a valid submit, advance, and check completion.
+  Returns a session-backed wizard that stores current step index and collected data per step. Call it **inside the controller action** (FrankenPHP worker-safe: session is resolved from `RequestStack` on each access). Do not store the returned object on a shared service.
 
 ### Controller example
 

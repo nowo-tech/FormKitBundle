@@ -102,6 +102,13 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 ### Multi-step wizard
 
 - **FR-WIZ-001**: `MultiStepFormBuilder`, session, and factory for step persistence.
+- **FR-WIZ-002**: `MultiStepWizardSession` resolves the session from `RequestStack` on every access (FrankenPHP worker / `FRANKENPHP_RESET_KERNEL` unset|false safe); create via factory inside the request action.
+
+### FrankenPHP worker
+
+- **FR-WORKER-001**: Bundle container services hold no per-request mutable state; no `kernel.reset` required for Form Kit services when the kernel is reused between requests.
+- **FR-WORKER-002**: Trait setters (`setFormKitFormName`, `setFormKitConfigName`, translations) are DI/constructor configuration only; documented in USAGE and `docs/FRANKENPHP-WORKER-AUDIT.md`.
+- **FR-WORKER-003**: PHPStan includes `nowo-tech/phpstan-frankenphp` classic + worker rulesets (`phpstan.neon.dist`).
 
 ### Assets & Twig
 
@@ -117,6 +124,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 - **SC-003**: `composer qa` / CI green.
 - **SC-004**: Bound-builder helpers and `resolveFieldOptions` are covered by unit tests; conditional-field patterns are documented in [`docs/USAGE.md`](../../docs/USAGE.md) and demonstrated in demos.
 - **SC-005**: Optional nowo-tech helpers throw when the package is missing and add fields when stubs/classes exist; documented in USAGE / CONFIGURATION; demo `/nowo-special-fields` uses the helpers including TagInput and SlideToConfirm.
+- **SC-006**: FrankenPHP worker audit (`docs/FRANKENPHP-WORKER-AUDIT.md`) documents compatibility with kernel reuse (`FRANKENPHP_RESET_KERNEL` unset/false); PHPStan classic+worker rulesets green.
 
 ---
 

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
-use Nowo\FormKitBundle\Form\AbstractGetFilterType;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
+use Nowo\FormKitBundle\Tests\Stubs\DemoGetFilterType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -93,14 +93,7 @@ final class AbstractGetFilterTypeHelpersTest extends TestCase
         self::assertSame('filter', FormKitConfig::nameFrom($type));
     }
 
-    /**
-     * @return AbstractGetFilterType&object{
-     *     exposeWithBuilder: callable,
-     *     exposeAddHiddenFilterField: callable,
-     *     exposeAddFilterSelect: callable
-     * }
-     */
-    private function createConcreteType(): AbstractGetFilterType
+    private function createConcreteType(): DemoGetFilterType
     {
         $merger = new FormOptionsMerger(
             [
@@ -121,29 +114,6 @@ final class AbstractGetFilterTypeHelpersTest extends TestCase
             new ConstraintDefinitionFactory(),
         );
 
-        return new class($merger, new FormTypeMap([])) extends AbstractGetFilterType {
-            public function getBlockPrefix(): string
-            {
-                return 'demo_filter';
-            }
-
-            /** @param FormBuilderInterface<mixed> $builder */
-            public function exposeWithBuilder(FormBuilderInterface $builder, callable $callback): void
-            {
-                $this->withBuilder($builder, $callback);
-            }
-
-            /** @param array<string, mixed> $options */
-            public function exposeAddHiddenFilterField(string $name, array $options = []): void
-            {
-                $this->addHiddenFilterField($name, $options);
-            }
-
-            /** @param array<string, mixed> $options */
-            public function exposeAddFilterSelect(string $name, array $options): void
-            {
-                $this->addFilterSelect($name, $options);
-            }
-        };
+        return new DemoGetFilterType($merger, new FormTypeMap([]));
     }
 }

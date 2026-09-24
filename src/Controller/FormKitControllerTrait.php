@@ -50,9 +50,15 @@ use function str_contains;
  *
  * Usage (controllers):
  * - Inject and call setFormOptionsMerger() and setFormTypeMap() (or do constructor injection)
- * - Optionally call setFormKitFormName('my_form_name') once, OR pass $formName per call
+ * - Optionally call setFormKitFormName('my_form_name') once in the constructor, OR pass $formName per call
  * - Call addTextType()/addEmailType()/... which will resolve FQCNs via FormTypeMap and
  *   merge final options via FormOptionsMerger (defaults + conventions from YAML).
+ *
+ * FrankenPHP worker ({@code FRANKENPHP_RESET_KERNEL} unset/false): controllers are shared
+ * services. Call {@see setFormKitFormName()}, {@see setFormKitConfigName()}, and the
+ * translations setters only from the constructor / DI — never inside an action with
+ * request-dependent values. Pass per-request names via the {@code $formName} / {@code $configName}
+ * arguments instead. See docs/FRANKENPHP-WORKER-AUDIT.md.
  *
  * Notes:
  * - This trait intentionally does NOT support legacy "parent_attr"; only row_attr/attr are used.
@@ -96,23 +102,43 @@ trait FormKitControllerTrait
         $this->formKitTypeMap = $formTypeMap;
     }
 
+    /**
+     * Profile key in {@code nowo_form_kit.profiles}. Call from the constructor / DI only
+     * (FrankenPHP worker: value persists on the shared controller for the worker lifetime).
+     */
     public function setFormKitConfigName(?string $configName): void
     {
         $this->formKitConfigName = $configName;
     }
 
+    /**
+     * Default form name for convention keys. Call from the constructor / DI only
+     * (FrankenPHP worker: value persists on the shared controller for the worker lifetime).
+     * Prefer passing {@code $formName} per {@code add*Type()} call for request-specific names.
+     */
     public function setFormKitFormName(?string $formName): void
     {
         $this->formKitFormName = $formName;
     }
 
-    /** @param callable|null $resolver */
+    /**
+     * Locale resolver for {@see addTranslations()}. Call from the constructor / DI only.
+     * The callable must read the current request/locale at call time (e.g. via RequestStack),
+     * not capture a Request / user / tenant from construction time.
+     *
+     * @param callable|null $resolver
+     */
     public function setFormKitTranslationsLocaleResolver($resolver): void
     {
         $this->formKitTranslationsLocaleResolver = $resolver;
     }
 
-    /** @param array<string, mixed> $defaults */
+    /**
+     * Static translation field defaults. Call from the constructor / DI only
+     * (FrankenPHP worker: value persists on the shared controller).
+     *
+     * @param array<string, mixed> $defaults
+     */
     public function setFormKitTranslationsDefaults(array $defaults): void
     {
         $this->formKitTranslationsDefaults = $defaults;
@@ -583,6 +609,8 @@ trait FormKitControllerTrait
      *
      * @param FormBuilderInterface<mixed>|FormInterface<mixed> $builder
      * @param array<string, mixed> $options
+     *
+     * @return FormBuilderInterface<mixed>|FormInterface<mixed>
      */
     protected function addTranslations(
         FormBuilderInterface|FormInterface $builder,
@@ -1008,18 +1036,16 @@ trait FormKitControllerTrait
                 throw new InvalidArgumentException(sprintf('Unknown form type "%s". Use a form type FQCN or a registered snake_case alias.', $type));
             }
 
-            /* @var class-string<FormTypeInterface<mixed>> $type */
             return $type;
         }
 
         $typeMap = $this->formKitTypeMap ?? throw new InvalidArgumentException('FormKitControllerTrait requires setFormTypeMap() when using snake_case types.');
 
         $fqcn = $typeMap->resolve($type);
-        if ($fqcn === null) {
+        if ($fqcn === null || !is_a($fqcn, FormTypeInterface::class, true)) {
             throw new InvalidArgumentException(sprintf('Unknown form type "%s". Register it in nowo_form_kit.type_map or use a built-in type.', $type));
         }
 
-        /* @var class-string<FormTypeInterface<mixed>> $fqcn */
         return $fqcn;
     }
 }

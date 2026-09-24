@@ -117,6 +117,9 @@ Use the default Caddyfile (with worker). Set `APP_ENV=prod` and `APP_DEBUG=0`. D
 
 - **Classic:** `FRANKENPHP_MODE=classic` — entrypoint copies `Caddyfile.dev`
 - **Worker (default):** `FRANKENPHP_MODE=worker` — worker Caddyfile
+
+With Symfony Runtime, the worker **reuses the kernel** by default (`FRANKENPHP_RESET_KERNEL` unset or `0`). Set `FRANKENPHP_RESET_KERNEL=1` only if you need a fresh kernel each request (lower throughput). Form Kit is audited for the default (no reset): see [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
+
 Recreate the container after changing `.env` (`docker compose up -d`).
 
 After changing env or Caddyfile, restart: `docker-compose restart` or `make -C demo/symfony8 restart`.

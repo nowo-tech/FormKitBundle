@@ -128,4 +128,29 @@ final class MultiStepWizardSessionTest extends TestCase
         $subject = new MultiStepWizardSession($steps, 'wiz', $requestStack);
         self::assertTrue($subject->isComplete());
     }
+
+    public function testSessionIsResolvedFromRequestStackOnEachAccess(): void
+    {
+        $steps = [
+            's1' => ['label' => 'S1', 'fields' => []],
+        ];
+
+        $sessionA = $this->createMock(SessionInterface::class);
+        $sessionA->method('get')->willReturn(['index' => 0, 'data' => []]);
+
+        $sessionB = $this->createMock(SessionInterface::class);
+        $sessionB->expects(self::once())
+            ->method('set')
+            ->with('nowo_form_kit_wizard_wiz', ['index' => 0, 'data' => []]);
+
+        $requestStack = $this->createMock(RequestStack::class);
+        $requestStack->expects(self::exactly(2))
+            ->method('getSession')
+            ->willReturnOnConsecutiveCalls($sessionA, $sessionB);
+
+        $subject = new MultiStepWizardSession($steps, 'wiz', $requestStack);
+
+        self::assertSame(0, $subject->getCurrentIndex());
+        $subject->reset();
+    }
 }

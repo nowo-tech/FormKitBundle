@@ -10,7 +10,7 @@ Symfony bundle to reduce repetitive form field options: convention-based transla
 
 ![FrankenPHP Friendly Worker Mode](docs/images/frankenphp-friendly.png)
 
-This bundle is **FrankenPHP worker mode friendly**.
+This bundle is **FrankenPHP worker mode friendly** (kernel reused / `FRANKENPHP_RESET_KERNEL` unset or `0`). See [docs/FRANKENPHP-WORKER-AUDIT.md](docs/FRANKENPHP-WORKER-AUDIT.md).
 
 ## Features
 
@@ -112,6 +112,7 @@ Developer-facing docs and comments (Markdown, PHPDoc, JSDoc) are **English only*
 ### Additional documentation
 
 - [Demo with FrankenPHP (development and production)](docs/DEMO-FRANKENPHP.md)
+- [FrankenPHP worker audit (`FRANKENPHP_RESET_KERNEL` unset/false)](docs/FRANKENPHP-WORKER-AUDIT.md)
 - [Help modal (field option + frontend script)](docs/USAGE.md#help-modal-optional)
 - [Overriding bundle templates](docs/USAGE.md#overriding-bundle-templates)
 

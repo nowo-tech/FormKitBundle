@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.5.3] - 2026-09-24](#253-2026-09-24)
 - [[2.5.2] - 2026-08-25](#252-2026-08-25)
 - [[2.5.1] - 2026-08-24](#251-2026-08-24)
 - [[2.5.0] - 2026-08-24](#250-2026-08-24)
@@ -88,6 +89,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.5.3] - 2026-09-24
+
+### Fixed
+
+- **FrankenPHP worker (`FRANKENPHP_RESET_KERNEL` unset/false):** `MultiStepWizardSession` resolves the session from `RequestStack` on every access instead of pinning the first request’s session in the constructor.
+- `FormKitControllerTrait` now rejects a `type_map` alias that does not resolve to a form type class with the same `InvalidArgumentException` as an unknown alias.
+- PHPStan level 8 clean with `FormKitControllerTrait` and `tests/` analysed (optional A2lix type remains excluded).
+
+### Changed
+
+- Composer lock: Symfony Form / PropertyInfo **7.4.18 → 7.4.19** (and related lock refresh).
+
+### Documentation
+
+- Added [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md) (kernel reuse / no reset); USAGE + README + DEMO-FRANKENPHP worker guidance; baseline spec `FR-WORKER-*` / `FR-WIZ-002`.
+
+### Notes
+
+- **No breaking API changes.** Trait setters remain DI/constructor configuration (documented for shared services under worker).
+
+[2.5.3]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.5.3
 
 ## [2.5.2] - 2026-08-25
 

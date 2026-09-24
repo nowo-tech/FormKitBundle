@@ -58,7 +58,12 @@ trait FormKitTrait
         $this->formTypeMap = $map;
     }
 
-    /** Set which profile to use (key in profiles); null uses default_profile. Overrides #[FormKitConfig]. */
+    /**
+     * Set which profile to use (key in profiles); null uses default_profile. Overrides #[FormKitConfig].
+     *
+     * FrankenPHP worker: form types are shared services — call from the constructor / DI
+     * (or unconditionally at the start of {@code buildForm()}), never with request-dependent values.
+     */
     public function setFormKitConfigName(?string $configName): void
     {
         $this->formKitConfigName         = $configName;

@@ -16,13 +16,16 @@ use function is_array;
  * Steps definition: [stepKey => ['label' => '...', 'fields' => [...]], ...]
  * Order of steps is the order of array keys. Session key: "nowo_form_kit_wizard_{wizardName}".
  *
+ * FrankenPHP worker ({@code FRANKENPHP_RESET_KERNEL} unset/false): the session is resolved from
+ * {@see RequestStack} on every access so a long-lived instance never pins the first request's
+ * session. Prefer creating via {@see MultiStepWizardSessionFactory::create()} inside the action;
+ * do not store the object on a shared service property.
+ *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
 final class MultiStepWizardSession
 {
-    private readonly SessionInterface $session;
-
     private readonly string $sessionKey;
 
     /**
@@ -31,9 +34,8 @@ final class MultiStepWizardSession
     public function __construct(
         private array $steps,
         private readonly string $wizardName,
-        RequestStack $requestStack
+        private readonly RequestStack $requestStack,
     ) {
-        $this->session    = $requestStack->getSession();
         $this->sessionKey = 'nowo_form_kit_wizard_' . $this->wizardName;
     }
 
@@ -56,7 +58,7 @@ final class MultiStepWizardSession
 
     public function getCurrentIndex(): int
     {
-        $bag = $this->session->get($this->sessionKey, ['index' => 0, 'data' => []]);
+        $bag = $this->session()->get($this->sessionKey, ['index' => 0, 'data' => []]);
 
         return (int) ($bag['index'] ?? 0);
     }
@@ -64,7 +66,7 @@ final class MultiStepWizardSession
     /** @return array<string, mixed> All collected data keyed by step */
     public function getCollectedData(): array
     {
-        $bag = $this->session->get($this->sessionKey, ['index' => 0, 'data' => []]);
+        $bag = $this->session()->get($this->sessionKey, ['index' => 0, 'data' => []]);
 
         return is_array($bag['data'] ?? []) ? $bag['data'] : [];
     }
@@ -85,24 +87,24 @@ final class MultiStepWizardSession
     /** @param array<string, mixed> $data This step's form data */
     public function setStepData(string $stepKey, array $data): void
     {
-        $bag               = $this->session->get($this->sessionKey, ['index' => 0, 'data' => []]);
+        $bag               = $this->session()->get($this->sessionKey, ['index' => 0, 'data' => []]);
         $dataBag           = is_array($bag['data'] ?? []) ? $bag['data'] : [];
         $dataBag[$stepKey] = $data;
         $bag['data']       = $dataBag;
-        $this->session->set($this->sessionKey, $bag);
+        $this->session()->set($this->sessionKey, $bag);
     }
 
     public function advance(): void
     {
-        $bag          = $this->session->get($this->sessionKey, ['index' => 0, 'data' => []]);
+        $bag          = $this->session()->get($this->sessionKey, ['index' => 0, 'data' => []]);
         $idx          = (int) ($bag['index'] ?? 0);
         $bag['index'] = min($idx + 1, count($this->getStepKeys()));
-        $this->session->set($this->sessionKey, $bag);
+        $this->session()->set($this->sessionKey, $bag);
     }
 
     public function reset(): void
     {
-        $this->session->set($this->sessionKey, ['index' => 0, 'data' => []]);
+        $this->session()->set($this->sessionKey, ['index' => 0, 'data' => []]);
     }
 
     public function isComplete(): bool
@@ -125,5 +127,10 @@ final class MultiStepWizardSession
     public function getSteps(): array
     {
         return $this->steps;
+    }
+
+    private function session(): SessionInterface
+    {
+        return $this->requestStack->getSession();
     }
 }
