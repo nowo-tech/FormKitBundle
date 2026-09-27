@@ -1,6 +1,6 @@
 {
     "name": "nowo-tech/form-kit-bundle",
-    "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global → field type → form → field). Symfony 7.4|8.",
+    "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global \u2192 field type \u2192 form \u2192 field). Symfony 7.4|8.",
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
@@ -22,7 +22,7 @@
     },
     "authors": [
         {
-            "name": "Héctor Franco Aceituno",
+            "name": "H\u00e9ctor Franco Aceituno",
             "email": "hectorfranco@nowo.tech",
             "homepage": "https://github.com/HecFranco",
             "role": "Developer"
@@ -66,6 +66,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.95.11",
+        "igor-php/igor-php": "^0.9.7",
         "nowo-tech/phpstan-frankenphp": "^1.0",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^2.0",
@@ -115,7 +116,8 @@
         ],
         "twig:lint": "twig-cs-fixer lint --config=.twig-cs-fixer.php",
         "twig:fix": "twig-cs-fixer fix --config=.twig-cs-fixer.php",
-        "twig:fix:check": "twig-cs-fixer lint --config=.twig-cs-fixer.php --fix"
+        "twig:fix:check": "twig-cs-fixer lint --config=.twig-cs-fixer.php --fix",
+        "igor": "igor-php --no-agent ."
     },
     "scripts-descriptions": {
         "test": "Run PHPUnit tests",
@@ -125,6 +127,7 @@
         "phpstan": "Run PHPStan static analysis",
         "rector": "Apply Rector refactoring",
         "rector-dry": "Run Rector in dry-run mode",
-        "qa": "Run all quality assurance checks"
+        "qa": "Run all quality assurance checks",
+        "igor": "Run Igor FrankenPHP worker-state audit (REQ-CS-008)"
     }
 }

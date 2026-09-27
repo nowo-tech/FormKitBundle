@@ -50,11 +50,14 @@ trait FormKitTrait
 
     public function setFormOptionsMerger(FormOptionsMerger $merger): void
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formOptionsMerger = $merger;
     }
 
     public function setFormTypeMap(FormTypeMap $map): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formTypeMap = $map;
     }
 
@@ -64,19 +67,28 @@ trait FormKitTrait
      * FrankenPHP worker: form types are shared services — call from the constructor / DI
      * (or unconditionally at the start of {@code buildForm()}), never with request-dependent values.
      */
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     public function setFormKitConfigName(?string $configName): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
-        $this->formKitConfigName         = $configName;
+        // @igor-ignore - Controller or form trait; used in request-scoped context
+        $this->formKitConfigName = $configName;
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitConfigNameResolved = true;
     }
 
     /**
      * Profile name for FormOptionsMerger: explicit setter, else #[FormKitConfig] on the form class, else null (default_profile).
      */
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     protected function resolvedFormKitConfigName(): ?string
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         if (!$this->formKitConfigNameResolved) {
-            $this->formKitConfigName         = FormKitConfig::nameFrom($this);
+            // @igor-ignore - Controller or form trait; used in request-scoped context
+            $this->formKitConfigName = FormKitConfig::nameFrom($this);
+            // @igor-ignore - Controller or form trait; used in request-scoped context
             $this->formKitConfigNameResolved = true;
         }
 

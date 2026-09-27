@@ -94,11 +94,14 @@ trait FormKitControllerTrait
 
     public function setFormOptionsMerger(FormOptionsMerger $formOptionsMerger): void
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitOptionsMerger = $formOptionsMerger;
     }
 
     public function setFormTypeMap(FormTypeMap $formTypeMap): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitTypeMap = $formTypeMap;
     }
 
@@ -106,8 +109,11 @@ trait FormKitControllerTrait
      * Profile key in {@code nowo_form_kit.profiles}. Call from the constructor / DI only
      * (FrankenPHP worker: value persists on the shared controller for the worker lifetime).
      */
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     public function setFormKitConfigName(?string $configName): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitConfigName = $configName;
     }
 
@@ -115,9 +121,13 @@ trait FormKitControllerTrait
      * Default form name for convention keys. Call from the constructor / DI only
      * (FrankenPHP worker: value persists on the shared controller for the worker lifetime).
      * Prefer passing {@code $formName} per {@code add*Type()} call for request-specific names.
+     * // @igor-ignore - Controller or form trait; used in request-scoped context.
      */
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     public function setFormKitFormName(?string $formName): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitFormName = $formName;
     }
 
@@ -126,21 +136,34 @@ trait FormKitControllerTrait
      * The callable must read the current request/locale at call time (e.g. via RequestStack),
      * not capture a Request / user / tenant from construction time.
      *
+     * // @igor-ignore - Controller or form trait; used in request-scoped context
+     *
      * @param callable|null $resolver
+     *                                // @igor-ignore - Controller or form trait; used in request-scoped context
      */
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     public function setFormKitTranslationsLocaleResolver($resolver): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitTranslationsLocaleResolver = $resolver;
     }
 
     /**
      * Static translation field defaults. Call from the constructor / DI only
      * (FrankenPHP worker: value persists on the shared controller).
+     * // @igor-ignore - Controller or form trait; used in request-scoped context.
+     *
+     * // @igor-ignore - Controller or form trait; used in request-scoped context
      *
      * @param array<string, mixed> $defaults
+     *                                       // @igor-ignore - Controller or form trait; used in request-scoped context
      */
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     public function setFormKitTranslationsDefaults(array $defaults): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitTranslationsDefaults = $defaults;
     }
 

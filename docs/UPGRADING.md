@@ -10,6 +10,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
 - [Unreleased](#unreleased)
+- [To 2.5.4](#to-254)
 - [To 2.4.5](#to-245)
 - [To 2.4.4](#to-244)
 - [To 2.4.3](#to-243)
@@ -47,6 +48,18 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## To 2.5.4
+
+From **2.5.3** — REQ-CS-008 Igor FrankenPHP worker audit (igor-php require-dev, igor.json, make igor).
+
+```bash
+composer update nowo-tech/form-kit-bundle
+php bin/console cache:clear
+```
+
+- No application upgrade steps for require-dev Igor tooling (REQ-CS-008). Consumers do not pull `igor-php/igor-php` transitively.
+
 
 ## From 2.5.2 to 2.5.3
 

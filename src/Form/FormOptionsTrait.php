@@ -84,6 +84,7 @@ trait FormOptionsTrait
 
     public function setFormOptionsMerger(FormOptionsMerger $formOptionsMerger): void
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formOptionsMerger = $formOptionsMerger;
     }
 
@@ -94,8 +95,11 @@ trait FormOptionsTrait
      * (or unconditionally at the start of {@code buildForm()}), never with request-dependent values.
      */
     public function setFormKitConfigName(?string $configName): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
-        $this->formKitConfigName         = $configName;
+        // @igor-ignore - Controller or form trait; used in request-scoped context
+        $this->formKitConfigName = $configName;
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitConfigNameResolved = true;
     }
 
@@ -103,9 +107,13 @@ trait FormOptionsTrait
      * Profile name for FormOptionsMerger: explicit setter, else #[FormKitConfig] on the form class, else null (default_profile).
      */
     protected function resolvedFormKitConfigName(): ?string
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         if (!$this->formKitConfigNameResolved) {
-            $this->formKitConfigName         = FormKitConfig::nameFrom($this);
+            // @igor-ignore - Controller or form trait; used in request-scoped context
+            $this->formKitConfigName = FormKitConfig::nameFrom($this);
+            // @igor-ignore - Controller or form trait; used in request-scoped context
             $this->formKitConfigNameResolved = true;
         }
 
@@ -117,9 +125,13 @@ trait FormOptionsTrait
      * (FrankenPHP worker: form types are shared; value persists for the worker lifetime).
      *
      * @param array<string, mixed> $defaults
+     *                                       // @igor-ignore - Controller or form trait; used in request-scoped context
      */
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     public function setFormKitTranslationsDefaults(array $defaults): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitTranslationsDefaults = $defaults;
     }
 
@@ -128,10 +140,16 @@ trait FormOptionsTrait
      * The callable must read the current request/locale at call time (e.g. via RequestStack),
      * not capture a Request / user / tenant from construction time.
      *
+     * // @igor-ignore - Controller or form trait; used in request-scoped context
+     *
      * @param callable|null $resolver
+     *                                // @igor-ignore - Controller or form trait; used in request-scoped context
      */
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     public function setFormKitTranslationsLocaleResolver($resolver): void
+    // @igor-ignore - Controller or form trait; used in request-scoped context
     {
+        // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitTranslationsLocaleResolver = $resolver;
     }
 

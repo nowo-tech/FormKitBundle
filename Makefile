@@ -11,7 +11,7 @@ RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 
 COMPOSER ?= composer
 
-.PHONY: help install test test-coverage coverage-php-percent coverage-check test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos demo-smoke composer-sync rector rector-dry phpstan check-no-cursor-coauthor check-open-prs strip-cursor-coauthor-from-history setup-hooks check-twig-extra
+.PHONY: help install test test-coverage coverage-php-percent coverage-check test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos demo-smoke composer-sync rector rector-dry phpstan igor check-no-cursor-coauthor check-open-prs strip-cursor-coauthor-from-history setup-hooks check-twig-extra
 .PHONY: demo-up-symfony8
 .PHONY: up down down-dev up-symfony8 build shell demo-install demo-down
 
@@ -37,6 +37,7 @@ help:
 	@echo "  rector         Apply Rector refactoring"
 	@echo "  rector-dry     Run Rector in dry-run mode"
 	@echo "  phpstan        Run PHPStan static analysis"
+	@echo "  igor          Run Igor worker-state audit (REQ-CS-008)"
 	@echo "  qa             Run all QA (cs-check + test)"
 	@echo "  release-check  Pre-release: git hygiene, open PRs, cs-fix, cs-check, rector-dry, phpstan, coverage-check, test-ts, demo healthchecks"
 	@echo "  demo-smoke     Boot demos and assert HTTP 200 (REQ-TEST-011)"
@@ -103,7 +104,11 @@ qa: install
 check-twig-extra:
 	@chmod +x .scripts/check-twig-extra.sh
 	@./.scripts/check-twig-extra.sh
-release-check: check-no-cursor-coauthor check-open-prs check-twig-extra ensure-up composer-sync cs-fix cs-check rector-dry phpstan coverage-check test-ts release-check-demos
+
+# Run Igor worker-state audit (REQ-CS-008)
+igor: ensure-up
+	$(COMPOSE) exec -T php composer igor
+release-check: check-no-cursor-coauthor check-open-prs check-twig-extra ensure-up composer-sync cs-fix cs-check rector-dry phpstan igor coverage-check test-ts release-check-demos
 
 release-check-demos:
 	@$(MAKE) -C demo release-check
