@@ -304,6 +304,7 @@ If you prefer **snake_case type names** instead of FQCNs, use this strategy. The
 
 - **FormKitTrait** provides `addField($builder, $name, $typeSnakeCase, $options)` and `buildFormFromArray($builder, $fields)` where each field’s type is a string (e.g. `'text'`, `'choice'`) instead of a class. It uses **FormOptionsMerger** for the option cascade and **FormTypeMap** for snake_case type resolution.
 - **FormKitAbstractType** is a base class that uses FormKitTrait and injects **FormOptionsMerger** and **FormTypeMap** via the constructor, so it works with the same `profiles` / `default_profile` model as FormOptionsTrait.
+- **Protected helpers on FormKitAbstractType (2.6.0):** `twigOwnedChromeOptions()` returns `label`, `help`, `placeholder` and `translation_domain` all `false` (use when Twig renders the visible copy). `addChoiceWithFormPlaceholder($name, $options)` (inside `withBuilder()`) adds a `ChoiceType` and restores its empty option after the merge — FormKit otherwise moves the root `placeholder` to `attr`. Omit `placeholder` to use `{block_prefix}.{field_snake}.placeholder`, pass a custom key, or `false` to skip it; `translation_domain` defaults to `form` when the empty option is kept.
 
 Example with FormKitTrait (when both services are available):
 

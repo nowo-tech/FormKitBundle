@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.6.0] - 2026-10-07](#260-2026-10-07)
 - [[2.5.4] - 2026-09-27](#254-2026-09-27)
 - [[2.5.3] - 2026-09-24](#253-2026-09-24)
 - [[2.5.2] - 2026-08-25](#252-2026-08-25)
@@ -90,6 +91,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.6.0] - 2026-10-07
+
+### Added
+
+- **`FormKitAbstractType::twigOwnedChromeOptions()`** (protected): returns `label`, `help`, `placeholder` and `translation_domain` all set to `false` for fields whose visible copy is rendered by Twig.
+- **`FormKitAbstractType::addChoiceWithFormPlaceholder()`** (protected): adds a `ChoiceType` through the FormKit merge pipeline using the builder bound by `withBuilder()`, then restores the ChoiceType empty option (convention key `{block_prefix}.{field_snake}.placeholder`, custom key, or skipped with `placeholder => false`).
+- Unit tests and `ExposedFormKitAbstractType` test double for both helpers.
+
+[2.6.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.6.0
 
 ## [2.5.4] - 2026-09-27
 

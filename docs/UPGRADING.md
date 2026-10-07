@@ -10,6 +10,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
 - [Unreleased](#unreleased)
+- [To 2.6.0](#to-260)
 - [To 2.5.4](#to-254)
 - [To 2.4.5](#to-245)
 - [To 2.4.4](#to-244)
@@ -48,6 +49,21 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## To 2.6.0
+
+From **2.5.4** — additive; no breaking changes.
+
+Host forms extending `Nowo\FormKitBundle\Form\FormKitAbstractType` can drop local copies of these helpers:
+
+- `twigOwnedChromeOptions()` — `label`/`help`/`placeholder`/`translation_domain` all `false`.
+- `addChoiceWithFormPlaceholder(string $name, array $options)` — call inside `withBuilder()`; restores the ChoiceType empty option after FormKit moves `placeholder` to `attr` (`translation_domain` defaults to `form` when the empty option is kept).
+
+If you already define methods with these names in a subclass, they keep overriding the kit versions (same signatures).
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 ## To 2.5.4
 
