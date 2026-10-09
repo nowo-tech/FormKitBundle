@@ -10,6 +10,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
 - [Unreleased](#unreleased)
+- [To 2.6.2](#to-262)
 - [To 2.6.1](#to-261)
 - [To 2.6.0](#to-260)
 - [To 2.5.4](#to-254)
@@ -50,6 +51,16 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## To 2.6.2
+
+From **2.6.1** — packaging fix.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+- No breaking changes. Composer now installs `symfony/asset` (`^7.4 || ^8.0`) with the bundle. Applications that previously crashed at boot with an asset configuration error (FrameworkBundle enabled, `symfony/asset` missing) work after the update; no configuration changes are needed.
 
 ## To 2.6.1
 

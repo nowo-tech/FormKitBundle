@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.6.2] - 2026-10-09](#262-2026-10-09)
 - [[2.6.1] - 2026-10-09](#261-2026-10-09)
 - [[2.6.0] - 2026-10-07](#260-2026-10-07)
 - [[2.5.4] - 2026-09-27](#254-2026-09-27)
@@ -92,6 +93,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.6.2] - 2026-10-09
+
+### Fixed
+
+- **`symfony/asset` is now a hard requirement** (`^7.4 || ^8.0`). `FormKitExtension::prepend()` registers the `nowo_form_kit` package under `framework.assets` whenever FrameworkBundle is enabled; applications without `symfony/asset` failed to boot because FrameworkBundle rejects asset configuration when the component is missing.
+
+### Dependencies
+
+- Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
+
+[2.6.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.6.2
 
 ## [2.6.1] - 2026-10-09
 

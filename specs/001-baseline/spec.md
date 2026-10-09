@@ -113,6 +113,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 ### Assets & Twig
 
 - **FR-ASSET-001**: TypeScript help-modal + logger sources and built `help-modal.js` / `.css`.
+- **FR-ASSET-002**: `FormKitExtension::prepend()` registers the `nowo_form_kit` asset package (`base_path: /bundles/nowoformkit`) when FrameworkBundle is enabled; `symfony/asset` is a Composer **require** (not suggest) so that configuration always boots.
 - **FR-TWIG-001**: Form renderer, static blocks, and framework-specific help-modal shells. `form_label_content` must treat `required` as optional (Submit/Button/Reset widgets do not define it) before appending `required_label_suffix`.
 
 ---

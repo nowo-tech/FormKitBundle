@@ -20,6 +20,7 @@ This guide covers installing Form Kit Bundle in a Symfony application.
 - **Symfony** ^7.4 || ^8.0 — minimum supported line is **Symfony 7.4**; Symfony 8.0 and 8.1 are also supported
 - **symfony/form** (included in framework-bundle)
 - **symfony/translation** (included in framework-bundle)
+- **symfony/asset** (required since 2.6.2; backs the `nowo_form_kit` asset package registered by the bundle)
 
 ### PHP and Symfony matrix
 
