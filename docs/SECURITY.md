@@ -6,7 +6,15 @@ This bundle does not process user credentials or sensitive data itself; it only 
 
 ## Help modal HTML (frontend)
 
-`help-modal.js` may set `innerHTML` for `title_html`, `content`, and `icon_html` from **developer-controlled** form/YAML options (not end-user input). Treat those fields as trusted markup: do not pass unsanitized visitor content. Prefer plain `title` / escaped text when the value is not intentionally HTML. Integrators using a strict CSP should allow the bundled script (and optional CSS) from the `nowo_form_kit` asset package.
+`help-modal.js` may set `innerHTML` for `title_html`, `content`, and `icon_html` from **developer-controlled** form/YAML options (not end-user input). Treat those fields as trusted markup: do not pass unsanitized visitor content. Prefer plain `title` / escaped text when the value is not intentionally HTML. Integrators using a strict CSP should allow the bundled script (and optional CSS) from the `nowo_form_kit` asset package. With nonce-based CSP, pass the per-request nonce stored in the request attribute `csp_nonce`: `<script src="{{ asset('help-modal.js', 'nowo_form_kit') }}" defer nonce="{{ app.request.attributes.get('csp_nonce') }}"></script>`.
+
+## Stateless CSRF (`stateless_csrf`, opt-in)
+
+Listed form types validate CSRF with Symfony's stateless manager (Origin/Referer + double-submit cookie) instead of a session token. Only list **anonymous** forms; keep authenticated / privileged forms on session-bound token ids. Behind proxies that strip `Origin`/`Referer`, ship the recipe's `csrf_protection_controller.js`, otherwise submissions are rejected (fail-closed).
+
+## Locale tabs (Twig)
+
+`_locale_tabs.html.twig` renders only auto-escaped variables and Symfony `form_row()` output; it emits no inline `<script>`, `style=` or `on*=` attributes (strict CSP). Titles/labels passed as options are escaped like any Twig variable.
 
 ## Release security checklist (12.4.1)
 

@@ -37,6 +37,9 @@ services:
   Nowo\FormKitBundle\Form\Extension\InputGroupExtension:
     tags: ['form.type_extension']
 
+  Nowo\FormKitBundle\Form\Extension\LocaleTabsExtension:
+    tags: ['form.type_extension']
+
   Nowo\FormKitBundle\Form\Extension\RequiredLabelSuffixExtension:
     arguments:
       $profiles: '%nowo_form_kit.profiles%'

@@ -1,0 +1,144 @@
+{#
+  One tab per locale for a compound field whose children are keyed by locale
+  (e.g. `slugs[es]`, `slugs[en]`, or a TranslationsFormsType per-locale form).
+
+  Accessible WAI-ARIA tabs (tablist / tab / tabpanel). Inactive panels are `hidden` server-side,
+  so the markup is usable before (and without) JavaScript; switching needs ONE of:
+    - a Stimulus `tabs` controller (`data-controller="tabs"`, `click->tabs#open`, targets trigger/tab,
+      `data-tab-id`) — e.g. the UiKit peer `tabs_controller.ts`, or
+    - the UiKit IIFE `nowo-ui-tabs.js` (`data-nowo-ui-tabs*` attributes, emitted by default).
+  No inline script/style/event handlers (strict-CSP safe).
+
+  Include:
+    {% include '@NowoFormKitBundle/form/_locale_tabs.html.twig' with {field: form.slugs, title: 'Slug'} only %}
+  or set the `locale_tabs` option on the field and register the
+  `@NowoFormKitBundle/form/locale_tabs_theme.html.twig` form theme.
+
+  Required:
+    - field            FormView  compound field, one child per locale
+
+  Optional:
+    - locales          list<string>  tab order (default: the field's child names)
+    - default_locale   string        marked with `*` (default: first locale)
+    - active_locale    string        initially open tab (default: request locale when listed, else default_locale)
+    - activate_invalid bool          open the first tab with errors instead (default true)
+    - default_child    FormView      rendered in the default-locale tab instead of field[default_locale]
+    - tabs_id          string        unique DOM prefix (default: field.vars.id ~ '-locale')
+    - testid           string        data-testid on the wrapper
+    - title            string        heading (already translated); none when empty
+    - help             string        intro under the heading (already translated)
+    - tabs_label       string        aria-label of the tablist (default: title, else 'Languages')
+    - label            string        child label override with %locale% placeholder (already translated)
+    - help_default     string        child help override for the default locale (%locale% placeholder)
+    - help_other       string        child help override for the other locales (%locale% placeholder)
+    - locale_labels    map<string,string> human names for screen readers / labels (default: LOCALE)
+    - mark_default     bool          show `*` on the default locale tab (default true)
+    - stimulus_controller string|false  Stimulus identifier (default 'tabs'; false = no Stimulus attributes)
+    - kit_attributes   bool          emit UiKit `data-nowo-ui-tabs*` attributes (default true)
+    - row_options      map           extra options merged into each child form_row()
+    - wrapper_class, heading_class, help_class, tabs_class, nav_class, tab_class, panel_class, error_marker
+#}
+{%- set _children = field.children|default({}) -%}
+{%- set locales = locales|default(_children|keys) -%}
+{%- set default_locale = default_locale|default(locales|first) -%}
+{%- set _request_locale = app is defined and app and app.request ? app.request.locale : null -%}
+{%- set active_locale = active_locale|default(_request_locale) -%}
+{%- if active_locale not in locales -%}
+    {%- set active_locale = default_locale -%}
+{%- endif -%}
+{%- if activate_invalid ?? true -%}
+    {%- set _active_child = active_locale == default_locale and default_child is defined and default_child ? default_child : (field[active_locale] ?? null) -%}
+    {%- if _active_child is null or _active_child.vars.valid -%}
+        {%- set _first_invalid = null -%}
+        {%- for _l in locales -%}
+            {%- set _c = _l == default_locale and default_child is defined and default_child ? default_child : (field[_l] ?? null) -%}
+            {%- if _first_invalid is null and _c and not _c.vars.valid -%}
+                {%- set _first_invalid = _l -%}
+            {%- endif -%}
+        {%- endfor -%}
+        {%- if _first_invalid is not null -%}
+            {%- set active_locale = _first_invalid -%}
+        {%- endif -%}
+    {%- endif -%}
+{%- endif -%}
+{%- set tabs_id = tabs_id|default(field.vars.id|default('locale') ~ '-locale') -%}
+{%- set _controller = stimulus_controller ?? 'tabs' -%}
+{%- set _kit = kit_attributes ?? true -%}
+{%- set _locale_labels = locale_labels|default({}) -%}
+{%- set _mark_default = mark_default ?? true -%}
+{%- set _title = title|default('') -%}
+{%- set _tabs_label = tabs_label|default(_title is not empty ? _title : 'Languages') -%}
+{%- set _row_options = row_options|default({}) -%}
+<div class="{{ wrapper_class|default('nowo-form-kit-locale-tabs') }}"{% if testid|default('') is not empty %} data-testid="{{ testid }}"{% endif %}>
+    {%- if _title is not empty or help|default('') is not empty %}
+    <div class="{{ heading_class|default('nowo-form-kit-locale-tabs__heading') }}">
+        {%- if _title is not empty %}
+        <p class="nowo-form-kit-locale-tabs__title" id="{{ tabs_id }}-title">{{ _title }}</p>
+        {%- endif %}
+        {%- if help|default('') is not empty %}
+        <p class="{{ help_class|default('nowo-form-kit-locale-tabs__help') }}">{{ help }}</p>
+        {%- endif %}
+    </div>
+    {%- endif %}
+    <div class="{{ tabs_class|default('nowo-form-kit-locale-tabs__tabs') }}"
+        {%- if _controller %} data-controller="{{ _controller }}" data-{{ _controller }}-active-tab-value="{{ tabs_id ~ '-' ~ active_locale }}"{% endif %}
+        {%- if _kit %} data-nowo-ui-tabs data-nowo-ui-tabs-active="{{ tabs_id ~ '-' ~ active_locale }}"{% endif %}>
+        <div role="tablist" aria-label="{{ _tabs_label }}" class="{{ nav_class|default('nowo-form-kit-locale-tabs__nav') }}">
+            {%- for locale in locales %}
+                {%- set tabId = tabs_id ~ '-' ~ locale %}
+                {%- set open = locale == active_locale %}
+                {%- set child = locale == default_locale and default_child is defined and default_child ? default_child : (field[locale] ?? null) %}
+                {%- set invalid = child and not child.vars.valid %}
+                {%- set localeLabel = _locale_labels[locale] ?? locale|upper %}
+            <button
+                type="button"
+                id="tab-{{ tabId }}"
+                role="tab"
+                aria-controls="tab-{{ tabId }}-panel"
+                aria-selected="{{ open ? 'true' : 'false' }}"
+                class="{{ tab_class|default('nowo-form-kit-locale-tabs__tab') }}"
+                data-locale="{{ locale }}"
+                {%- if open %} data-active{% endif %}
+                {%- if invalid %} data-invalid{% endif %}
+                {%- if _controller %} data-action="click->{{ _controller }}#open" data-{{ _controller }}-target="trigger" data-tab-id="{{ tabId }}"{% endif %}
+                {%- if _kit %} data-nowo-ui-tabs-trigger data-nowo-ui-tab-id="{{ tabId }}"{% endif %}
+            >
+                {%- if _mark_default and locale == default_locale %}<span class="nowo-form-kit-locale-tabs__default" aria-hidden="true">*</span>{% endif -%}
+                {{ locale|upper }}
+                {%- if localeLabel != locale|upper %}<span class="visually-hidden sr-only"> — {{ localeLabel }}</span>{% endif -%}
+                {%- if invalid %}<span class="{{ error_marker|default('nowo-form-kit-locale-tabs__error') }}" aria-hidden="true">!</span>{% endif -%}
+            </button>
+            {%- endfor %}
+        </div>
+        {%- for locale in locales %}
+            {%- set tabId = tabs_id ~ '-' ~ locale %}
+            {%- set open = locale == active_locale %}
+            {%- set child = locale == default_locale and default_child is defined and default_child ? default_child : (field[locale] ?? null) %}
+            {%- set localeLabel = _locale_labels[locale] ?? locale|upper %}
+        <div
+            id="tab-{{ tabId }}-panel"
+            role="tabpanel"
+            aria-labelledby="tab-{{ tabId }}"
+            class="{{ panel_class|default('nowo-form-kit-locale-tabs__panel') }}"
+            data-locale="{{ locale }}"
+            data-state="{{ open ? 'active' : 'inactive' }}"
+            {%- if open %} data-active{% else %} hidden{% endif %}
+            {%- if _controller %} data-{{ _controller }}-target="tab" data-tab-id="{{ tabId }}"{% endif %}
+            {%- if _kit %} data-nowo-ui-tabs-panel data-nowo-ui-tab-id="{{ tabId }}"{% endif %}
+        >
+            {%- if child %}
+                {%- set _opts = _row_options %}
+                {%- if label is defined and label is not empty %}
+                    {%- set _opts = _opts|merge({label: label|replace({'%locale%': localeLabel}), label_translation_parameters: {}, translation_domain: false}) %}
+                {%- endif %}
+                {%- set _help = locale == default_locale ? (help_default ?? null) : (help_other ?? null) %}
+                {%- if _help is not null and _help is not empty %}
+                    {%- set _opts = _opts|merge({help: _help|replace({'%locale%': locale}), help_translation_parameters: {}}) %}
+                {%- endif %}
+            {{ form_row(child, _opts) }}
+            {%- endif %}
+        </div>
+        {%- endfor %}
+    </div>
+</div>
+{%- do field.setRendered -%}

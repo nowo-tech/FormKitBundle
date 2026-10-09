@@ -1,0 +1,34 @@
+{#
+  Form theme: renders a compound field whose children are keyed by locale as one tab per locale.
+
+  1. Register the theme (twig.form_themes or {% form_theme form '@NowoFormKitBundle/form/locale_tabs_theme.html.twig' %}).
+  2. Opt a field in with the `locale_tabs` option (LocaleTabsExtension):
+
+       $builder->add('slugs', SlugsPerLocaleType::class, [
+           'label'       => 'Slug',
+           'locale_tabs' => ['locales' => ['es', 'en'], 'default_locale' => 'es'],
+       ]);
+
+  Every key of `locale_tabs` is passed to `_locale_tabs.html.twig` (see its header for the list).
+  `title` defaults to the field label (translated), `help` to the field help, errors of the
+  compound field itself are rendered above the tabs.
+#}
+{% block nowo_locale_tabs_row %}
+    {%- set _lt = form.vars.locale_tabs|default({}) -%}
+    {%- if _lt.title is not defined -%}
+        {%- set _label = form.vars.label -%}
+        {%- if _label is not same as(false) -%}
+            {%- if _label is empty -%}
+                {%- set _label = form.vars.label_format is not empty ? form.vars.label_format|replace({'%name%': form.vars.name, '%id%': form.vars.id}) : form.vars.name|humanize -%}
+            {%- endif -%}
+            {%- set _domain = form.vars.translation_domain -%}
+            {%- set _lt = _lt|merge({title: _domain is same as(false) ? _label : _label|trans(form.vars.label_translation_parameters|default({}), _domain)}) -%}
+        {%- endif -%}
+    {%- endif -%}
+    {%- if _lt.help is not defined and form.vars.help is not empty -%}
+        {%- set _domain = form.vars.translation_domain -%}
+        {%- set _lt = _lt|merge({help: _domain is same as(false) ? form.vars.help : form.vars.help|trans(form.vars.help_translation_parameters|default({}), _domain)}) -%}
+    {%- endif -%}
+    {{- form_errors(form) -}}
+    {{- include('@NowoFormKitBundle/form/_locale_tabs.html.twig', _lt|merge({field: form}), with_context: false) -}}
+{% endblock %}

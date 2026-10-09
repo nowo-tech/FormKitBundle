@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+
+- [[2.7.0] - 2026-10-09](#270---2026-10-09)
 - [[2.6.2] - 2026-10-09](#262-2026-10-09)
 - [[2.6.1] - 2026-10-09](#261-2026-10-09)
 - [[2.6.0] - 2026-10-07](#260-2026-10-07)
@@ -94,6 +96,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2026-10-09
+
+### Added
+
+- **Per-locale tabs:** form theme `@NowoFormKitBundle/form/locale_tabs_theme.html.twig`, partial `@NowoFormKitBundle/form/_locale_tabs.html.twig` and `LocaleTabsExtension` (`locale_tabs` option on any field). One WAI-ARIA tab per locale for a compound field keyed by locale; default locale marked, invalid tabs marked and opened first, inactive panels `hidden` server-side; works with a Stimulus `tabs` controller (UiKit peer) or the UiKit `nowo-ui-tabs.js` IIFE; no inline JS/CSS. Optional neutral stylesheet `locale-tabs.css` (`nowo_form_kit` asset package). Ported from podologiapriego-web `admin/_locale_field_tabs.html.twig`.
+- **Stateless CSRF for public forms (opt-in):** `nowo_form_kit.stateless_csrf` (`enabled: false`, `token_id: submit`, `form_types: []`, `register_stateless_token_id: true`) → `StatelessCsrfTokenIdExtension` per listed type + `framework.csrf_protection.stateless_token_ids` prepend. Ported from podologiapriego-web `StatelessCsrfPublicFormTypeExtension`.
+- Dev dependency `symfony/security-csrf` (integration test of the CSRF token id default).
+
 ## [2.6.2] - 2026-10-09
 
 ### Fixed
@@ -104,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.7.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.7.0
 [2.6.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.6.2
 
 ## [2.6.1] - 2026-10-09

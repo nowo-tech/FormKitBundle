@@ -27,6 +27,9 @@ final class Configuration implements ConfigurationInterface
 
     public const DEFAULT_PROFILE_NAME = 'default';
 
+    /** Default stateless CSRF token id (matches Symfony's recipe `framework.csrf_protection.stateless_token_ids: [submit, authenticate, logout]`). */
+    public const DEFAULT_STATELESS_CSRF_TOKEN_ID = 'submit';
+
     /** @deprecated Use {@see DEFAULT_PROFILE_NAME} instead. */
     public const DEFAULT_CONFIG_NAME = self::DEFAULT_PROFILE_NAME;
 
@@ -107,6 +110,31 @@ final class Configuration implements ConfigurationInterface
                     ->validate()
                         ->ifNotInArray(['bootstrap', 'tailwind', 'foundation', 'none'])
                         ->thenInvalid('nowo_form_kit.css_framework must be one of: bootstrap, tailwind, foundation, none.')
+                    ->end()
+                ->end()
+                ->arrayNode('stateless_csrf')
+                    ->info('Give selected (usually anonymous/public) form types a stateless CSRF token id so rendering them does not start a session. Off by default.')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')
+                            ->defaultFalse()
+                        ->end()
+                        ->scalarNode('token_id')
+                            ->info('csrf_token_id default applied to the listed form types. Must be listed in framework.csrf_protection.stateless_token_ids.')
+                            ->defaultValue(self::DEFAULT_STATELESS_CSRF_TOKEN_ID)
+                            ->cannotBeEmpty()
+                        ->end()
+                        ->arrayNode('form_types')
+                            ->info('Form type FQCNs (e.g. App\\Form\\NewsletterType) that receive the stateless token id. Explicit csrf_token_id options still win.')
+                            ->defaultValue([])
+                            ->scalarPrototype()
+                                ->cannotBeEmpty()
+                            ->end()
+                        ->end()
+                        ->booleanNode('register_stateless_token_id')
+                            ->info('Prepend token_id to framework.csrf_protection.stateless_token_ids (enables framework CSRF protection if it was not configured).')
+                            ->defaultTrue()
+                        ->end()
                     ->end()
                 ->end()
                 ->arrayNode('profiles')

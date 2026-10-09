@@ -27,7 +27,9 @@ This bundle is **FrankenPHP worker mode friendly** (kernel reused / `FRANKENPHP_
 - **Multi-step wizard:** `MultiStepFormBuilder` for stepped forms (see the Symfony 8 demo).
 - **Constraint message convention:** `constraint_message_convention` plus `#[FormKitConfig]` / static field types (`StaticAlertType`, …).
 - **CSRF-only / GET filters:** `CsrfOnlyFormFactory`, `AbstractGetFilterType`, `GetFilterFormFactory`, `SearchQueryType`. See [docs/CSRF.md](docs/CSRF.md).
-- **Form type extensions:** **InputGroupExtension**, **RequiredLabelSuffixExtension**, **HelpModalExtension**. See [Configuration](docs/CONFIGURATION.md) and [Usage](docs/USAGE.md#help-modal-optional).
+- **Stateless CSRF for public forms (opt-in):** `nowo_form_kit.stateless_csrf` gives listed form types a stateless `csrf_token_id` (default `submit`) so rendering anonymous forms does not start a session. See [docs/CSRF.md](docs/CSRF.md#stateless-csrf-for-public-forms).
+- **Per-locale tabs:** form theme `locale_tabs_theme.html.twig` + `locale_tabs` option (or the `_locale_tabs.html.twig` partial) renders a compound field keyed by locale as one ARIA tab per language; works with a Stimulus `tabs` controller or the UiKit `nowo-ui-tabs.js` IIFE, no inline JS. See [Usage — Locale tabs](docs/USAGE.md#locale-tabs-one-tab-per-language).
+- **Form type extensions:** **InputGroupExtension**, **RequiredLabelSuffixExtension**, **HelpModalExtension**, **LocaleTabsExtension**, opt-in **StatelessCsrfTokenIdExtension**. See [Configuration](docs/CONFIGURATION.md) and [Usage](docs/USAGE.md#help-modal-optional).
 
 ## Installation
 

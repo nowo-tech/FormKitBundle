@@ -59,6 +59,8 @@
 | `Form/Extension/InputGroupExtension.php` | Input group prefix/suffix | FR-FORM-005 |
 | `Form/Extension/RequiredLabelSuffixExtension.php` | Required label suffix | FR-FORM-005 |
 | `Form/Extension/HelpModalExtension.php` | Help modal option | FR-FORM-005 |
+| `Form/Extension/LocaleTabsExtension.php` | `locale_tabs` option + block prefix | FR-FORM-013 |
+| `Form/Extension/StatelessCsrfTokenIdExtension.php` | Opt-in stateless `csrf_token_id` default | FR-FORM-014 |
 
 ## Form — data transformers
 
@@ -104,6 +106,7 @@
 | `Resources/assets/src/logger.test.ts` | Logger tests | FR-ASSET-001 |
 | `Resources/public/help-modal.js` | Built help modal | FR-ASSET-001 |
 | `Resources/public/help-modal.css` | Help modal styles | FR-ASSET-001 |
+| `Resources/public/locale-tabs.css` | Optional locale tabs styles | FR-FORM-013 |
 
 ## Twig views
 
@@ -111,6 +114,8 @@
 | --- | --- | --- |
 | `Resources/views/components/form_renderer.html.twig` | Form renderer | FR-TWIG-001 |
 | `Resources/views/form/static_blocks.html.twig` | Static block theme | FR-TWIG-001 |
+| `Resources/views/form/_locale_tabs.html.twig` | Per-locale tabs partial | FR-FORM-013 |
+| `Resources/views/form/locale_tabs_theme.html.twig` | Per-locale tabs form theme | FR-FORM-013 |
 | `Resources/views/help_modal/shells.html.twig` | Modal shell include | FR-TWIG-001 |
 | `Resources/views/help_modal/shell_bootstrap4.html.twig` | Bootstrap 4 shell | FR-TWIG-001 |
 | `Resources/views/help_modal/shell_bootstrap5.html.twig` | Bootstrap 5 shell | FR-TWIG-001 |
@@ -126,11 +131,11 @@
 | CSS framework utilities | 6 | 6 |
 | Controller trait | 1 | 1 |
 | Form — core API | 9 | 9 |
-| Form — extensions | 3 | 3 |
+| Form — extensions | 5 | 5 |
 | Form — data transformers | 6 | 6 |
 | Form — constraints | 1 | 1 |
 | Form — static & translation types | 4 | 4 |
 | Form — multi-step wizard | 3 | 3 |
-| Frontend assets | 6 | 6 |
-| Twig views | 7 | 7 |
-| **Total production sources** | **51** | **51** |
+| Frontend assets | 7 | 7 |
+| Twig views | 9 | 9 |
+| **Total production sources** | **56** | **56** |

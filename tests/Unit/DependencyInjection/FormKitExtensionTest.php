@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
+use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use PHPUnit\Framework\TestCase;
@@ -224,6 +225,80 @@ final class FormKitExtensionTest extends TestCase
             '/bundles/nowoformkit',
             $configs[0]['assets']['packages']['nowo_form_kit']['base_path'],
         );
+    }
+
+    public function testStatelessCsrfDisabledByDefaultRegistersNothing(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->load([['stateless_csrf' => ['form_types' => ['App\\Form\\NewsletterType']]]], $container);
+
+        self::assertFalse($container->getParameter('nowo_form_kit.stateless_csrf.enabled'));
+        self::assertSame([], $container->getParameter('nowo_form_kit.stateless_csrf.form_types'));
+        self::assertSame([], $container->findTaggedServiceIds('form.type_extension') === [] ? [] : array_values(array_filter(
+            array_keys($container->findTaggedServiceIds('form.type_extension')),
+            static fn (string $id): bool => str_starts_with($id, 'nowo_form_kit.stateless_csrf_extension.'),
+        )));
+    }
+
+    public function testStatelessCsrfRegistersOneExtensionPerFormType(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->load([[
+            'stateless_csrf' => [
+                'enabled'    => true,
+                'token_id'   => 'public_submit',
+                'form_types' => ['App\\Form\\NewsletterType', 'App\\Form\\CommentType', 'App\\Form\\NewsletterType'],
+            ],
+        ]], $container);
+
+        self::assertTrue($container->getParameter('nowo_form_kit.stateless_csrf.enabled'));
+        self::assertSame('public_submit', $container->getParameter('nowo_form_kit.stateless_csrf.token_id'));
+        self::assertSame(['App\\Form\\NewsletterType', 'App\\Form\\CommentType'], $container->getParameter('nowo_form_kit.stateless_csrf.form_types'));
+
+        $first = $container->getDefinition('nowo_form_kit.stateless_csrf_extension.0');
+        self::assertSame(StatelessCsrfTokenIdExtension::class, $first->getClass());
+        self::assertSame(['public_submit'], $first->getArguments());
+        self::assertSame([['extended_type' => 'App\\Form\\NewsletterType']], $first->getTag('form.type_extension'));
+        self::assertSame([['extended_type' => 'App\\Form\\CommentType']], $container->getDefinition('nowo_form_kit.stateless_csrf_extension.1')->getTag('form.type_extension'));
+        self::assertFalse($container->hasDefinition('nowo_form_kit.stateless_csrf_extension.2'));
+    }
+
+    public function testPrependRegistersStatelessTokenIdWhenEnabled(): void
+    {
+        $container = new ContainerBuilder();
+        $container->registerExtension(new FrameworkExtension());
+        $container->prependExtensionConfig('nowo_form_kit', ['stateless_csrf' => ['enabled' => true, 'form_types' => ['App\\Form\\A']]]);
+        $container->prependExtensionConfig('nowo_form_kit', ['stateless_csrf' => ['token_id' => 'public_form']]);
+
+        (new FormKitExtension())->prepend($container);
+
+        $tokenIds = [];
+        foreach ($container->getExtensionConfig('framework') as $config) {
+            foreach ($config['csrf_protection']['stateless_token_ids'] ?? [] as $id) {
+                $tokenIds[] = $id;
+            }
+        }
+        self::assertSame(['public_form'], $tokenIds);
+    }
+
+    public function testPrependSkipsStatelessTokenIdWhenDisabledOrOptedOut(): void
+    {
+        foreach ([
+            [],
+            ['stateless_csrf' => ['enabled' => false]],
+            ['stateless_csrf' => ['enabled' => true, 'register_stateless_token_id' => false]],
+            ['stateless_csrf' => ['enabled' => true, 'token_id' => '']],
+        ] as $raw) {
+            $container = new ContainerBuilder();
+            $container->registerExtension(new FrameworkExtension());
+            $container->prependExtensionConfig('nowo_form_kit', $raw);
+
+            (new FormKitExtension())->prepend($container);
+
+            foreach ($container->getExtensionConfig('framework') as $config) {
+                self::assertArrayNotHasKey('csrf_protection', $config);
+            }
+        }
     }
 
     public function testPrependSkipsWhenFrameworkExtensionIsMissing(): void

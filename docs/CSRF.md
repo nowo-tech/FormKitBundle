@@ -4,6 +4,7 @@ Form Kit ships helpers for two common host patterns:
 
 1. **CSRF-only POST actions** (toggle, revoke, delete) — token + optional flat hidden fields
 2. **Rootless GET filters** — query-string friendly field names without CSRF
+3. **Stateless CSRF for public forms** (opt-in) — anonymous forms that must not start a session
 
 ## CSRF-only action forms
 
@@ -121,3 +122,29 @@ $form = $formFactory->create(SearchQueryType::class, null, [
     'input_attr' => ['class' => 'input', 'aria-label' => 'Search'],
 ]);
 ```
+
+## Stateless CSRF for public forms
+
+Since **2.7.0** (opt-in). Anonymous forms rendered on public pages should not open a session just to store a CSRF token: it costs a session write per page view and turns otherwise cacheable responses `private`.
+
+```yaml
+# config/packages/nowo_form_kit.yaml
+nowo_form_kit:
+    stateless_csrf:
+        enabled: true
+        form_types:
+            - App\Form\NewsletterType
+            - Nowo\BlogKitBundle\Form\PublicBlogCommentType
+```
+
+What happens:
+
+1. For each listed type the bundle registers a `StatelessCsrfTokenIdExtension` service tagged `form.type_extension` with `extended_type: <FQCN>`; it sets the **default** `csrf_token_id` to `token_id` (default `submit`).
+2. With `register_stateless_token_id: true` (default) the bundle prepends `token_id` to `framework.csrf_protection.stateless_token_ids`, so Symfony's `SameOriginCsrfTokenManager` validates it without the session (Origin/Referer + double-submit cookie). If you already list it (Symfony recipe: `[submit, authenticate, logout]`), the duplicate is harmless.
+3. Explicit `csrf_token_id` options still win, so a type can opt back out per instance.
+
+Checklist:
+
+- Use it for **anonymous** forms only; logged-in, state-changing forms keep session-bound tokens.
+- If your reverse proxy strips `Origin`/`Referer`, also install the recipe's `csrf_protection_controller.js` (double-submit cookie) or the stateless check will reject submissions.
+- Check `Vary`/`Cache-Control` of public pages after enabling: no `Set-Cookie: PHPSESSID` should be emitted for a plain page view.

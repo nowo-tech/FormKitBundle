@@ -1,0 +1,86 @@
+/*
+ * Optional neutral styles for @NowoFormKitBundle/form/_locale_tabs.html.twig.
+ * Load with: <link rel="stylesheet" href="{{ asset('locale-tabs.css', 'nowo_form_kit') }}">
+ * Override the custom properties (or pass your own *_class options) to match your design system.
+ */
+.nowo-form-kit-locale-tabs {
+  --nfk-locale-tabs-border: rgba(0, 0, 0, 0.15);
+  --nfk-locale-tabs-muted: rgba(0, 0, 0, 0.6);
+  --nfk-locale-tabs-active: currentColor;
+  --nfk-locale-tabs-error: #dc3545;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.nowo-form-kit-locale-tabs__heading > * {
+  margin: 0;
+}
+
+.nowo-form-kit-locale-tabs__title {
+  font-weight: 600;
+}
+
+.nowo-form-kit-locale-tabs__help {
+  font-size: 0.875em;
+  color: var(--nfk-locale-tabs-muted);
+}
+
+.nowo-form-kit-locale-tabs__tabs {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.nowo-form-kit-locale-tabs__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--nfk-locale-tabs-border);
+}
+
+.nowo-form-kit-locale-tabs__tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 2.5rem;
+  padding: 0.375rem 0.625rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: var(--nfk-locale-tabs-muted);
+  cursor: pointer;
+}
+
+.nowo-form-kit-locale-tabs__tab:hover,
+.nowo-form-kit-locale-tabs__tab[aria-selected="true"] {
+  color: inherit;
+}
+
+.nowo-form-kit-locale-tabs__tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--nfk-locale-tabs-active);
+}
+
+.nowo-form-kit-locale-tabs__tab:focus-visible {
+  outline: 2px solid var(--nfk-locale-tabs-active);
+  outline-offset: 2px;
+}
+
+.nowo-form-kit-locale-tabs__default,
+.nowo-form-kit-locale-tabs__error {
+  font-weight: 700;
+}
+
+.nowo-form-kit-locale-tabs__error,
+.nowo-form-kit-locale-tabs__tab[data-invalid] {
+  color: var(--nfk-locale-tabs-error);
+}
+
+.nowo-form-kit-locale-tabs__panel[hidden] {
+  display: none !important;
+}

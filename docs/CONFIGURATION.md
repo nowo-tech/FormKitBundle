@@ -8,6 +8,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 - [Cascade order](#cascade-order)
 - [Per-form defaults (`by_form`)](#per-form-defaults-by_form)
 - [Form type extensions (global)](#form-type-extensions-global)
+- [Stateless CSRF for public forms (`stateless_csrf`)](#stateless-csrf-for-public-forms-stateless_csrf)
 - [Example with multiple profiles](#example-with-multiple-profiles)
 - [Suggested optional Composer packages](#suggested-optional-composer-packages)
 - [Optional and custom types (type_map)](#optional-and-custom-types-type_map)
@@ -33,6 +34,10 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `profiles.<name>.by_form` | `array` | Per-form defaults keyed by form name / block prefix (e.g. `user_profile`). Each entry may set `defaults.attr` / `defaults.row_attr` / `defaults.help_attr` / `defaults.label` / `defaults.required` (and peers) and `fields.<field>` overrides (including `constraints`). Merged **after** `field_types`, **before** per-field options. |
 | `profiles.<name>.constraint_message_convention` | `bool` | When `true`, constraints without an explicit `message` (or `minMessage`/`maxMessage` when `min`/`max` are set) get keys `{form}.{field}.constraints.{Name}` (and `.min` / `.max` suffixes for Length-style). Put those keys in the **validators** catalog. Default: `false`. |
 | `profiles.<name>.help_modal` | `array` | Default options when a field sets `help_modal: true` (merged with per-field overrides). Keys: `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` (with **symfony/ux-icons**), `trigger_class`, `aria_label`, `title` / `title_html`, `content`. See [Usage — Help modal](USAGE.md#help-modal-optional). |
+| `stateless_csrf.enabled` | `bool` | Opt-in (default `false`). Give the listed form types a stateless CSRF token id. See [below](#stateless-csrf-for-public-forms-stateless_csrf). |
+| `stateless_csrf.token_id` | `string` | `csrf_token_id` default applied to the listed types. Default `submit`. |
+| `stateless_csrf.form_types` | `list<string>` | Form type FQCNs (exact types, not their children). Default `[]`. |
+| `stateless_csrf.register_stateless_token_id` | `bool` | Prepend `token_id` to `framework.csrf_protection.stateless_token_ids`. Default `true`. |
 | `type_map` | `array` | Additional form type names (snake_case) => FQCN. Merged with built-in and optional types (e.g. Dropzone, Cropper, A2lix Translations when the package is installed). Use for custom types or to override. |
 
 **Legacy:** If `profiles` is not set (or empty), the root-level `translation_domain`, `required_label_suffix`, `defaults`, `help_modal`, `field_types`, `by_form`, and `constraint_message_convention` are used to build a single profile named `default`, so existing YAML keeps working. YAML keys `default_config` / `configs` are still accepted and normalized to `default_profile` / `profiles` (see [UPGRADING](UPGRADING.md#2011-2026-07-18)).
@@ -82,6 +87,30 @@ The bundle registers these **form type extensions** (they apply to all field typ
 | **InputGroupExtension** | Options `input_group_prefix` and `input_group_suffix` for Bootstrap-style input groups (requires the bundle form theme; see [Usage](USAGE.md#input-group-icon-at-start-or-end)). |
 | **RequiredLabelSuffixExtension** | Appends `required_label_suffix` from the profile named **`default_profile`** to required field labels. The `static_blocks` theme does not apply it to Submit/Button/Reset (`required` is undefined in `form_label_content`). |
 | **HelpModalExtension** | Option `help_modal` (`false`, `true`, or array): injects JSON into `label[data-nowo-help-modal]` for the frontend script; see [Usage](USAGE.md#help-modal-optional). |
+| **LocaleTabsExtension** | Option `locale_tabs` (`false` default, `true`, or array of partial options): adds the `nowo_locale_tabs` block prefix + `locale_tabs` view var so `locale_tabs_theme.html.twig` renders one tab per locale; see [Usage](USAGE.md#locale-tabs-one-tab-per-language). |
+| **StatelessCsrfTokenIdExtension** | Only when `stateless_csrf.enabled`: one service per listed form type (tag attribute `extended_type`) setting the `csrf_token_id` default. |
+
+## Stateless CSRF for public forms (`stateless_csrf`)
+
+Symfony stores per-form CSRF tokens (token id = form name) in the **session**. Rendering an anonymous public form (cookie-consent modal, newsletter, comment form…) therefore starts a session on every page view, writes it to the session store and makes the response `private` (no HTTP cache). Token ids listed in `framework.csrf_protection.stateless_token_ids` are validated with the `Origin`/`Referer` header and a double-submit cookie instead.
+
+```yaml
+# config/packages/nowo_form_kit.yaml
+nowo_form_kit:
+    stateless_csrf:
+        enabled: true
+        # token_id: submit                    # default; matches the Symfony recipe
+        # register_stateless_token_id: true   # adds token_id to framework.csrf_protection.stateless_token_ids
+        form_types:
+            - App\Form\NewsletterType
+            - Nowo\CookieConsentBundle\Form\CookieConsentType
+```
+
+- Off by default; with `enabled: false` nothing is registered and `form_types` is ignored.
+- Only the exact listed types are affected (Symfony applies type extensions per type, not to subclasses).
+- An explicit `csrf_token_id` passed to `createForm()` / set in the type's own options at creation time still wins.
+- Keep **authenticated / state-changing back-office forms** on the default session-backed tokens; use this for anonymous forms only.
+- Stateless validation needs `Origin`/`Referer` headers from browsers (or the recipe's `csrf_protection_controller.js` for the double-submit cookie). See [CSRF.md](CSRF.md#stateless-csrf-for-public-forms).
 
 ## Example with multiple profiles
 

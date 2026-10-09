@@ -6,12 +6,18 @@ namespace Nowo\FormKitBundle\DependencyInjection;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\AbstractGetFilterType;
+use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
+use function array_merge;
+use function array_unique;
+use function array_values;
+use function is_array;
+use function is_string;
 use function sprintf;
 
 /**
@@ -39,6 +45,8 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         if (!$container->hasExtension('framework')) {
             return;
         }
+
+        $this->prependStatelessCsrfTokenId($container);
 
         $container->prependExtensionConfig('framework', [
             'assets' => [
@@ -108,6 +116,60 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
+
+        /** @var array{enabled: bool, token_id: string, form_types: list<string>, register_stateless_token_id: bool} $statelessCsrf */
+        $statelessCsrf = $config['stateless_csrf'];
+        $this->registerStatelessCsrf($container, $statelessCsrf);
+    }
+
+    /**
+     * One {@see StatelessCsrfTokenIdExtension} service per configured form type (tag attribute
+     * `extended_type`), so the static getExtendedTypes() contract does not limit the list.
+     *
+     * @param array{enabled: bool, token_id: string, form_types: list<string>, register_stateless_token_id: bool} $statelessCsrf
+     */
+    private function registerStatelessCsrf(ContainerBuilder $container, array $statelessCsrf): void
+    {
+        $formTypes = $statelessCsrf['enabled'] ? array_values(array_unique($statelessCsrf['form_types'])) : [];
+        $container->setParameter('nowo_form_kit.stateless_csrf.enabled', $statelessCsrf['enabled']);
+        $container->setParameter('nowo_form_kit.stateless_csrf.token_id', $statelessCsrf['token_id']);
+        $container->setParameter('nowo_form_kit.stateless_csrf.form_types', $formTypes);
+
+        foreach ($formTypes as $index => $formType) {
+            $container->register('nowo_form_kit.stateless_csrf_extension.' . $index, StatelessCsrfTokenIdExtension::class)
+                ->setArguments([$statelessCsrf['token_id']])
+                ->addTag('form.type_extension', ['extended_type' => $formType])
+                ->setPublic(false);
+        }
+    }
+
+    /**
+     * When enabled (and `register_stateless_token_id` is true), adds the token id to
+     * `framework.csrf_protection.stateless_token_ids` so hosts do not have to list it twice.
+     */
+    private function prependStatelessCsrfTokenId(ContainerBuilder $container): void
+    {
+        $statelessCsrf = null;
+        foreach ($container->getExtensionConfig($this->getAlias()) as $raw) {
+            if (isset($raw['stateless_csrf']) && is_array($raw['stateless_csrf'])) {
+                $statelessCsrf = array_merge($statelessCsrf ?? [], $raw['stateless_csrf']);
+            }
+        }
+
+        if ($statelessCsrf === null || !($statelessCsrf['enabled'] ?? false) || !($statelessCsrf['register_stateless_token_id'] ?? true)) {
+            return;
+        }
+
+        $tokenId = $statelessCsrf['token_id'] ?? Configuration::DEFAULT_STATELESS_CSRF_TOKEN_ID;
+        if (!is_string($tokenId) || $tokenId === '') {
+            return;
+        }
+
+        $container->prependExtensionConfig('framework', [
+            'csrf_protection' => [
+                'stateless_token_ids' => [$tokenId],
+            ],
+        ]);
     }
 
     /**

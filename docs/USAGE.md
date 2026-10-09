@@ -15,6 +15,7 @@
 - [Custom static blocks in the form (HR, alert)](#custom-static-blocks-in-the-form-hr-alert)
 - [Input group (icon at start or end)](#input-group-icon-at-start-or-end)
 - [Help modal (optional)](#help-modal-optional)
+- [Locale tabs (one tab per language)](#locale-tabs-one-tab-per-language)
 - [Overriding bundle templates](#overriding-bundle-templates)
 - [Multi-step forms (array-based wizard)](#multi-step-forms-array-based-wizard)
   - [Steps definition](#steps-definition)
@@ -492,6 +493,58 @@ $this->addText($builder, 'full_name', [
 ```
 
 Or rely on config defaults only: `'help_modal' => true`.
+
+## Locale tabs (one tab per language)
+
+Render a compound field whose children are keyed by locale (`slugs[es]`, `slugs[en]`, a per-locale translations form…) as **one tab per locale**: WAI-ARIA `tablist` / `tab` / `tabpanel`, the default locale marked with `*`, tabs with validation errors marked (`data-invalid`, `!`) and opened first, inactive panels `hidden` server-side.
+
+**Form theme + option** (recommended):
+
+```yaml
+# config/packages/twig.yaml
+twig:
+  form_themes:
+    - '@NowoFormKitBundle/form/static_blocks.html.twig'
+    - 'bootstrap_5_layout.html.twig'
+    - '@NowoFormKitBundle/form/locale_tabs_theme.html.twig'
+```
+
+```php
+$builder->add('slugs', SlugsPerLocaleType::class, [   // children: es, en, fr…
+    'label'       => 'clinic.slugs.label',            // becomes the tab group title
+    'help'        => 'clinic.slugs.help',
+    'locale_tabs' => [
+        'locales'        => ['es', 'en', 'fr'],       // default: the field's children
+        'default_locale' => 'es',                     // default: first locale
+        'locale_labels'  => ['es' => 'Español', 'en' => 'English', 'fr' => 'Français'],
+        'label'          => 'Slug (%locale%)',        // optional child label override (already translated)
+    ],
+]);
+```
+
+**Partial** (no option needed; pass translated strings):
+
+```twig
+{{ include('@NowoFormKitBundle/form/_locale_tabs.html.twig', {
+    field: form.slugs,
+    default_child: form.slug,          {# optional: render this field in the default-locale tab #}
+    title: 'Slug'|trans,
+    tabs_label: 'Languages'|trans,
+    locales: enabled_locales,
+    testid: 'slugs-tabs',
+}, with_context: false) }}
+```
+
+Options (both ways): `locales`, `default_locale`, `active_locale` (default: request locale when listed), `activate_invalid` (default `true`), `default_child`, `tabs_id`, `testid`, `title`, `help`, `tabs_label`, `label` / `help_default` / `help_other` (`%locale%` placeholder), `locale_labels`, `mark_default`, `row_options`, `stimulus_controller` (default `tabs`, `false` to omit), `kit_attributes` (default `true`), and CSS hooks `wrapper_class`, `heading_class`, `help_class`, `tabs_class`, `nav_class`, `tab_class`, `panel_class`, `error_marker`. The full list is in the partial header.
+
+**Switching tabs** needs one of (no inline JS, strict-CSP safe):
+
+- a Stimulus controller registered as `tabs` that toggles `data-tab-id` panels — e.g. the UiKit peer `vendor/nowo-tech/ui-kit-bundle/src/Resources/assets/stimulus-peers/tabs_controller.ts` (`stimulus_controller: 'other-id'` if yours has another identifier), or
+- the UiKit IIFE `nowo-ui-tabs.js` (reads the `data-nowo-ui-tabs*` attributes emitted when `kit_attributes` is true).
+
+Without JS the active (or first invalid) tab is visible and the other panels stay `hidden`.
+
+Styling: default classes are `nowo-form-kit-locale-tabs__*`; load the optional neutral stylesheet `{{ asset('locale-tabs.css', 'nowo_form_kit') }}` or pass your own classes (Bootstrap: `nav_class: 'nav nav-tabs'`, `tab_class: 'nav-link'`; Tailwind utilities work as well — the active tab has `aria-selected="true"` / `data-active`).
 
 ## Overriding bundle templates
 

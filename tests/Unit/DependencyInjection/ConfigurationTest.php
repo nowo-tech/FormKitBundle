@@ -23,6 +23,28 @@ final class ConfigurationTest extends TestCase
         self::assertArrayHasKey('default', $processed['profiles']);
         self::assertSame('default', $processed['profiles']['default']['alias']);
         self::assertSame('messages', $processed['profiles']['default']['translation_domain']);
+        self::assertSame([
+            'enabled'                     => false,
+            'token_id'                    => 'submit',
+            'form_types'                  => [],
+            'register_stateless_token_id' => true,
+        ], $processed['stateless_csrf']);
+    }
+
+    public function testStatelessCsrfRejectsEmptyTokenId(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        (new Processor())->processConfiguration(new Configuration(), [['stateless_csrf' => ['token_id' => '']]]);
+    }
+
+    public function testStatelessCsrfAcceptsFormTypes(): void
+    {
+        $processed = (new Processor())->processConfiguration(new Configuration(), [[
+            'stateless_csrf' => ['enabled' => true, 'form_types' => ['App\\Form\\A']],
+        ]]);
+
+        self::assertTrue($processed['stateless_csrf']['enabled']);
+        self::assertSame(['App\\Form\\A'], $processed['stateless_csrf']['form_types']);
     }
 
     public function testRequiresAliasForNamedProfile(): void

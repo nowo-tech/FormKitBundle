@@ -9,7 +9,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [From 2.5.1 to 2.5.2](#from-251-to-252)
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
-- [Unreleased](#unreleased)
+- [To 2.7.0](#to-270)
 - [To 2.6.2](#to-262)
 - [To 2.6.1](#to-261)
 - [To 2.6.0](#to-260)
@@ -50,7 +50,19 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 
-## Unreleased
+## To 2.7.0
+
+From **2.6.2** — new opt-in features; no breaking changes.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+php bin/console assets:install   # only if you want locale-tabs.css
+php bin/console cache:clear
+```
+
+- **No action required.** `LocaleTabsExtension` adds an unused-by-default `locale_tabs` option (default `false`) to every form type; `stateless_csrf` is disabled by default.
+- **Replacing an app-level locale tabs partial** (e.g. `admin/_locale_field_tabs.html.twig`): include `@NowoFormKitBundle/form/_locale_tabs.html.twig` with the same variables (`field`, `default_child`, `tabs_id`, `testid`, `title`, `help`, `tabs_label`, `label`, `help_default`, `help_other`, `locales`, `default_locale`, `active_locale`). Differences: `locales` defaults to the field's children (pass `enabled_locales` explicitly); the screen-reader locale name comes from `locale_labels` instead of an app filter; styling uses `*_class` options / `locale-tabs.css` instead of hard-coded Tailwind classes. Stimulus `tabs` (`data-tab-id`) markup is unchanged, so an existing `tabs` controller keeps working. Use `include(..., with_context: false)` (or `with … only`) so outer `label`/`help` variables do not leak in.
+- **Replacing an app-level stateless CSRF type extension** (e.g. `StatelessCsrfPublicFormTypeExtension`): move its `getExtendedTypes()` list to `nowo_form_kit.stateless_csrf.form_types`, set `enabled: true` (and `token_id` if it was not `submit`), then delete the app class. `stateless_token_ids` entries already in `framework.csrf_protection` can stay.
 
 ## To 2.6.2
 
