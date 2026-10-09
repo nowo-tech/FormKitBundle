@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.6.1] - 2026-10-09](#261-2026-10-09)
 - [[2.6.0] - 2026-10-07](#260-2026-10-07)
 - [[2.5.4] - 2026-09-27](#254-2026-09-27)
 - [[2.5.3] - 2026-09-24](#253-2026-09-24)
@@ -91,6 +92,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.6.1] - 2026-10-09
+
+### Dependencies
+
+- Dev lock refreshed: Symfony 7.4.20, Twig 3.30.0, PHPStan 2.3.1, `phpstan/phpstan-symfony` 2.1.0, Rector 2.7.0, `igor-php/igor-php` 0.10.1.
+- Demo `symfony8`: Symfony 8.1.8, Twig 3.30.0 and the latest nowo-tech form widget bundles (`otp-input-bundle` 1.6.1, `tag-input-bundle` 1.3.0, `ckeditor5-editor-bundle` 1.4.12, …).
+
+[2.6.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.6.1
 
 ## [2.6.0] - 2026-10-07
 

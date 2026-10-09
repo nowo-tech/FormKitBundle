@@ -10,6 +10,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
 - [Unreleased](#unreleased)
+- [To 2.6.1](#to-261)
 - [To 2.6.0](#to-260)
 - [To 2.5.4](#to-254)
 - [To 2.4.5](#to-245)
@@ -49,6 +50,16 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 
 ## Unreleased
+
+## To 2.6.1
+
+From **2.6.0** — dependency refresh.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+- No breaking changes. No application upgrade steps.
 
 ## To 2.6.0
 
