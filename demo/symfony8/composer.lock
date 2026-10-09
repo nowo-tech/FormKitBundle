@@ -959,11 +959,12 @@
             "dist": {
                 "type": "path",
                 "url": "/var/form-kit-bundle",
-                "reference": "89e1f07c15b54c18611834d935bb85d0264405c2"
+                "reference": "babcfabf614f0ae2876df4fb16db9e94b9a27506"
             },
             "require": {
                 "doctrine/collections": "^2.2",
                 "php": ">=8.2 <8.6",
+                "symfony/asset": "^7.4 || ^8.0",
                 "symfony/config": "^7.4 || ^8.0",
                 "symfony/dependency-injection": "^7.4 || ^8.0",
                 "symfony/form": "^7.4 || ^8.0",
