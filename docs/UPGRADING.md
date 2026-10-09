@@ -9,6 +9,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [From 2.5.1 to 2.5.2](#from-251-to-252)
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
+- [To 2.7.1](#to-271)
 - [To 2.7.0](#to-270)
 - [To 2.6.2](#to-262)
 - [To 2.6.1](#to-261)
@@ -49,6 +50,10 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [1.x](#1x)
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
+
+## To 2.7.1
+
+Bug fix only. If you enabled `stateless_csrf` on 2.7.0 and forms failed with *"The extended type … does not match any of the actual extended types"*, upgrade: no configuration change needed.
 
 ## To 2.7.0
 

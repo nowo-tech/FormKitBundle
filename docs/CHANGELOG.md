@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [[Unreleased]](#unreleased)
 
+- [[2.7.1] - 2026-10-09](#271---2026-10-09)
+
 - [[2.7.0] - 2026-10-09](#270---2026-10-09)
 - [[2.6.2] - 2026-10-09](#262-2026-10-09)
 - [[2.6.1] - 2026-10-09](#261-2026-10-09)
@@ -96,6 +98,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.1] - 2026-10-09
+
+### Fixed
+
+- **`stateless_csrf` (2.7.0) broke every targeted form**: Symfony's DI form extension validates each type extension against its static `getExtendedTypes()`, which returned `[]`, so rendering e.g. the cookie-consent form threw *"The extended type … does not match any of the actual extended types"*. The configured `form_types` are now published at boot (`NowoFormKitBundle::boot()` → `StatelessCsrfTokenIdExtension::configureExtendedTypes()`); regression test with the real `DependencyInjectionExtension`.
+
 ### Changed
 
 - Development: `composer.json` pins `config.platform.php` to 8.2.0 so the committed lock stays installable on the minimum PHP; CI overrides the platform per matrix cell.
@@ -118,6 +126,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.7.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.7.1
 [2.7.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.7.0
 [2.6.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.6.2
 
