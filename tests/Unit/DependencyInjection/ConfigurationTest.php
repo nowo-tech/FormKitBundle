@@ -29,6 +29,16 @@ final class ConfigurationTest extends TestCase
             'form_types'                  => [],
             'register_stateless_token_id' => true,
         ], $processed['stateless_csrf']);
+        self::assertSame(['unlabelled_choice_aria_label' => true], $processed['accessibility']);
+    }
+
+    public function testAccessibilityUnlabelledChoiceAriaLabelCanBeDisabled(): void
+    {
+        $processed = (new Processor())->processConfiguration(new Configuration(), [[
+            'accessibility' => ['unlabelled_choice_aria_label' => false],
+        ]]);
+
+        self::assertFalse($processed['accessibility']['unlabelled_choice_aria_label']);
     }
 
     public function testStatelessCsrfRejectsEmptyTokenId(): void

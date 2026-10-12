@@ -61,6 +61,7 @@
 | `Form/Extension/HelpModalExtension.php` | Help modal option | FR-FORM-005 |
 | `Form/Extension/LocaleTabsExtension.php` | `locale_tabs` option + block prefix | FR-FORM-013 |
 | `Form/Extension/StatelessCsrfTokenIdExtension.php` | Opt-in stateless `csrf_token_id` default | FR-FORM-014 |
+| `Form/Extension/UnlabelledChoiceAriaLabelExtension.php` | `aria-label` for label-less selects (help → placeholder) | FR-FORM-015 |
 
 ## Form — data transformers
 

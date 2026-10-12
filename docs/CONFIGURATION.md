@@ -9,6 +9,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 - [Per-form defaults (`by_form`)](#per-form-defaults-by_form)
 - [Form type extensions (global)](#form-type-extensions-global)
 - [Stateless CSRF for public forms (`stateless_csrf`)](#stateless-csrf-for-public-forms-stateless_csrf)
+- [Accessibility (`accessibility`)](#accessibility-accessibility)
 - [Example with multiple profiles](#example-with-multiple-profiles)
 - [Suggested optional Composer packages](#suggested-optional-composer-packages)
 - [Optional and custom types (type_map)](#optional-and-custom-types-type_map)
@@ -38,6 +39,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `stateless_csrf.token_id` | `string` | `csrf_token_id` default applied to the listed types. Default `submit`. |
 | `stateless_csrf.form_types` | `list<string>` | Form type FQCNs (exact types, not their children). Default `[]`. |
 | `stateless_csrf.register_stateless_token_id` | `bool` | Prepend `token_id` to `framework.csrf_protection.stateless_token_ids`. Default `true`. |
+| `accessibility.unlabelled_choice_aria_label` | `bool` | Default `true`. Give non-expanded choice fields rendered with `label: false` an `aria-label` from their help, else their placeholder. See [below](#accessibility-accessibility). |
 | `type_map` | `array` | Additional form type names (snake_case) => FQCN. Merged with built-in and optional types (e.g. Dropzone, Cropper, A2lix Translations when the package is installed). Use for custom types or to override. |
 
 **Legacy:** If `profiles` is not set (or empty), the root-level `translation_domain`, `required_label_suffix`, `defaults`, `help_modal`, `field_types`, `by_form`, and `constraint_message_convention` are used to build a single profile named `default`, so existing YAML keeps working. YAML keys `default_config` / `configs` are still accepted and normalized to `default_profile` / `profiles` (see [UPGRADING](UPGRADING.md#2011-2026-07-18)).
@@ -89,6 +91,7 @@ The bundle registers these **form type extensions** (they apply to all field typ
 | **HelpModalExtension** | Option `help_modal` (`false`, `true`, or array): injects JSON into `label[data-nowo-help-modal]` for the frontend script; see [Usage](USAGE.md#help-modal-optional). |
 | **LocaleTabsExtension** | Option `locale_tabs` (`false` default, `true`, or array of partial options): adds the `nowo_locale_tabs` block prefix + `locale_tabs` view var so `locale_tabs_theme.html.twig` renders one tab per locale; see [Usage](USAGE.md#locale-tabs-one-tab-per-language). |
 | **StatelessCsrfTokenIdExtension** | Only when `stateless_csrf.enabled`: one service per listed form type (tag attribute `extended_type`) setting the `csrf_token_id` default. |
+| **UnlabelledChoiceAriaLabelExtension** | Only when `accessibility.unlabelled_choice_aria_label` (default `true`): names label-less selects from their help / placeholder. See [below](#accessibility-accessibility). |
 
 ## Stateless CSRF for public forms (`stateless_csrf`)
 
@@ -111,6 +114,24 @@ nowo_form_kit:
 - An explicit `csrf_token_id` passed to `createForm()` / set in the type's own options at creation time still wins.
 - Keep **authenticated / state-changing back-office forms** on the default session-backed tokens; use this for anonymous forms only.
 - Stateless validation needs `Origin`/`Referer` headers from browsers (or the recipe's `csrf_protection_controller.js` for the double-submit cookie). See [CSRF.md](CSRF.md#stateless-csrf-for-public-forms).
+
+## Accessibility (`accessibility`)
+
+Compact filter bars usually render selects with `label: false` (the built-in `filter` profile does), which leaves them without an accessible name: screen readers announce only "combo box, Any level". `UnlabelledChoiceAriaLabelExtension` fixes that at render time.
+
+```yaml
+# config/packages/nowo_form_kit.yaml
+nowo_form_kit:
+    accessibility:
+        unlabelled_choice_aria_label: true   # default; false = the extension is not registered
+```
+
+Rules (applied in `finishView()` to `ChoiceType` and every type extending it, e.g. `EntityType`, `EnumType`, `CountryType`):
+
+- Only when the view `label` is `false` **and** the field is not `expanded` (radios/checkboxes keep their per-option labels and a fieldset legend is the right fix there).
+- Skipped when `attr` already has `aria-label` or `aria-labelledby` — explicit names always win, and the extension is idempotent.
+- `aria-label` = translated `help` if it is a non-empty string, else translated `placeholder` (the empty option), else nothing. The field's `translation_domain` is used; `translation_domain: false` keeps the raw text. Without a translator service the raw text is used.
+- Stateless (only reads the view), safe in FrankenPHP worker mode.
 
 ## Example with multiple profiles
 

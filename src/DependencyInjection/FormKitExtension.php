@@ -7,11 +7,15 @@ namespace Nowo\FormKitBundle\DependencyInjection;
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\AbstractGetFilterType;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
+use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function array_merge;
 use function array_unique;
@@ -97,9 +101,7 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
             ];
         }
 
-        if (!isset($normalized['filter'])) {
-            $normalized['filter'] = $this->builtInFilterProfile();
-        }
+        $normalized['filter'] ??= $this->builtInFilterProfile();
 
         $defaultProfile = $config['default_profile'];
         if (!isset($normalized[$defaultProfile])) {
@@ -120,6 +122,31 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         /** @var array{enabled: bool, token_id: string, form_types: list<string>, register_stateless_token_id: bool} $statelessCsrf */
         $statelessCsrf = $config['stateless_csrf'];
         $this->registerStatelessCsrf($container, $statelessCsrf);
+
+        /** @var array{unlabelled_choice_aria_label: bool} $accessibility */
+        $accessibility = $config['accessibility'];
+        $this->registerAccessibility($container, $accessibility);
+    }
+
+    /**
+     * Registers {@see UnlabelledChoiceAriaLabelExtension} only when
+     * `accessibility.unlabelled_choice_aria_label` is enabled (default), so disabling it costs nothing.
+     *
+     * @param array{unlabelled_choice_aria_label: bool} $accessibility
+     */
+    private function registerAccessibility(ContainerBuilder $container, array $accessibility): void
+    {
+        $enabled = $accessibility['unlabelled_choice_aria_label'];
+        $container->setParameter('nowo_form_kit.accessibility.unlabelled_choice_aria_label', $enabled);
+
+        if (!$enabled) {
+            return;
+        }
+
+        $container->register(UnlabelledChoiceAriaLabelExtension::class, UnlabelledChoiceAriaLabelExtension::class)
+            ->setArguments([new Reference(TranslatorInterface::class, ContainerInterface::NULL_ON_INVALID_REFERENCE)])
+            ->addTag('form.type_extension')
+            ->setPublic(false);
     }
 
     /**

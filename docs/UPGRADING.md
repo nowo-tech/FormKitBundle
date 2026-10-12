@@ -9,6 +9,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [From 2.5.1 to 2.5.2](#from-251-to-252)
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
+- [To 2.8.0](#to-280)
 - [To 2.7.1](#to-271)
 - [To 2.7.0](#to-270)
 - [To 2.6.2](#to-262)
@@ -50,6 +51,26 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [1.x](#1x)
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
+
+## To 2.8.0
+
+From **2.7.1** — new accessibility extension, **enabled by default**; no breaking changes.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+php bin/console cache:clear
+```
+
+- **What changes in your HTML:** non-expanded `ChoiceType` fields (and subtypes such as `EntityType`) rendered with `label: false` and without `aria-label` / `aria-labelledby` now get `aria-label` from their translated `help`, else their translated `placeholder`. Labelled fields, expanded radios/checkboxes and fields that already have an accessible name are untouched. Update functional tests/snapshots that assert the exact `<select>` markup of label-less filters.
+- **Opting out:**
+
+  ```yaml
+  nowo_form_kit:
+      accessibility:
+          unlabelled_choice_aria_label: false
+  ```
+
+- **Replacing an app-level equivalent** (e.g. Beacon's `App\Shared\Form\UnlabelledChoiceAriaLabelExtension`): delete the app class and its test. Keeping both is harmless (the second extension sees the `aria-label` set by the first and does nothing) but does the work twice.
 
 ## To 2.7.1
 

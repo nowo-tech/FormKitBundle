@@ -7,11 +7,15 @@ namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 use InvalidArgumentException;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
+use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class FormKitExtensionTest extends TestCase
 {
@@ -308,5 +312,31 @@ final class FormKitExtensionTest extends TestCase
 
         self::assertFalse($container->hasExtension('framework'));
         self::assertSame([], $container->getExtensionConfig('framework'));
+    }
+
+    public function testUnlabelledChoiceAriaLabelExtensionIsRegisteredByDefault(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->load([[]], $container);
+
+        self::assertTrue($container->getParameter('nowo_form_kit.accessibility.unlabelled_choice_aria_label'));
+        self::assertTrue($container->hasDefinition(UnlabelledChoiceAriaLabelExtension::class));
+        $definition = $container->getDefinition(UnlabelledChoiceAriaLabelExtension::class);
+        self::assertSame(UnlabelledChoiceAriaLabelExtension::class, $definition->getClass());
+        self::assertFalse($definition->isPublic());
+        self::assertSame([[]], $definition->getTag('form.type_extension'));
+        $translator = $definition->getArgument(0);
+        self::assertInstanceOf(Reference::class, $translator);
+        self::assertSame(TranslatorInterface::class, (string) $translator);
+        self::assertSame(ContainerInterface::NULL_ON_INVALID_REFERENCE, $translator->getInvalidBehavior());
+    }
+
+    public function testUnlabelledChoiceAriaLabelExtensionIsNotRegisteredWhenDisabled(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->load([['accessibility' => ['unlabelled_choice_aria_label' => false]]], $container);
+
+        self::assertFalse($container->getParameter('nowo_form_kit.accessibility.unlabelled_choice_aria_label'));
+        self::assertFalse($container->hasDefinition(UnlabelledChoiceAriaLabelExtension::class));
     }
 }

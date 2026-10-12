@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [[Unreleased]](#unreleased)
 
+- [[2.8.0] - 2026-10-12](#280---2026-10-12)
 - [[2.7.1] - 2026-10-09](#271---2026-10-09)
 
 - [[2.7.0] - 2026-10-09](#270---2026-10-09)
@@ -97,6 +98,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.8.0] - 2026-10-12
+
+### Added
+
+- **Accessible names for unlabelled selects (on by default):** `UnlabelledChoiceAriaLabelExtension` (extends `ChoiceType`, so also `EntityType`, `EnumType`, `CountryType`, …). When a non-expanded choice field renders with `label: false` and has no `aria-label` / `aria-labelledby`, it sets `aria-label` from the translated `help`, else the translated `placeholder` (`translation_domain: false` keeps the raw text). Fixes compact filter bars (e.g. the built-in `filter` profile) whose selects were announced as "combo box, Any level". Toggle with `nowo_form_kit.accessibility.unlabelled_choice_aria_label` (default `true`); the service is only registered when enabled. Ported from symfony-beacon `UnlabelledChoiceAriaLabelExtension`.
+- Container parameter `nowo_form_kit.accessibility.unlabelled_choice_aria_label`.
 
 ## [2.7.1] - 2026-10-09
 
