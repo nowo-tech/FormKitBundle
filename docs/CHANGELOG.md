@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [[Unreleased]](#unreleased)
 
+- [[2.8.1] - 2026-10-13](#281---2026-10-13)
 - [[2.8.0] - 2026-10-12](#280---2026-10-12)
 - [[2.7.1] - 2026-10-09](#271---2026-10-09)
 
@@ -98,6 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Changed](#changed)
 
 ## [Unreleased]
+
+## [2.8.1] - 2026-10-13
 
 ### Fixed
 

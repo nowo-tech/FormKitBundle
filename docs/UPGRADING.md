@@ -4,11 +4,11 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Table of contents
 
-
 - [From 2.5.2 to 2.5.3](#from-252-to-253)
 - [From 2.5.1 to 2.5.2](#from-251-to-252)
 - [From 2.5.0 to 2.5.1](#from-250-to-251)
 - [From 2.4.5 to 2.5.0](#from-245-to-250)
+- [To 2.8.1](#to-281)
 - [To 2.8.0](#to-280)
 - [To 2.7.1](#to-271)
 - [To 2.7.0](#to-270)
@@ -51,8 +51,15 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 - [1.x](#1x)
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
-
 ## Unreleased
+
+## To 2.8.1
+
+From **2.8.0** — money_scale 0 rounds half up; money and css_framework docs; vitest 4.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 - **Money fields with `money_scale: 0`:** input with decimals is now rounded half up (`"12.6"` → `13`, `"12.5"` → `13`) instead of truncated (`12`). Other scales are unchanged. If you relied on truncation, validate the input (e.g. a `Regex` constraint for whole numbers) or use your own transformer.
 
@@ -139,7 +146,6 @@ php bin/console cache:clear
 ```
 
 - No application upgrade steps for require-dev Igor tooling (REQ-CS-008). Consumers do not pull `igor-php/igor-php` transitively.
-
 
 ## From 2.5.2 to 2.5.3
 
@@ -289,7 +295,6 @@ and enable `Twig\Extra\TwigExtraBundle\TwigExtraBundle`. Flex recipes usually re
 ### Twig-CS-Fixer (maintainers)
 
 Package maintainers: `composer twig:lint` / `composer twig:fix` use `.twig-cs-fixer.php` over `src/` (and `templates/` when present).
-
 
 ## 2.0.0 (2026-06-11)
 
