@@ -6,8 +6,10 @@ namespace Nowo\FormKitBundle\DependencyInjection;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\AbstractGetFilterType;
+use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
+use Nowo\FormKitBundle\Twig\CsrfActionFormExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,10 +18,12 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Extension\AbstractExtension;
 
 use function array_merge;
 use function array_unique;
 use function array_values;
+use function class_exists;
 use function is_array;
 use function is_string;
 use function sprintf;
@@ -129,6 +133,31 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         /** @var array{unlabelled_choice_aria_label: bool} $accessibility */
         $accessibility = $config['accessibility'];
         $this->registerAccessibility($container, $accessibility);
+
+        /** @var array{csrf_action_form: bool} $twig */
+        $twig = $config['twig'];
+        $this->registerTwig($container, $twig);
+    }
+
+    /**
+     * Registers {@see CsrfActionFormExtension} when Twig is installed and
+     * `twig.csrf_action_form` is enabled (default).
+     *
+     * @param array{csrf_action_form: bool} $twig
+     */
+    private function registerTwig(ContainerBuilder $container, array $twig): void
+    {
+        $enabled = $twig['csrf_action_form'] && class_exists(AbstractExtension::class);
+        $container->setParameter('nowo_form_kit.twig.csrf_action_form', $enabled);
+
+        if (!$enabled) {
+            return;
+        }
+
+        $container->register(CsrfActionFormExtension::class, CsrfActionFormExtension::class)
+            ->setArguments([new Reference(CsrfOnlyFormFactory::class)])
+            ->addTag('twig.extension')
+            ->setPublic(false);
     }
 
     /**

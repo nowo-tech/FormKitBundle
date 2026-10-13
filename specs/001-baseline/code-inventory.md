@@ -2,7 +2,7 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/form-kit-bundle`  
-**Last audited**: 2026-08-25
+**Last audited**: 2026-10-13
 
 ## Symfony config
 
@@ -109,6 +109,12 @@
 | `Resources/public/help-modal.css` | Help modal styles | FR-ASSET-001 |
 | `Resources/public/locale-tabs.css` | Optional locale tabs styles | FR-FORM-013 |
 
+## Twig extensions
+
+| Source file | Spec section | Requirement IDs |
+| --- | --- | --- |
+| `Twig/CsrfActionFormExtension.php` | `csrf_action_form()` Twig function | FR-TWIG-002 |
+
 ## Twig views
 
 | Source file | Spec section | Requirement IDs |
@@ -138,5 +144,6 @@
 | Form — static & translation types | 4 | 4 |
 | Form — multi-step wizard | 3 | 3 |
 | Frontend assets | 7 | 7 |
+| Twig extensions | 1 | 1 |
 | Twig views | 9 | 9 |
-| **Total production sources** | **56** | **56** |
+| **Total production sources** | **57** | **57** |

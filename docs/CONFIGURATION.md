@@ -10,6 +10,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 - [Form type extensions (global)](#form-type-extensions-global)
 - [Stateless CSRF for public forms (`stateless_csrf`)](#stateless-csrf-for-public-forms-stateless_csrf)
 - [Accessibility (`accessibility`)](#accessibility-accessibility)
+- [Twig helpers (`twig`)](#twig-helpers-twig)
 - [Money fields (`addMoneyType`)](#money-fields-addmoneytype)
 - [Example with multiple profiles](#example-with-multiple-profiles)
 - [Suggested optional Composer packages](#suggested-optional-composer-packages)
@@ -44,6 +45,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `stateless_csrf.form_types` | `list<string>` | Form type FQCNs (exact types, not their children). Default `[]`. |
 | `stateless_csrf.register_stateless_token_id` | `bool` | Prepend `token_id` to `framework.csrf_protection.stateless_token_ids`. Default `true`. |
 | `accessibility.unlabelled_choice_aria_label` | `bool` | Default `true`. Give non-expanded choice fields rendered with `label: false` an `aria-label` from their help, else their placeholder. See [below](#accessibility-accessibility). |
+| `twig.csrf_action_form` | `bool` | Default `true`. Register the `csrf_action_form()` Twig function (only when Twig is installed). See [below](#twig-helpers-twig). |
 | `type_map` | `array` | Additional form type names (snake_case) => FQCN. Merged with built-in and optional types (e.g. Dropzone, Cropper, A2lix Translations when the package is installed). Use for custom types or to override. |
 
 **Legacy:** If `profiles` is not set (or empty), the root-level `translation_domain`, `required_label_suffix`, `defaults`, `help_modal`, `field_types`, `by_form`, and `constraint_message_convention` are used to build a single profile named `default`, so existing YAML keeps working. YAML keys `default_config` / `configs` are still accepted and normalized to `default_profile` / `profiles` (see [UPGRADING](UPGRADING.md#2011-2026-07-18)).
@@ -180,6 +182,21 @@ Rules (applied in `finishView()` to `ChoiceType` and every type extending it, e.
 - Skipped when `attr` already has `aria-label` or `aria-labelledby` — explicit names always win, and the extension is idempotent.
 - `aria-label` = translated `help` if it is a non-empty string, else translated `placeholder` (the empty option), else nothing. The field's `translation_domain` is used; `translation_domain: false` keeps the raw text. Without a translator service the raw text is used.
 - Stateless (only reads the view), safe in FrankenPHP worker mode.
+
+## Twig helpers (`twig`)
+
+Since **2.11.0**. `CsrfActionFormExtension` (tag `twig.extension`) provides the `csrf_action_form()` Twig function on top of `CsrfOnlyFormFactory`. Usage: [CSRF.md](CSRF.md#twig-function-csrf_action_form).
+
+```yaml
+# config/packages/nowo_form_kit.yaml
+nowo_form_kit:
+    twig:
+        csrf_action_form: true   # default; false = the extension is not registered
+```
+
+- Registered only when `twig/twig` is installed (it is, through `twig/extra-bundle`).
+- Twig does not throw on duplicate function names: if the app also defines `csrf_action_form`, the extension registered last wins (app services usually load after bundle services). Remove the app function to adopt the bundle one, or set `false` to keep yours.
+- Stateless; safe in FrankenPHP worker mode.
 
 ## Money fields (`addMoneyType`)
 

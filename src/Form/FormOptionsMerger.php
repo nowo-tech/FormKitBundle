@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Form\ResolvedFormTypeInterface;
 use Symfony\Component\Translation\TranslatorBagInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -362,7 +363,7 @@ final class FormOptionsMerger
         $placeholder = $merged['placeholder'] ?? null;
         unset($merged['placeholder']);
 
-        $explicit = array_key_exists('placeholder', $options) ? $options['placeholder'] : null;
+        $explicit = $options['placeholder'] ?? null;
         if ($explicit !== null) {
             if ($explicit === false) {
                 return $this->unsetAttrPlaceholder($merged);
@@ -424,8 +425,8 @@ final class FormOptionsMerger
         if ($fqcn !== null && $fqcn !== $type) {
             $candidates[] = $fqcn;
         }
-        if ($fqcn !== null && $this->formRegistry !== null && $this->formRegistry->hasType($fqcn)) {
-            for ($resolved = $this->formRegistry->getType($fqcn)->getParent(); $resolved !== null; $resolved = $resolved->getParent()) {
+        if ($fqcn !== null && $this->formRegistry instanceof FormRegistryInterface && $this->formRegistry->hasType($fqcn)) {
+            for ($resolved = $this->formRegistry->getType($fqcn)->getParent(); $resolved instanceof ResolvedFormTypeInterface; $resolved = $resolved->getParent()) {
                 $candidates[] = $resolved->getInnerType()::class;
             }
         }

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.11.0] - 2026-10-13](#2110---2026-10-13)
 - [[2.10.0] - 2026-10-13](#2100---2026-10-13)
 - [[2.9.0] - 2026-10-13](#290---2026-10-13)
 - [[2.8.1] - 2026-10-13](#281---2026-10-13)
@@ -55,6 +56,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.11.0] - 2026-10-13
+
+### Added
+
+- **`csrf_action_form()` Twig function** (`Nowo\FormKitBundle\Twig\CsrfActionFormExtension`): `csrf_action_form(action, csrfTokenId, method = 'POST', named = true, csrfFieldName = '_token', fields = {}, fieldTypes = {}, fieldOptions = {})` returns a `FormView` built on `CsrfOnlyFormFactory` — nested `csrf_only[_token]` (`named: true`, default), flat token (`named: false`, e.g. kit `csrfFieldName: '_csrf_token'`) or CSRF + flat typed fields (`fields`, always empty prefix). The method is upper-cased. Registered (tag `twig.extension`) only when Twig is installed and the new `twig.csrf_action_form` option is `true` (default). See [CSRF.md](CSRF.md#twig-function-csrf_action_form).
+- **Config `nowo_form_kit.twig.csrf_action_form`** (`bool`, default `true`). Twig does not throw on duplicate function names (the extension registered last wins), so hosts that still ship their own `csrf_action_form` keep working; set `false` to keep only the host one explicitly.
+
+### Changed
+
+- Maintenance: `nowo-tech/phpstan-frankenphp` dev lock bumped to 1.3.0; Rector type-control cleanups in `FormOptionsMerger` (no behaviour change).
 
 ## [2.10.0] - 2026-10-13
 

@@ -2,7 +2,7 @@
 
 Form Kit ships helpers for two common host patterns:
 
-1. **CSRF-only POST actions** (toggle, revoke, delete) — token + optional flat hidden fields
+1. **CSRF-only POST actions** (toggle, revoke, delete) — token + optional flat hidden fields; also from Twig via `csrf_action_form()`
 2. **Rootless GET filters** — query-string friendly field names without CSRF
 3. **Stateless CSRF for public forms** (opt-in) — anonymous forms that must not start a session
 
@@ -75,6 +75,38 @@ Render with the usual Symfony form helpers (empty prefix → flat field names):
 ```
 
 Pass a unique `csrf_token_id` per action. Optionally override `csrf_field_name` (default `_token`) for kit UIs that expect `_csrf_token`.
+
+### Twig function `csrf_action_form()`
+
+Since **2.11.0**. Build the same forms straight from a template (shared includes, kit forks, list row buttons) without passing a form from the controller:
+
+```twig
+{# csrf_action_form(action, csrfTokenId, method = 'POST', named = true, csrfFieldName = '_token', fields = {}, fieldTypes = {}, fieldOptions = {}) #}
+
+{# Nested csrf_only[_token] (CsrfOnlyFormFactory::createNamed) #}
+{% set form = csrf_action_form(path('item_delete', {id: item.id}), 'item_delete_' ~ item.id) %}
+{{ form_start(form) }}<button type="submit">Delete</button>{{ form_end(form) }}
+
+{# Flat token with a kit field name (CsrfOnlyFormFactory::create) #}
+{% set form = csrf_action_form(path('kit_action'), 'kit_action', named: false, csrfFieldName: '_csrf_token') %}
+
+{# CSRF + flat typed fields (CsrfOnlyFormFactory::createWithFields; always empty prefix) #}
+{% set form = csrf_action_form(path('locale_switch', {locale: 'en'}), 'locale', fields: {redirect: app.request.requestUri}) %}
+{% set form = csrf_action_form(path('save'), 'save', fields: {note: ''}, fieldTypes: {note: 'text'}, fieldOptions: {note: {attr: {maxlength: 80}}}) %}
+```
+
+| Argument | Default | Notes |
+|----------|---------|-------|
+| `action` | — | Form action URL |
+| `csrfTokenId` | — | Token id the controller validates (`isCsrfTokenValid()` / form `isValid()`) |
+| `method` | `'POST'` | Upper-cased |
+| `named` | `true` | `true` → `csrf_only[_token]`; `false` → flat field. Ignored when `fields` is not empty |
+| `csrfFieldName` | `'_token'` | e.g. `'_csrf_token'` for kit forks |
+| `fields` | `{}` | Field name ⇒ default value (`null` ⇒ `''`); switches to `HiddenFieldsCsrfType` |
+| `fieldTypes` | `{}` | Field name ⇒ FormKit snake type (default `hidden`) |
+| `fieldOptions` | `{}` | Field name ⇒ Form Type options |
+
+The function is registered when Twig is installed and `nowo_form_kit.twig.csrf_action_form` is `true` (default). Twig does not reject duplicate function names (the last registered extension wins), so an app that still defines its own `csrf_action_form` keeps working; set the option to `false` to disable the bundle function. See [Configuration](CONFIGURATION.md#twig-helpers-twig).
 
 ## GET filter forms
 

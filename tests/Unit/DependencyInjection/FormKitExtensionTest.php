@@ -6,10 +6,12 @@ namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
+use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
+use Nowo\FormKitBundle\Twig\CsrfActionFormExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -338,6 +340,30 @@ final class FormKitExtensionTest extends TestCase
 
         self::assertFalse($container->getParameter('nowo_form_kit.accessibility.unlabelled_choice_aria_label'));
         self::assertFalse($container->hasDefinition(UnlabelledChoiceAriaLabelExtension::class));
+    }
+
+    public function testCsrfActionFormTwigExtensionIsRegisteredByDefault(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->load([], $container);
+
+        self::assertTrue($container->getParameter('nowo_form_kit.twig.csrf_action_form'));
+        self::assertTrue($container->hasDefinition(CsrfActionFormExtension::class));
+        $definition = $container->getDefinition(CsrfActionFormExtension::class);
+        self::assertFalse($definition->isPublic());
+        self::assertSame([[]], $definition->getTag('twig.extension'));
+        $factory = $definition->getArgument(0);
+        self::assertInstanceOf(Reference::class, $factory);
+        self::assertSame(CsrfOnlyFormFactory::class, (string) $factory);
+    }
+
+    public function testCsrfActionFormTwigExtensionIsNotRegisteredWhenDisabled(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->load([['twig' => ['csrf_action_form' => false]]], $container);
+
+        self::assertFalse($container->getParameter('nowo_form_kit.twig.csrf_action_form'));
+        self::assertFalse($container->hasDefinition(CsrfActionFormExtension::class));
     }
 
     public function testConventionRequiresTranslationInheritsGlobalDefaultPerProfile(): void

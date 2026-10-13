@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.11.0](#to-2110)
 - [To 2.10.0](#to-2100)
 - [To 2.9.0](#to-290)
 - [To 2.8.1](#to-281)
@@ -61,7 +62,23 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
-## To 2.10.0
+## To 2.11.0
+
+From **2.10.0** — `csrf_action_form()` Twig function
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+- No breaking changes. The bundle now registers the Twig function `csrf_action_form()` (on by default, `nowo_form_kit.twig.csrf_action_form`).
+- **Apps with their own `csrf_action_form` Twig function** (e.g. a host `CsrfActionTwigExtension` copied from a boilerplate): nothing breaks — Twig keeps the extension registered last, and the bundle signature/behaviour is identical. To adopt, delete the host function (and its service if it only provided that function); templates stay unchanged. If you must keep the host version, set:
+
+```yaml
+nowo_form_kit:
+    twig:
+        csrf_action_form: false
+```
+
 
 From **2.9.0** — opt-in convention_requires_translation for help/placeholder keys
 
