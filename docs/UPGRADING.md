@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.9.0](#to-290)
 - [To 2.8.1](#to-281)
 - [To 2.8.0](#to-280)
 - [To 2.7.1](#to-271)
@@ -58,6 +59,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.9.0
+
+From **2.8.1** — explicit placeholders win over convention keys; ChoiceType placeholder semantics
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 **Placeholder handling (FormOptionsMerger)** — behaviour fixes you may notice in rendered forms:
 
