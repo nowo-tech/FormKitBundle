@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 // This file is auto-generated and is for apps only. Bundles SHOULD NOT rely on its content.
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
@@ -657,7 +655,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         uuid47_secret?: scalar|Param|null, // A high-entropy secret used by the "uuid47_transformer" service. Defaults to "kernel.secret". // Default: null
  *     },
  *     html_sanitizer?: bool|array{ // HtmlSanitizer configuration
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *         sanitizers?: array<string, array{ // Default: []
  *             default_action?: "drop"|"block"|"allow"|Param, // Defines how the sanitizer must behave by default.
  *             allow_safe_elements?: bool|Param, // Allows "safe" elements and attributes. // Default: false
@@ -834,6 +832,15 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     type_map?: array<string, scalar|Param|null>,
  *     default_profile?: scalar|Param|null, // Name of the profile to use when no profile is specified (key in profiles) // Default: "default"
  *     css_framework?: scalar|Param|null, // CSS framework for CssClassUtilities (column merge + class ordering): bootstrap, tailwind, foundation, none. // Default: "bootstrap"
+ *     stateless_csrf?: array{ // Give selected (usually anonymous/public) form types a stateless CSRF token id so rendering them does not start a session. Off by default.
+ *         enabled?: bool|Param, // Default: false
+ *         token_id?: scalar|Param|null, // csrf_token_id default applied to the listed form types. Must be listed in framework.csrf_protection.stateless_token_ids. // Default: "submit"
+ *         form_types?: list<scalar|Param|null>,
+ *         register_stateless_token_id?: bool|Param, // Prepend token_id to framework.csrf_protection.stateless_token_ids (enables framework CSRF protection if it was not configured). // Default: true
+ *     },
+ *     accessibility?: array{ // Accessibility helpers applied by kit form type extensions.
+ *         unlabelled_choice_aria_label?: bool|Param, // When true (default), non-expanded ChoiceType fields (and subtypes such as EntityType) rendered with label: false and no aria-label/aria-labelledby get aria-label from their translated help, else their placeholder. // Default: true
+ *     },
  *     profiles?: array<string, array{ // Default: []
  *         alias?: scalar|Param|null, // Alias for this profile (e.g. for reference in form types)
  *         translation_domain?: scalar|Param|null, // Default: "messages"
@@ -953,7 +960,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     default_label_css_class?: scalar|Param|null, // Default CSS class for the "Select all" label (e.g. form-check-label for Bootstrap). // Default: "form-check-label"
  *     default_container_css_class?: scalar|Param|null, // Default CSS class for the outer wrapper div (toggle + choices). // Default: "form-check mb-2"
  *     translation_domain?: scalar|Param|null, // Default translation domain for the "Select all" label (bundle uses NowoSelectAllChoiceBundle). // Default: "NowoSelectAllChoiceBundle"
- *     form_theme?: scalar|Param|null, // Base form layout template used for choice widgets. Must match one of Symfony's form themes (e.g. form_div_layout.html.twig, bootstrap_5_layout.html.twig). See docs/CONFIGURATION.md. // Default: "form_div_layout.html.twig"
+ *     form_theme?: "form_div_layout.html.twig"|"form_table_layout.html.twig"|"bootstrap_5_layout.html.twig"|"bootstrap_5_horizontal_layout.html.twig"|"bootstrap_4_layout.html.twig"|"bootstrap_4_horizontal_layout.html.twig"|"bootstrap_3_layout.html.twig"|"bootstrap_3_horizontal_layout.html.twig"|"foundation_5_layout.html.twig"|"foundation_6_layout.html.twig"|"tailwind_2_layout.html.twig"|Param, // Base form layout template used for choice widgets. Must be one of Symfony's form themes (e.g. form_div_layout.html.twig, bootstrap_5_layout.html.twig). See docs/CONFIGURATION.md. // Default: "form_div_layout.html.twig"
  *     debug?: bool|Param, // When true, the frontend logs all debug/info/warn messages to the console. When false, only the initial "script loaded" message is shown. // Default: false
  * }
  * @psalm-type FosCkEditorConfig = array{
@@ -1003,7 +1010,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     length?: int|Param, // Default: 6
  *     numeric_only?: bool|Param, // Default: true
  *     uppercase?: bool|Param, // Default: true
- *     form_theme?: scalar|Param|null, // Default: "form_div_layout.html.twig"
+ *     form_theme?: "form_div_layout.html.twig"|"form_table_layout.html.twig"|"bootstrap_5_layout.html.twig"|"bootstrap_5_horizontal_layout.html.twig"|"bootstrap_4_layout.html.twig"|"bootstrap_4_horizontal_layout.html.twig"|"bootstrap_3_layout.html.twig"|"bootstrap_3_horizontal_layout.html.twig"|"foundation_5_layout.html.twig"|"foundation_6_layout.html.twig"|"tailwind_2_layout.html.twig"|Param, // Default: "form_div_layout.html.twig"
  * }
  * @psalm-type NowoPhoneInputConfig = array{
  *     country_prefix_selector?: bool|Param, // Enable country prefix selector by default // Default: true
@@ -1036,6 +1043,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     use_toggle_form_theme?: bool|Param, // Use the bundle's form theme for rendering (default) // Default: true
  *     always_empty?: bool|Param, // Always render empty value (default) // Default: true
  *     trim?: bool|Param, // Trim whitespace (default) // Default: false
+ *     javascript?: "web_component"|"stimulus"|"none"|Param, // How the toggle behaviour is attached (all CSP-safe, no inline handlers): "web_component" = widget emits one <script src> for nowo-password-toggle.js (with the CSP nonce); "stimulus" = no script tag, renders data-controller/data-action for the shipped Stimulus controller; "none" = no script tag, the host loads nowo-password-toggle.js itself. // Default: "web_component"
+ *     stimulus_controller?: scalar|Param|null, // Stimulus controller identifier used when javascript is "stimulus". // Default: "nowo-password-toggle"
+ *     csp_nonce_attribute?: scalar|Param|null, // Request attribute holding the CSP nonce; added as nonce="..." to the <script> the widget emits. Empty string disables. // Default: "csp_nonce"
  *     invalid_message?: scalar|Param|null, // Invalid message (default) // Default: "The password is invalid."
  * }
  * @psalm-type NowoPasswordStrengthConfig = array{
@@ -1093,6 +1103,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * @psalm-type NowoCkeditor5EditorConfig = array{
  *     default_profile?: scalar|Param|null, // Profile name used when the form field omits the "config" option (form option key remains "config" for BC). // Default: "default"
  *     html_sanitizer?: scalar|Param|null, // Optional service id implementing Ckeditor5HtmlSanitizerInterface, or a built-in: "allowlist" (YouTube/Vimeo iframes kept as src only) or "strict" (same sanitizer, every iframe dropped). Null (default) disables server-side sanitization (BC). // Default: null
+ *     lazy_load?: bool|Param, // Default for nowo_ckeditor5_editor_script(): when true, render the small lazy loader that injects the full editor build only once an editor becomes visible (dialog opened, panel expanded, scrolled into view). False (default) renders the full build eagerly (BC). // Default: false
  *     profiles?: array<string, array{ // Default: []
  *         toolbar?: bool|Param, // When true, CKEditor shows its toolbar (preset still controls which buttons are available). // Default: true
  *         min_height?: scalar|Param|null, // Default CSS min-height for the editable region wrapper (e.g. 240px, 12rem). // Default: "240px"
@@ -1107,18 +1118,18 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  * @psalm-type NowoTagInputConfig = array{
  *     value_format?: "array"|"string"|Param, // Default: "array"
  *     trim?: bool|Param, // Default: true
- *     pattern?: scalar|Param|null, // Default: null
+ *     pattern?: scalar|Param|null, // Regex source without delimiters (shared with the Tagify client); must compile. // Default: null
  *     whitelist?: list<scalar|Param|null>,
  *     duplicates?: bool|Param, // Default: false
  *     max_tags?: int|Param, // Maximum tags accepted from the client (fail-closed on overflow). // Default: 50
  *     dropdown_enabled?: bool|Param, // Default: true
- *     placeholder?: scalar|Param|null, // Default: ""
- *     form_theme?: scalar|Param|null, // Default: "form_div_layout.html.twig"
+ *     placeholder?: scalar|Param|null, // Default placeholder: a translation key or literal text, translated with the field translation_domain. Empty string disables it. // Default: "tag.placeholder"
+ *     form_theme?: "form_div_layout.html.twig"|"form_table_layout.html.twig"|"bootstrap_5_layout.html.twig"|"bootstrap_5_horizontal_layout.html.twig"|"bootstrap_4_layout.html.twig"|"bootstrap_4_horizontal_layout.html.twig"|"bootstrap_3_layout.html.twig"|"bootstrap_3_horizontal_layout.html.twig"|"foundation_5_layout.html.twig"|"foundation_6_layout.html.twig"|"tailwind_2_layout.html.twig"|Param, // Default: "form_div_layout.html.twig"
  * }
  * @psalm-type NowoSlideToConfirmConfig = array{
  *     default_profile?: scalar|Param|null, // Name of the profile used when the form option profile is omitted. // Default: "default"
  *     translation_domain?: scalar|Param|null, // Default translation domain for slider texts (bundle uses NowoSlideToConfirmBundle). // Default: "NowoSlideToConfirmBundle"
- *     form_theme?: scalar|Param|null, // Base form layout template. Must match a Symfony form theme (e.g. bootstrap_5_layout.html.twig). // Default: "form_div_layout.html.twig"
+ *     form_theme?: "form_div_layout.html.twig"|"form_table_layout.html.twig"|"bootstrap_5_layout.html.twig"|"bootstrap_5_horizontal_layout.html.twig"|"bootstrap_4_layout.html.twig"|"bootstrap_4_horizontal_layout.html.twig"|"bootstrap_3_layout.html.twig"|"bootstrap_3_horizontal_layout.html.twig"|"foundation_5_layout.html.twig"|"foundation_6_layout.html.twig"|"tailwind_2_layout.html.twig"|Param, // Base form layout template. Must match a supported Symfony form theme (e.g. bootstrap_5_layout.html.twig). // Default: "form_div_layout.html.twig"
  *     debug?: bool|Param, // When true, the frontend logs debug messages to the console. // Default: false
  *     profiles?: array<string, array{ // Default: {"default":{"text":"form.slide_to_confirm","confirmed_text":"form.confirmed","hint":"form.hint.default","variant":"default","threshold":0.85,"submit_on_confirm":true,"reset_on_release":true},"danger":{"text":"form.slide_to_delete","confirmed_text":"form.deleted","hint":"form.hint.danger","variant":"danger","threshold":0.92,"submit_on_confirm":true,"reset_on_release":true},"payment":{"text":"form.slide_to_pay","confirmed_text":"form.paid","hint":"form.hint.payment","variant":"payment","threshold":0.9,"submit_on_confirm":true,"reset_on_release":true},"legal":{"text":"form.slide_to_agree","confirmed_text":"form.agreed","hint":"form.hint.legal","variant":"legal","threshold":0.95,"submit_on_confirm":true,"reset_on_release":true},"publish":{"text":"form.slide_to_publish","confirmed_text":"form.published","hint":"form.hint.publish","variant":"success","threshold":0.85,"submit_on_confirm":true,"reset_on_release":true},"gate":{"text":"form.slide_to_unlock","confirmed_text":"form.unlocked","hint":"form.hint.gate","variant":"default","threshold":0.85,"submit_on_confirm":false,"reset_on_release":false}}
  *         text?: scalar|Param|null, // Default: "form.slide_to_confirm"
