@@ -17,11 +17,15 @@ use const STR_PAD_LEFT;
 /**
  * Transforms between a model "integer cents" scalar and a decimal string for a text input.
  *
- * Model:
- * - int|null (e.g. 1234 => "12.34" when scale=2)
+ * Model (transform input):
+ * - int or integer string: minor units / cents (e.g. 1234 or "1234" => "12.34" when scale=2)
+ * - float or decimal string: the human amount (e.g. 12.345 or "12.345" => "12.35" when scale=2)
+ * - null => ""
  *
- * View:
- * - string like "12.34" (comma accepted as decimal separator)
+ * View (reverseTransform input): string like "12.34" (comma accepted as decimal separator; spaces ignored).
+ * reverseTransform always returns int minor units (or null for empty input).
+ *
+ * Extra decimals beyond `scale` are rounded half up (away from zero), for every scale including 0.
  */
 final readonly class MoneyModelTransformer implements DataTransformer
 {
@@ -94,7 +98,8 @@ final readonly class MoneyModelTransformer implements DataTransformer
         $divisor = $this->divisor();
 
         if ($this->scale === 0) {
-            $result = $whole;
+            // Same half-up rounding as scale > 0 (and as float models): "12.5" => 13, not truncated to 12.
+            $result = $whole + ((int) ($fracDigits[0] ?? '0') >= 5 ? 1 : 0);
 
             return $negative ? -$result : $result;
         }

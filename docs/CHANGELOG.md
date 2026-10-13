@@ -99,6 +99,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`MoneyModelTransformer` with `money_scale: 0`:** submitted decimals are now rounded half up (`"12.6"` → `13`) like every other scale and like float model values, instead of being truncated (`"12.6"` → `12`).
+
+### Changed
+
+- **Docs:** `docs/CONFIGURATION.md` documents the root `css_framework` key (what `CssClassUtilities` does per framework) and the money transformer semantics (`int` / integer string = cents, `float` / decimal string = amount, half-up rounding).
+- **Dev:** Vitest 4 (`vitest` / `@vitest/coverage-v8` `^4.1.11`), jsdom 30; extra help-modal test for the branches Vitest 4 coverage now counts.
+
 ## [2.8.0] - 2026-10-12
 
 ### Added

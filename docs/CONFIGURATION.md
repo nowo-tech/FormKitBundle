@@ -10,6 +10,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 - [Form type extensions (global)](#form-type-extensions-global)
 - [Stateless CSRF for public forms (`stateless_csrf`)](#stateless-csrf-for-public-forms-stateless_csrf)
 - [Accessibility (`accessibility`)](#accessibility-accessibility)
+- [Money fields (`addMoneyType`)](#money-fields-addmoneytype)
 - [Example with multiple profiles](#example-with-multiple-profiles)
 - [Suggested optional Composer packages](#suggested-optional-composer-packages)
 - [Optional and custom types (type_map)](#optional-and-custom-types-type_map)
@@ -35,6 +36,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `profiles.<name>.by_form` | `array` | Per-form defaults keyed by form name / block prefix (e.g. `user_profile`). Each entry may set `defaults.attr` / `defaults.row_attr` / `defaults.help_attr` / `defaults.label` / `defaults.required` (and peers) and `fields.<field>` overrides (including `constraints`). Merged **after** `field_types`, **before** per-field options. |
 | `profiles.<name>.constraint_message_convention` | `bool` | When `true`, constraints without an explicit `message` (or `minMessage`/`maxMessage` when `min`/`max` are set) get keys `{form}.{field}.constraints.{Name}` (and `.min` / `.max` suffixes for Length-style). Put those keys in the **validators** catalog. Default: `false`. |
 | `profiles.<name>.help_modal` | `array` | Default options when a field sets `help_modal: true` (merged with per-field overrides). Keys: `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` (with **symfony/ux-icons**), `trigger_class`, `aria_label`, `title` / `title_html`, `content`. See [Usage — Help modal](USAGE.md#help-modal-optional). |
+| `css_framework` | `string` | CSS framework used by the `Nowo\FormKitBundle\Css\CssClassUtilities` service (inject it in your code): `normalizeColumnClasses()` / `normalizeColumnClassesFromString()` keep one grid column class per breakpoint (widest wins) in breakpoint order, `orderClasses()` deduplicates and sorts a class string by category (layout → flex/grid → spacing → …). One of `bootstrap` (default), `tailwind` (`col-span-*` / `md:col-span-*`), `foundation` (`small-*` / `medium-*` …), `none` (deduplicate only; no column merge, no ordering). Any other value fails container compilation. Does not change the bundle form themes or profile `attr` merging. |
 | `stateless_csrf.enabled` | `bool` | Opt-in (default `false`). Give the listed form types a stateless CSRF token id. See [below](#stateless-csrf-for-public-forms-stateless_csrf). |
 | `stateless_csrf.token_id` | `string` | `csrf_token_id` default applied to the listed types. Default `submit`. |
 | `stateless_csrf.form_types` | `list<string>` | Form type FQCNs (exact types, not their children). Default `[]`. |
@@ -132,6 +134,21 @@ Rules (applied in `finishView()` to `ChoiceType` and every type extending it, e.
 - Skipped when `attr` already has `aria-label` or `aria-labelledby` — explicit names always win, and the extension is idempotent.
 - `aria-label` = translated `help` if it is a non-empty string, else translated `placeholder` (the empty option), else nothing. The field's `translation_domain` is used; `translation_domain: false` keeps the raw text. Without a translator service the raw text is used.
 - Stateless (only reads the view), safe in FrankenPHP worker mode.
+
+## Money fields (`addMoneyType`)
+
+`addMoneyType()` / `addMoneyField()` render a text input and attach `MoneyModelTransformer` (field option `money_scale`, default `2`; `required` defaults to `false`).
+
+| Direction | Input | Result |
+|-----------|-------|--------|
+| Model → view (`transform`) | `int` or integer string (`1234`, `"1234"`) | Minor units / cents: `"12.34"` with scale 2. |
+| Model → view | `float` or decimal string (`12.345`, `"12.345"`) | The human amount, rounded to `scale`: `"12.35"`. |
+| Model → view | `null` / empty string | `""` / `"0.00"`. |
+| View → model (`reverseTransform`) | `"12.34"`, `"12,34"`, `"1 234.5"` | Always `int` minor units (`1234`, `123450`); empty input → `null`. Invalid text → transformation failure (field error). |
+
+Rounding: extra decimals beyond `scale` are rounded **half up** (away from zero for negatives) for every scale, including `money_scale: 0` (`"12.5"` → `13`, `"12.49"` → `12`). With `money_scale: 0` the model is the whole amount (no minor units).
+
+Watch out for integer strings: `"1234"` in the model is read as cents (`"12.34"`), while `"1234.0"` is read as an amount (`"1234.00"`). Persist money as `int` cents to avoid the ambiguity.
 
 ## Example with multiple profiles
 

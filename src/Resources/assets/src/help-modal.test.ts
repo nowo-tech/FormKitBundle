@@ -414,6 +414,21 @@ describe('help-modal', () => {
     expect(alone.parentElement).toBe(document.body);
   });
 
+  it('relocateAllHelpModalsToBody ignores non-HTML matches and roots without querySelectorAll', async () => {
+    const { HELP_MODAL_ROOT_ATTR, relocateAllHelpModalsToBody } = await importModuleFresh();
+
+    const panel = document.createElement('div');
+    document.body.appendChild(panel);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute(HELP_MODAL_ROOT_ATTR, '1');
+    panel.appendChild(svg);
+
+    relocateAllHelpModalsToBody(panel);
+    expect(svg.parentElement).toBe(panel);
+
+    expect(() => relocateAllHelpModalsToBody({} as ParentNode)).not.toThrow();
+  });
+
   it('MutationObserver attaches triggers for labels loaded later and portals refreshed modals', async () => {
     const { createModalElement } = await importModuleFresh();
 

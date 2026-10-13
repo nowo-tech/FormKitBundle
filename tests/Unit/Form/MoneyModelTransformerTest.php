@@ -60,6 +60,20 @@ final class MoneyModelTransformerTest extends TestCase
         self::assertSame(100, $t->reverseTransform('100'));
     }
 
+    public function testZeroScaleRoundsHalfUpLikeOtherScales(): void
+    {
+        $t = new MoneyModelTransformer(0);
+
+        // Previously truncated ("12.6" => 12) while scale > 0 and float models rounded.
+        self::assertSame(13, $t->reverseTransform('12.6'));
+        self::assertSame(13, $t->reverseTransform('12.5'));
+        self::assertSame(12, $t->reverseTransform('12.49'));
+        self::assertSame(-13, $t->reverseTransform('-12.5'));
+        self::assertSame(1, $t->reverseTransform('0,5'));
+        self::assertSame('13', $t->transform('12.6'));
+        self::assertSame($t->transform(12.6), $t->transform('12.6'));
+    }
+
     public function testReverseTransformThrowsForInvalidInputType(): void
     {
         $t = new MoneyModelTransformer(2);

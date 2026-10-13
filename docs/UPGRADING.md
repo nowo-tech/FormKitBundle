@@ -52,6 +52,10 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 
+## Unreleased
+
+- **Money fields with `money_scale: 0`:** input with decimals is now rounded half up (`"12.6"` → `13`, `"12.5"` → `13`) instead of truncated (`12`). Other scales are unchanged. If you relied on truncation, validate the input (e.g. a `Regex` constraint for whole numbers) or use your own transformer.
+
 ## To 2.8.0
 
 From **2.7.1** — new accessibility extension, **enabled by default**; no breaking changes.
