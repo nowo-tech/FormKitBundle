@@ -12,6 +12,7 @@ services:
       $defaultProfileName: '%nowo_form_kit.default_profile%'
       $formRegistry: '@?form.registry'
       $formTypeMap: '@Nowo\FormKitBundle\Form\FormTypeMap'
+      $translator: '@?translator'
 
   Nowo\FormKitBundle\Form\FormTypeMap:
     arguments:

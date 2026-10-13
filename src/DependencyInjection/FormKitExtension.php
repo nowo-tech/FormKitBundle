@@ -86,22 +86,25 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
             ];
         }
 
+        $requireTranslatedDefault = (bool) ($config['convention_requires_translation'] ?? false);
+
         $normalized = [];
         foreach ($profilesMap as $name => $c) {
             $normalized[$name] = [
-                'translation_domain'            => $c['translation_domain'],
-                'auto_placeholder'              => (bool) ($c['auto_placeholder'] ?? true),
-                'auto_help'                     => (bool) ($c['auto_help'] ?? true),
-                'required_label_suffix'         => $c['required_label_suffix'] ?? null,
-                'help_modal'                    => $c['help_modal'] ?? [],
-                'defaults'                      => $c['defaults'],
-                'field_types'                   => $c['field_types'],
-                'constraint_message_convention' => (bool) ($c['constraint_message_convention'] ?? false),
-                'by_form'                       => $c['by_form'] ?? [],
+                'translation_domain'              => $c['translation_domain'],
+                'auto_placeholder'                => (bool) ($c['auto_placeholder'] ?? true),
+                'auto_help'                       => (bool) ($c['auto_help'] ?? true),
+                'convention_requires_translation' => (bool) ($c['convention_requires_translation'] ?? $requireTranslatedDefault),
+                'required_label_suffix'           => $c['required_label_suffix'] ?? null,
+                'help_modal'                      => $c['help_modal'] ?? [],
+                'defaults'                        => $c['defaults'],
+                'field_types'                     => $c['field_types'],
+                'constraint_message_convention'   => (bool) ($c['constraint_message_convention'] ?? false),
+                'by_form'                         => $c['by_form'] ?? [],
             ];
         }
 
-        $normalized['filter'] ??= $this->builtInFilterProfile();
+        $normalized['filter'] ??= $this->builtInFilterProfile($requireTranslatedDefault);
 
         $defaultProfile = $config['default_profile'];
         if (!isset($normalized[$defaultProfile])) {
@@ -204,15 +207,16 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
      *
      * @return array<string, mixed>
      */
-    private function builtInFilterProfile(): array
+    private function builtInFilterProfile(bool $conventionRequiresTranslation): array
     {
         return [
-            'translation_domain'    => 'messages',
-            'auto_placeholder'      => true,
-            'auto_help'             => true,
-            'required_label_suffix' => null,
-            'help_modal'            => [],
-            'defaults'              => [
+            'translation_domain'              => 'messages',
+            'auto_placeholder'                => true,
+            'auto_help'                       => true,
+            'convention_requires_translation' => $conventionRequiresTranslation,
+            'required_label_suffix'           => null,
+            'help_modal'                      => [],
+            'defaults'                        => [
                 'label'     => false,
                 'required'  => false,
                 'attr'      => [],

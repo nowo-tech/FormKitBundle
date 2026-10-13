@@ -17,10 +17,13 @@ use Symfony\Component\Form\Extension\Core\Type\LocaleType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Translation\TranslatorBagInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function array_key_exists;
 use function in_array;
 use function is_array;
+use function is_string;
 use function sprintf;
 
 /**
@@ -36,6 +39,12 @@ use function sprintf;
  *
  * Optional constraint_message_convention: constraints without an explicit message get
  * "{form}.{field}.constraints.{ConstraintName}" (validators catalog).
+ *
+ * Optional convention_requires_translation: the auto help / placeholder convention keys are only
+ * applied when the key exists in the current locale's catalogue (fallbacks included) for the field's
+ * translation domain. Labels are never affected. Requires a translator implementing
+ * {@see TranslatorBagInterface}; otherwise the flag has no effect. The service keeps no per-request
+ * state (the catalogue is looked up on every resolve()), so it is safe in long-running workers.
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
@@ -81,6 +90,7 @@ final class FormOptionsMerger
      *     translation_domain: string,
      *     auto_placeholder?: bool,
      *     auto_help?: bool,
+     *     convention_requires_translation?: bool,
      *     defaults: array{
      *         attr: array<string, mixed>,
      *         row_attr: array<string, mixed>,
@@ -112,6 +122,7 @@ final class FormOptionsMerger
         private readonly ConstraintDefinitionFactory $constraintDefinitionFactory,
         private readonly ?FormRegistryInterface $formRegistry = null,
         private readonly ?FormTypeMap $formTypeMap = null,
+        private readonly ?TranslatorInterface $translator = null,
     ) {
     }
 
@@ -142,6 +153,7 @@ final class FormOptionsMerger
         $messageConvention = (bool) ($config['constraint_message_convention'] ?? false);
         $autoPlaceholder   = (bool) ($config['auto_placeholder'] ?? true);
         $autoHelp          = (bool) ($config['auto_help'] ?? true);
+        $requireTranslated = (bool) ($config['convention_requires_translation'] ?? false);
 
         $fieldNameSnake = $this->camelCaseToSnakeCase($fieldName);
         $baseKey        = $formName . '.' . $fieldNameSnake;
@@ -200,14 +212,22 @@ final class FormOptionsMerger
         $merged             = $this->arrayReplaceRecursive($merged, $formDefaults);
         $merged             = $this->arrayReplaceRecursive($merged, $formField);
         $merged             = $this->arrayReplaceRecursive($merged, $optionsForMerge);
+        $catalogueDomain    = $requireTranslated ? $this->catalogueDomain($merged) : null;
         $role               = $this->placeholderRole($type);
         $hasRootPlaceholder = ($merged['placeholder'] ?? null) !== null;
         $merged             = $role === self::ROLE_CHOICE
             ? $this->normalizeChoicePlaceholder($merged, [$optionsForMerge, $formField, $typeDefaults])
             : $this->normalizePlaceholderToAttr($merged, $options);
-        if ($autoPlaceholder && $role === self::ROLE_INPUT && !$hasRootPlaceholder && !$this->hasAttrPlaceholder($merged)) {
+        if ($autoPlaceholder && $role === self::ROLE_INPUT && !$hasRootPlaceholder && !$this->hasAttrPlaceholder($merged)
+            && (!$requireTranslated || $this->isTranslated($baseKey . '.placeholder', $catalogueDomain))) {
             // Convention key only when no layer set (or disabled) a placeholder; keep it first in attr.
             $merged['attr'] = ['placeholder' => $baseKey . '.placeholder'] + $this->attrOf($merged);
+        }
+        if ($autoHelp && $requireTranslated
+            && !$this->anyLayerHas('help', [$defaults, $typeDefaults, $formDefaults, $formField, $optionsForMerge])
+            && !$this->isTranslated($baseKey . '.help', $catalogueDomain)) {
+            // Convention help key without a translation: drop it instead of rendering the raw key.
+            unset($merged['help']);
         }
 
         $merged = $this->removeExplicitFalseConventionKeys($merged, $options);
@@ -219,6 +239,53 @@ final class FormOptionsMerger
         }
 
         return $this->stripButtonIncompatibleOptions($merged, $typeShortName);
+    }
+
+    /**
+     * Translation domain used to look up convention keys ({@code null} when translation is disabled
+     * for the field with {@code translation_domain: false}). Symfony's default domain is "messages".
+     *
+     * @param array<string, mixed> $merged
+     */
+    private function catalogueDomain(array $merged): ?string
+    {
+        $domain = $merged['translation_domain'] ?? 'messages';
+        if ($domain === false) {
+            return null;
+        }
+
+        return is_string($domain) && $domain !== '' ? $domain : 'messages';
+    }
+
+    /**
+     * Whether a convention key exists in the translator catalogue for the current locale (fallback
+     * catalogues included). Without a {@see TranslatorBagInterface} translator the flag has no effect,
+     * so every key counts as translated.
+     */
+    private function isTranslated(string $key, ?string $domain): bool
+    {
+        if (!$this->translator instanceof TranslatorBagInterface) {
+            return true;
+        }
+        if ($domain === null) {
+            return false;
+        }
+
+        return $this->translator->getCatalogue()->has($key, $domain);
+    }
+
+    /**
+     * @param list<array<string, mixed>> $layers
+     */
+    private function anyLayerHas(string $key, array $layers): bool
+    {
+        foreach ($layers as $layer) {
+            if (array_key_exists($key, $layer)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

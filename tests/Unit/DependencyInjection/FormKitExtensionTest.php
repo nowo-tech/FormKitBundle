@@ -339,4 +339,39 @@ final class FormKitExtensionTest extends TestCase
         self::assertFalse($container->getParameter('nowo_form_kit.accessibility.unlabelled_choice_aria_label'));
         self::assertFalse($container->hasDefinition(UnlabelledChoiceAriaLabelExtension::class));
     }
+
+    public function testConventionRequiresTranslationInheritsGlobalDefaultPerProfile(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->load([[
+            'convention_requires_translation' => true,
+            'default_profile'                 => 'main',
+            'profiles'                        => [
+                'main'  => ['alias' => 'main'],
+                'loose' => ['alias' => 'loose', 'convention_requires_translation' => false],
+            ],
+        ]], $container);
+
+        /** @var array<string, array<string, mixed>> $profiles */
+        $profiles = $container->getParameter('nowo_form_kit.profiles');
+        self::assertTrue($profiles['main']['convention_requires_translation']);
+        self::assertFalse($profiles['loose']['convention_requires_translation']);
+        self::assertTrue($profiles['filter']['convention_requires_translation']);
+    }
+
+    public function testConventionRequiresTranslationDefaultsToFalseAndTranslatorIsOptional(): void
+    {
+        $container = new ContainerBuilder();
+        (new FormKitExtension())->load([[]], $container);
+
+        /** @var array<string, array<string, mixed>> $profiles */
+        $profiles = $container->getParameter('nowo_form_kit.profiles');
+        self::assertFalse($profiles['default']['convention_requires_translation']);
+        self::assertFalse($profiles['filter']['convention_requires_translation']);
+
+        $translator = $container->getDefinition(FormOptionsMerger::class)->getArgument('$translator');
+        self::assertInstanceOf(Reference::class, $translator);
+        self::assertSame('translator', (string) $translator);
+        self::assertSame(ContainerInterface::IGNORE_ON_INVALID_REFERENCE, $translator->getInvalidBehavior());
+    }
 }

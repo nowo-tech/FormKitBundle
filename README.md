@@ -15,7 +15,7 @@ This bundle is **FrankenPHP worker mode friendly** (kernel reused / `FRANKENPHP_
 ## Features
 
 - **Usage strategies:** **Options** (`FormOptionsTrait` + FQCN), **Kit** (`FormKitTrait` / `FormKitAbstractType` + snake_case), **Controller** (`FormKitControllerTrait`), **Wrapped** (`AbstractFormKitWrappedType`). See [Usage — strategies](docs/USAGE.md#usage-strategies).
-- **Convention-based labels, placeholder and help:** Default translation keys are `{form_snake}.{field_snake}.label`, `.placeholder`, `.help`. Set any to `false` in field options to disable.
+- **Convention-based labels, placeholder and help:** Default translation keys are `{form_snake}.{field_snake}.label`, `.placeholder`, `.help`. Set any to `false` in field options to disable. Opt in to `convention_requires_translation` to apply the help / placeholder keys only when they are translated ([Configuration](docs/CONFIGURATION.md#convention-keys-only-when-translated-convention_requires_translation)).
 - **Multiple profiles:** Define named profiles (e.g. `default`, `bootstrap`) with `translation_domain`, `defaults.attr`, `defaults.row_attr`, `by_form`, and per-field-type options. Choose the active profile per form via `#[FormKitConfig('bootstrap')]` or `setFormKitConfigName()` (**named-config** technique).
 - **Cascading merge:** Options are merged in order: profile defaults → field type → `by_form` → field options. Explicit field options override.
 - **Options strategy helpers:** `addText()`, `addEmail()`, … Prefer **`withBuilder($builder, …)` + `addTextField()`** (**bound-builder**). Or **array-build** with `buildFormFromArray()`.

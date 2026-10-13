@@ -24,6 +24,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `profiles` | `array` | Named profiles. Key = profile name (e.g. `default`, `bootstrap`). Each value has: |
 | `profiles.<name>.alias` | `string` | **Required.** Alias for this profile (e.g. for reference in form types or UI). |
 | `profiles.<name>.translation_domain` | `string` | Translation domain for labels, placeholders, help. Default: `messages`. |
+| `profiles.<name>.convention_requires_translation` | `bool\|null` | When `true`, the auto **help** and auto **placeholder** convention keys (`{form}.{field}.help` / `.placeholder`) are only applied if the key exists in the translator catalogue (current locale, fallback locales included) for the field's translation domain. Labels are never affected; explicit / configured values always win. `null` (default) inherits the root `convention_requires_translation` (default `false` = always apply the keys). See [Convention keys only when translated](#convention-keys-only-when-translated-convention_requires_translation). |
 | `profiles.<name>.required_label_suffix` | `string\|null` | Appended to the label when the field is required (e.g. ` *`). `null` or empty disables. **`RequiredLabelSuffixExtension`** reads this from the profile whose key equals **`default_profile`** (not from the form’s `setFormKitConfigName()`), and injects `required_label_suffix` into the view for all forms. The `static_blocks` theme skips the suffix when `required` is not in the block scope (Submit/Button/Reset). |
 | `profiles.<name>.defaults.attr` | `array` | Default HTML attributes for every field (e.g. `class: form-control`). |
 | `profiles.<name>.defaults.row_attr` | `array` | Default HTML attributes for the form row wrapper (e.g. `class: mb-3`). |
@@ -36,6 +37,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `profiles.<name>.by_form` | `array` | Per-form defaults keyed by form name / block prefix (e.g. `user_profile`). Each entry may set `defaults.attr` / `defaults.row_attr` / `defaults.help_attr` / `defaults.label` / `defaults.required` (and peers) and `fields.<field>` overrides (including `constraints`). Merged **after** `field_types`, **before** per-field options. |
 | `profiles.<name>.constraint_message_convention` | `bool` | When `true`, constraints without an explicit `message` (or `minMessage`/`maxMessage` when `min`/`max` are set) get keys `{form}.{field}.constraints.{Name}` (and `.min` / `.max` suffixes for Length-style). Put those keys in the **validators** catalog. Default: `false`. |
 | `profiles.<name>.help_modal` | `array` | Default options when a field sets `help_modal: true` (merged with per-field overrides). Keys: `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` (with **symfony/ux-icons**), `trigger_class`, `aria_label`, `title` / `title_html`, `content`. See [Usage — Help modal](USAGE.md#help-modal-optional). |
+| `convention_requires_translation` | `bool` | Global default for `profiles.<name>.convention_requires_translation` (also used by the built-in `filter` profile). Default: `false`. |
 | `css_framework` | `string` | CSS framework used by the `Nowo\FormKitBundle\Css\CssClassUtilities` service (inject it in your code): `normalizeColumnClasses()` / `normalizeColumnClassesFromString()` keep one grid column class per breakpoint (widest wins) in breakpoint order, `orderClasses()` deduplicates and sorts a class string by category (layout → flex/grid → spacing → …). One of `bootstrap` (default), `tailwind` (`col-span-*` / `md:col-span-*`), `foundation` (`small-*` / `medium-*` …), `none` (deduplicate only; no column merge, no ordering). Any other value fails container compilation. Does not change the bundle form themes or profile `attr` merging. |
 | `stateless_csrf.enabled` | `bool` | Opt-in (default `false`). Give the listed form types a stateless CSRF token id. See [below](#stateless-csrf-for-public-forms-stateless_csrf). |
 | `stateless_csrf.token_id` | `string` | `csrf_token_id` default applied to the listed types. Default `submit`. |
@@ -67,6 +69,40 @@ The `{form}.{field}.placeholder` convention key (`auto_placeholder: true`) is on
 - **Checkbox, radio and hidden fields** (and subtypes) never get the convention key; an explicit `placeholder` / `attr.placeholder` is still honoured.
 
 Subtypes are detected through the Symfony form registry (`form.registry`) and the `type_map`; without a registry, the built-in short names / FQCNs are recognised.
+
+### Convention keys only when translated (`convention_requires_translation`)
+
+By default every text-like field gets `help: {form}.{field}.help` and `attr.placeholder: {form}.{field}.placeholder`, so a field without those translations renders the raw key. Set `auto_help` / `auto_placeholder` to `false` to drop them everywhere, or opt in to `convention_requires_translation` to keep them **only where a translation exists**:
+
+```yaml
+nowo_form_kit:
+    convention_requires_translation: true    # global default for every profile
+    profiles:
+        default:
+            alias: default
+            translation_domain: forms
+        legacy:
+            alias: legacy
+            convention_requires_translation: false   # per-profile override
+```
+
+```yaml
+# translations/forms.es.yaml
+contact:
+    name:
+        label: Nombre
+        help: Tu nombre completo      # help applied; no placeholder key → no attr.placeholder
+```
+
+How it works and caveats:
+
+- The check is `TranslatorBagInterface::getCatalogue()->has($key, $domain)`: the **current translator locale** plus its **fallback catalogues**, and the field's effective `translation_domain` (a per-field `translation_domain` override is honoured; `translation_domain: false` means "not translated", so the keys are skipped).
+- **Labels are never affected** — they always get `{form}.{field}.label`.
+- **Explicit options always win:** a `help` / `placeholder` / `attr.placeholder` set in PHP, `defaults`, `field_types` or `by_form` is applied as-is, translated or not. `auto_help: false` / `auto_placeholder: false` still disable the keys entirely.
+- **Translator is optional:** the bundle injects `@?translator`. Without a translator, or with one that does not implement `TranslatorBagInterface` (e.g. `IdentityTranslator` when `framework.translator` is disabled), the flag has **no effect** and the keys are applied as before.
+- **Locale at build time vs render time:** the decision is taken when the form is built (`FormOptionsMerger::resolve()`), using the translator locale at that moment. If you build a form in one locale and render it in another (switching `LocaleSwitcher` in between, building before the locale listener runs, or in console / messenger contexts without a request locale), a key may be kept or dropped according to the build locale. Configure fallback locales so every key you rely on exists in at least one of them.
+- **Profiler:** fields whose help / placeholder key is dropped no longer render the key, so those keys stop appearing as *missing* messages in the Symfony translation profiler panel. Use `bin/console debug:translation <locale> --only-missing`, or keep the flag off in development, if you rely on the profiler to find untranslated help / placeholders.
+- **Long-running workers** (FrankenPHP / RoadRunner): the merger keeps no per-request state; the catalogue is looked up on every `resolve()` through the translator, so locale changes between requests are honoured.
 
 ## Per-form defaults (`by_form`)
 

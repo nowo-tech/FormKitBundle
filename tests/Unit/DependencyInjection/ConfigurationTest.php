@@ -7,6 +7,7 @@ namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 use Nowo\FormKitBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Symfony\Component\Config\Definition\Processor;
 
 final class ConfigurationTest extends TestCase
@@ -178,5 +179,42 @@ final class ConfigurationTest extends TestCase
         self::assertFalse($processed['profiles']['filter']['defaults']['label']);
         self::assertFalse($processed['profiles']['filter']['defaults']['required']);
         self::assertTrue($processed['profiles']['filter']['field_types']['choice']['required']);
+    }
+
+    public function testConventionRequiresTranslationDefaults(): void
+    {
+        $processed = (new Processor())->processConfiguration(new Configuration(), [[
+            'profiles' => ['main' => ['alias' => 'main']],
+        ]]);
+
+        self::assertFalse($processed['convention_requires_translation']);
+        self::assertNull($processed['profiles']['main']['convention_requires_translation']);
+    }
+
+    public function testConventionRequiresTranslationAcceptsBooleans(): void
+    {
+        $processed = (new Processor())->processConfiguration(new Configuration(), [[
+            'convention_requires_translation' => true,
+            'profiles'                        => ['main' => ['alias' => 'main', 'convention_requires_translation' => false]],
+        ]]);
+
+        self::assertTrue($processed['convention_requires_translation']);
+        self::assertFalse($processed['profiles']['main']['convention_requires_translation']);
+    }
+
+    public function testConventionRequiresTranslationRejectsNonBoolean(): void
+    {
+        $this->expectException(InvalidTypeException::class);
+
+        (new Processor())->processConfiguration(new Configuration(), [[
+            'profiles' => ['main' => ['alias' => 'main', 'convention_requires_translation' => 'yes']],
+        ]]);
+    }
+
+    public function testGlobalConventionRequiresTranslationRejectsNonBoolean(): void
+    {
+        $this->expectException(InvalidTypeException::class);
+
+        (new Processor())->processConfiguration(new Configuration(), [['convention_requires_translation' => 'yes']]);
     }
 }

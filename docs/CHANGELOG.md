@@ -55,6 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`convention_requires_translation`** (opt-in, per profile + root-level global default, default `false`): when `true`, `FormOptionsMerger` applies the auto help / placeholder convention keys (`{form}.{field}.help` / `.placeholder`) only if the key exists in the translator catalogue (current locale, fallback locales included) for the field's translation domain. Labels are never affected and explicit / configured values still win. The translator is injected as an optional dependency (`@?translator`); without a `TranslatorBagInterface` translator the flag has no effect. See [Configuration](CONFIGURATION.md#convention-keys-only-when-translated-convention_requires_translation).
+
 ## [2.9.0] - 2026-10-13
 
 ### Fixed
