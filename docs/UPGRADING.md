@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.12.0](#to-2120)
 - [To 2.11.0](#to-2110)
 - [To 2.10.0](#to-2100)
 - [To 2.9.0](#to-290)
@@ -61,6 +62,20 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.12.0
+
+From **2.11.0** — opt-in combobox Stimulus peer
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+- No breaking changes, no PHP / Twig / config change. The new `combobox` peer is a TypeScript source under `src/Resources/assets/stimulus-peers/`; nothing loads it unless you import it ([Usage — Combobox](USAGE.md#combobox-stimulus-peer-optional)).
+- **Replacing an app-level combobox controller** (e.g. Beacon `assets/controllers/combobox_controller.ts`): replace the host file with a re-export of the kit peer (or register the kit class under `combobox`), then delete the host test. Targets and action names are the same, so templates and form types keep working. Differences to check:
+  - The default required message is now `"Please select an option."`; `data-required-message` on the query still wins, or set `data-combobox-required-message-value` on the controller element.
+  - The list stays closed after a selection (the host version reopened it on the focus that followed), and `Enter` on a closed list no longer auto-picks the first option.
+  - The peer adds `role` / `aria-*` attributes and ids that are missing, toggles `is-active` on the keyboard-active option and closes on outside click; E2E selectors relying on the exact markup may need an update.
 
 ## To 2.11.0
 

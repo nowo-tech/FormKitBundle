@@ -15,6 +15,7 @@
 - [Custom static blocks in the form (HR, alert)](#custom-static-blocks-in-the-form-hr-alert)
 - [Input group (icon at start or end)](#input-group-icon-at-start-or-end)
 - [Help modal (optional)](#help-modal-optional)
+- [Combobox (Stimulus peer, optional)](#combobox-stimulus-peer-optional)
 - [Locale tabs (one tab per language)](#locale-tabs-one-tab-per-language)
 - [Overriding bundle templates](#overriding-bundle-templates)
 - [Multi-step forms (array-based wizard)](#multi-step-forms-array-based-wizard)
@@ -508,6 +509,75 @@ $this->addText($builder, 'full_name', [
 ```
 
 Or rely on config defaults only: `'help_modal' => true`.
+
+## Combobox (Stimulus peer, optional)
+
+Since **2.12.0** the bundle ships an **opt-in** Stimulus controller for a searchable picker over a short, server-rendered list of options (WAI-ARIA 1.2 editable combobox with list autocomplete): `src/Resources/assets/stimulus-peers/combobox_controller.ts`, identifier **`combobox`**. It is not built into `public/` and not registered by the bundle; nothing changes until you import it. Your app needs `@hotwired/stimulus` (Symfony UX StimulusBundle, AssetMapper or Vite). Spec: [`specs/003-combobox-peer`](../specs/003-combobox-peer/spec.md).
+
+**1. Register the peer** (keep the vendor path; adjust the relative path to your `assets/` layout):
+
+```ts
+// assets/controllers/combobox_controller.ts (host re-export; Stimulus Bridge / Vite)
+export { default } from '../../vendor/nowo-tech/form-kit-bundle/src/Resources/assets/stimulus-peers/combobox_controller';
+```
+
+```ts
+// or in your Stimulus bootstrap
+import ComboboxController from '../vendor/nowo-tech/form-kit-bundle/src/Resources/assets/stimulus-peers/combobox_controller';
+app.register('combobox', ComboboxController);
+```
+
+With AssetMapper, add the path to `importmap.php` or `assets/controllers.json` the same way as other vendor controllers (a TypeScript-capable pipeline such as `sensiolabs/typescript-bundle` is needed for `.ts` sources).
+
+**2. Markup** — the form type only needs the data attributes; the options list is plain Twig:
+
+```php
+$builder
+    ->add('canonical_uuid', HiddenType::class, [
+        'attr' => ['data-combobox-target' => 'value'],
+    ])
+    ->add('query', SearchType::class, [
+        'mapped' => false,
+        'required' => false,
+        'attr' => [
+            'autocomplete' => 'off',
+            'data-combobox-target' => 'query',
+            'data-action' => 'input->combobox#filter focus->combobox#onQueryFocus keydown->combobox#onQueryKeydown',
+        ],
+    ]);
+```
+
+```twig
+{{ form_start(form, {attr: {
+    'data-controller': 'combobox',
+    'data-action': 'submit->combobox#requireValue',
+    'data-combobox-required-message-value': 'issue.duplicate.choose'|trans,
+}}) }}
+    {{ form_row(form.canonical_uuid) }}
+    {{ form_label(form.query) }}
+    {{ form_widget(form.query) }}
+    <ul data-combobox-target="list" hidden>
+        {% for item in candidates %}
+            <li role="presentation">
+                <button type="button" data-combobox-target="option" data-action="combobox#select"
+                        data-value="{{ item.id }}"
+                        data-label="{{ item.title|e('html_attr') }}"
+                        data-search="{{ (item.title ~ ' ' ~ item.id)|e('html_attr') }}">{{ item.title }}</button>
+            </li>
+        {% endfor %}
+        <li data-combobox-target="empty" hidden>{{ 'search.no_results'|trans }}</li>
+    </ul>
+{{ form_end(form) }}
+```
+
+| Kind | Name | Notes |
+|------|------|-------|
+| targets | `query`, `value`, `list`, `option`, `empty` (optional) | `option`: `data-value` (required to be selectable), `data-label` (default: trimmed text), `data-search` (default: text) |
+| values | `open` (`false`), `requiredMessage` (`''`), `selectedClass` (`is-selected`), `activeClass` (`is-active`) | `requiredMessage` empty → query `data-required-message` → `"Please select an option."` |
+| actions | `filter`, `onQueryFocus`, `onQueryKeydown`, `select`, `open`, `close`, `toggle`, `requireValue` | `requireValue` on the form `submit` blocks it while `value` is empty |
+| events | `combobox:change` (`detail: {value, label}`) | The `value` input also gets a bubbling `change` |
+
+**Accessibility / keyboard.** On connect the peer fills only missing attributes: `role="combobox"`, `aria-autocomplete="list"`, `aria-controls`, `aria-expanded`, `autocomplete="off"` on the query; `role="listbox"` and an id on the list; `role="option"`, ids and `aria-selected` on options. `ArrowDown` / `ArrowUp` open the list and move the active option (`aria-activedescendant`, class `activeClass`, wraps around); `Alt+ArrowDown` only opens; `Enter` picks the active option (or the first match when nothing is selected); `Escape` / `Tab` / a click outside close the list. Style it with your own CSS (`[data-combobox-target="option"].is-active`, `.is-selected`).
 
 ## Locale tabs (one tab per language)
 

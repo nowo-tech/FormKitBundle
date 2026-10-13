@@ -108,6 +108,8 @@
 | `Resources/public/help-modal.js` | Built help modal | FR-ASSET-001 |
 | `Resources/public/help-modal.css` | Help modal styles | FR-ASSET-001 |
 | `Resources/public/locale-tabs.css` | Optional locale tabs styles | FR-FORM-013 |
+| `Resources/assets/stimulus-peers/combobox_controller.ts` | Opt-in combobox Stimulus peer | FR-ASSET-003 |
+| `Resources/assets/stimulus-peers/combobox_controller.test.ts` | Combobox peer tests | FR-ASSET-003 |
 
 ## Twig extensions
 
@@ -143,7 +145,7 @@
 | Form — constraints | 1 | 1 |
 | Form — static & translation types | 4 | 4 |
 | Form — multi-step wizard | 3 | 3 |
-| Frontend assets | 7 | 7 |
+| Frontend assets | 9 | 9 |
 | Twig extensions | 1 | 1 |
 | Twig views | 9 | 9 |
-| **Total production sources** | **57** | **57** |
+| **Total production sources** | **59** | **59** |

@@ -30,6 +30,7 @@ This bundle is **FrankenPHP worker mode friendly** (kernel reused / `FRANKENPHP_
 - **Stateless CSRF for public forms (opt-in):** `nowo_form_kit.stateless_csrf` gives listed form types a stateless `csrf_token_id` (default `submit`) so rendering anonymous forms does not start a session. See [docs/CSRF.md](docs/CSRF.md#stateless-csrf-for-public-forms).
 - **Accessible label-less selects (on by default):** choice fields rendered with `label: false` get `aria-label` from their help / placeholder (`nowo_form_kit.accessibility.unlabelled_choice_aria_label`). See [Configuration — Accessibility](docs/CONFIGURATION.md#accessibility-accessibility).
 - **Per-locale tabs:** form theme `locale_tabs_theme.html.twig` + `locale_tabs` option (or the `_locale_tabs.html.twig` partial) renders a compound field keyed by locale as one ARIA tab per language; works with a Stimulus `tabs` controller or the UiKit `nowo-ui-tabs.js` IIFE, no inline JS. See [Usage — Locale tabs](docs/USAGE.md#locale-tabs-one-tab-per-language).
+- **Combobox Stimulus peer (opt-in, 2.12.0):** `stimulus-peers/combobox_controller.ts` (identifier `combobox`) — ARIA 1.2 searchable picker with keyboard support for hosts that run Stimulus. See [Usage — Combobox](docs/USAGE.md#combobox-stimulus-peer-optional).
 - **Form type extensions:** **InputGroupExtension**, **RequiredLabelSuffixExtension**, **HelpModalExtension**, **LocaleTabsExtension**, opt-in **StatelessCsrfTokenIdExtension**, **UnlabelledChoiceAriaLabelExtension** (on by default). See [Configuration](docs/CONFIGURATION.md) and [Usage](docs/USAGE.md#help-modal-optional).
 
 ## Installation
@@ -118,6 +119,7 @@ Developer-facing docs and comments (Markdown, PHPDoc, JSDoc) are **English only*
 - [FrankenPHP worker audit (`FRANKENPHP_RESET_KERNEL` unset/false)](docs/FRANKENPHP-WORKER-AUDIT.md)
 - [Help modal (field option + frontend script)](docs/USAGE.md#help-modal-optional)
 - [Overriding bundle templates](docs/USAGE.md#overriding-bundle-templates)
+- [Combobox Stimulus peer (opt-in)](docs/USAGE.md#combobox-stimulus-peer-optional)
 
 ## Tests and coverage
 

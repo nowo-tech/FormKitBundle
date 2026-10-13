@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.12.0] - 2026-10-13](#2120---2026-10-13)
 - [[2.11.0] - 2026-10-13](#2110---2026-10-13)
 - [[2.10.0] - 2026-10-13](#2100---2026-10-13)
 - [[2.9.0] - 2026-10-13](#290---2026-10-13)
@@ -56,6 +57,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.12.0] - 2026-10-13
+
+### Added
+
+- **Opt-in combobox Stimulus peer** (`src/Resources/assets/stimulus-peers/combobox_controller.ts`, identifier `combobox`): searchable picker over static server-rendered options that writes the chosen `data-value` into a (hidden) input. WAI-ARIA 1.2 editable combobox with list autocomplete (fills missing `role` / `aria-expanded` / `aria-controls` / `aria-autocomplete` / `aria-selected` / ids, `aria-activedescendant` for the active option), keyboard support (`ArrowDown` / `ArrowUp` with wrap, `Alt+ArrowDown`, `Enter`, `Escape`, `Tab`), close on outside pointer, `combobox:change` event. Copy is neutral and configurable: `requiredMessage` value → query `data-required-message` → `"Please select an option."`. Values `open`, `requiredMessage`, `selectedClass`, `activeClass`; targets `query`, `value`, `list`, `option`, `empty`. Not built or registered by the bundle — hosts import it into their own Stimulus app. Ported from Symfony Beacon (spec 138 FR-010); fixes the host version's list reopening after a selection and the required message being cleared by the follow-up focus. See [Usage — Combobox](USAGE.md#combobox-stimulus-peer-optional) and [`specs/003-combobox-peer`](../specs/003-combobox-peer/spec.md).
+
+### Changed
+
+- Tooling: `@hotwired/stimulus` added as a **dev** dependency (Vitest / `tsc` only); Vitest and `tsconfig.json` now include `src/Resources/assets/stimulus-peers/` (coverage gate 100%).
 
 ## [2.11.0] - 2026-10-13
 
@@ -128,6 +139,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.12.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.12.0
+[2.11.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.11.0
+[2.10.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.10.0
+[2.9.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.9.0
+[2.8.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.8.1
+[2.8.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.8.0
 [2.7.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.7.1
 [2.7.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.7.0
 [2.6.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.6.2
