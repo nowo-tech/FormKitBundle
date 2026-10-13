@@ -72,6 +72,21 @@ The **FormOptionsMerger** resolves final options for each field with cascading m
 3. **`by_form` defaults / fields:** Optional per-form overrides (see [Configuration](CONFIGURATION.md#per-form-defaults-by_form)).
 4. **Field options:** What you pass to `addWithDefaults()` or `buildFormFromArray()`; last wins. Use `label: false`, `placeholder: false` or `help: false` to disable the convention for that key.
 
+**Explicit options win over convention keys.** A `placeholder` passed in PHP (or set in `field_types` / `by_form` / profile `defaults`) always replaces the `{form}.{field}.placeholder` convention key. For **`ChoiceType`** (and `EntityType`, `EnumType`, `CountryType`… or any type whose parent is `ChoiceType`), `placeholder` keeps Symfony's meaning — the empty-option label — and is **not** moved to `attr.placeholder`; `placeholder: false` renders no empty option. Choice, checkbox, radio and hidden fields never receive the convention placeholder key. Details: [Configuration — Placeholder semantics](CONFIGURATION.md#placeholder-semantics).
+
+```php
+$this->addWithDefaults($builder, 'status', ChoiceType::class, [
+    'choices'     => ['Open' => 'open', 'Closed' => 'closed'],
+    'required'    => false,
+    'placeholder' => 'ticket_filter.status.any', // empty option label (root option)
+]);
+$this->addWithDefaults($builder, 'priority', ChoiceType::class, [
+    'choices'     => ['Low' => 1, 'High' => 2],
+    'required'    => false,
+    'placeholder' => false, // no empty option at all
+]);
+```
+
 You can inject **FormOptionsMerger** and call `resolve($formName, $fieldName, $type, $options, $configName)` directly (**direct-merge** technique), e.g. when building a form in the controller without a FormType class.
 
 ## Controller strategy
@@ -305,7 +320,7 @@ If you prefer **snake_case type names** instead of FQCNs, use this strategy. The
 
 - **FormKitTrait** provides `addField($builder, $name, $typeSnakeCase, $options)` and `buildFormFromArray($builder, $fields)` where each field’s type is a string (e.g. `'text'`, `'choice'`) instead of a class. It uses **FormOptionsMerger** for the option cascade and **FormTypeMap** for snake_case type resolution.
 - **FormKitAbstractType** is a base class that uses FormKitTrait and injects **FormOptionsMerger** and **FormTypeMap** via the constructor, so it works with the same `profiles` / `default_profile` model as FormOptionsTrait.
-- **Protected helpers on FormKitAbstractType (2.6.0):** `twigOwnedChromeOptions()` returns `label`, `help`, `placeholder` and `translation_domain` all `false` (use when Twig renders the visible copy). `addChoiceWithFormPlaceholder($name, $options)` (inside `withBuilder()`) adds a `ChoiceType` and restores its empty option after the merge — FormKit otherwise moves the root `placeholder` to `attr`. Omit `placeholder` to use `{block_prefix}.{field_snake}.placeholder`, pass a custom key, or `false` to skip it; `translation_domain` defaults to `form` when the empty option is kept.
+- **Protected helpers on FormKitAbstractType (2.6.0):** `twigOwnedChromeOptions()` returns `label`, `help`, `placeholder` and `translation_domain` all `false` (use when Twig renders the visible copy). `addChoiceWithFormPlaceholder($name, $options)` (inside `withBuilder()`) adds a `ChoiceType` whose empty option defaults to the convention key `{block_prefix}.{field_snake}.placeholder` (plain choice fields get no convention key). Omit `placeholder` to use that key, pass a custom key, or `false` to render no empty option; `translation_domain` defaults to `form` when the empty option is kept.
 
 Example with FormKitTrait (when both services are available):
 

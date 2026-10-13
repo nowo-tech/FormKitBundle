@@ -6,6 +6,17 @@ namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\LanguageType;
+use Symfony\Component\Form\Extension\Core\Type\LocaleType;
+use Symfony\Component\Form\Extension\Core\Type\RadioType;
+use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
+use Symfony\Component\Form\FormRegistryInterface;
 
 use function array_key_exists;
 use function in_array;
@@ -19,6 +30,9 @@ use function sprintf;
  * Supports multiple coexisting profiles; resolve() accepts an optional profile name (otherwise default_profile is used).
  * Applies convention: label, placeholder and help default to translation keys
  * "form_snake.field_snake.label", ".placeholder", ".help" unless explicitly set to false.
+ * Any explicit or configured placeholder wins over the convention key. ChoiceType (and subtypes such
+ * as EntityType) keep the root "placeholder" as the empty-option label (false = no empty option) and
+ * never get the convention key; checkbox / radio / hidden fields never get it either.
  *
  * Optional constraint_message_convention: constraints without an explicit message get
  * "{form}.{field}.constraints.{ConstraintName}" (validators catalog).
@@ -30,6 +44,37 @@ final class FormOptionsMerger
 {
     /** @var list<string> */
     private const SCALAR_DEFAULT_KEYS = ['label', 'placeholder', 'help', 'required'];
+
+    /** Text-like field: root {@code placeholder} is moved to {@code attr.placeholder}; convention key applies. */
+    private const ROLE_INPUT = 'input';
+
+    /** ChoiceType or subtype (EntityType, EnumType, CountryType…): root {@code placeholder} is the empty-option label. */
+    private const ROLE_CHOICE = 'choice';
+
+    /** Checkbox / radio / hidden: no HTML placeholder, so no convention key. */
+    private const ROLE_NO_PLACEHOLDER = 'no_placeholder';
+
+    /**
+     * ChoiceType subtypes recognised without a form registry (short names and FQCNs).
+     *
+     * @var list<string>
+     */
+    private const CHOICE_TYPES = [
+        'choice', 'entity', 'enum', 'country', 'currency', 'language', 'locale', 'timezone',
+        ChoiceType::class, EnumType::class, CountryType::class, CurrencyType::class,
+        LanguageType::class, LocaleType::class, TimezoneType::class,
+        'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
+    ];
+
+    /**
+     * Types (and their subtypes) that never render an HTML placeholder.
+     *
+     * @var list<string>
+     */
+    private const NO_PLACEHOLDER_TYPES = [
+        'checkbox', 'radio', 'hidden',
+        CheckboxType::class, RadioType::class, HiddenType::class,
+    ];
 
     /**
      * @param array<string, array{
@@ -65,6 +110,8 @@ final class FormOptionsMerger
         private array $profiles,
         private readonly string $defaultProfileName,
         private readonly ConstraintDefinitionFactory $constraintDefinitionFactory,
+        private readonly ?FormRegistryInterface $formRegistry = null,
+        private readonly ?FormTypeMap $formTypeMap = null,
     ) {
     }
 
@@ -99,15 +146,10 @@ final class FormOptionsMerger
         $fieldNameSnake = $this->camelCaseToSnakeCase($fieldName);
         $baseKey        = $formName . '.' . $fieldNameSnake;
 
-        $baseAttr = $defaults['attr'];
-        if ($autoPlaceholder) {
-            $baseAttr = array_merge(['placeholder' => $baseKey . '.placeholder'], $baseAttr);
-        }
-
         $base = [
             'translation_domain' => $translationDomain,
             'label'              => $baseKey . '.label',
-            'attr'               => $baseAttr,
+            'attr'               => $defaults['attr'],
             'row_attr'           => $defaults['row_attr'],
             'help_attr'          => $defaults['help_attr'] ?? [],
         ];
@@ -154,11 +196,19 @@ final class FormOptionsMerger
         $optionsForMerge = $options;
         unset($optionsForMerge['constraints']);
 
-        $merged = $this->arrayReplaceRecursive($base, $typeDefaults);
-        $merged = $this->arrayReplaceRecursive($merged, $formDefaults);
-        $merged = $this->arrayReplaceRecursive($merged, $formField);
-        $merged = $this->arrayReplaceRecursive($merged, $optionsForMerge);
-        $merged = $this->normalizePlaceholderToAttr($merged, $options);
+        $merged             = $this->arrayReplaceRecursive($base, $typeDefaults);
+        $merged             = $this->arrayReplaceRecursive($merged, $formDefaults);
+        $merged             = $this->arrayReplaceRecursive($merged, $formField);
+        $merged             = $this->arrayReplaceRecursive($merged, $optionsForMerge);
+        $role               = $this->placeholderRole($type);
+        $hasRootPlaceholder = ($merged['placeholder'] ?? null) !== null;
+        $merged             = $role === self::ROLE_CHOICE
+            ? $this->normalizeChoicePlaceholder($merged, [$optionsForMerge, $formField, $typeDefaults])
+            : $this->normalizePlaceholderToAttr($merged, $options);
+        if ($autoPlaceholder && $role === self::ROLE_INPUT && !$hasRootPlaceholder && !$this->hasAttrPlaceholder($merged)) {
+            // Convention key only when no layer set (or disabled) a placeholder; keep it first in attr.
+            $merged['attr'] = ['placeholder' => $baseKey . '.placeholder'] + $this->attrOf($merged);
+        }
 
         $merged = $this->removeExplicitFalseConventionKeys($merged, $options);
 
@@ -227,8 +277,13 @@ final class FormOptionsMerger
     }
 
     /**
-     * Normalizes legacy/custom "placeholder" root option to attr.placeholder.
+     * Normalizes the root "placeholder" option to attr.placeholder (text-like types).
      * This keeps backward compatibility and avoids invalid options on types like TextType.
+     *
+     * Precedence (first match wins): explicit {@code placeholder: false} (clears) → explicit
+     * {@code attr.placeholder} → explicit root {@code placeholder} → configured root {@code false}
+     * (clears) → configured {@code attr.placeholder} → configured root {@code placeholder}.
+     * The convention key is added afterwards only when nothing set one ({@see applyConventionPlaceholder()}).
      *
      * @param array<string, mixed> $merged
      * @param array<string, mixed> $options
@@ -237,28 +292,116 @@ final class FormOptionsMerger
      */
     private function normalizePlaceholderToAttr(array $merged, array $options): array
     {
-        $hasExplicitPlaceholder = array_key_exists('placeholder', $options);
-        $explicitPlaceholder    = $hasExplicitPlaceholder ? $options['placeholder'] : null;
-        $placeholder            = $merged['placeholder'] ?? null;
-
+        $placeholder = $merged['placeholder'] ?? null;
         unset($merged['placeholder']);
 
-        $placeholderToApply = $hasExplicitPlaceholder ? $explicitPlaceholder : $placeholder;
-
-        // false from PHP options, profile defaults, or field_types clears attr.placeholder.
-        if ($placeholderToApply === false) {
-            if (isset($merged['attr']) && is_array($merged['attr'])) {
-                unset($merged['attr']['placeholder']);
+        $explicit = array_key_exists('placeholder', $options) ? $options['placeholder'] : null;
+        if ($explicit !== null) {
+            if ($explicit === false) {
+                return $this->unsetAttrPlaceholder($merged);
+            }
+            if (!$this->hasAttrPlaceholder($options)) {
+                $merged['attr']                = $this->attrOf($merged);
+                $merged['attr']['placeholder'] = $explicit;
             }
 
             return $merged;
         }
 
-        if ($placeholderToApply !== null) {
-            $merged['attr'] = (isset($merged['attr']) && is_array($merged['attr'])) ? $merged['attr'] : [];
-            if (!array_key_exists('placeholder', $merged['attr'])) {
-                $merged['attr']['placeholder'] = $placeholderToApply;
+        // false from profile defaults, by_form or field_types clears attr.placeholder.
+        if ($placeholder === false) {
+            return $this->unsetAttrPlaceholder($merged);
+        }
+
+        if ($placeholder !== null && !$this->hasAttrPlaceholder($merged)) {
+            $merged['attr']                = $this->attrOf($merged);
+            $merged['attr']['placeholder'] = $placeholder;
+        }
+
+        return $merged;
+    }
+
+    /**
+     * ChoiceType (and subtypes): the root {@code placeholder} is the empty-option label, so it stays at
+     * the root (including {@code false}, which removes the empty option). Only the field-specific layers
+     * (explicit options, {@code by_form.<form>.fields}, {@code field_types}) set it; generic profile /
+     * by_form {@code defaults.placeholder} targets HTML placeholders and is ignored for choices.
+     *
+     * @param array<string, mixed> $merged
+     * @param list<array<string, mixed>> $specificLayers Most specific first
+     *
+     * @return array<string, mixed>
+     */
+    private function normalizeChoicePlaceholder(array $merged, array $specificLayers): array
+    {
+        unset($merged['placeholder']);
+        foreach ($specificLayers as $layer) {
+            if (array_key_exists('placeholder', $layer)) {
+                $merged['placeholder'] = $layer['placeholder'];
+
+                break;
             }
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Classifies a field type for placeholder handling, walking the form registry parent chain when
+     * available (so custom subtypes of ChoiceType / CheckboxType are recognised).
+     */
+    private function placeholderRole(string $type): string
+    {
+        $candidates = [$type];
+        $fqcn       = str_contains($type, '\\') ? $type : $this->formTypeMap?->resolve($type);
+        if ($fqcn !== null && $fqcn !== $type) {
+            $candidates[] = $fqcn;
+        }
+        if ($fqcn !== null && $this->formRegistry !== null && $this->formRegistry->hasType($fqcn)) {
+            for ($resolved = $this->formRegistry->getType($fqcn)->getParent(); $resolved !== null; $resolved = $resolved->getParent()) {
+                $candidates[] = $resolved->getInnerType()::class;
+            }
+        }
+
+        foreach ($candidates as $candidate) {
+            if (in_array($candidate, self::CHOICE_TYPES, true)) {
+                return self::ROLE_CHOICE;
+            }
+            if (in_array($candidate, self::NO_PLACEHOLDER_TYPES, true)) {
+                return self::ROLE_NO_PLACEHOLDER;
+            }
+        }
+
+        return self::ROLE_INPUT;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function hasAttrPlaceholder(array $options): bool
+    {
+        return isset($options['attr']) && is_array($options['attr']) && array_key_exists('placeholder', $options['attr']);
+    }
+
+    /**
+     * @param array<string, mixed> $merged
+     *
+     * @return array<string, mixed>
+     */
+    private function attrOf(array $merged): array
+    {
+        return isset($merged['attr']) && is_array($merged['attr']) ? $merged['attr'] : [];
+    }
+
+    /**
+     * @param array<string, mixed> $merged
+     *
+     * @return array<string, mixed>
+     */
+    private function unsetAttrPlaceholder(array $merged): array
+    {
+        if (isset($merged['attr']) && is_array($merged['attr'])) {
+            unset($merged['attr']['placeholder']);
         }
 
         return $merged;

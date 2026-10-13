@@ -29,7 +29,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `profiles.<name>.defaults.row_attr` | `array` | Default HTML attributes for the form row wrapper (e.g. `class: mb-3`). |
 | `profiles.<name>.defaults.help_attr` | `array` | Default HTML attributes for field help (`help_attr`, e.g. `class` for muted small copy). |
 | `profiles.<name>.defaults.label` | `string\|bool` | Optional. Default `label` for every field (e.g. `false` to suppress). When set, overrides the `{form}.{field}.label` convention. Overridable per `field_types` / `by_form` / PHP. |
-| `profiles.<name>.defaults.placeholder` | `string\|bool` | Optional. Default `placeholder` (e.g. `false` to suppress). When set, overrides `auto_placeholder`. |
+| `profiles.<name>.defaults.placeholder` | `string\|bool` | Optional. Default HTML `placeholder` (e.g. `false` to suppress). When set, overrides the `auto_placeholder` convention key. Not applied to `ChoiceType` fields (their `placeholder` is the empty option; set it in `field_types.choice` / `by_form.<form>.fields` / PHP instead). See [Placeholder semantics](#placeholder-semantics). |
 | `profiles.<name>.defaults.help` | `string\|bool` | Optional. Default `help` (e.g. `false` to suppress). When set, overrides `auto_help`. |
 | `profiles.<name>.defaults.required` | `bool` | Optional. Default `required` for every field. Overridable per `field_types` / `by_form` / PHP. |
 | `profiles.<name>.field_types` | `array` | Per-field-type default options. Key = short type name (e.g. `text`, `email`) or FQCN. Value = options array (may include `label`, `placeholder`, `help`, `required`, `constraints`). |
@@ -57,6 +57,16 @@ For each field, `FormOptionsMerger::resolve()` merges:
 5. Options passed in PHP / `add*()`
 
 Later layers win (scalars replace; nested arrays merge recursively). Constraints are collected from layers 2–5 and instantiated last.
+
+### Placeholder semantics
+
+The `{form}.{field}.placeholder` convention key (`auto_placeholder: true`) is only a **fallback**: explicit and configured values always win over it.
+
+- **Text-like fields** (text, email, textarea, number, date…): the root `placeholder` option is moved to `attr.placeholder`. Precedence: PHP `placeholder: false` (removes it) → PHP `attr.placeholder` → PHP `placeholder` → configured `placeholder: false` → configured `attr.placeholder` → configured `placeholder` (profile / `field_types` / `by_form`) → convention key.
+- **`ChoiceType` and subtypes** (`EntityType`, `EnumType`, `CountryType`, UX Autocomplete types, your own types whose parent chain reaches `ChoiceType`): the root `placeholder` is the **empty-option label** and stays at the root. `placeholder: false` is kept, so no empty option is rendered (also for non-required expanded radios: no "None" choice). Without a field-specific `placeholder`, Symfony's default applies (empty option only when `required: false`). Only PHP options, `by_form.<form>.fields.<field>` and `field_types.<type>` set it; the generic `defaults.placeholder` (profile or `by_form`) is ignored for choices. No convention key is added (neither root nor `attr`).
+- **Checkbox, radio and hidden fields** (and subtypes) never get the convention key; an explicit `placeholder` / `attr.placeholder` is still honoured.
+
+Subtypes are detected through the Symfony form registry (`form.registry`) and the `type_map`; without a registry, the built-in short names / FQCNs are recognised.
 
 ## Per-form defaults (`by_form`)
 

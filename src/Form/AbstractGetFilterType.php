@@ -67,7 +67,7 @@ abstract class AbstractGetFilterType extends FormKitAbstractType
         $hasExplicit = array_key_exists('placeholder', $options);
         $emptyOption = $hasExplicit ? $options['placeholder'] : true;
         unset($options['placeholder']);
-        // Prevent FormKit from putting the auto key on attr.placeholder (ChoiceType empty option is root placeholder).
+        // Merge with false (kept as the root empty option for ChoiceType); the filter key is applied below.
         $options['placeholder'] = false;
 
         $merged = $this->mergeFieldOptions($name, 'choice', $options);

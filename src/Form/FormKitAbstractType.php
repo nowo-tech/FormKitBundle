@@ -55,9 +55,10 @@ abstract class FormKitAbstractType extends AbstractType
      * Add a {@see ChoiceType} field using the builder bound by {@see withBuilder()} and restore the
      * ChoiceType empty option after the FormKit merge.
      *
-     * FormKit moves the root {@code placeholder} option to {@code attr.placeholder}; ChoiceType needs it
-     * as the root empty-option instead. Pass {@code placeholder} for a custom empty-option key, omit it
-     * to use {@code {blockPrefix}.{field_snake}.placeholder}, or pass {@code false} to skip restoring the empty option (no root {@code placeholder} is set).
+     * FormKit keeps the root {@code placeholder} of ChoiceType fields as the empty-option label (it never
+     * adds the convention key there by itself); this helper defaults it to the form convention key.
+     * Pass {@code placeholder} for a custom empty-option key, omit it to use
+     * {@code {blockPrefix}.{field_snake}.placeholder}, or pass {@code false} to render no empty option.
      * Pass {@code label} / {@code help} as {@code false} when Twig owns the chrome (e.g. confirm dialogs).
      * When the empty option is kept, {@code translation_domain} defaults to {@code form} unless given in $options.
      *

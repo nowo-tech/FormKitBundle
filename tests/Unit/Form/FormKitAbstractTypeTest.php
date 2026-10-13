@@ -106,7 +106,7 @@ final class FormKitAbstractTypeTest extends TestCase
         $type->exposeAddChoice($builder, 'topic', ['placeholder' => 'custom.empty', 'translation_domain' => 'messages']);
     }
 
-    public function testAddChoiceWithFormPlaceholderFalseSkipsEmptyOptionRestore(): void
+    public function testAddChoiceWithFormPlaceholderFalseKeepsPlaceholderFalse(): void
     {
         $type    = $this->createType();
         $builder = $this->createMock(FormBuilderInterface::class);
@@ -115,7 +115,7 @@ final class FormKitAbstractTypeTest extends TestCase
             ->with(
                 'topic',
                 ChoiceType::class,
-                self::callback(static fn (array $options): bool => !isset($options['placeholder'])
+                self::callback(static fn (array $options): bool => $options['placeholder'] === false
                     && !isset($options['attr']['placeholder'])
                     && $options['translation_domain'] === 'messages'),
             );

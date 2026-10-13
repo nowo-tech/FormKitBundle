@@ -54,6 +54,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Explicit placeholders win over the convention key:** a root `placeholder` passed in PHP options (or set in profile `defaults`, `field_types`, `by_form`) is now applied to `attr.placeholder` even when `auto_placeholder` is on. Previously the `{form}.{field}.placeholder` key was already in `attr`, so the explicit value was silently ignored.
+- **ChoiceType placeholder semantics:** for `ChoiceType` and its subtypes (`EntityType`, `EnumType`, `CountryType`, UX Autocomplete, custom types whose parent chain reaches `ChoiceType`, detected through the form registry / `type_map`), the root `placeholder` is kept as the empty-option label instead of being moved to `attr.placeholder`, and `placeholder: false` is preserved (no empty option; previously it was dropped and Symfony fell back to an empty option / "None" radio). Choice fields no longer get the convention key in `attr.placeholder`; the generic profile / `by_form` `defaults.placeholder` is not applied to them.
+- **No convention placeholder on checkbox / radio / hidden fields** (and subtypes): `auto_placeholder` no longer adds a meaningless `attr.placeholder` key to them.
+
 ## [2.8.1] - 2026-10-13
 
 ### Fixed

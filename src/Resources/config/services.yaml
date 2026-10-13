@@ -10,6 +10,8 @@ services:
     arguments:
       $profiles: '%nowo_form_kit.profiles%'
       $defaultProfileName: '%nowo_form_kit.default_profile%'
+      $formRegistry: '@?form.registry'
+      $formTypeMap: '@Nowo\FormKitBundle\Form\FormTypeMap'
 
   Nowo\FormKitBundle\Form\FormTypeMap:
     arguments:

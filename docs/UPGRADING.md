@@ -59,6 +59,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+**Placeholder handling (FormOptionsMerger)** — behaviour fixes you may notice in rendered forms:
+
+- An explicit `placeholder` (PHP options, profile `defaults.placeholder`, `field_types`, `by_form`) now replaces the `{form}.{field}.placeholder` convention key on text-like fields. If you relied on the convention key winning, remove the explicit value.
+- `ChoiceType` fields (and `EntityType`, `EnumType`, `CountryType`, UX Autocomplete, custom subtypes) keep `placeholder` as the root empty-option label. `placeholder: false` now really removes the empty option — including FormKit's `addChoiceRadios()` / `addChoiceCheckboxes()` presets and `addChoiceWithFormPlaceholder(..., ['placeholder' => false])`, so non-required radio lists no longer show Symfony's "None" choice. Choice fields no longer carry `attr.placeholder` with the convention key, and profile / `by_form` `defaults.placeholder` is ignored for them (set the empty option in `field_types.choice`, `by_form.<form>.fields` or PHP).
+- Workarounds that re-set the root `placeholder` after merging (e.g. `$merged['placeholder'] = …; unset($merged['attr']['placeholder'])`) keep working but are no longer needed.
+- Checkbox, radio and hidden fields no longer receive `attr.placeholder` from `auto_placeholder`.
+- `FormOptionsMerger::__construct()` gained two optional arguments (`?FormRegistryInterface $formRegistry`, `?FormTypeMap $formTypeMap`), wired automatically by the bundle.
+
 ## To 2.8.1
 
 From **2.8.0** — money_scale 0 rounds half up; money and css_framework docs; vitest 4.
