@@ -151,20 +151,18 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
 
     /**
      * Locale tabs (2.13): parameters for {@see TranslatableMapType} and the {@see LocaleTabsTwigExtension}
-     * (registered when Twig is installed). Empty locales / null default locale are filled from
+     * (tag twig.extension). Empty locales / null default locale are filled from
      * framework.enabled_locales / default_locale by LocaleTabsLocalesPass.
      *
      * @param array{locales: list<string>, default_locale: string|null, renderer: string, form_theme: bool} $localeTabs
      */
     private function registerLocaleTabs(ContainerBuilder $container, array $localeTabs): void
     {
-        $container->setParameter('nowo_form_kit.locale_tabs.locales', array_values($localeTabs['locales']));
+        $container->setParameter('nowo_form_kit.locale_tabs.locales', $localeTabs['locales']);
         $container->setParameter('nowo_form_kit.locale_tabs.default_locale', $localeTabs['default_locale']);
         $container->setParameter('nowo_form_kit.locale_tabs.renderer', $localeTabs['renderer']);
 
-        if (!class_exists(AbstractExtension::class)) {
-            return;
-        }
+        // twig/twig is a hard dependency (through twig/extra-bundle)
 
         $container->register(LocaleTabsTwigExtension::class, LocaleTabsTwigExtension::class)
             ->setArguments([

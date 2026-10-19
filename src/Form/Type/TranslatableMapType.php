@@ -9,6 +9,7 @@ use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -70,7 +71,7 @@ final class TranslatableMapType extends AbstractType
         $required = $options['required_locales'];
         /** @var array<string, mixed> $entryOptions */
         $entryOptions = $options['entry_options'];
-        /** @var class-string $entryType */
+        /** @var class-string<FormTypeInterface<mixed>> $entryType */
         $entryType = $options['entry_type'];
 
         foreach ($locales as $locale) {
@@ -119,7 +120,7 @@ final class TranslatableMapType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $configured = $this->locales !== [] ? array_values($this->locales) : [$this->defaultLocale ?? 'en'];
+        $configured = $this->locales !== [] ? $this->locales : [$this->defaultLocale ?? 'en'];
 
         $resolver->setDefaults([
             'locales'          => $configured,
@@ -131,9 +132,9 @@ final class TranslatableMapType extends AbstractType
             'input'            => 'array',
             'locale_tabs'      => true,
             // A parent that is not required makes every child optional (Form::isRequired()).
-            'required'         => static fn (Options $options): bool => $options['required_locales'] !== [],
-            'empty_data'       => [],
-            'error_bubbling'   => false,
+            'required'       => static fn (Options $options): bool => $options['required_locales'] !== [],
+            'empty_data'     => [],
+            'error_bubbling' => false,
         ]);
         $resolver->setAllowedTypes('locales', 'string[]');
         $resolver->setAllowedTypes('default_locale', ['null', 'string']);

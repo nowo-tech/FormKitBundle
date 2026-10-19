@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "871f8152548c834d042515aac5bd8282",
+    "content-hash": "1d71222408d5ebe7469d2bfe6a085db2",
     "packages": [
         {
             "name": "a2lix/auto-form-bundle",
@@ -1137,11 +1137,11 @@
         },
         {
             "name": "nowo-tech/form-kit-bundle",
-            "version": "dev-main",
+            "version": "dev-feature/locale-tabs",
             "dist": {
                 "type": "path",
                 "url": "/var/form-kit-bundle",
-                "reference": "4790fe8f85801eaf65e5c59cf2329061ea0c28ce"
+                "reference": "257d2a04d860b53752e4ed32aa78dc938d5615b7"
             },
             "require": {
                 "doctrine/collections": "^2.2",
@@ -1161,12 +1161,15 @@
                 "friendsofphp/php-cs-fixer": "^3.95.11",
                 "igor-php/igor-php": "^0.10.0",
                 "nowo-tech/phpstan-frankenphp": "^1.0",
+                "nowo-tech/ui-kit-bundle": "^2.5",
                 "phpstan/extension-installer": "^1.2",
                 "phpstan/phpstan": "^2.0",
                 "phpstan/phpstan-phpunit": "^2.0",
                 "phpstan/phpstan-symfony": "^2.0",
                 "phpunit/phpunit": "^10.0",
                 "rector/rector": "^2.0",
+                "symfony/css-selector": "^7.4 || ^8.0",
+                "symfony/dom-crawler": "^7.4 || ^8.0",
                 "symfony/framework-bundle": "^7.4 || ^8.0",
                 "symfony/security-csrf": "^7.4 || ^8.0",
                 "vincentlanglet/twig-cs-fixer": "^4.0"
@@ -1184,6 +1187,7 @@
                 "nowo-tech/slide-to-confirm-bundle": "For addSlideToConfirm() / addSlideToConfirmField() / addSlideToConfirmFieldType()",
                 "nowo-tech/tag-input-bundle": "For addTagInput() / addTagInputField() / addTagInputFieldType()",
                 "nowo-tech/tiptap-editor-bundle": "For addTiptapEditor() / addTiptapEditorField() / addTiptapEditorFieldType()",
+                "nowo-tech/ui-kit-bundle": "^2.5: locale tabs (locale_tabs option, TranslatableMapType, _locale_tabs include) render through the UiKit locale_tabs partial (WAI-ARIA tabs, no-JS fieldsets, keyboard, browser validation, Live Component safe); without it FormKit keeps its neutral markup",
                 "symfony/ux-autocomplete": "Entity autocomplete fields; use addAutocompleteField() / addAutocompleteFieldType() with your autocomplete FormType FQCN",
                 "symfony/ux-cropperjs": "For addCropper() / addCropperField() / addCropperFieldType() (image crop widget)",
                 "symfony/ux-dropzone": "For addDropzone() / addDropzoneField() / addDropzoneFieldType() (drag-and-drop file upload)",
@@ -2087,6 +2091,100 @@
                 "source": "https://github.com/nowo-tech/TiptapEditorBundle"
             },
             "time": "2026-10-13T10:22:32+00:00"
+        },
+        {
+            "name": "nowo-tech/ui-kit-bundle",
+            "version": "v2.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nowo-tech/UiKitBundle.git",
+                "reference": "27edfb6eab90a2534b6439b43e6bf293e632d0ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nowo-tech/UiKitBundle/zipball/27edfb6eab90a2534b6439b43e6bf293e632d0ad",
+                "reference": "27edfb6eab90a2534b6439b43e6bf293e632d0ad",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2 <8.6",
+                "symfony/asset": "^7.4 || ^8.0",
+                "symfony/config": "^7.4 || ^8.0",
+                "symfony/dependency-injection": "^7.4 || ^8.0",
+                "symfony/framework-bundle": "^7.4 || ^8.0",
+                "symfony/http-kernel": "^7.4 || ^8.0",
+                "symfony/translation": "^7.4 || ^8.0",
+                "symfony/twig-bundle": "^7.4 || ^8.0",
+                "twig/extra-bundle": "^3.12",
+                "twig/string-extra": "^3.12",
+                "twig/twig": "^3.8"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "igor-php/igor-php": "^0.9.7",
+                "nowo-tech/phpstan-frankenphp": "^1.0",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpstan/phpstan-symfony": "^2.0",
+                "phpunit/phpunit": "^10.5 || ^11.0",
+                "rector/rector": "^2.0",
+                "symfony/css-selector": "^7.4 || ^8.0",
+                "symfony/dom-crawler": "^7.4 || ^8.0",
+                "symfony/form": "^7.4 || ^8.0",
+                "symfony/http-client": "^7.4 || ^8.0",
+                "symfony/validator": "^7.4 || ^8.0",
+                "symfony/yaml": "^7.4 || ^8.0",
+                "vincentlanglet/twig-cs-fixer": "^3.0"
+            },
+            "suggest": {
+                "phpunit/phpunit": "UI bundles: require-dev, to run Nowo\\UiKitBundle\\Test\\PageContractTestCase (REQ-UI-003 contract test)",
+                "symfony/form": "For the optional AppearanceType / AppearancePaletteType forms (appearance SPI)",
+                "symfony/http-client": "For the optional release_check feature (GitHub release-version dialog)",
+                "symfony/ux-icons": "For icon_set: ux_icon in row actions and icons",
+                "symfony/validator": "Colour validation in the optional appearance forms"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Nowo\\UiKitBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Héctor Franco Aceituno",
+                    "email": "hectorfranco@nowo.tech",
+                    "homepage": "https://github.com/HecFranco",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Nowo.tech",
+                    "homepage": "https://nowo.tech"
+                }
+            ],
+            "description": "Canonical Nowo admin UI kit for Symfony: Twig macros, semantic nowo-ui-* CSS, pagination/tabs/modals/toasts/confirm, shell chrome, multi-framework class helpers (REQ-UI-001).",
+            "homepage": "https://packagist.org/packages/nowo-tech/ui-kit-bundle",
+            "keywords": [
+                "admin",
+                "bootstrap",
+                "css",
+                "nowo-ui",
+                "symfony",
+                "symfony-bundle",
+                "tailwind",
+                "twig",
+                "ui"
+            ],
+            "support": {
+                "docs": "https://github.com/nowo-tech/UiKitBundle/tree/main/docs",
+                "issues": "https://github.com/nowo-tech/UiKitBundle/issues",
+                "source": "https://github.com/nowo-tech/UiKitBundle"
+            },
+            "time": "2026-10-19T08:06:32+00:00"
         },
         {
             "name": "pentatrion/vite-bundle",

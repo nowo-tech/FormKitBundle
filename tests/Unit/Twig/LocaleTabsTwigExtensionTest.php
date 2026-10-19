@@ -40,9 +40,9 @@ final class LocaleTabsTwigExtensionTest extends TestCase
     {
         $field           = $this->view(['compound' => true]);
         $field->children = [
-            'a'  => $this->entry(['locale' => $this->view(['value' => 'es'])]),
-            'b'  => $this->entry(['locale' => $this->view(['value' => ''])], ['data' => ['locale' => 'en']]),
-            'c'  => $this->entry(['locale' => $this->view(['value' => null])], ['data' => new class {
+            'a' => $this->entry(['locale' => $this->view(['value' => 'es'])]),
+            'b' => $this->entry(['locale' => $this->view(['value' => ''])], ['data' => ['locale' => 'en']]),
+            'c' => $this->entry(['locale' => $this->view(['value' => null])], ['data' => new class {
                 public function getLocale(): string
                 {
                     return 'fr';
@@ -81,6 +81,21 @@ final class LocaleTabsTwigExtensionTest extends TestCase
         self::assertSame('', (new LocaleTabsTwigExtension())->localeTabs($this->env(), $this->view(['compound' => true]))['default_locale']);
     }
 
+    public function testCompoundRowsMarkTheirInvalidLeaves(): void
+    {
+        $entry           = $this->view(['compound' => true, 'valid' => false]);
+        $entry->children = ['title' => $this->view(['valid' => false]), 'body' => $this->view([])];
+        $field           = $this->view(['compound' => true]);
+        $field->children = ['es' => $entry];
+
+        $lt = (new LocaleTabsTwigExtension())->localeTabs($this->env(), $field, ['mode' => 'children']);
+
+        self::assertTrue($lt['groups'][0]['invalid']);
+        self::assertSame(['aria-invalid' => 'true'], $entry->children['title']->vars['attr']);
+        self::assertArrayNotHasKey('attr', $entry->children['body']->vars);
+        self::assertArrayNotHasKey('attr', $entry->vars);
+    }
+
     public function testFieldsModeWithoutMatchingFields(): void
     {
         $lt = (new LocaleTabsTwigExtension(['es']))->localeTabs($this->env(), $this->view(['compound' => true]), ['fields' => ['name'], 'locales' => 'not a list']);
@@ -112,7 +127,7 @@ final class LocaleTabsTwigExtensionTest extends TestCase
 
     /**
      * @param array<string, FormView> $children
-     * @param array<string, mixed>    $vars
+     * @param array<string, mixed> $vars
      */
     private function entry(array $children, array $vars = []): FormView
     {

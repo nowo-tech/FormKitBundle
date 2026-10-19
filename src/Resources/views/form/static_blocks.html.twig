@@ -1,6 +1,6 @@
 {# Use (not extends) so only the blocks below are registered in the theme chain.
    Extending form_div_layout would register bare radio/checkbox widgets and override Bootstrap 5. #}
-{% use "form_div_layout.html.twig" %}
+{% use 'form_div_layout.html.twig' %}
 
 {# Required suffix must stay inside <label> so order is: label text → * → help trigger (JS appends trigger last). #}
 {% block form_label_content %}
@@ -57,10 +57,10 @@
       (CheckboxRowExtension vars; Bootstrap when the extension is not registered, as before) -#}
   {% set _bs = form.vars.checkbox_bootstrap ?? true %}
   {% set _row_class = form.vars.row_attr.class|default(form.vars.checkbox_row_class ?? 'mb-3') %}
-  {% set row_attr = form.vars.row_attr|default({})|merge({ class: (_row_class ~ (_bs ? ' form-check' : ''))|trim }) %}
+  {% set row_attr = form.vars.row_attr|default({})|merge({class: (_row_class ~ (_bs ? ' form-check' : ''))|trim}) %}
   <div{% for attrname, attrvalue in row_attr %}{% if attrvalue is not none and attrvalue != '' %} {{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}>
-    {{ form_widget(form, _bs ? { attr: (form.vars.attr|default({})|merge({ class: 'form-check-input' })) } : {}) }}
-    {{ form_label(form, null, _bs ? { label_attr: { class: 'form-check-label' } } : {}) }}
+    {{ form_widget(form, _bs ? {attr: (form.vars.attr|default({})|merge({class: 'form-check-input'}))} : {}) }}
+    {{ form_label(form, null, _bs ? {label_attr: {class: 'form-check-label'}} : {}) }}
     {{ form_errors(form) }}
     {{ form_help(form) }}
   </div>

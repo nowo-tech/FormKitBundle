@@ -221,7 +221,7 @@ final class LocaleTabsThemeTest extends TestCase
             self::assertNotNull($c->filter('#tab-article_translations-locale-es')->attr('data-invalid'));
             self::assertNull($c->filter('#tab-article_translations-locale-en')->attr('data-invalid'));
             self::assertSame(1, substr_count($html, 'name="article[translations][0][locale]"'), 'form_rest does not render the entries again');
-            self::assertSame(0, $c->filter('input[type="text"][name$="[locale]"]')->count(), 'the locale child is never a visible input');
+            self::assertCount(0, $c->filter('input[type="text"][name$="[locale]"]'), 'the locale child is never a visible input');
         }
     }
 

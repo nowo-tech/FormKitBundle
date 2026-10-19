@@ -58,7 +58,7 @@ final class LocaleTabsTwigExtension extends AbstractExtension
 
     /**
      * @param list<string> $locales configured locales (`nowo_form_kit.locale_tabs.locales`, default `kernel.enabled_locales`)
-     * @param bool|null    $uiKit   null = UiKit when installed, false = never (`nowo_form_kit.locale_tabs.renderer`)
+     * @param bool|null $uiKit null = UiKit when installed, false = never (`nowo_form_kit.locale_tabs.renderer`)
      */
     public function __construct(
         private readonly array $locales = [],
@@ -248,7 +248,7 @@ final class LocaleTabsTwigExtension extends AbstractExtension
             $value  = match (true) {
                 is_array($data) && array_key_exists($localeChild, $data) => $data[$localeChild],
                 is_object($data) && method_exists($data, $getter)        => $data->{$getter}(),
-                default                                                   => null,
+                default                                                  => null,
             };
         }
 
@@ -280,6 +280,6 @@ final class LocaleTabsTwigExtension extends AbstractExtension
             return [];
         }
 
-        return array_values(array_unique(array_map(static fn (mixed $v): string => is_scalar($v) ? (string) $v : '', array_filter($value, is_scalar(...)))));
+        return array_values(array_unique(array_map(static fn (bool|float|int|string $v): string => (string) $v, array_filter($value, is_scalar(...)))));
     }
 }
