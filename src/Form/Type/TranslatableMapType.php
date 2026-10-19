@@ -40,7 +40,7 @@ use const JSON_UNESCAPED_UNICODE;
  *
  * Options:
  * - `locales` (default `nowo_form_kit.locale_tabs.locales`, i.e. `framework.enabled_locales`, else the default locale)
- * - `default_locale` (default `nowo_form_kit.locale_tabs.default_locale` / `kernel.default_locale` when listed, else the first locale)
+ * - `default_locale` (default `nowo_form_kit.locale_tabs.default_locale` / `kernel.default_locale` when listed, else the first locale; 2.13.1: a value not in `locales` falls back the same way)
  * - `required_locales` (default []): those children are `required` and get a NotBlank constraint
  * - `entry_type` (TextType) / `entry_options` (merged into every child; label default `ES`, …)
  * - `remove_empty` (true): blank values are dropped from the submitted map
@@ -148,7 +148,8 @@ final class TranslatableMapType extends AbstractType
         $resolver->setNormalizer('default_locale', static function (Options $options, ?string $value) use ($defaultLocale): string {
             /** @var list<string> $locales */
             $locales = $options['locales'];
-            if ($value !== null && $value !== '') {
+            // 2.13.1: a default that is not one of the locales would lose its tab; fall back like an unset one.
+            if ($value !== null && $value !== '' && in_array($value, $locales, true)) {
                 return $value;
             }
 

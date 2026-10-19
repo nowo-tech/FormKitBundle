@@ -91,6 +91,12 @@ final class TranslatableMapTypeTest extends TestCase
         self::assertArrayNotHasKey('locale_tabs', $this->factory(['es'])->createNamed('l', TranslatableMapType::class, null, ['locale_tabs' => false])->createView()->vars);
         self::assertSame('', $this->factory(['es'])->createNamed('l', TranslatableMapType::class, null, ['locales' => []])->getConfig()->getOption('default_locale'));
 
+        // 2.13.1: a default_locale that is not listed falls back (configured default when listed, else the first).
+        self::assertSame('en', $this->factory(['es', 'en'], 'en')->createNamed('l', TranslatableMapType::class, null, ['default_locale' => 'fr'])->getConfig()->getOption('default_locale'));
+        $view = $this->factory(['es', 'en'], 'de')->createNamed('l', TranslatableMapType::class, null, ['locales' => ['it', 'pt'], 'default_locale' => 'es'])->createView();
+        self::assertSame('it', $view->vars['locale_tabs']['default_locale']);
+        self::assertSame(['it', 'pt'], array_keys($view->children));
+
         $this->expectException(InvalidOptionsException::class);
         $this->factory(['es'])->createNamed('l', TranslatableMapType::class, null, ['input' => 'xml']);
     }

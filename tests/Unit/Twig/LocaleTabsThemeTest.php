@@ -112,6 +112,25 @@ final class LocaleTabsThemeTest extends TestCase
         self::assertStringNotContainsString('__default', $html);
     }
 
+    public function testRowVariablesAreMergedOverTheFormTypeOption(): void
+    {
+        $form = $this->slugsForm(['locale_tabs' => ['default_locale' => 'es', 'tabs_id' => 'slug', 'testid' => 'from-type']]);
+
+        $html = $this->render(self::THEME . "{{ form_row(form.slugs, {locale_tabs: {active_locale: 'en', testid: 'from-row', tabs_label: 'Idiomas'}}) }}", $form);
+
+        // Row variables win, the form-type keys they do not set stay.
+        self::assertStringContainsString('data-testid="from-row"', $html);
+        self::assertStringNotContainsString('from-type', $html);
+        self::assertStringContainsString('aria-label="Idiomas"', $html);
+        self::assertMatchesRegularExpression('/id="tab-slug-en"[^>]*aria-selected="true"/s', $html);
+        self::assertLessThan(strpos($html, 'id="tab-slug-en"'), strpos($html, 'id="tab-slug-es"'), 'default_locale from the type');
+
+        // Without row variables: the form-type option only.
+        $html = $this->render(self::THEME . '{{ form_row(form.slugs) }}', $form);
+        self::assertStringContainsString('data-testid="from-type"', $html);
+        self::assertMatchesRegularExpression('/id="tab-slug-es"[^>]*aria-selected="true"/s', $html);
+    }
+
     public function testInvalidLocaleTabIsMarkedOpenedAndItsWidgetAriaInvalid(): void
     {
         $form = $this->slugsForm(['locale_tabs' => ['default_locale' => 'es', 'active_locale' => 'es', 'error_marker' => 'err']]);

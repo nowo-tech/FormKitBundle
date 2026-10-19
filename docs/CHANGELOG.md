@@ -59,6 +59,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Locale tabs row options**: `form_row(field, {locale_tabs: {...}})` options are now merged over the form-type
+  `locale_tabs` option (the row variables win); the theme used to read `form.vars.locale_tabs` only and ignore them.
+- **`TranslatableMapType` `default_locale`**: a value that is not among `locales` falls back like an unset one (the
+  configured default locale when listed, else the first locale), so the default tab no longer goes missing.
+
+### Changed
+
+- `nowo-tech/ui-kit-bundle` (require-dev / suggest) is now `^2.5.2`: language names without ext-intl
+  (polyfill-intl-icu) and legends hidden by the tabs runtime itself.
+
+### Documentation
+
+- USAGE: entries mode needs the translation collection keyed by locale (Doctrine `indexBy: 'locale'`, also for
+  `mapped: false` collections) for entity-level `Assert\Valid` errors to land inside their tab; row-variable merge.
+
 ## [2.13.0] - 2026-10-19
 
 Locale tabs for translation entities, field_<locale> groups and TranslatableMapType, rendered through UiKit 2.5; checkbox_row profile chrome and profile help_attr. See [UPGRADING](UPGRADING.md#to-2130).

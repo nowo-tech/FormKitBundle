@@ -16,9 +16,14 @@
   2.5+ is installed.
   `title` defaults to the field label (translated), `help` to the field help, errors of the
   compound field itself are rendered above the tabs.
+  2.13.1: options passed at render time, `form_row(form.slugs, {locale_tabs: {active_locale: 'en'}})`, are merged
+  over the form-type option (the row variables win); the field still needs the `locale_tabs` option to use this row.
 #}
 {% block nowo_locale_tabs_row %}
-    {%- set _lt = form.vars.locale_tabs|default({}) -%}
+    {%- set _lt = form.vars.locale_tabs is defined and form.vars.locale_tabs is iterable ? form.vars.locale_tabs : {} -%}
+    {%- if locale_tabs is defined and locale_tabs is iterable -%}
+        {%- set _lt = _lt|merge(locale_tabs) -%}
+    {%- endif -%}
     {%- if _lt.title is not defined -%}
         {%- set _label = form.vars.label -%}
         {%- if _label is not same as(false) -%}

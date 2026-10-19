@@ -609,6 +609,37 @@ $builder->add('translations', CollectionType::class, [
 ]);
 ```
 
+Entity-level errors (`#[Assert\Valid]` on the collection, constraints of the translation entity) are mapped back to the
+form through the collection key, so the collection must be **keyed by locale** for them to land inside the right
+tab. With an unmapped collection (`'mapped' => false`, filled from the entity in the controller or a listener) or a
+Doctrine collection keyed by position, the errors show above the tabs instead. Index the association by locale:
+
+```php
+#[ORM\OneToMany(targetEntity: ArticleTranslation::class, mappedBy: 'article', cascade: ['persist'], indexBy: 'locale')]
+#[Assert\Valid]
+private Collection $translations;
+
+public function addTranslation(ArticleTranslation $translation): void
+{
+    $this->translations->set($translation->getLocale(), $translation); // key = locale, also for new entities
+    $translation->setArticle($this);
+}
+```
+
+```php
+// mapped: false — pass the same locale-keyed collection as data:
+$builder->add('translations', CollectionType::class, [
+    'mapped'        => false,
+    'data'          => $article->getTranslations(), // keys: es, en…
+    'entry_type'    => ArticleTranslationType::class,
+    'entry_options' => ['error_bubbling' => false],
+    'locale_tabs'   => ['default_locale' => 'es'],
+]);
+```
+
+Render-time options are merged over the type option (2.13.1; the row variables win):
+`{{ form_row(form.translations, {locale_tabs: {active_locale: 'en'}}) }}`.
+
 **(b) `field_<locale>` groups** (flat, often unmapped fields such as `name_es`, `description_es`): include the
 partial with `fields` (and `pattern`, default `{field}_{locale}`); only those children are rendered, `form_rest()`
 renders the others. `locales` defaults to `nowo_form_kit.locale_tabs.locales`.
@@ -638,7 +669,8 @@ $builder->add('labels', TranslatableMapType::class, [
 ]);
 ```
 
-Keys of the map that are not among the locales are kept on submit; blank values are dropped (`remove_empty`).
+A `default_locale` that is not among `locales` falls back to the configured default locale when listed, else the
+first locale (2.13.1), so the default tab never goes missing. Keys of the map that are not among the locales are kept on submit; blank values are dropped (`remove_empty`).
 `input: 'json'` reads / writes a JSON string instead of an array.
 
 **Children keyed by locale** (2.7 shape, e.g. `slugs[es]`, `slugs[en]`) keep working:

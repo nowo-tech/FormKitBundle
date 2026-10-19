@@ -63,6 +63,17 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+Patch release. Notes:
+
+- Options passed to `form_row(field, {locale_tabs: {...}})` now take effect (merged over the form-type option). If a
+  template passed `locale_tabs` row variables that were silently ignored, check the result.
+- `TranslatableMapType`: a `default_locale` outside `locales` now falls back to the configured default (when listed)
+  or the first locale instead of being kept.
+- With UiKit, update it to 2.5.2 (`composer update nowo-tech/ui-kit-bundle`) for hosts using polyfill-intl-icu
+  without ext-intl.
+- Entries mode: key the translation collection by locale (`indexBy: 'locale'`) so entity-level errors land inside
+  their tab — see [USAGE](USAGE.md#locale-tabs-one-tab-per-language).
+
 ## To 2.13.0
 
 From **2.12.0**:
