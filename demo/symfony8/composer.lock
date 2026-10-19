@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d71222408d5ebe7469d2bfe6a085db2",
+    "content-hash": "178cd979067574d8653ab598d3067b69",
     "packages": [
         {
             "name": "a2lix/auto-form-bundle",
@@ -1137,11 +1137,11 @@
         },
         {
             "name": "nowo-tech/form-kit-bundle",
-            "version": "dev-main",
+            "version": "dev-fix/locale-tabs-row-options",
             "dist": {
                 "type": "path",
                 "url": "/var/form-kit-bundle",
-                "reference": "257d2a04d860b53752e4ed32aa78dc938d5615b7"
+                "reference": "01e66eeced8bc65cfc86e5467acae177e0d72829"
             },
             "require": {
                 "doctrine/collections": "^2.2",
@@ -1161,7 +1161,7 @@
                 "friendsofphp/php-cs-fixer": "^3.95.11",
                 "igor-php/igor-php": "^0.10.0",
                 "nowo-tech/phpstan-frankenphp": "^1.0",
-                "nowo-tech/ui-kit-bundle": "^2.5",
+                "nowo-tech/ui-kit-bundle": "^2.5.2",
                 "phpstan/extension-installer": "^1.2",
                 "phpstan/phpstan": "^2.0",
                 "phpstan/phpstan-phpunit": "^2.0",
@@ -1187,7 +1187,7 @@
                 "nowo-tech/slide-to-confirm-bundle": "For addSlideToConfirm() / addSlideToConfirmField() / addSlideToConfirmFieldType()",
                 "nowo-tech/tag-input-bundle": "For addTagInput() / addTagInputField() / addTagInputFieldType()",
                 "nowo-tech/tiptap-editor-bundle": "For addTiptapEditor() / addTiptapEditorField() / addTiptapEditorFieldType()",
-                "nowo-tech/ui-kit-bundle": "^2.5: locale tabs (locale_tabs option, TranslatableMapType, _locale_tabs include) render through the UiKit locale_tabs partial (WAI-ARIA tabs, no-JS fieldsets, keyboard, browser validation, Live Component safe); without it FormKit keeps its neutral markup",
+                "nowo-tech/ui-kit-bundle": "^2.5.2: locale tabs (locale_tabs option, TranslatableMapType, _locale_tabs include) render through the UiKit locale_tabs partial (WAI-ARIA tabs, no-JS fieldsets, keyboard, browser validation, Live Component safe); without it FormKit keeps its neutral markup",
                 "symfony/ux-autocomplete": "Entity autocomplete fields; use addAutocompleteField() / addAutocompleteFieldType() with your autocomplete FormType FQCN",
                 "symfony/ux-cropperjs": "For addCropper() / addCropperField() / addCropperFieldType() (image crop widget)",
                 "symfony/ux-dropzone": "For addDropzone() / addDropzoneField() / addDropzoneFieldType() (drag-and-drop file upload)",
@@ -2094,16 +2094,16 @@
         },
         {
             "name": "nowo-tech/ui-kit-bundle",
-            "version": "v2.5.1",
+            "version": "v2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/UiKitBundle.git",
-                "reference": "27edfb6eab90a2534b6439b43e6bf293e632d0ad"
+                "reference": "840fa7f3601d5a94d5ae63b608dd3548c9a0b6d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/UiKitBundle/zipball/27edfb6eab90a2534b6439b43e6bf293e632d0ad",
-                "reference": "27edfb6eab90a2534b6439b43e6bf293e632d0ad",
+                "url": "https://api.github.com/repos/nowo-tech/UiKitBundle/zipball/840fa7f3601d5a94d5ae63b608dd3548c9a0b6d2",
+                "reference": "840fa7f3601d5a94d5ae63b608dd3548c9a0b6d2",
                 "shasum": ""
             },
             "require": {
@@ -2184,7 +2184,7 @@
                 "issues": "https://github.com/nowo-tech/UiKitBundle/issues",
                 "source": "https://github.com/nowo-tech/UiKitBundle"
             },
-            "time": "2026-10-19T08:06:32+00:00"
+            "time": "2026-10-19T11:17:50+00:00"
         },
         {
             "name": "pentatrion/vite-bundle",

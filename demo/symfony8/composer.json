@@ -18,7 +18,7 @@
         "nowo-tech/slide-to-confirm-bundle": "^1.0",
         "nowo-tech/tag-input-bundle": "^1.0",
         "nowo-tech/tiptap-editor-bundle": "^1.0",
-        "nowo-tech/ui-kit-bundle": "^2.5",
+        "nowo-tech/ui-kit-bundle": "^2.5.2",
         "pentatrion/vite-bundle": "^8.2",
         "php": ">=8.4,<8.6",
         "symfony/asset": "^8.0",
