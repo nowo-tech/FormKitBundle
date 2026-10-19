@@ -58,6 +58,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Locale tabs, three shapes** (`locale_tabs` option and `_locale_tabs.html.twig`): `entries` — a list of translation
+  entities (CollectionType whose entries have a `locale` child: the locale becomes a hidden input, the other children
+  fill the panel, entry errors inside it); `fields` — `field_<locale>` groups (`fields: [...]`,
+  `pattern: '{field}_{locale}'`, only those children are rendered); `children` — the 2.7 shape. `mode` is detected.
+- **`TranslatableMapType`**: a JSON `{locale: text}` map as one field per locale with tabs on by default
+  (`locales`, `default_locale`, `required_locales` → required + NotBlank, `entry_type`, `entry_options`,
+  `remove_empty`, `input: array|json`); unknown locales in the map are kept on submit.
+- **UiKit renderer**: with nowo-tech/ui-kit-bundle **^2.5** installed (suggested, not required) the tabs render
+  through UiKit's `locale_tabs` partial (no-JS stacked fieldsets, WAI-ARIA keyboard, browser validation opens the
+  hidden panel, `nowo-ui:tabs:change`, Live Component safe); `ui_kit: false` or
+  `nowo_form_kit.locale_tabs.renderer: native` keeps the neutral markup. Twig functions
+  `nowo_form_kit_locale_tabs()` / `nowo_form_kit_ui_kit_locale_tabs()` (`LocaleTabsTwigExtension`).
+- `required_locales` (marker `*`, distinct from the default `★`), `aria-invalid="true"` on invalid widgets,
+  screen-reader text for default / required / invalid tabs, translated tab list label (`locale_tabs.*` in
+  `NowoFormKitBundle` for en, es, de, fr, it, nl, pt), `lang` / `dir` per panel, roving `tabindex`.
+- Configuration `nowo_form_kit.locale_tabs` (`locales`, `default_locale` from the framework by default, `renderer`,
+  `form_theme`); the locale tabs form theme is registered in `twig.form_themes` automatically.
+- Profile-level **`help_attr`** (shorthand for `defaults.help_attr`) and **`css_framework`**.
+
+### Changed
+
+- `static_blocks.html.twig` `checkbox_row`: the Bootstrap chrome (`mb-3` fallback, `form-check`,
+  `form-check-input`, `form-check-label`) only when the default profile's framework (profile `css_framework`, else
+  the root `css_framework`) is Bootstrap; otherwise the row uses the profile's `defaults.row_attr.class`
+  (`CheckboxRowExtension`). Unchanged for the default `css_framework: bootstrap`.
+- Locale tabs: default marker `★` (was `*`, now the required marker), screen-reader text `(Spanish, default
+  language)` instead of ` — Spanish`, `_locale_tabs.html.twig` needs the bundle's Twig extension (registered
+  automatically).
+
 ## [2.12.0] - 2026-10-13
 
 ### Added

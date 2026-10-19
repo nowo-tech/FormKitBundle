@@ -30,6 +30,8 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `profiles.<name>.defaults.attr` | `array` | Default HTML attributes for every field (e.g. `class: form-control`). |
 | `profiles.<name>.defaults.row_attr` | `array` | Default HTML attributes for the form row wrapper (e.g. `class: mb-3`). |
 | `profiles.<name>.defaults.help_attr` | `array` | Default HTML attributes for field help (`help_attr`, e.g. `class` for muted small copy). |
+| `profiles.<name>.help_attr` | `array` | Since 2.13: shorthand for `defaults.help_attr` at profile level (e.g. `{class: form-text}`); `defaults.help_attr` wins per attribute. Attribute names are kept as written (`data-*`). |
+| `profiles.<name>.css_framework` | `string\|null` | Since 2.13: framework of this profile's form-theme chrome (`static_blocks.html.twig` `checkbox_row`): Bootstrap (`bootstrap`, `bootstrap5`…) adds `form-check` / `form-check-input` / `form-check-label` and the `mb-3` row fallback; any other value renders the checkbox row with the profile's `defaults.row_attr.class` only. Null (default) = root `css_framework`. |
 | `profiles.<name>.defaults.label` | `string\|bool` | Optional. Default `label` for every field (e.g. `false` to suppress). When set, overrides the `{form}.{field}.label` convention. Overridable per `field_types` / `by_form` / PHP. |
 | `profiles.<name>.defaults.placeholder` | `string\|bool` | Optional. Default HTML `placeholder` (e.g. `false` to suppress). When set, overrides the `auto_placeholder` convention key. Not applied to `ChoiceType` fields (their `placeholder` is the empty option; set it in `field_types.choice` / `by_form.<form>.fields` / PHP instead). See [Placeholder semantics](#placeholder-semantics). |
 | `profiles.<name>.defaults.help` | `string\|bool` | Optional. Default `help` (e.g. `false` to suppress). When set, overrides `auto_help`. |
@@ -45,6 +47,10 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 | `stateless_csrf.form_types` | `list<string>` | Form type FQCNs (exact types, not their children). Default `[]`. |
 | `stateless_csrf.register_stateless_token_id` | `bool` | Prepend `token_id` to `framework.csrf_protection.stateless_token_ids`. Default `true`. |
 | `accessibility.unlabelled_choice_aria_label` | `bool` | Default `true`. Give non-expanded choice fields rendered with `label: false` an `aria-label` from their help, else their placeholder. See [below](#accessibility-accessibility). |
+| `locale_tabs.locales` | `list` | Since 2.13. Locales of `TranslatableMapType` and of `fields`-mode locale tabs without `locales`. Default `[]` = `framework.enabled_locales` (else the default locale). |
+| `locale_tabs.default_locale` | `string\|null` | Since 2.13. Default language (marked, listed first). Default `null` = `kernel.default_locale` when it is one of the locales, else the first locale. |
+| `locale_tabs.renderer` | `auto\|ui_kit\|native` | Since 2.13. `auto` (default): UiKit's `locale_tabs` partial when nowo-tech/ui-kit-bundle 2.5+ is installed, else the neutral markup; `native`: always the neutral markup; `ui_kit` behaves like `auto`. |
+| `locale_tabs.form_theme` | `bool` | Since 2.13. Default `true`: registers `@NowoFormKitBundle/form/locale_tabs_theme.html.twig` in `twig.form_themes` (it only renders fields with `locale_tabs`). |
 | `twig.csrf_action_form` | `bool` | Default `true`. Register the `csrf_action_form()` Twig function (only when Twig is installed). See [below](#twig-helpers-twig). |
 | `type_map` | `array` | Additional form type names (snake_case) => FQCN. Merged with built-in and optional types (e.g. Dropzone, Cropper, A2lix Translations when the package is installed). Use for custom types or to override. |
 
@@ -140,6 +146,7 @@ The bundle registers these **form type extensions** (they apply to all field typ
 | **RequiredLabelSuffixExtension** | Appends `required_label_suffix` from the profile named **`default_profile`** to required field labels. The `static_blocks` theme does not apply it to Submit/Button/Reset (`required` is undefined in `form_label_content`). |
 | **HelpModalExtension** | Option `help_modal` (`false`, `true`, or array): injects JSON into `label[data-nowo-help-modal]` for the frontend script; see [Usage](USAGE.md#help-modal-optional). |
 | **LocaleTabsExtension** | Option `locale_tabs` (`false` default, `true`, or array of partial options): adds the `nowo_locale_tabs` block prefix + `locale_tabs` view var so `locale_tabs_theme.html.twig` renders one tab per locale; see [Usage](USAGE.md#locale-tabs-one-tab-per-language). |
+| **CheckboxRowExtension** | Since 2.13 (CheckboxType): `checkbox_bootstrap` / `checkbox_row_class` view vars from the default profile (`css_framework`, `defaults.row_attr.class`) for the `checkbox_row` block of `static_blocks.html.twig`. |
 | **StatelessCsrfTokenIdExtension** | Only when `stateless_csrf.enabled`: one service per listed form type (tag attribute `extended_type`) setting the `csrf_token_id` default. |
 | **UnlabelledChoiceAriaLabelExtension** | Only when `accessibility.unlabelled_choice_aria_label` (default `true`): names label-less selects from their help / placeholder. See [below](#accessibility-accessibility). |
 

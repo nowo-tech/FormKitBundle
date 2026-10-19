@@ -17,6 +17,7 @@
 - [Help modal (optional)](#help-modal-optional)
 - [Combobox (Stimulus peer, optional)](#combobox-stimulus-peer-optional)
 - [Locale tabs (one tab per language)](#locale-tabs-one-tab-per-language)
+  - [Migrating your locale UI](#migrating-your-locale-ui)
 - [Overriding bundle templates](#overriding-bundle-templates)
 - [Multi-step forms (array-based wizard)](#multi-step-forms-array-based-wizard)
   - [Steps definition](#steps-definition)
@@ -581,55 +582,153 @@ $builder
 
 ## Locale tabs (one tab per language)
 
-Render a compound field whose children are keyed by locale (`slugs[es]`, `slugs[en]`, a per-locale translations form…) as **one tab per locale**: WAI-ARIA `tablist` / `tab` / `tabpanel`, the default locale marked with `*`, tabs with validation errors marked (`data-invalid`, `!`) and opened first, inactive panels `hidden` server-side.
+Per-locale fields (one value per language: title, slug, SEO text, a label map) render as **one tab per locale**. Since
+**2.13** the tabs render through UiKit's `locale_tabs` partial when **nowo-tech/ui-kit-bundle ^2.5** is installed
+(suggested, not required): WAI-ARIA tabs with roving `tabindex` and arrows / Home / End (mirrored in RTL), every
+panel visible as a stacked `<fieldset>` until JavaScript upgrades it, the browser opening the hidden panel of an
+invalid control, the `nowo-ui:tabs:change` event for editors, Live Component safe, no inline JS / CSS. Without UiKit
+(or with `ui_kit: false` / `nowo_form_kit.locale_tabs.renderer: native`) the neutral FormKit markup is used.
 
-**Form theme + option** (recommended):
+Both renderers: the default locale listed first and marked `★`, `required_locales` marked `*`, invalid tabs marked
+`!` with "contains errors" in the tab's accessible name and opened first, the request locale opened otherwise,
+`aria-invalid="true"` on every invalid widget, a translated tab list label (`locale_tabs.label`, domain
+`NowoFormKitBundle`), `lang` / `dir` on each panel.
 
-```yaml
-# config/packages/twig.yaml
-twig:
-  form_themes:
-    - '@NowoFormKitBundle/form/static_blocks.html.twig'
-    - 'bootstrap_5_layout.html.twig'
-    - '@NowoFormKitBundle/form/locale_tabs_theme.html.twig'
-```
+The theme `@NowoFormKitBundle/form/locale_tabs_theme.html.twig` is registered in `twig.form_themes` automatically
+(`nowo_form_kit.locale_tabs.form_theme: false` to opt out). Three shapes:
+
+**(a) A list of translation entities** (a `CollectionType` whose entries have a `locale` child): the locale comes from
+the entry's `locale` value (or its data), that child becomes a hidden input, the other children of the entry fill
+the panel.
 
 ```php
-$builder->add('slugs', SlugsPerLocaleType::class, [   // children: es, en, fr…
-    'label'       => 'clinic.slugs.label',            // becomes the tab group title
-    'help'        => 'clinic.slugs.help',
-    'locale_tabs' => [
-        'locales'        => ['es', 'en', 'fr'],       // default: the field's children
-        'default_locale' => 'es',                     // default: first locale
-        'locale_labels'  => ['es' => 'Español', 'en' => 'English', 'fr' => 'Français'],
-        'label'          => 'Slug (%locale%)',        // optional child label override (already translated)
-    ],
+$builder->add('translations', CollectionType::class, [
+    'entry_type'    => ArticleTranslationType::class, // locale (hidden or text), title, body…
+    'entry_options' => ['error_bubbling' => false],   // entry-level errors inside their panel
+    'locale_tabs'   => ['default_locale' => 'es', 'required_locales' => ['es']],
 ]);
 ```
 
-**Partial** (no option needed; pass translated strings):
+**(b) `field_<locale>` groups** (flat, often unmapped fields such as `name_es`, `description_es`): include the
+partial with `fields` (and `pattern`, default `{field}_{locale}`); only those children are rendered, `form_rest()`
+renders the others. `locales` defaults to `nowo_form_kit.locale_tabs.locales`.
 
 ```twig
-{{ include('@NowoFormKitBundle/form/_locale_tabs.html.twig', {
-    field: form.slugs,
-    default_child: form.slug,          {# optional: render this field in the default-locale tab #}
-    title: 'Slug'|trans,
-    tabs_label: 'Languages'|trans,
-    locales: enabled_locales,
-    testid: 'slugs-tabs',
-}, with_context: false) }}
+{{ form_start(form) }}
+    {{ form_row(form.code) }}
+    {% include '@NowoFormKitBundle/form/_locale_tabs.html.twig' with {
+        field: form, fields: ['name', 'description'], required_locales: ['es'], tabs_id: 'permission-i18n',
+    } only %}
+{{ form_end(form) }}
 ```
 
-Options (both ways): `locales`, `default_locale`, `active_locale` (default: request locale when listed), `activate_invalid` (default `true`), `default_child`, `tabs_id`, `testid`, `title`, `help`, `tabs_label`, `label` / `help_default` / `help_other` (`%locale%` placeholder), `locale_labels`, `mark_default`, `row_options`, `stimulus_controller` (default `tabs`, `false` to omit), `kit_attributes` (default `true`), and CSS hooks `wrapper_class`, `heading_class`, `help_class`, `tabs_class`, `nav_class`, `tab_class`, `panel_class`, `error_marker`. The full list is in the partial header.
+The same works on a compound child (`'locale_tabs' => ['fields' => ['name', 'description']]` on an `inherit_data`
+sub-form).
 
-**Switching tabs** needs one of (no inline JS, strict-CSP safe):
+**(c) `TranslatableMapType`** for a JSON `{locale: text}` map (Doctrine `json` column): one child per locale, locales
+from `nowo_form_kit.locale_tabs.locales` (default `framework.enabled_locales`, else the default locale), tabs on by
+default.
 
-- a Stimulus controller registered as `tabs` that toggles `data-tab-id` panels — e.g. the UiKit peer `vendor/nowo-tech/ui-kit-bundle/src/Resources/assets/stimulus-peers/tabs_controller.ts` (`stimulus_controller: 'other-id'` if yours has another identifier), or
-- the UiKit IIFE `nowo-ui-tabs.js` (reads the `data-nowo-ui-tabs*` attributes emitted when `kit_attributes` is true).
+```php
+$builder->add('labels', TranslatableMapType::class, [
+    'required_locales' => ['es'],                 // required + NotBlank
+    'entry_type'       => TextareaType::class,    // default TextType
+    'entry_options'    => ['attr' => ['rows' => 2]],
+    // 'locales' => ['es', 'en'], 'default_locale' => 'es', 'remove_empty' => true, 'input' => 'json'
+]);
+```
 
-Without JS the active (or first invalid) tab is visible and the other panels stay `hidden`.
+Keys of the map that are not among the locales are kept on submit; blank values are dropped (`remove_empty`).
+`input: 'json'` reads / writes a JSON string instead of an array.
 
-Styling: default classes are `nowo-form-kit-locale-tabs__*`; load the optional neutral stylesheet `{{ asset('locale-tabs.css', 'nowo_form_kit') }}` or pass your own classes (Bootstrap: `nav_class: 'nav nav-tabs'`, `tab_class: 'nav-link'`; Tailwind utilities work as well — the active tab has `aria-selected="true"` / `data-active`).
+**Children keyed by locale** (2.7 shape, e.g. `slugs[es]`, `slugs[en]`) keep working:
+
+```php
+$builder->add('slugs', SlugsPerLocaleType::class, [
+    'label'       => 'Slug',
+    'locale_tabs' => ['locales' => ['es', 'en', 'fr'], 'default_locale' => 'es', 'label' => 'Slug (%locale%)'],
+]);
+```
+
+Options (option array or include): `mode` (`children` | `entries` | `fields`, detected), `fields`, `pattern`,
+`locale_child` (default `locale`), `locales`, `default_locale`, `required_locales`, `active_locale`,
+`activate_invalid` (default `true`), `default_child`, `tabs_id`, `testid`, `title`, `help`, `tabs_label`, `label` /
+`help_default` / `help_other` (children mode, `%locale%` placeholder), `locale_labels`, `mark_default`,
+`default_marker` / `required_marker` / `invalid_marker` (`★` / `*` / `!`), `row_options`, `stimulus_controller`
+(default `tabs`, `false` to omit), `ui_kit` (`false` = neutral markup), UiKit renderer: `progressive`, `legend`,
+`bundle`; neutral renderer: `kit_attributes` and the CSS hooks `wrapper_class`, `heading_class`, `help_class`,
+`tabs_class`, `nav_class`, `tab_class`, `panel_class`, `error_marker`. The full list is in the partial header.
+
+Configuration (`nowo_form_kit.locale_tabs`): `locales` (default `[]` = `framework.enabled_locales`), `default_locale`
+(default `null` = `kernel.default_locale` when listed), `renderer` (`auto` | `ui_kit` | `native`), `form_theme`
+(default `true`). See [CONFIGURATION](CONFIGURATION.md).
+
+Neutral renderer styling: classes `nowo-form-kit-locale-tabs__*`, optional stylesheet
+`{{ asset('locale-tabs.css', 'nowo_form_kit') }}`; switching needs `nowo-ui-tabs.js` or a Stimulus `tabs`
+controller. UiKit renderer: UiKit's `nowo-ui.css` and `nowo-ui-tabs.js` (the UiKit `scripts` partial loads it), theme
+slots `tabs`, `tab`, `tab_active`, `tab_panel`.
+
+Editors in panels (CKEditor, Tiptap) mount when their panel shows:
+
+```js
+document.addEventListener('nowo-ui:tabs:change', (event) => {
+  event.detail.panel?.querySelectorAll('[data-editor]:not([data-mounted])').forEach(mountEditor);
+});
+```
+
+### Migrating your locale UI
+
+Replace per-bundle locale tab markup with the shape that matches your data.
+
+**List of translation entities** (BlogKit articles, ContactForm, ApiStudio, CookieConsent). Before — an own
+`_locale_tabs.html.twig` / Bootstrap tabs looping over `form.translations`:
+
+```twig
+<ul class="nav nav-tabs">{% for t in form.translations %}<li><button data-bs-toggle="tab" data-bs-target="#t{{ loop.index }}">{{ t.vars.value.locale|upper }}</button></li>{% endfor %}</ul>
+<div class="tab-content">{% for t in form.translations %}<div class="tab-pane" id="t{{ loop.index }}">{{ form_widget(t) }}</div>{% endfor %}</div>
+```
+
+After — the option on the collection, the template renders the row:
+
+```php
+$builder->add('translations', CollectionType::class, ['entry_type' => ArticleTranslationType::class, 'entry_options' => ['error_bubbling' => false], 'locale_tabs' => ['default_locale' => $defaultLocale]]);
+```
+```twig
+{{ form_row(form.translations) }}
+```
+
+**`field_<locale>` groups** (SeoKit settings, Beacon permissions, DashboardMenu `label_<locale>`). Before — a fieldset or
+row per locale:
+
+```twig
+{% for locale in locales %}<fieldset><legend>{{ locale|upper }}</legend>{{ form_row(form['title_' ~ locale]) }}{{ form_row(form['description_' ~ locale]) }}</fieldset>{% endfor %}
+```
+
+After:
+
+```twig
+{% include '@NowoFormKitBundle/form/_locale_tabs.html.twig' with {field: form, fields: ['title', 'description'], locales: locales} only %}
+```
+
+In a Live Component the fields keep their `data-model` attributes; the active tab survives re-renders.
+
+**JSON map** (BreadcrumbKit labels, DashboardMenu item labels). Before — a raw JSON textarea or unmapped
+`label_<locale>` fields merged by hand in a listener:
+
+```php
+$builder->add('labels', TextareaType::class); // + JsonModelTransformer
+```
+
+After:
+
+```php
+$builder->add('labels', TranslatableMapType::class, ['required_locales' => [$defaultLocale]]);
+```
+
+Unknown locales already in the JSON are kept, so a disabled locale is not lost.
+
+**Editor remount**: replace a `locale-tabs:changed` (or Bootstrap `shown.bs.tab`) listener with
+`nowo-ui:tabs:change` (`event.detail.panel`).
 
 ## Overriding bundle templates
 

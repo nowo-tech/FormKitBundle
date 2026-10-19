@@ -63,6 +63,23 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+Additive (minor release). Notes:
+
+- **Locale tabs with UiKit**: when nowo-tech/ui-kit-bundle 2.5+ is installed, fields with `locale_tabs` render through
+  UiKit's `locale_tabs` partial (different markup: stacked fieldsets until `nowo-ui-tabs.js` upgrades them). Keep the
+  2.12 markup with `nowo_form_kit.locale_tabs.renderer: native` or `'locale_tabs' => ['ui_kit' => false]`. The
+  default-locale glyph is now `★` (`*` marks `required_locales`); `default_marker` restores `*`.
+- **Form theme registered automatically**: `@NowoFormKitBundle/form/locale_tabs_theme.html.twig` is prepended to
+  `twig.form_themes`. Drop it from your `twig.form_themes` (harmless if kept) or set
+  `nowo_form_kit.locale_tabs.form_theme: false`.
+- **Custom Twig environments** rendering `_locale_tabs.html.twig` need `Nowo\FormKitBundle\Twig\LocaleTabsTwigExtension`
+  (registered by the bundle in Symfony apps).
+- **`checkbox_row`** (`static_blocks.html.twig`): non-Bootstrap profiles (`css_framework: tailwind`, root or the new
+  profile-level key) no longer get `mb-3 form-check` / `form-check-input` / `form-check-label`; the row uses the
+  profile's `defaults.row_attr.class`. Bootstrap hosts see no change.
+- Optional: `profiles.<name>.help_attr` replaces `profiles.<name>.defaults.help_attr`.
+- Optional: migrate per-bundle locale UIs — see [USAGE](USAGE.md#migrating-your-locale-ui).
+
 ## To 2.12.0
 
 From **2.11.0** — opt-in combobox Stimulus peer
