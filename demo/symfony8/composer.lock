@@ -1137,7 +1137,7 @@
         },
         {
             "name": "nowo-tech/form-kit-bundle",
-            "version": "dev-feature/locale-tabs",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "/var/form-kit-bundle",
