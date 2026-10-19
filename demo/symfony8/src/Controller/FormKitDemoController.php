@@ -14,6 +14,7 @@ use App\Form\DataTransformersDemoType;
 use App\Form\DemoContactType;
 use App\Form\DropzoneDemoType;
 use App\Form\ExampleFormType;
+use App\Form\LocaleTabsDemoType;
 use App\Form\NamedConfigDemoType;
 use App\Form\NestedFormDemoType;
 use App\Form\NowoSpecialFieldsDemoType;
@@ -265,6 +266,45 @@ class FormKitDemoController extends AbstractController
             'form'                     => $form,
             'submitted'                => $submitted,
             'demo_translation_context' => $localeContext,
+        ]);
+    }
+
+    /**
+     * Locale tabs (FormKit 2.13 + UiKit 2.5): list of translation entities, field_<locale> groups, TranslatableMapType.
+     * `?errors=1` submits blank required values to show the error state (invalid tabs marked and opened).
+     */
+    #[Route(path: '/locale-tabs', name: 'form_demo_locale_tabs', methods: ['GET', 'POST'])]
+    public function localeTabsDemo(Request $request): Response
+    {
+        $data = [
+            'translations' => [
+                ['locale' => 'en', 'title' => 'Welcome', 'body' => 'Hello and welcome.'],
+                ['locale' => 'es', 'title' => 'Bienvenida', 'body' => 'Hola y bienvenido.'],
+                ['locale' => 'fr', 'title' => 'Bienvenue', 'body' => ''],
+                ['locale' => 'de', 'title' => 'Willkommen', 'body' => ''],
+            ],
+            'labels' => ['en' => 'Home', 'es' => 'Inicio', 'fr' => 'Accueil'],
+            'slugs'  => ['en' => 'welcome', 'es' => 'bienvenida'],
+        ];
+        $form = $this->createForm(LocaleTabsDemoType::class, $data);
+        if ($request->query->getBoolean('errors')) {
+            $form->submit([
+                'translations' => [
+                    ['locale' => 'en', 'title' => 'Welcome', 'body' => ''],
+                    ['locale' => 'es', 'title' => '', 'body' => 'Hola y bienvenido.'],
+                    ['locale' => 'fr', 'title' => 'Bienvenue', 'body' => ''],
+                    ['locale' => 'de', 'title' => 'Willkommen', 'body' => ''],
+                ],
+                'name_en' => '', 'name_es' => 'Permiso', 'labels' => ['en' => '', 'es' => 'Inicio'], 'slugs' => ['en' => 'welcome'],
+            ]);
+        } else {
+            $form->handleRequest($request);
+        }
+        $submitted = $form->isSubmitted() && $form->isValid() ? $form->getData() : null;
+
+        return $this->render('form_demo/locale_tabs.html.twig', [
+            'form'      => $form,
+            'submitted' => $submitted,
         ]);
     }
 

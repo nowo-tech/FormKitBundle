@@ -7,6 +7,7 @@ demo_nav:
   dropzone: Dropzone
   cropper: Recorte
   translations: Traducciones
+  locale_tabs: 'Pestañas de idioma'
   nested: Anidado
   data_transformers: 'Transformadores de datos'
   choice_fields: 'Campos de elección'
@@ -399,6 +400,10 @@ demo_pages:
       title: Traducciones
       description: 'Campos por idioma con pestañas. Un form_class por idioma.'
       button: 'Abrir traducciones'
+    locale_tabs:
+      title: 'Pestañas de idioma'
+      description: 'Una pestaña por idioma: entidades de traducción, grupos <code>campo_&lt;idioma&gt;</code> y un mapa JSON (<code>TranslatableMapType</code>), renderizados por UiKit.'
+      button: 'Abrir pestañas de idioma'
     nested:
       title: 'Formulario anidado'
       description: 'Contacto + dirección embebida. Convenciones Form Kit para tipos anidados.'
@@ -485,6 +490,12 @@ demo_pages:
     expected_path: 'Ruta esperada:'
     crop_submitted_title: 'Recorte enviado.'
     crop_submitted_body: 'En una app real guardarías la imagen recortada con <code>$crop->getCroppedImage()</code> o <code>getCroppedThumbnail()</code>.'
+  locale_tabs:
+    page_title: 'Pestañas de idioma - Demo Form Kit'
+    heading: 'Pestañas de idioma'
+    intro: 'FormKit 2.13 muestra los campos por idioma como una pestaña por idioma mediante UiKit 2.5 (parcial <code>locale_tabs</code>): pestañas WAI-ARIA (flechas, Inicio / Fin), fieldsets apilados sin JavaScript, marcas de obligatorio <code>*</code> y predeterminado <code>★</code>, pestañas con errores marcadas con <code>!</code> y abiertas, y el navegador abre el panel oculto de un campo inválido. El último campo usa el marcado neutro de FormKit (<code>ui_kit: false</code>).'
+    show_errors: 'Mostrar errores de validación'
+    reset: 'Restablecer'
   translations:
     page_title: 'Traducciones - Demo Form Kit'
     heading: Traducciones

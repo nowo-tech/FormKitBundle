@@ -16,6 +16,7 @@ use Nowo\SlideToConfirmBundle\NowoSlideToConfirmBundle;
 use Nowo\TagInputBundle\NowoTagInputBundle;
 use Nowo\TiptapEditorBundle\NowoTiptapEditorBundle;
 use Nowo\TwigInspectorBundle\NowoTwigInspectorBundle;
+use Nowo\UiKitBundle\NowoUiKitBundle;
 use Pentatrion\ViteBundle\PentatrionViteBundle;
 use Sensiolabs\TypeScriptBundle\SensiolabsTypeScriptBundle;
 use Symfony\Bundle\DebugBundle\DebugBundle;
@@ -46,6 +47,7 @@ return [
     CropperjsBundle::class            => ['all' => true],
     A2lixTranslationFormBundle::class => ['all' => true],
     NowoFormKitBundle::class          => ['all' => true],
+    NowoUiKitBundle::class            => ['all' => true],
     NowoSelectAllChoiceBundle::class  => ['all' => true],
     FOSCKEditorBundle::class          => ['all' => true],
     NowoOtpInputBundle::class         => ['all' => true],

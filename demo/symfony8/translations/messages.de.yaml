@@ -8,6 +8,7 @@ demo_nav:
   dropzone: Dropzone
   cropper: Zuschneiden
   translations: Übersetzungen
+  locale_tabs: 'Sprach-Tabs'
   nested: Verschachtelt
   data_transformers: Datentransformatoren
   choice_fields: Auswahlfelder
@@ -356,6 +357,10 @@ demo_pages:
       title: Translations
       description: 'Translatable fields per locale with tabs. One form_class per locale.'
       button: 'Open Translations'
+    locale_tabs:
+      title: 'Sprach-Tabs'
+      description: 'Ein Tab pro Sprache: Übersetzungsentitäten, <code>feld_&lt;sprache&gt;</code>-Gruppen und eine JSON-Map (<code>TranslatableMapType</code>), gerendert von UiKit.'
+      button: 'Sprach-Tabs öffnen'
     nested:
       title: 'Nested Form'
       description: 'Contact + embedded address. Form Kit conventions for nested types.'
@@ -442,6 +447,12 @@ demo_pages:
     expected_path: 'Expected path:'
     crop_submitted_title: 'Crop submitted.'
     crop_submitted_body: 'In a real app you would save the cropped image via <code>$crop->getCroppedImage()</code> or <code>getCroppedThumbnail()</code>.'
+  locale_tabs:
+    page_title: 'Sprach-Tabs - Form Kit Demo'
+    heading: 'Sprach-Tabs'
+    intro: 'FormKit 2.13 rendert sprachabhängige Felder über UiKit 2.5 (Partial <code>locale_tabs</code>) als einen Tab pro Sprache: WAI-ARIA-Tabs (Pfeile, Pos1 / Ende), gestapelte Fieldsets ohne JavaScript, Markierungen für Pflicht <code>*</code> und Standard <code>★</code>, fehlerhafte Tabs mit <code>!</code> markiert und geöffnet, der Browser öffnet das verborgene Panel eines ungültigen Felds. Das letzte Feld nutzt das neutrale FormKit-Markup (<code>ui_kit: false</code>).'
+    show_errors: 'Validierungsfehler anzeigen'
+    reset: 'Zurücksetzen'
   translations:
     page_title: 'Übersetzungen - Form Kit Demo'
     heading: Übersetzungen

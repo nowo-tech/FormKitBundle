@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'demo_pages.locale_tabs.page_title'|trans }}{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {# UiKit renderer (nowo-tech/ui-kit-bundle ^2.5) and the neutral FormKit renderer of the `slugs` field #}
+  <link rel="stylesheet" href="{{ asset('css/nowo-ui.css', 'nowo_ui_kit') }}">
+  <link rel="stylesheet" href="{{ asset('locale-tabs.css', 'nowo_form_kit') }}">
+{% endblock %}
+
+{% block body %}
+{% set locale = app.request.locale %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">{{ 'demo_pages.locale_tabs.heading'|trans }}</h1>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
+</div>
+<p class="text-secondary mb-3">{{ 'demo_pages.locale_tabs.intro'|trans|raw }}</p>
+<p class="mb-4">
+  <a class="btn btn-sm btn-outline-danger" data-testid="locale-tabs-errors" href="{{ path('form_demo_locale_tabs', {_locale: locale, errors: 1}) }}">{{ 'demo_pages.locale_tabs.show_errors'|trans }}</a>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_locale_tabs', {_locale: locale}) }}">{{ 'demo_pages.locale_tabs.reset'|trans }}</a>
+</p>
+
+<div class="card form-card shadow-sm rounded-3">
+  <div class="card-body p-4">
+    {{ form_start(form, {attr: {class: 'nowo-ui-form', 'data-testid': 'locale-tabs-form'}}) }}
+      {# (a) list of translation entities: the locale_tabs option on the collection #}
+      {{ form_row(form.translations) }}
+
+      {# (b) field_<locale> groups: the include picks name_<l> / description_<l> out of the root form #}
+      {% include '@NowoFormKitBundle/form/_locale_tabs.html.twig' with {
+        field: form,
+        fields: ['name', 'description'],
+        required_locales: ['en'],
+        tabs_id: 'permission-i18n',
+        title: 'Permission (name_<locale> / description_<locale> fields)',
+      } only %}
+
+      {# (c) JSON map (TranslatableMapType) and the neutral renderer (slugs, ui_kit: false) #}
+      {{ form_row(form.labels) }}
+      {{ form_row(form.slugs) }}
+
+      <div class="nowo-ui-form__actions d-flex flex-wrap gap-2">
+        <button type="submit" class="btn btn-primary rounded-2 px-4">{{ 'demo_pages.common.save'|trans }}</button>
+      </div>
+    {{ form_end(form) }}
+  </div>
+</div>
+
+{% if submitted %}
+  <div class="alert alert-success mt-4 mb-0 shadow-sm rounded-3" data-testid="locale-tabs-submitted">
+    <pre class="mb-0 small">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block page_scripts %}
+  {{ parent() }}
+  <script defer src="{{ asset('js/nowo-ui-tabs.js', 'nowo_ui_kit') }}"></script>
+{% endblock %}

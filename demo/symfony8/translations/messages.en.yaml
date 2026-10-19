@@ -8,6 +8,7 @@ demo_nav:
   dropzone: Dropzone
   cropper: Cropper
   translations: Translations
+  locale_tabs: 'Locale tabs'
   nested: Nested
   data_transformers: 'Data transformers'
   choice_fields: 'Choice fields'
@@ -414,6 +415,10 @@ demo_pages:
       title: Translations
       description: 'Translatable fields per locale with tabs. One form_class per locale.'
       button: 'Open Translations'
+    locale_tabs:
+      title: 'Locale tabs'
+      description: 'One tab per language: translation entities, <code>field_&lt;locale&gt;</code> groups and a JSON map (<code>TranslatableMapType</code>), rendered by UiKit.'
+      button: 'Open Locale tabs'
     nested:
       title: 'Nested Form'
       description: 'Contact + embedded address. Form Kit conventions for nested types.'
@@ -500,6 +505,12 @@ demo_pages:
     expected_path: 'Expected path:'
     crop_submitted_title: 'Crop submitted.'
     crop_submitted_body: 'In a real app you would save the cropped image via <code>$crop->getCroppedImage()</code> or <code>getCroppedThumbnail()</code>.'
+  locale_tabs:
+    page_title: 'Locale tabs - Form Kit Demo'
+    heading: 'Locale tabs'
+    intro: 'FormKit 2.13 renders per-locale fields as one tab per language through UiKit 2.5 (<code>locale_tabs</code> partial): WAI-ARIA tabs (arrows, Home / End), stacked fieldsets without JavaScript, required <code>*</code> and default <code>★</code> markers, invalid tabs marked <code>!</code> and opened, the browser opening the hidden panel of an invalid field. The last field uses the neutral FormKit markup (<code>ui_kit: false</code>).'
+    show_errors: 'Show validation errors'
+    reset: 'Reset'
   translations:
     page_title: 'Translations - Form Kit Demo'
     heading: Translations

@@ -7,6 +7,7 @@ demo_nav:
   dropzone: Dropzone
   cropper: Recadrage
   translations: Traductions
+  locale_tabs: 'Onglets de langue'
   nested: Imbriqué
   data_transformers: 'Transformateurs de données'
   choice_fields: 'Champs de choix'
@@ -345,6 +346,10 @@ demo_pages:
       title: Traductions
       description: 'Champs par langue avec onglets. Un form_class par langue.'
       button: 'Ouvrir les traductions'
+    locale_tabs:
+      title: 'Onglets de langue'
+      description: 'Un onglet par langue : entités de traduction, groupes <code>champ_&lt;langue&gt;</code> et une carte JSON (<code>TranslatableMapType</code>), rendus par UiKit.'
+      button: 'Ouvrir les onglets de langue'
     nested:
       title: 'Formulaire imbriqué'
       description: 'Contact + adresse imbriquée. Conventions Form Kit pour les types imbriqués.'
@@ -431,6 +436,12 @@ demo_pages:
     expected_path: 'Chemin attendu :'
     crop_submitted_title: 'Recadrage envoyé.'
     crop_submitted_body: 'Dans une vraie application vous enregistreriez l’image via <code>$crop->getCroppedImage()</code> ou <code>getCroppedThumbnail()</code>.'
+  locale_tabs:
+    page_title: 'Onglets de langue - Démo Form Kit'
+    heading: 'Onglets de langue'
+    intro: 'FormKit 2.13 affiche les champs par langue en un onglet par langue via UiKit 2.5 (partiel <code>locale_tabs</code>) : onglets WAI-ARIA (flèches, Début / Fin), fieldsets empilés sans JavaScript, marques obligatoire <code>*</code> et par défaut <code>★</code>, onglets en erreur marqués <code>!</code> et ouverts, le navigateur ouvrant le panneau caché d’un champ invalide. Le dernier champ utilise le balisage neutre de FormKit (<code>ui_kit: false</code>).'
+    show_errors: 'Afficher les erreurs de validation'
+    reset: 'Réinitialiser'
   translations:
     page_title: 'Traductions - Démo Form Kit'
     heading: Traductions
