@@ -1,0 +1,4 @@
+locale_tabs.label: "Sprachen"
+locale_tabs.default: "Standardsprache"
+locale_tabs.required: "Pflichtfeld"
+locale_tabs.invalid: "enthält Fehler"

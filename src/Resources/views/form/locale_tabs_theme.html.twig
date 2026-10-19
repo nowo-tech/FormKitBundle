@@ -1,7 +1,8 @@
 {#
   Form theme: renders a compound field whose children are keyed by locale as one tab per locale.
 
-  1. Register the theme (twig.form_themes or {% form_theme form '@NowoFormKitBundle/form/locale_tabs_theme.html.twig' %}).
+  1. Register the theme (2.13: registered in twig.form_themes automatically unless nowo_form_kit.locale_tabs.form_theme
+     is false; or {% form_theme form '@NowoFormKitBundle/form/locale_tabs_theme.html.twig' %}).
   2. Opt a field in with the `locale_tabs` option (LocaleTabsExtension):
 
        $builder->add('slugs', SlugsPerLocaleType::class, [
@@ -9,7 +10,10 @@
            'locale_tabs' => ['locales' => ['es', 'en'], 'default_locale' => 'es'],
        ]);
 
-  Every key of `locale_tabs` is passed to `_locale_tabs.html.twig` (see its header for the list).
+  TranslatableMapType (2.13) sets it by default; a CollectionType of translation entities (mode entries) and
+  `fields: [...]` groups (mode fields) work the same way. Every key of `locale_tabs` is passed to
+  `_locale_tabs.html.twig` (see its header for the list); it renders through UiKit's `locale_tabs` partial when UiKit
+  2.5+ is installed.
   `title` defaults to the field label (translated), `help` to the field help, errors of the
   compound field itself are rendered above the tabs.
 #}

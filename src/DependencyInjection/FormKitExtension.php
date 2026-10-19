@@ -9,7 +9,9 @@ use Nowo\FormKitBundle\Form\AbstractGetFilterType;
 use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
+use Nowo\FormKitBundle\Form\Type\TranslatableMapType;
 use Nowo\FormKitBundle\Twig\CsrfActionFormExtension;
+use Nowo\FormKitBundle\Twig\LocaleTabsTwigExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -43,6 +45,8 @@ use function sprintf;
  */
 class FormKitExtension extends Extension implements PrependExtensionInterface
 {
+    public const LOCALE_TABS_FORM_THEME = '@NowoFormKitBundle/form/locale_tabs_theme.html.twig';
+
     /**
      * Registers the bundle asset package before FrameworkExtension processes assets.
      *
@@ -55,6 +59,7 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         }
 
         $this->prependStatelessCsrfTokenId($container);
+        $this->prependLocaleTabsFormTheme($container);
 
         $container->prependExtensionConfig('framework', [
             'assets' => [
@@ -101,10 +106,11 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
                 'convention_requires_translation' => (bool) ($c['convention_requires_translation'] ?? $requireTranslatedDefault),
                 'required_label_suffix'           => $c['required_label_suffix'] ?? null,
                 'help_modal'                      => $c['help_modal'] ?? [],
-                'defaults'                        => $c['defaults'],
+                'defaults'                        => $this->withProfileHelpAttr($c['defaults'], $c['help_attr'] ?? []),
                 'field_types'                     => $c['field_types'],
                 'constraint_message_convention'   => (bool) ($c['constraint_message_convention'] ?? false),
                 'by_form'                         => $c['by_form'] ?? [],
+                'css_framework'                   => $c['css_framework'] ?? null,
             ];
         }
 
@@ -137,6 +143,55 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         /** @var array{csrf_action_form: bool} $twig */
         $twig = $config['twig'];
         $this->registerTwig($container, $twig);
+
+        /** @var array{locales: list<string>, default_locale: string|null, renderer: string, form_theme: bool} $localeTabs */
+        $localeTabs = $config['locale_tabs'];
+        $this->registerLocaleTabs($container, $localeTabs);
+    }
+
+    /**
+     * Locale tabs (2.13): parameters for {@see TranslatableMapType} and the {@see LocaleTabsTwigExtension}
+     * (registered when Twig is installed). Empty locales / null default locale are filled from
+     * framework.enabled_locales / default_locale by LocaleTabsLocalesPass.
+     *
+     * @param array{locales: list<string>, default_locale: string|null, renderer: string, form_theme: bool} $localeTabs
+     */
+    private function registerLocaleTabs(ContainerBuilder $container, array $localeTabs): void
+    {
+        $container->setParameter('nowo_form_kit.locale_tabs.locales', array_values($localeTabs['locales']));
+        $container->setParameter('nowo_form_kit.locale_tabs.default_locale', $localeTabs['default_locale']);
+        $container->setParameter('nowo_form_kit.locale_tabs.renderer', $localeTabs['renderer']);
+
+        if (!class_exists(AbstractExtension::class)) {
+            return;
+        }
+
+        $container->register(LocaleTabsTwigExtension::class, LocaleTabsTwigExtension::class)
+            ->setArguments([
+                '%nowo_form_kit.locale_tabs.locales%',
+                '%nowo_form_kit.locale_tabs.default_locale%',
+                $localeTabs['renderer'] === 'native' ? false : null,
+            ])
+            ->addTag('twig.extension')
+            ->setPublic(false);
+    }
+
+    /**
+     * Registers the locale tabs form theme (prepended, so host themes listed later still win) unless
+     * `nowo_form_kit.locale_tabs.form_theme` is false in any config file.
+     */
+    private function prependLocaleTabsFormTheme(ContainerBuilder $container): void
+    {
+        if (!$container->hasExtension('twig')) {
+            return;
+        }
+        foreach ($container->getExtensionConfig(Configuration::ALIAS) as $config) {
+            if (is_array($config['locale_tabs'] ?? null) && ($config['locale_tabs']['form_theme'] ?? true) === false) {
+                return;
+            }
+        }
+
+        $container->prependExtensionConfig('twig', ['form_themes' => [self::LOCALE_TABS_FORM_THEME]]);
     }
 
     /**
@@ -255,7 +310,27 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
             'field_types'                   => [],
             'constraint_message_convention' => false,
             'by_form'                       => [],
+            'css_framework'                 => null,
         ];
+    }
+
+    /**
+     * Profile-level `help_attr` (2.13) under `defaults.help_attr` (the latter wins per attribute).
+     *
+     * @param array<string, mixed> $defaults
+     * @param array<string, mixed> $helpAttr
+     *
+     * @return array<string, mixed>
+     */
+    private function withProfileHelpAttr(array $defaults, array $helpAttr): array
+    {
+        if ($helpAttr === []) {
+            return $defaults;
+        }
+        $own                   = is_array($defaults['help_attr'] ?? null) ? $defaults['help_attr'] : [];
+        $defaults['help_attr'] = array_merge($helpAttr, $own);
+
+        return $defaults;
     }
 
     public function getAlias(): string

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle;
 
+use Nowo\FormKitBundle\DependencyInjection\Compiler\LocaleTabsLocalesPass;
 use Nowo\FormKitBundle\DependencyInjection\Compiler\TwigPathsPass;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
 use Nowo\FormKitBundle\DependencyInjection\FormOptionsMergerInjectorCompilerPass;
@@ -41,6 +42,7 @@ class NowoFormKitBundle extends Bundle
 
         $container->addCompilerPass(new TwigPathsPass());
         $container->addCompilerPass(new FormOptionsMergerInjectorCompilerPass());
+        $container->addCompilerPass(new LocaleTabsLocalesPass());
     }
 
     /**

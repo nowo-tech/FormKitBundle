@@ -1,6 +1,6 @@
 {
     "name": "nowo-tech/form-kit-bundle",
-    "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global \u2192 field type \u2192 form \u2192 field). Symfony 7.4|8.",
+    "description": "Symfony bundle to reduce repetitive form field options: convention-based labels/placeholder/help (form_snake.field_snake.*), configurable attr/row_attr/translation_domain, and cascading option merge (global → field type → form → field). Symfony 7.4|8.",
     "type": "symfony-bundle",
     "license": "MIT",
     "keywords": [
@@ -22,7 +22,7 @@
     },
     "authors": [
         {
-            "name": "H\u00e9ctor Franco Aceituno",
+            "name": "Héctor Franco Aceituno",
             "email": "hectorfranco@nowo.tech",
             "homepage": "https://github.com/HecFranco",
             "role": "Developer"
@@ -59,6 +59,7 @@
         "nowo-tech/slide-to-confirm-bundle": "For addSlideToConfirm() / addSlideToConfirmField() / addSlideToConfirmFieldType()",
         "nowo-tech/tag-input-bundle": "For addTagInput() / addTagInputField() / addTagInputFieldType()",
         "nowo-tech/tiptap-editor-bundle": "For addTiptapEditor() / addTiptapEditorField() / addTiptapEditorFieldType()",
+        "nowo-tech/ui-kit-bundle": "^2.5: locale tabs (locale_tabs option, TranslatableMapType, _locale_tabs include) render through the UiKit locale_tabs partial (WAI-ARIA tabs, no-JS fieldsets, keyboard, browser validation, Live Component safe); without it FormKit keeps its neutral markup",
         "symfony/ux-autocomplete": "Entity autocomplete fields; use addAutocompleteField() / addAutocompleteFieldType() with your autocomplete FormType FQCN",
         "symfony/ux-cropperjs": "For addCropper() / addCropperField() / addCropperFieldType() (image crop widget)",
         "symfony/ux-dropzone": "For addDropzone() / addDropzoneField() / addDropzoneFieldType() (drag-and-drop file upload)",
@@ -69,12 +70,15 @@
         "friendsofphp/php-cs-fixer": "^3.95.11",
         "igor-php/igor-php": "^0.10.0",
         "nowo-tech/phpstan-frankenphp": "^1.0",
+        "nowo-tech/ui-kit-bundle": "^2.5",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^10.0",
         "rector/rector": "^2.0",
+        "symfony/css-selector": "^7.4 || ^8.0",
+        "symfony/dom-crawler": "^7.4 || ^8.0",
         "symfony/framework-bundle": "^7.4 || ^8.0",
         "symfony/security-csrf": "^7.4 || ^8.0",
         "vincentlanglet/twig-cs-fixer": "^4.0"

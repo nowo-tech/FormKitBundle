@@ -1,0 +1,4 @@
+locale_tabs.label: "Idiomas"
+locale_tabs.default: "idioma predefinido"
+locale_tabs.required: "obrigatório"
+locale_tabs.invalid: "contém erros"

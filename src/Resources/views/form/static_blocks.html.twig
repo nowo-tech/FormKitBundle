@@ -53,10 +53,14 @@
 {% endblock %}
 
 {% block checkbox_row %}
-  {% set row_attr = form.vars.row_attr|default({})|merge({ class: (form.vars.row_attr.class|default('mb-3') ~ ' form-check')|trim }) %}
+  {#- 2.13: Bootstrap chrome (form-check…, mb-3 fallback) only when the profile / css_framework is Bootstrap
+      (CheckboxRowExtension vars; Bootstrap when the extension is not registered, as before) -#}
+  {% set _bs = form.vars.checkbox_bootstrap ?? true %}
+  {% set _row_class = form.vars.row_attr.class|default(form.vars.checkbox_row_class ?? 'mb-3') %}
+  {% set row_attr = form.vars.row_attr|default({})|merge({ class: (_row_class ~ (_bs ? ' form-check' : ''))|trim }) %}
   <div{% for attrname, attrvalue in row_attr %}{% if attrvalue is not none and attrvalue != '' %} {{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}>
-    {{ form_widget(form, { attr: (form.vars.attr|default({})|merge({ class: 'form-check-input' })) }) }}
-    {{ form_label(form, null, { label_attr: { class: 'form-check-label' } }) }}
+    {{ form_widget(form, _bs ? { attr: (form.vars.attr|default({})|merge({ class: 'form-check-input' })) } : {}) }}
+    {{ form_label(form, null, _bs ? { label_attr: { class: 'form-check-label' } } : {}) }}
     {{ form_errors(form) }}
     {{ form_help(form) }}
   </div>
