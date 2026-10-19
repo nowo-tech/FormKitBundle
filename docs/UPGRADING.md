@@ -5,9 +5,9 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.13.0](#to-2130)
 - [To 2.12.0](#to-2120)
 - [To 2.11.0](#to-2110)
-- [To 2.10.0](#to-2100)
 - [To 2.9.0](#to-290)
 - [To 2.8.1](#to-281)
 - [To 2.8.0](#to-280)
@@ -63,6 +63,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+## To 2.13.0
+
+From **2.12.0**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
 Additive (minor release). Notes:
 
 - **Locale tabs with UiKit**: when nowo-tech/ui-kit-bundle 2.5+ is installed, fields with `locale_tabs` render through
@@ -110,7 +118,6 @@ nowo_form_kit:
     twig:
         csrf_action_form: false
 ```
-
 
 From **2.9.0** — opt-in convention_requires_translation for help/placeholder keys
 

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.13.0] - 2026-10-19](#2130---2026-10-19)
 - [[2.12.0] - 2026-10-13](#2120---2026-10-13)
 - [[2.11.0] - 2026-10-13](#2110---2026-10-13)
 - [[2.10.0] - 2026-10-13](#2100---2026-10-13)
@@ -57,6 +58,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.13.0] - 2026-10-19
+
+Locale tabs for translation entities, field_<locale> groups and TranslatableMapType, rendered through UiKit 2.5; checkbox_row profile chrome and profile help_attr. See [UPGRADING](UPGRADING.md#to-2130).
 
 ### Added
 
@@ -170,6 +175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.13.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.13.0
 [2.12.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.12.0
 [2.11.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.11.0
 [2.10.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.10.0
