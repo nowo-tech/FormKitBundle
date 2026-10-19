@@ -4,7 +4,6 @@
     "type": "project",
     "license": "MIT",
     "require": {
-        "php": ">=8.4,<8.6",
         "a2lix/translation-form-bundle": "^4.0",
         "doctrine/collections": "^2.2",
         "friendsofsymfony/ckeditor-bundle": "^2.5",
@@ -21,6 +20,7 @@
         "nowo-tech/tiptap-editor-bundle": "^1.0",
         "nowo-tech/ui-kit-bundle": "^2.5",
         "pentatrion/vite-bundle": "^8.2",
+        "php": ">=8.4,<8.6",
         "symfony/asset": "^8.0",
         "symfony/asset-mapper": "8.1.*",
         "symfony/console": "^8.0",
