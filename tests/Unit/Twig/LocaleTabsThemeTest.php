@@ -181,7 +181,7 @@ final class LocaleTabsThemeTest extends TestCase
 
     public function testUiKitRendererForChildrenWithRequiredAndInvalidLocales(): void
     {
-        $form = $this->slugsForm(['label' => 'Slug', 'locale_tabs' => ['default_locale' => 'en', 'required_locales' => ['en'], 'locale_labels' => ['en' => 'English', 'es' => 'Español']]]);
+        $form = $this->slugsForm(['label' => 'Slug', 'help' => 'One per language', 'locale_tabs' => ['default_locale' => 'en', 'required_locales' => ['en'], 'locale_labels' => ['en' => 'English', 'es' => 'Español']]]);
         $form->submit(['slugs' => ['es' => '', 'en' => 'hello']]);
         $form->get('slugs')->get('es')->addError(new FormError('Fill me.'));
 
@@ -189,6 +189,7 @@ final class LocaleTabsThemeTest extends TestCase
 
         $wrapper = $c->filter('.nowo-form-kit-locale-tabs');
         self::assertSame('Slug', $wrapper->filter('.nowo-form-kit-locale-tabs__title')->text());
+        self::assertSame('One per language', $wrapper->filter('p.nowo-form-kit-locale-tabs__help.nowo-ui-muted')->text(), 'UiKit muted slot on the help');
         $root = $wrapper->filter('#root_slugs-locale[data-nowo-ui-locale-tabs][data-nowo-ui-tabs-upgrade]');
         self::assertCount(1, $root);
         self::assertSame('root_slugs-locale-es', $root->attr('data-nowo-ui-tabs-active'), 'the invalid locale opens');

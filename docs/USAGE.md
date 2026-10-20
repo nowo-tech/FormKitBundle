@@ -698,7 +698,9 @@ Configuration (`nowo_form_kit.locale_tabs`): `locales` (default `[]` = `framewor
 Neutral renderer styling: classes `nowo-form-kit-locale-tabs__*`, optional stylesheet
 `{{ asset('locale-tabs.css', 'nowo_form_kit') }}`; switching needs `nowo-ui-tabs.js` or a Stimulus `tabs`
 controller. UiKit renderer: UiKit's `nowo-ui.css` and `nowo-ui-tabs.js` (the UiKit `scripts` partial loads it), theme
-slots `tabs`, `tab`, `tab_active`, `tab_panel`.
+slots `locale_tabs_nav` (UiKit 2.5.3+), `tab`, `tab_active`, `tab_panel`; the help gets the `muted` slot. The heading
+(title size, muted help, label gap from `--nowo-ui-form-label-gap`) is styled by `locale-tabs.css` with both
+renderers; tune it with `--nfk-locale-tabs-title-size`, `--nfk-locale-tabs-help-size`, `--nfk-locale-tabs-label-gap`.
 
 Editors in panels (CKEditor, Tiptap) mount when their panel shows:
 

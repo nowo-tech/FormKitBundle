@@ -64,6 +64,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+Patch release. Run `php bin/console assets:install` for the new `locale-tabs.css`.
+
+- Link `{{ asset('locale-tabs.css', 'nowo_form_kit') }}` with either renderer to style the locale tabs heading (title,
+  help, label gap); its tab rules only target the neutral markup, so it is safe next to UiKit. Then drop host rules for
+  `.nowo-form-kit-locale-tabs__title` / `__help` / `__heading`.
+- With UiKit, update it to 2.5.3 (`composer update nowo-tech/ui-kit-bundle`) and drop host CSS that cancelled the
+  `tabs` margin under the locale tab list.
+
 ## To 2.13.1
 
 From **2.13.0**:

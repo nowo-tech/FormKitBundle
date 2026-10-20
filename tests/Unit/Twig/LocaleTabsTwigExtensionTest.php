@@ -36,6 +36,22 @@ final class LocaleTabsTwigExtensionTest extends TestCase
         self::assertSame('x', (new LocaleTabsTwigExtension(uiKit: false))->uiKitTemplate($this->env(static fn (string $n): string => 'x'), true));
     }
 
+    public function testHelpClassIsTheUiKitMutedSlotOnlyWithTheUiKitRenderer(): void
+    {
+        $ext       = new LocaleTabsTwigExtension();
+        $field     = $this->view(['compound' => true]);
+        $partial   = static fn (string $n): string => 'x';
+        $slotClass = static fn (array $context, string $slot, ?string $bundle = null): string => $slot . ':' . ($bundle ?? '-');
+
+        self::assertSame('', $ext->localeTabs($this->env(), $field)['help_class'], 'neutral renderer');
+        self::assertSame('', $ext->localeTabs($this->env($partial), $field)['help_class'], 'no nowo_ui_class');
+        self::assertSame('muted:-', $ext->localeTabs($this->env($partial, true, $slotClass), $field)['help_class']);
+        self::assertSame('muted:blog', $ext->localeTabs($this->env($partial, true, $slotClass), $field, ['bundle' => 'blog'])['help_class'], 'per-bundle theme exceptions');
+        self::assertSame('', $ext->localeTabs($this->env($partial, true, $slotClass), $field, ['ui_kit' => false])['help_class'], 'renderer forced off');
+        self::assertSame('', $ext->localeTabs($this->env($partial, true, static fn (array $context, string $slot): string => throw new RuntimeException('Unknown slot')), $field)['help_class'], 'slot lookup failure');
+        self::assertSame('', $ext->localeTabs($this->env($partial, true, static fn (array $context, string $slot): ?string => null), $field)['help_class']);
+    }
+
     public function testEntriesLocaleFromChildValueDataOrName(): void
     {
         $field           = $this->view(['compound' => true]);
@@ -104,11 +120,14 @@ final class LocaleTabsTwigExtensionTest extends TestCase
         self::assertSame([], $lt['groups']);
     }
 
-    private function env(?callable $partial = null, bool $template = true): Environment
+    private function env(?callable $partial = null, bool $template = true, ?callable $slotClass = null): Environment
     {
         $env = new Environment(new ArrayLoader($template ? [LocaleTabsTwigExtension::UI_KIT_TEMPLATE => ''] : []));
         if ($partial !== null) {
             $env->addFunction(new TwigFunction('nowo_ui_partial', $partial));
+        }
+        if ($slotClass !== null) {
+            $env->addFunction(new TwigFunction('nowo_ui_class', $slotClass, ['needs_context' => true]));
         }
 
         return $env;

@@ -67,6 +67,7 @@
     required_locales: required_locales ?? null,
     default_child: default_child ?? null,
     ui_kit: ui_kit ?? null,
+    bundle: bundle ?? null,
 }) -%}
 {%- set _default = _lt.default_locale -%}
 {%- set _locales = _lt.groups|map(g => g.locale) -%}
@@ -106,7 +107,7 @@
         <p class="nowo-form-kit-locale-tabs__title" id="{{ tabs_id }}-title">{{ _title }}</p>
         {%- endif %}
         {%- if help|default('') is not empty %}
-        <p class="{{ help_class|default('nowo-form-kit-locale-tabs__help') }}">{{ help }}</p>
+        <p class="{{ help_class|default('nowo-form-kit-locale-tabs__help') }}{{ help_class is not defined and _lt.help_class is not empty ? ' ' ~ _lt.help_class : '' }}">{{ help }}</p>
         {%- endif %}
     </div>
     {%- endif %}

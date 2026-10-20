@@ -34,7 +34,8 @@ use function strtolower;
  * `@NowoFormKitBundle/form/_locale_tabs.html.twig` and tells whether UiKit (2.5+) renders them.
  *
  * - `nowo_form_kit_locale_tabs(field, options)` returns
- *   `{mode, locales, default_locale, required_locales, groups, ui_kit_template}`; each group is
+ *   `{mode, locales, default_locale, required_locales, groups, ui_kit_template, help_class}`
+ *   (`help_class`: the UiKit `muted` slot class for the help, empty without UiKit); each group is
  *   `{locale, rows: FormView[], hidden: [{view, value}], errors: FormView[], invalid, required, dir}`.
  *   Modes:
  *   - `children` (default): one child per locale (`slugs[es]`), e.g. TranslatableMapType;
@@ -98,9 +99,9 @@ final class LocaleTabsTwigExtension extends AbstractExtension
 
     /**
      * @param array<string, mixed> $options locales, default_locale, required_locales, mode, fields, pattern,
-     *                                      locale_child, default_child, ui_kit
+     *                                      locale_child, default_child, ui_kit, bundle
      *
-     * @return array{mode: string, locales: list<string>, default_locale: string, required_locales: list<string>, groups: list<array{locale: string, rows: list<FormView>, hidden: list<array{view: FormView, value: string}>, errors: list<FormView>, invalid: bool, required: bool, dir: string}>, ui_kit_template: string|null}
+     * @return array{mode: string, locales: list<string>, default_locale: string, required_locales: list<string>, groups: list<array{locale: string, rows: list<FormView>, hidden: list<array{view: FormView, value: string}>, errors: list<FormView>, invalid: bool, required: bool, dir: string}>, ui_kit_template: string|null, help_class: string}
      */
     public function localeTabs(Environment $env, FormView $field, array $options = []): array
     {
@@ -152,14 +153,35 @@ final class LocaleTabsTwigExtension extends AbstractExtension
             ];
         }
 
+        $uiKitTemplate = $this->uiKitTemplate($env, isset($options['ui_kit']) ? (bool) $options['ui_kit'] : null);
+
         return [
             'mode'             => $mode,
             'locales'          => $locales,
             'default_locale'   => $default,
             'required_locales' => $required,
             'groups'           => $groups,
-            'ui_kit_template'  => $this->uiKitTemplate($env, isset($options['ui_kit']) ? (bool) $options['ui_kit'] : null),
+            'ui_kit_template'  => $uiKitTemplate,
+            'help_class'       => $uiKitTemplate !== null ? $this->uiKitSlotClass($env, 'muted', is_string($options['bundle'] ?? null) ? $options['bundle'] : null) : '',
         ];
+    }
+
+    /**
+     * Class of a UiKit theme slot (`nowo_ui_class()`), resolved here so the template compiles without UiKit.
+     */
+    private function uiKitSlotClass(Environment $env, string $slot, ?string $bundle): string
+    {
+        $slotClass = $env->getFunction('nowo_ui_class')?->getCallable();
+        if (!is_callable($slotClass)) {
+            return '';
+        }
+        try {
+            $class = $slotClass([], $slot, $bundle);
+        } catch (Throwable) {
+            return '';
+        }
+
+        return is_string($class) ? $class : '';
     }
 
     /**

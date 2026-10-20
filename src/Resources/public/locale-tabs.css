@@ -2,14 +2,23 @@
  * Optional neutral styles for @NowoFormKitBundle/form/_locale_tabs.html.twig.
  * Load with: <link rel="stylesheet" href="{{ asset('locale-tabs.css', 'nowo_form_kit') }}">
  * Override the custom properties (or pass your own *_class options) to match your design system.
+ * The heading rules (title, help, label gap) apply with both renderers and read the UiKit tokens when UiKit is loaded
+ * (--nowo-ui-form-label-gap, --nowo-ui-text, --nowo-ui-help-text / --nowo-ui-muted), with neutral fallbacks.
  */
 .nowo-form-kit-locale-tabs {
   --nfk-locale-tabs-border: rgba(0, 0, 0, 0.15);
-  --nfk-locale-tabs-muted: rgba(0, 0, 0, 0.6);
+  --nfk-locale-tabs-muted: var(--nowo-ui-help-text, var(--nowo-ui-muted, rgba(0, 0, 0, 0.6)));
   --nfk-locale-tabs-active: currentColor;
   --nfk-locale-tabs-error: #dc3545;
   display: grid;
-  gap: 0.5rem;
+  gap: var(--nfk-locale-tabs-label-gap, var(--nowo-ui-form-label-gap, 0.5rem));
+  min-width: 0;
+}
+
+.nowo-form-kit-locale-tabs__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .nowo-form-kit-locale-tabs__heading > * {
@@ -17,11 +26,15 @@
 }
 
 .nowo-form-kit-locale-tabs__title {
+  font-size: var(--nfk-locale-tabs-title-size, 0.875rem);
   font-weight: 600;
+  line-height: 1.25rem;
+  color: var(--nowo-ui-text, inherit);
 }
 
 .nowo-form-kit-locale-tabs__help {
-  font-size: 0.875em;
+  font-size: var(--nfk-locale-tabs-help-size, 0.75rem);
+  line-height: 1.25;
   color: var(--nfk-locale-tabs-muted);
 }
 

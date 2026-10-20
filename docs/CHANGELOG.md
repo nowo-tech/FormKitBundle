@@ -60,6 +60,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Locale tabs heading styles**: `.nowo-form-kit-locale-tabs__title` and `__help` had no size or colour (hosts added
+  their own CSS). `locale-tabs.css` now sets the title size (`0.875rem`, weight 600), a smaller muted help
+  (`--nowo-ui-help-text` / `--nowo-ui-muted`, neutral fallback) and the label gap between heading and tabs
+  (`--nowo-ui-form-label-gap`, fallback `0.5rem`); tunable with `--nfk-locale-tabs-title-size`,
+  `--nfk-locale-tabs-help-size`, `--nfk-locale-tabs-label-gap`. With the UiKit renderer the help also gets the UiKit
+  `muted` slot (unless `help_class` is passed), so its colour follows the theme without the stylesheet.
+
+### Changed
+
+- `nowo-tech/ui-kit-bundle` (require-dev / suggest) is now `^2.5.3` (locale tab list without the `tabs` margin,
+  kebab `<button>` items).
+- `.php-cs-fixer.dist.php`: `new ParallelConfig(2)` (REQ-CS-001).
+
 ## [2.13.1] - 2026-10-19
 
 Locale tabs form_row options merged over the type option, TranslatableMapType default_locale fallback, UiKit 2.5.2. See [UPGRADING](UPGRADING.md#to-2131).
