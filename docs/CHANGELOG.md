@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.13.2] - 2026-10-20](#2132---2026-10-20)
 - [[2.13.1] - 2026-10-19](#2131---2026-10-19)
 - [[2.13.0] - 2026-10-19](#2130---2026-10-19)
 - [[2.12.0] - 2026-10-13](#2120---2026-10-13)
@@ -59,6 +60,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.13.2] - 2026-10-20
+
+Locale tabs heading styles (title, muted help, label gap) with UiKit tokens, UiKit muted slot on the help, UiKit 2.5.3. See [UPGRADING](UPGRADING.md#to-2132).
 
 ### Fixed
 
@@ -212,6 +217,7 @@ Locale tabs for translation entities, field_<locale> groups and TranslatableMapT
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.13.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.13.2
 [2.13.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.13.1
 [2.13.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.13.0
 [2.12.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.12.0
