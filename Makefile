@@ -11,7 +11,7 @@ RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 
 COMPOSER ?= composer
 
-.PHONY: help install test test-coverage coverage-php-percent coverage-check test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos demo-smoke composer-sync rector rector-dry phpstan igor check-no-cursor-coauthor check-open-prs strip-cursor-coauthor-from-history setup-hooks check-twig-extra
+.PHONY: help install test test-coverage coverage-php-percent coverage-check test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos demo-smoke composer-sync rector rector-dry phpstan igor check-no-cursor-coauthor check-open-prs check-no-raw-html-form strip-cursor-coauthor-from-history setup-hooks check-twig-extra
 .PHONY: demo-up-symfony8
 .PHONY: up down down-dev up-symfony8 build shell demo-install demo-down
 
@@ -44,6 +44,7 @@ help:
 	@echo "  setup-hooks    Install local git hooks (.githooks; REQ-GIT-001)"
 	@echo "  check-no-cursor-coauthor  Fail if history has Cursor co-author trailers"
 	@echo "  check-open-prs Fail if unresolved open GitHub PRs (REQ-REL-003)"
+	@echo "  check-no-raw-html-form Fail on raw <form>/<input>/<textarea>/<select> in Twig (REQ-TWIG-005)"
 	@echo "  composer-sync  Validate composer.json and align composer.lock (no install)"
 	@echo "  clean          Remove vendor, cache, coverage"
 	@echo "  update         Update composer.lock"
@@ -108,7 +109,10 @@ check-twig-extra:
 # Run Igor worker-state audit (REQ-CS-008)
 igor: ensure-up
 	$(COMPOSE) exec -T php composer igor
-release-check: check-no-cursor-coauthor check-open-prs check-twig-extra ensure-up composer-sync cs-fix cs-check rector-dry phpstan igor coverage-check test-ts release-check-demos
+
+# Pre-release (REQ-MAKE-002); coverage-check is the test-coverage step (99% gate)
+# check-no-raw-html-form (REQ-TWIG-005) is wired once the remaining raw form markup is migrated
+release-check: ensure-up check-no-cursor-coauthor check-open-prs check-twig-extra composer-sync cs-fix cs-check rector-dry phpstan igor coverage-check release-check-demos test-ts
 
 release-check-demos:
 	@$(MAKE) -C demo release-check
@@ -213,6 +217,10 @@ setup-hooks:
 check-no-cursor-coauthor:
 	@chmod +x .scripts/check-no-cursor-coauthor.sh
 	@./.scripts/check-no-cursor-coauthor.sh HEAD
+
+# Fail on raw <form>/<input>/<textarea>/<select> in Twig (REQ-TWIG-005)
+check-no-raw-html-form:
+	@bash .scripts/check-no-raw-html-form.sh
 
 check-open-prs:
 	@chmod +x .scripts/check-open-prs.sh
