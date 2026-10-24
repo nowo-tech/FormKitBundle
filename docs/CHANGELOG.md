@@ -66,6 +66,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Developer tooling (REQ-MAKE-002):** `make release-check` runs the full REQ-MAKE-002 chain in order: ensure-up now runs first and the demo release-check runs before test-ts (ensure-up, co-author and open-PR gates, check-twig-extra, composer-sync, cs-fix, cs-check, rector-dry, phpstan, igor, coverage-check, demo release-check, test-ts). New `make check-no-raw-html-form` target (`.scripts/check-no-raw-html-form.sh`, REQ-TWIG-005); it joins the chain once the remaining raw form markup is migrated or allowlisted as form-theme files.
 - **Demo (REQ-TWIG-003):** the showcase pages (`choice_fields`, `ckeditor`, `conditional_fields`, `data_transformers`, `nowo_special_fields`, `ux_autocomplete`, `nested`, `locale_tabs`, `search`, `dropzone`, `cropper`) and the `ConditionalFieldsLive` component render their forms through the child loop instead of one `form_row(form.x)` per field: grid columns come from a field-name map, the `nested` section headings open at the field named in a map, `locale_tabs` emits the `_locale_tabs` include at the first `name_*` field and `search` keeps its input-group layout (rule 3); `form_end(form)` replaces `form_rest` + `render_rest: false`.
 
+### Security
+
+- **Dev dependencies:** the bundle and `demo/symfony8` pnpm lockfiles resolve `source-map-js` 1.2.2 (was 1.2.1, GHSA high) and `vite` 6.4.5 (was 6.4.1); the `vite` range is now `^6.4.5`. The rebuilt `help-modal.js` is byte-identical, so no shipped asset changes.
+
 ## [2.13.2] - 2026-10-20
 
 Locale tabs heading styles (title, muted help, label gap) with UiKit tokens, UiKit muted slot on the help, UiKit 2.5.3. See [UPGRADING](UPGRADING.md#to-2132).
