@@ -27,12 +27,13 @@
         <small class="text-muted">{{ form.category.vars.help }}</small>
       {% endif %}
     </div>
+    {# Rule 3 (REQ-TWIG-003): q and category are placed in the input group above; the loop renders the rest. #}
     {% for child in form %}
-      {% if child.vars.name == '_token' %}
+      {% if not child.rendered %}
         {{ form_row(child) }}
       {% endif %}
     {% endfor %}
-    {{ form_end(form, { render_rest: false }) }}
+    {{ form_end(form) }}
   </div>
 </div>
 

@@ -22,12 +22,16 @@
 <div class="card form-card shadow-sm">
   <div class="card-body p-4">
     {{ form_start(form) }}
-    {{ form_row(form.document) }}
+    {% for child in form %}
+      {% if not child.rendered %}
+        {{ form_row(child) }}
+      {% endif %}
+    {% endfor %}
     {% set form_buttons %}
       <button type="submit" class="btn btn-primary">{{ 'demo_pages.dropzone.upload_button'|trans }}</button>
     {% endset %}
     <div class="form-kit-buttons">{{ form_buttons|raw }}</div>
-    {{ form_end(form, { render_rest: false }) }}
+    {{ form_end(form) }}
   </div>
 </div>
 

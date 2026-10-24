@@ -18,14 +18,20 @@
   <div class="card-body p-4">
     {{ form_start(form) }}
     <div class="row g-3">
-      <div class="col-12">{{ form_row(form.body) }}</div>
-      <div class="col-12">{{ form_row(form.excerpt) }}</div>
+      {% for child in form %}
+        {% if not child.rendered %}
+          {% if 'hidden' in child.vars.block_prefixes %}
+            {{ form_row(child) }}
+          {% else %}
+            <div class="{{ 'col-12' }}">{{ form_row(child) }}</div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
     </div>
-    {{ form_rest(form) }}
     <div class="form-kit-buttons mt-2">
       <button type="submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
     </div>
-    {{ form_end(form, { render_rest: false }) }}
+    {{ form_end(form) }}
   </div>
 </div>
 

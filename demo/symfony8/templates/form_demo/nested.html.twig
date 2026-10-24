@@ -13,29 +13,48 @@
 <div class="card form-card shadow-sm">
   <div class="card-body p-4">
     {{ form_start(form) }}
-    <div class="form-section">
-      <h2 class="form-section-title">{{ 'demo_pages.nested.section_contact'|trans }}</h2>
-      <div class="row g-3">
-        <div class="col-12 col-md-6">{{ form_row(form.fullName) }}</div>
-        <div class="col-12 col-md-6">{{ form_row(form.email) }}</div>
+    {#
+      Child loop (REQ-TWIG-003): sections open at the field named in `sections`; the embedded address form is looped
+      in place so its fields keep their own grid columns (`columns`, default col-12).
+    #}
+    {% set sections = {fullName: 'demo_pages.nested.section_contact', address: 'demo_pages.nested.section_address'} %}
+    {% set columns = {
+      fullName: 'col-12 col-md-6',
+      email: 'col-12 col-md-6',
+      number: 'col-12 col-md-4',
+      floor: 'col-12 col-md-4',
+      postalCode: 'col-12 col-md-4',
+      city: 'col-12 col-md-6',
+      province: 'col-12 col-md-6',
+    } %}
+    {% for child in form %}
+      {% if not child.rendered %}
+        {% if 'hidden' in child.vars.block_prefixes %}
+          {{ form_row(child) }}
+        {% else %}
+          {% if sections[child.vars.name] is defined %}
+            {% if not loop.first %}
       </div>
     </div>
+            {% endif %}
     <div class="form-section">
-      <h2 class="form-section-title">{{ 'demo_pages.nested.section_address'|trans }}</h2>
+      <h2 class="form-section-title">{{ sections[child.vars.name]|trans }}</h2>
       <div class="row g-3">
-        <div class="col-12">{{ form_row(form.address.street) }}</div>
-        <div class="col-12 col-md-4">{{ form_row(form.address.number) }}</div>
-        <div class="col-12 col-md-4">{{ form_row(form.address.floor) }}</div>
-        <div class="col-12 col-md-4">{{ form_row(form.address.postalCode) }}</div>
-        <div class="col-12 col-md-6">{{ form_row(form.address.city) }}</div>
-        <div class="col-12 col-md-6">{{ form_row(form.address.province) }}</div>
+          {% endif %}
+          {% for field in (child.vars.compound and child.children is not empty ? child : [child]) %}
+            {% if not field.rendered %}
+        <div class="{{ columns[field.vars.name]|default('col-12') }}">{{ form_row(field) }}</div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
       </div>
     </div>
-    {{ form_rest(form) }}
     <div class="form-kit-buttons">
       <button type="submit" class="btn btn-primary">{{ 'demo_pages.common.save'|trans }}</button>
     </div>
-    {{ form_end(form, { render_rest: false }) }}
+    {{ form_end(form) }}
   </div>
 </div>
 
