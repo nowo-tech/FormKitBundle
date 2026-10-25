@@ -23,7 +23,7 @@ function payload(overrides: Record<string, unknown> = {}): string {
 async function importModuleFresh(): Promise<HelpModalModule> {
   mod?.stopHelpModalDomObserver();
   vi.resetModules();
-  mod = await import('./help-modal.ts');
+  mod = await import('./help-modal');
   return mod;
 }
 

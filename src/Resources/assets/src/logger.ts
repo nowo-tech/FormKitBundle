@@ -1,7 +1,7 @@
 /**
  * Lightweight namespaced console logger for Form Kit browser bundles.
  *
- * Emits a styled "script loaded" line (optionally with a build timestamp) and
+ * Emits a styled "script loaded" line (optionally with a build id) and
  * level-based messages when {@link BundleLoggerOptions.alwaysLog} is true.
  */
 
@@ -48,11 +48,11 @@ function formatArgs(args: unknown[]): unknown[] {
 
 type ConsoleLevel = 'debug' | 'info' | 'warn' | 'error';
 
-/** Prints the bundle load banner (with optional Vite/build time when provided). */
+/** Prints the bundle load banner (with optional Vite/build id when provided). */
 function logScriptLoaded(prefix: string, buildTime?: string): void {
   if (buildTime !== undefined && buildTime !== '') {
     console.log(
-      `%c${EMOJI.script} ${prefix} script loaded, build time: %c${buildTime}`,
+      `%c${EMOJI.script} ${prefix} script loaded, build: %c${buildTime}`,
       STYLES.script,
       'color:#059669',
     );
@@ -113,7 +113,7 @@ export function getLogger(): BundleLogger {
  * Creates a namespaced logger. When `alwaysLog` is true, debug/info/warn/error emit to the console.
  *
  * @param name - Short bundle id shown in every log line (e.g. `form-kit-help-modal`).
- * @param options - Optional build timestamp and verbosity flag.
+ * @param options - Optional build id and verbosity flag.
  * @returns A {@link BundleLogger} bound to `name`.
  */
 export function createBundleLogger(name: string, options: BundleLoggerOptions = {}): BundleLogger {

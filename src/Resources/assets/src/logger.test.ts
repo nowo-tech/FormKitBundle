@@ -11,7 +11,7 @@ describe('logger', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('scriptLoaded logs with and without build time', () => {
+  it('scriptLoaded logs with and without build id', () => {
     const noBuild = createBundleLogger('form-kit-help-modal');
     noBuild.scriptLoaded();
     expect(console.log).toHaveBeenCalled();
