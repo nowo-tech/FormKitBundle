@@ -1,4 +1,6 @@
-{# Fixes icon_selector_widget duplicate id/name when Form Kit merges attr onto the widget root. #}
+{# Fixes icon_selector_widget duplicate id/name when Form Kit merges attr onto the widget root.
+   Form theme (REQ-TWIG-005 exception): implements a widget block, so it emits the raw <input>; allowlisted in
+   .scripts/check-no-raw-html-form.sh. #}
 {% block icon_selector_widget %}
 {# IconSelectorType already sets data-controller; only merge missing option attrs. #}
 {% set attr = attr|merge({

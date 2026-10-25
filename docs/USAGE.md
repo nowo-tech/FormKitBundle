@@ -24,6 +24,7 @@
   - [Services](#services)
   - [Controller example](#controller-example)
 - [CSRF-only and GET filter forms](CSRF.md)
+- [Rendering forms in Twig (REQ-TWIG-005)](#rendering-forms-in-twig-req-twig-005)
 - [Form renderer component (Twig)](#form-renderer-component-twig)
 - [Layout examples (Bootstrap and Tailwind)](#layout-examples-bootstrap-and-tailwind)
   - [Bootstrap 5 example](#bootstrap-5-example)
@@ -858,6 +859,23 @@ return $this->render('wizard/step.html.twig', ['form' => $form, 'wizard' => $wiz
 ```
 
 Translation keys for each step follow the same pattern: e.g. `demo_wizard_contact.full_name.label`, `demo_wizard_contact.email.placeholder`, `demo_wizard_address.street.help`.
+
+## Rendering forms in Twig (REQ-TWIG-005)
+
+Every form in host apps, kit views and the demo is a PHP Form Type (prefer `FormKitAbstractType`) created in the controller and rendered only with the Twig form helpers. Render the body with the rendered-aware child loop (REQ-TWIG-003); custom markup for a few children first is fine, then the loop renders the rest (CSRF token included):
+
+```twig
+{{ form_start(form) }}
+    {% for child in form %}
+        {% if not child.rendered %}
+            {{ form_row(child) }}
+        {% endif %}
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Save</button>
+{{ form_end(form) }}
+```
+
+CSRF-only actions and GET filters use a Form Type too (see [CSRF-only and GET filter forms](CSRF.md)). Hosts and demos must not reintroduce raw `<form>` / `<input>` / `<textarea>` / `<select>` markup; `make check-no-raw-html-form` (part of `make release-check`) fails on them. Only form-theme files that implement Symfony widget blocks are allowlisted in `.scripts/check-no-raw-html-form.sh` (`form/_locale_tabs.html.twig` and the demo `nowo_special_fields_form_theme.html.twig`).
 
 ## Form renderer component (Twig)
 

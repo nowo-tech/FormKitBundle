@@ -111,8 +111,7 @@ igor: ensure-up
 	$(COMPOSE) exec -T php composer igor
 
 # Pre-release (REQ-MAKE-002); coverage-check is the test-coverage step (99% gate)
-# check-no-raw-html-form (REQ-TWIG-005) is wired once the remaining raw form markup is migrated
-release-check: ensure-up check-no-cursor-coauthor check-open-prs check-twig-extra composer-sync cs-fix cs-check rector-dry phpstan igor coverage-check release-check-demos test-ts
+release-check: ensure-up check-no-cursor-coauthor check-open-prs check-twig-extra check-no-raw-html-form composer-sync cs-fix cs-check rector-dry phpstan igor coverage-check release-check-demos test-ts
 
 release-check-demos:
 	@$(MAKE) -C demo release-check

@@ -62,6 +62,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Developer tooling: `make release-check` now runs `check-no-raw-html-form` (REQ-TWIG-005) after the Twig `extra` gate; the check allowlists only the two form-theme files (`form/_locale_tabs.html.twig`, demo `nowo_special_fields_form_theme.html.twig`).
+
+### Changed
+
+- Demo: `translations`, `kit_api_patterns`, `multistep` and the shared `_form_sections_loop` partial render the form body through the rendered-aware child loop (`{% for child in form %}` + `not child.rendered` + `form_row(child)`) instead of field-by-field rows / `form_rest` / an unguarded loop; same fields, names and layout (REQ-TWIG-003 / REQ-TWIG-005).
+- Docs: USAGE section "Rendering forms in Twig" states the Symfony Form / child-loop rule and that hosts and demos must not reintroduce raw `<form>` / `<input>` (REQ-TWIG-005 rule 9).
+
 ## [2.13.3] - 2026-10-25
 
 Reproducible JS bundle: the build stamp is a hash of the sources instead of the build time. See [UPGRADING](UPGRADING.md#to-2133).

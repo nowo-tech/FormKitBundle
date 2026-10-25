@@ -12,6 +12,12 @@
     </div>
   </div>
 {% endfor %}
+{# Rendered-aware child loop (REQ-TWIG-003): any child not listed in a section (and the CSRF token) still renders. #}
+{% for child in demo_form %}
+  {% if not child.rendered %}
+    {{ form_row(child) }}
+  {% endif %}
+{% endfor %}
 {% if submit_buttons is defined and submit_buttons is not empty %}
   <div class="form-kit-buttons mt-3">{{ submit_buttons|raw }}</div>
 {% else %}

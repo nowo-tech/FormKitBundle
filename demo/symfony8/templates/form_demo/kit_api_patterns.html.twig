@@ -23,13 +23,12 @@
         <p class="small text-secondary mb-3">{{ 'demo_pages.kit_api_patterns.snake_intro'|trans|raw }}</p>
         {{ form_start(snake_form) }}
         <div class="row g-3">
-          {{ form_row(snake_form.full_name) }}
-          {{ form_row(snake_form.email_address) }}
-          {{ form_row(snake_form.topic) }}
-          {{ form_row(snake_form.notes) }}
-          {{ form_row(snake_form.priority) }}
+          {% for child in snake_form %}
+            {% if not child.rendered %}
+              {{ form_row(child) }}
+            {% endif %}
+          {% endfor %}
         </div>
-        {{ form_rest(snake_form) }}
         <div class="form-kit-buttons mt-3">
           <button type="submit" name="snake_submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
         </div>
@@ -47,11 +46,12 @@
         <p class="small text-secondary mb-3">{{ 'demo_pages.kit_api_patterns.named_intro'|trans|raw }}</p>
         {{ form_start(named_form) }}
         <div class="row g-3">
-          {{ form_row(named_form.title) }}
-          {{ form_row(named_form.summary) }}
-          {{ form_row(named_form.internal_code) }}
+          {% for child in named_form %}
+            {% if not child.rendered %}
+              {{ form_row(child) }}
+            {% endif %}
+          {% endfor %}
         </div>
-        {{ form_rest(named_form) }}
         <div class="form-kit-buttons mt-3">
           <button type="submit" name="named_submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
         </div>

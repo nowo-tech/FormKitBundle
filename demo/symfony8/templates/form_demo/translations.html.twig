@@ -36,9 +36,19 @@
           <div class="mb-0">
             {{ form_row(localeForm.description) }}
           </div>
+          {% for child in localeForm %}
+            {% if not child.rendered %}
+              {{ form_row(child) }}
+            {% endif %}
+          {% endfor %}
         </div>
       {% endfor %}
     </div>
+    {% for child in form %}
+      {% if not child.rendered %}
+        {{ form_row(child) }}
+      {% endif %}
+    {% endfor %}
     <div class="form-kit-buttons mt-4 pt-3 border-top">
       <button type="submit" class="btn btn-primary rounded-2 px-4">{{ 'demo_pages.common.save'|trans }}</button>
     </div>
