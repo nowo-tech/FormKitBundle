@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form\Type;
 
+use Nowo\FormKitBundle\Form\CsrfProtectionGuard;
 use Nowo\FormKitBundle\Form\FormKitAbstractType;
 use Override;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,6 +26,8 @@ final class HiddenFieldsCsrfType extends FormKitAbstractType
     /** @param FormBuilderInterface<mixed> $builder */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        CsrfProtectionGuard::assertAvailable($options, self::class);
+
         /** @var list<string> $fields */
         $fields = $options['fields'];
         /** @var array<string, string> $fieldTypes */
@@ -61,6 +64,8 @@ final class HiddenFieldsCsrfType extends FormKitAbstractType
             'field_types'        => [],
             'field_options'      => [],
         ]);
+        // Accepted even without the CSRF extension so CsrfOnlyFormFactory reaches the guard in buildForm().
+        $resolver->setDefined('csrf_field_name');
         $resolver->setAllowedTypes('csrf_token_id', 'string');
         $resolver->setAllowedTypes('fields', 'string[]');
         $resolver->setAllowedTypes('field_types', 'array');

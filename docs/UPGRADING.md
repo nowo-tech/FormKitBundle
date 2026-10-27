@@ -66,6 +66,17 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+### CSRF action forms fail closed
+
+`CsrfOnlyType`, `HiddenFieldsCsrfType`, `CsrfOnlyFormFactory` and `csrf_action_form()` now throw a `LogicException` ("requires Symfony form CSRF protection") when Symfony's form CSRF extension is not registered. No change is needed when the host has the standard setup (`symfony/security-csrf` installed, `framework.csrf_protection` and `framework.form.csrf_protection` enabled — the Flex defaults).
+
+If the exception appears:
+
+1. `composer require symfony/security-csrf` and enable `framework.csrf_protection: true` (and do not set `framework.form.csrf_protection: false`), including in the `test` environment of functional suites; or
+2. for a form that is genuinely not state-changing, pass `'csrf_protection' => false` explicitly.
+
+Previously these forms silently skipped CSRF validation in that configuration (`isValid()` returned `true` for a POST without a token).
+
 ## To 2.13.3
 
 From **2.13.2**:

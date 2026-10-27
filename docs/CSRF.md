@@ -17,6 +17,8 @@ Form Kit ships helpers for two common host patterns:
 
 Both extend `FormKitAbstractType` and are registered as `form.type` services.
 
+Both **require Symfony's form CSRF extension** (`symfony/security-csrf` with `framework.csrf_protection` and `framework.form.csrf_protection` enabled). Without it they throw a `LogicException` when built instead of silently accepting tokenless POSTs (fail closed); pass `'csrf_protection' => false` only for actions that do not change state. See [SECURITY.md](SECURITY.md#csrf-action-forms-fail-closed).
+
 ### Factory
 
 Inject `Nowo\FormKitBundle\Form\CsrfOnlyFormFactory`:

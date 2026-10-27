@@ -62,6 +62,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- CSRF action forms fail closed: `CsrfOnlyType` and `HiddenFieldsCsrfType` (and therefore `CsrfOnlyFormFactory` and the `csrf_action_form()` Twig function) now throw a `LogicException` when the form is built without Symfony's form CSRF extension (`form.type_extension.csrf`: `symfony/security-csrf` missing, `framework.csrf_protection: false` or `framework.form.csrf_protection: false`). Before, both types declared their own `csrf_protection` / `csrf_token_id` defaults, so a direct `createForm(CsrfOnlyType::class, …)` rendered no token and `isValid()` accepted any cross-site POST (the factory only failed by accident, with an `UndefinedOptionsException` on `csrf_field_name`). An explicit `csrf_protection: false` remains the caller's opt-out. New `Nowo\FormKitBundle\Form\CsrfProtectionGuard`; see [UPGRADING](UPGRADING.md#unreleased) and [SECURITY](SECURITY.md#csrf-action-forms-fail-closed).
+
 ### Added
 
 - Developer tooling: `make release-check` now runs `check-no-raw-html-form` (REQ-TWIG-005) after the Twig `extra` gate; the check allowlists only the two form-theme files (`form/_locale_tabs.html.twig`, demo `nowo_special_fields_form_theme.html.twig`).

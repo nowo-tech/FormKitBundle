@@ -11,6 +11,7 @@ use Nowo\FormKitBundle\Form\Type\CsrfOnlyType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 final class CsrfOnlyTypeTest extends TestCase
 {
@@ -34,7 +35,7 @@ final class CsrfOnlyTypeTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::never())->method('add');
 
-        $type->buildForm($builder, []);
+        $type->buildForm($builder, ['csrf_protection' => true, 'csrf_token_manager' => $this->createStub(CsrfTokenManagerInterface::class)]);
     }
 
     private function createType(): CsrfOnlyType

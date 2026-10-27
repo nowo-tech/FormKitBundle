@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 use function array_key_exists;
 
@@ -52,9 +53,11 @@ final class HiddenFieldsCsrfTypeTest extends TestCase
             );
 
         $type->buildForm($builder, [
-            'fields'        => ['enabled'],
-            'field_types'   => [],
-            'field_options' => [],
+            'fields'             => ['enabled'],
+            'field_types'        => [],
+            'field_options'      => [],
+            'csrf_protection'    => true,
+            'csrf_token_manager' => $this->createStub(CsrfTokenManagerInterface::class),
         ]);
     }
 

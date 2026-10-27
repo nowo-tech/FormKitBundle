@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Form\Type;
 
 use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
+use Nowo\FormKitBundle\Form\CsrfProtectionGuard;
 use Nowo\FormKitBundle\Form\FormKitAbstractType;
 use Override;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,7 +26,8 @@ final class CsrfOnlyType extends FormKitAbstractType
     /** @param FormBuilderInterface<mixed> $builder */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // CSRF only — no application fields.
+        // CSRF only — no application fields. Fail closed when the form CSRF extension is missing.
+        CsrfProtectionGuard::assertAvailable($options, self::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -35,6 +37,8 @@ final class CsrfOnlyType extends FormKitAbstractType
             'csrf_token_id'      => 'csrf_only',
             'allow_extra_fields' => true,
         ]);
+        // Accepted even without the CSRF extension so CsrfOnlyFormFactory reaches the guard in buildForm().
+        $resolver->setDefined('csrf_field_name');
         $resolver->setAllowedTypes('csrf_token_id', 'string');
     }
 
