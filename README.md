@@ -12,6 +12,19 @@ Symfony bundle to reduce repetitive form field options: convention-based transla
 
 This bundle is **FrankenPHP worker mode friendly** (kernel reused / `FRANKENPHP_RESET_KERNEL` unset or `0`). See [docs/FRANKENPHP-WORKER-AUDIT.md](docs/FRANKENPHP-WORKER-AUDIT.md).
 
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/images/demo/multistep.webp" alt="Form Kit multi-step wizard on the address step, labels and placeholders resolved from convention translation keys" />
+      <br /><sub>Multi-step wizard — labels and placeholders from convention keys</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/images/demo/locale-tabs.webp" alt="Form Kit per-locale tabs with the invalid languages flagged and validation errors shown" />
+      <br /><sub>Per-locale tabs — invalid languages flagged with validation errors</sub>
+    </td>
+  </tr>
+</table>
+
 ## Features
 
 - **Usage strategies:** **Options** (`FormOptionsTrait` + FQCN), **Kit** (`FormKitTrait` / `FormKitAbstractType` + snake_case), **Controller** (`FormKitControllerTrait`), **Wrapped** (`AbstractFormKitWrappedType`). See [Usage — strategies](docs/USAGE.md#usage-strategies).
@@ -88,6 +101,8 @@ The bundle includes a **Symfony 8** demo that runs with **FrankenPHP** (Caddy + 
 - **Search**, **example**, **Dropzone**, **Cropper**, **translations** (A2lix), **nested**, **data transformers**, **choice fields**, **conditional fields** (incl. Live Component), **Kit API patterns** (snake_case `FormKitAbstractType` + named config), **Nowo special fields** (OTP, phone, password, icon selector, tags, Tiptap, CKEditor 5, slide-to-confirm — see [demo/README.md](demo/README.md)), **CKEditor** (FOSCKEditorBundle), **UX Autocomplete**, **multi-step** wizard.
 
 Run a demo via Docker/Make from the bundle root; see [demo/README.md](demo/README.md) and [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+
+Playwright e2e: `make -C demo/symfony8 test-e2e`; refresh the README screenshots with `make -C demo/symfony8 demo-screenshots` (see [CONTRIBUTING](docs/CONTRIBUTING.md#end-to-end-tests-and-screenshots-req-demo-013)).
 
 For CSS frameworks, see [docs/USAGE.md](docs/USAGE.md) for ready-to-use configuration examples for **Bootstrap 5** and **Tailwind CSS**.
 
