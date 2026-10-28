@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.14.1] - 2026-10-28](#2141---2026-10-28)
 - [[2.14.0] - 2026-10-28](#2140---2026-10-28)
 - [[2.13.3] - 2026-10-25](#2133---2026-10-25)
 - [[2.13.2] - 2026-10-20](#2132---2026-10-20)
@@ -62,6 +63,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.14.1] - 2026-10-28
+
+Security: the help modal only processes labels inside a form (no HTML from labels in user content). See [UPGRADING](UPGRADING.md#to-2141).
 
 ### Security
 
@@ -259,6 +264,7 @@ Locale tabs for translation entities, field_<locale> groups and TranslatableMapT
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.14.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.14.1
 [2.14.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.14.0
 [2.13.3]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.13.3
 [2.13.2]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.13.2
