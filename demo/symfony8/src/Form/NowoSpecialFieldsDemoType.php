@@ -23,14 +23,16 @@ final class NowoSpecialFieldsDemoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Grid columns live in the Twig template; row_attr only adds vertical spacing.
-        $row = static fn (array $options = []): array => array_merge(['row_attr' => ['class' => 'mb-3']], $options);
+        // Grid columns live in the Twig template; row_attr only adds vertical spacing. The demo help texts (trusted
+        // catalogue strings) contain <code>: render them as HTML.
+        $row = static fn (array $options = []): array => array_merge(['row_attr' => ['class' => 'mb-3'], 'help_html' => true], $options);
 
         // Compound / custom widgets must not inherit global form-control on the widget root.
         $widgetRoot = static fn (array $options = []): array => array_merge([
             'row_attr'    => ['class' => 'mb-3'],
             'attr'        => ['class' => ''],
             'placeholder' => false,
+            'help_html'   => true,
         ], $options);
 
         $this->withBuilder($builder, function () use ($row, $widgetRoot): void {
@@ -73,6 +75,7 @@ final class NowoSpecialFieldsDemoType extends AbstractType
             $this->addTagInputField('keywords', [
                 'row_attr'  => ['class' => 'mb-3'],
                 'attr'      => ['class' => ''],
+                'help_html' => true,
                 'required'  => false,
                 'max_tags'  => 8,
                 'whitelist' => ['php', 'symfony', 'twig', 'forms'],
