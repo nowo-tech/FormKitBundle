@@ -53,6 +53,15 @@ export const HELP_MODAL_ROOT_ATTR = 'data-nowo-formkit-help-modal';
 /** Labels that carry a help-modal JSON payload. */
 const HELP_MODAL_LABEL_SELECTOR = `label[data-nowo-help-modal]`;
 
+/**
+ * The payload's `icon_html` / `title_html` / `content` are inserted as HTML, so only labels rendered by Symfony
+ * forms count: they always sit inside a `<form>`. A `<label data-nowo-help-modal>` that reaches the page through
+ * sanitised user HTML (comments, rich text — sanitizers keep `label` and `data-*`) outside a form is ignored.
+ */
+export function isFormHelpLabel(label: Element): boolean {
+  return label.closest('form') !== null;
+}
+
 /** Help-modal roots previously marked by this script (or server markup that opts in). */
 const HELP_MODAL_ROOT_SELECTOR = `[${HELP_MODAL_ROOT_ATTR}]`;
 
@@ -435,6 +444,7 @@ export function initHelpModal(): void {
   const labels = Array.from(document.querySelectorAll<HTMLLabelElement>(HELP_MODAL_LABEL_SELECTOR));
   getLogger().debug('labels detected', { count: labels.length });
   labels.forEach((label) => {
+    if (!isFormHelpLabel(label)) return;
     const raw = label.getAttribute('data-nowo-help-modal');
     if (!raw) return;
 

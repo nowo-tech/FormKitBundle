@@ -6,15 +6,20 @@ This bundle does not process user credentials or sensitive data itself; it only 
 
 ## Help modal HTML (frontend)
 
-`help-modal.js` may set `innerHTML` for `title_html`, `content`, and `icon_html` from **developer-controlled** form/YAML options (not end-user input). Treat those fields as trusted markup: do not pass unsanitized visitor content. Prefer plain `title` / escaped text when the value is not intentionally HTML. Integrators using a strict CSP should allow the bundled script (and optional CSS) from the `nowo_form_kit` asset package. With nonce-based CSP, pass the per-request nonce stored in the request attribute `csp_nonce`: `<script src="{{ asset('help-modal.js', 'nowo_form_kit') }}" defer nonce="{{ app.request.attributes.get('csp_nonce') }}"></script>`.
+`help-modal.js` may set `innerHTML` for `title_html`, `content`, and `icon_html` from **developer-controlled** form/YAML options (not end-user input). Treat those fields as trusted markup: do not pass unsanitized visitor content. Prefer plain `title` / escaped text when the value is not intentionally HTML. Only labels inside a `<form>` are processed (Symfony form rendering): a `<label data-nowo-help-modal>` reaching the page through sanitised user HTML (sanitizers keep `label` and `data-*`) outside a form is ignored. Do not render user HTML inside your forms. Integrators using a strict CSP should allow the bundled script (and optional CSS) from the `nowo_form_kit` asset package. With nonce-based CSP, pass the per-request nonce stored in the request attribute `csp_nonce`: `<script src="{{ asset('help-modal.js', 'nowo_form_kit') }}" defer nonce="{{ app.request.attributes.get('csp_nonce') }}"></script>`.
 
 ## CSRF action forms (fail closed)
 
 Threat: a cross-site POST that triggers a privileged single action (delete, revoke, toggle) of a host or bundle controller built on `CsrfOnlyType` / `HiddenFieldsCsrfType` / `CsrfOnlyFormFactory` / `csrf_action_form()`.
 
-Both types declare their own `csrf_protection` and `csrf_token_id` defaults. When Symfony's form CSRF extension (`form.type_extension.csrf`) is absent — `symfony/security-csrf` not installed, `framework.csrf_protection: false` or `framework.form.csrf_protection: false` — those options would resolve without effect: no token field, and `isValid()` true for any POST. Since the Unreleased version `CsrfProtectionGuard` makes both types throw a `LogicException` at build time in that situation, so the action can neither be rendered nor submitted without CSRF validation. Only an explicit `'csrf_protection' => false` passed by the calling code disables the check (use it only for actions that are not state-changing).
+Both types declare their own `csrf_protection` and `csrf_token_id` defaults. When Symfony's form CSRF extension (`form.type_extension.csrf`) is absent — `symfony/security-csrf` not installed, `framework.csrf_protection: false` or `framework.form.csrf_protection: false` — those options would resolve without effect: no token field, and `isValid()` true for any POST. Since 2.14.0 `CsrfProtectionGuard` makes both types throw a `LogicException` at build time in that situation, so the action can neither be rendered nor submitted without CSRF validation. Only an explicit `'csrf_protection' => false` passed by the calling code disables the check (use it only for actions that are not state-changing).
 
 Bundles that expose mutating admin UIs on top of these types should additionally refuse to compile the container without form CSRF (compiler pass checking `security.csrf.token_manager`, `form.type_extension.csrf` and `form.type_extension.csrf.enabled`).
+
+## Input group prefix / suffix
+
+`input_group_prefix` / `input_group_suffix` are printed as HTML (icons, `<i class="bi bi-at"></i>`). They are
+developer-controlled form options: never pass user input there (escape it first, e.g. `htmlspecialchars()`).
 
 ## Stateless CSRF (`stateless_csrf`, opt-in)
 

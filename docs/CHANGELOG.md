@@ -63,6 +63,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- **Help modal: only labels inside a `<form>`.** `help-modal.js` turned every `label[data-nowo-help-modal]` on the
+  page into a trigger and inserted its `icon_html` / `title_html` / `content` as HTML, on load and on every DOM
+  mutation. HTML sanitizers keep `<label>` and `data-*`, so sanitised user content (a comment, rich text) could carry
+  a payload that ran script without a click. Labels outside a `<form>` are now ignored; Symfony form labels are
+  always inside one.
+- Docs: `input_group_prefix` / `input_group_suffix` are trusted HTML; `.github/SECURITY.md` lists 2.x as supported.
+
 ## [2.14.0] - 2026-10-28
 
 Security: CSRF action forms (CsrfOnlyType, HiddenFieldsCsrfType, CsrfOnlyFormFactory, csrf_action_form) fail closed without the form CSRF extension. See [UPGRADING](UPGRADING.md#to-2140).

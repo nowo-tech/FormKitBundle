@@ -5,7 +5,8 @@ type HelpModalModule = typeof import('./help-modal');
 let mod: HelpModalModule;
 
 function setDom(body: string): void {
-  document.body.innerHTML = body;
+  // Help labels are only honoured inside a <form> (Symfony form rendering).
+  document.body.innerHTML = `<form>${body}</form>`;
 }
 
 function payload(overrides: Record<string, unknown> = {}): string {
@@ -18,6 +19,16 @@ function payload(overrides: Record<string, unknown> = {}): string {
     content: '<p>content</p>',
     ...overrides,
   });
+}
+
+/** The <form> help labels must live in (created when a test starts from an empty body). */
+function helpForm(): HTMLFormElement {
+  let form = document.querySelector('form');
+  if (!form) {
+    form = document.createElement('form');
+    document.body.appendChild(form);
+  }
+  return form;
 }
 
 async function importModuleFresh(): Promise<HelpModalModule> {
@@ -60,6 +71,18 @@ describe('help-modal', () => {
 
     const label = document.getElementById('label-a') as HTMLLabelElement;
     expect(label.querySelector('.nowo-help-modal-trigger')).toBeTruthy();
+  });
+
+  it('ignores help labels outside a form (user HTML that kept label + data-*)', async () => {
+    document.body.innerHTML = `<div class="comment"><label id="label-x" data-nowo-help-modal='${payload({
+      icon_html: '<img src=x onerror="window.__pwned=1">',
+    })}'></label></div>`;
+    await importModuleFresh();
+
+    const label = document.getElementById('label-x') as HTMLLabelElement;
+    expect(label.querySelector('.nowo-help-modal-trigger')).toBeNull();
+    expect(label.innerHTML).toBe('');
+    expect(mod.isFormHelpLabel(label)).toBe(false);
   });
 
   it('ignores invalid JSON payload and missing id payload', async () => {
@@ -514,8 +537,8 @@ describe('help-modal', () => {
     const b = document.createElement('label');
     b.id = 'label-coalesce-b';
     b.setAttribute('data-nowo-help-modal', payload({ id: 'hm-cb' }));
-    document.body.appendChild(a);
-    document.body.appendChild(b);
+    helpForm().appendChild(a);
+    helpForm().appendChild(b);
     await flushPortalScan();
 
     expect(a.querySelector('.nowo-help-modal-trigger')).toBeTruthy();
@@ -616,12 +639,12 @@ describe('help-modal', () => {
     // Two separate observer deliveries before rAF → second scheduleDomScan hits pending early-return.
     const a = document.createElement('label');
     a.setAttribute('data-nowo-help-modal', payload({ id: 'hm-pending-a' }));
-    document.body.appendChild(a);
+    helpForm().appendChild(a);
     await Promise.resolve();
 
     const b = document.createElement('label');
     b.setAttribute('data-nowo-help-modal', payload({ id: 'hm-pending-b' }));
-    document.body.appendChild(b);
+    helpForm().appendChild(b);
     await Promise.resolve();
 
     const nest = document.createElement('div');
