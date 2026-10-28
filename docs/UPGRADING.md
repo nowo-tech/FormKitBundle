@@ -5,6 +5,8 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.14.0](#to-2140)
+  - [CSRF action forms fail closed](#csrf-action-forms-fail-closed)
 - [To 2.13.3](#to-2133)
 - [To 2.13.2](#to-2132)
 - [To 2.13.1](#to-2131)
@@ -65,6 +67,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.14.0
+
+From **2.13.3**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 ### CSRF action forms fail closed
 
