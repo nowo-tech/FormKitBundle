@@ -1,5 +1,5 @@
 # Makefile for Form Kit Bundle
-# Development and QA targets run inside the Docker container
+# Development and QA targets run inside the Docker container (REQ-MAKE-001)
 #
 COMPOSE_FILE := docker-compose.yml
 COMPOSE_PROJECT_DIR := $(CURDIR)
@@ -11,7 +11,7 @@ RUN := $(COMPOSE) exec -T $(SERVICE_PHP)
 
 COMPOSER ?= composer
 
-.PHONY: help install test test-coverage coverage-php-percent coverage-check test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos demo-smoke composer-sync rector rector-dry phpstan igor check-no-cursor-coauthor check-open-prs check-no-raw-html-form strip-cursor-coauthor-from-history setup-hooks check-twig-extra
+.PHONY: help install test test-coverage coverage-php-percent coverage-check test-ts coverage-ts-percent cs-check cs-fix qa clean ensure-up update validate assets assets-test release-check release-check-demos demo-smoke composer-sync rector rector-dry phpstan igor check-no-cursor-coauthor check-open-prs check-no-raw-html-form strip-cursor-coauthor-from-history setup-hooks check-twig-extra validate-translations
 .PHONY: demo-up-symfony8
 .PHONY: up down down-dev up-symfony8 build shell demo-install demo-down
 
@@ -39,7 +39,7 @@ help:
 	@echo "  phpstan        Run PHPStan static analysis"
 	@echo "  igor          Run Igor worker-state audit (REQ-CS-008)"
 	@echo "  qa             Run all QA (cs-check + test)"
-	@echo "  release-check  Pre-release: git hygiene, open PRs, cs-fix, cs-check, rector-dry, phpstan, coverage-check, test-ts, demo healthchecks"
+	@echo "  release-check  Pre-release: git hygiene, open PRs, cs-fix, cs-check, rector-dry, phpstan, igor, validate-translations, coverage-check, demos, test-ts"
 	@echo "  demo-smoke     Boot demos and assert HTTP 200 (REQ-TEST-011)"
 	@echo "  setup-hooks    Install local git hooks (.githooks; REQ-GIT-001)"
 	@echo "  check-no-cursor-coauthor  Fail if history has Cursor co-author trailers"
@@ -49,6 +49,7 @@ help:
 	@echo "  clean          Remove vendor, cache, coverage"
 	@echo "  update         Update composer.lock"
 	@echo "  validate       Run composer validate --strict"
+	@echo "  validate-translations  YAML lint + key parity of NowoFormKitBundle.<locale>.yaml (REQ-MAKE-004)"
 	@echo ""
 	@echo "Bundle-specific:"
 	@echo "  down-dev       Stop root container (alias for down)"
@@ -111,7 +112,7 @@ igor: ensure-up
 	$(COMPOSE) exec -T php composer igor
 
 # Pre-release (REQ-MAKE-002); coverage-check is the test-coverage step (99% gate)
-release-check: ensure-up check-no-cursor-coauthor check-open-prs check-twig-extra check-no-raw-html-form composer-sync cs-fix cs-check rector-dry phpstan igor coverage-check release-check-demos test-ts
+release-check: ensure-up check-no-cursor-coauthor check-open-prs check-twig-extra check-no-raw-html-form composer-sync cs-fix cs-check rector-dry phpstan igor validate-translations coverage-check release-check-demos test-ts
 
 release-check-demos:
 	@$(MAKE) -C demo release-check
@@ -132,6 +133,11 @@ update: ensure-up
 
 validate: ensure-up
 	$(RUN) composer validate --strict
+
+# REQ-MAKE-004: YAML syntax, NowoFormKitBundle-only catalogues, key parity across locales (exit != 0 on error).
+validate-translations: ensure-up
+	$(RUN) php vendor/bin/yaml-lint src/Resources/translations
+	$(RUN) php .scripts/validate-translations.php
 
 assets:
 	@if [ ! -f package.json ]; then \

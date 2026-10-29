@@ -13,7 +13,7 @@ endif
 DOCKER_COMPOSE := $(COMPOSE_BIN) -f $(COMPOSE_FILE)
 SERVICE_PHP := php
 
-.PHONY: help up down restart build install shell logs cache-clear update-bundle ensure-up test test-coverage verify assets
+.PHONY: help up down restart build install shell logs cache-clear update-bundle ensure-up test test-coverage verify assets release-check
 
 help:
 	@echo "Form Kit Bundle Demo - Symfony 8"
@@ -26,7 +26,8 @@ help:
 	@echo "  make shell         Open shell in PHP container"
 	@echo "  make logs          Show container logs"
 	@echo "  make cache-clear   Clear Symfony cache"
-	@echo "  make update-bundle Update bundle from path repo"
+	@echo "  make update-bundle Sync bundle from path repo (composer update + autoload + cache:clear)"
+	@echo "  make release-check update-bundle, then test, test-coverage and verify"
 	@echo "  make test          Run tests"
 	@echo "  make test-coverage Run tests with coverage"
 	@echo "  make verify       Ensure up and check HTTP 200"
@@ -35,6 +36,7 @@ help:
 	@echo "  make demo-screenshots  Regenerate docs/images/demo/*.webp"
 	@echo ""
 
+# REQ-DEMO-005: canonical make up — copy .env.example, start the stack, composer install, print "Demo started at: …".
 up:
 	@if [ ! -f .env ]; then cp .env.example .env 2>/dev/null || (echo "APP_ENV=dev" > .env; echo "APP_SECRET=change-me" >> .env); fi
 	@PORT_VALUE=$$(grep "^PORT=" .env 2>/dev/null | cut -d= -f2 | tr -d '\r'); \
@@ -85,8 +87,16 @@ logs:
 cache-clear: ensure-up
 	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) php bin/console cache:clear
 
+# REQ-DEMO-007: sync the mounted bundle (path repository) into the demo: composer update of the bundle only,
+# fresh autoload, Symfony cache cleared and public assets re-installed, so bundle edits show up without manual steps.
 update-bundle: ensure-up
-	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) composer update nowo-tech/form-kit-bundle --with-all-dependencies
+	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'COMPOSER_MEMORY_LIMIT=-1 composer update nowo-tech/form-kit-bundle --no-interaction'
+	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) composer dump-autoload --no-interaction
+	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) php bin/console cache:clear --env=dev --no-warmup
+	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) php bin/console assets:install public --symlink --no-interaction
+
+# REQ-DEMO-007: the demo release check syncs the bundle code before running the tests and the HTTP verification.
+release-check: ensure-up update-bundle test test-coverage verify
 
 test: ensure-up
 	@$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'composer test 2>/dev/null || $(MAKE) verify'

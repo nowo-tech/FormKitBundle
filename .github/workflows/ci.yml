@@ -90,6 +90,12 @@ jobs:
           fi
           echo "✅ All tests passed successfully"
 
+      - name: Validate translations (REQ-MAKE-004)
+        if: matrix.php == '8.2' && matrix.symfony == '7.4'
+        run: |
+          php vendor/bin/yaml-lint src/Resources/translations
+          php .scripts/validate-translations.php
+
       - name: Run tests with coverage (PHP 8.2 + Symfony 7.4 only)
         if: matrix.php == '8.2' && matrix.symfony == '7.4'
         env:

@@ -6,7 +6,7 @@ DEMOS := symfony8
 
 # Do not list up-symfony8-style names in .PHONY: GNU Make would treat them as empty
 # phony targets and skip pattern rules (up-%, assets-%, …).
-.PHONY: help clean test-all test-coverage-all verify-all release-verify assets-all
+.PHONY: help clean update-bundle-all test-all test-coverage-all verify-all release-verify assets-all
 .PHONY: up down restart build install update-bundle test test-coverage shell logs verify
 
 help:
@@ -33,9 +33,11 @@ help:
 	@echo "  up down restart build install update-bundle test test-coverage shell logs verify"
 	@echo ""
 	@echo "Aggregated:"
+	@echo "  update-bundle-all   Sync the bundle code into active demos ($(DEMOS))"
 	@echo "  test-all            Run tests for active demos ($(DEMOS))"
 	@echo "  test-coverage-all   Run tests with coverage for active demos"
 	@echo "  verify-all         Verify active demos (up + HTTP 200)"
+	@echo "  release-check      update-bundle-all, test-coverage-all, then release-verify"
 	@echo "  release-verify     For each active demo: up → healthcheck → down (for release-check)"
 	@echo "  clean              Remove vendor, var, cache from all demos"
 	@echo ""
@@ -126,6 +128,10 @@ verify:
 	@if [ -z "$(DEMO)" ]; then echo "Error: use make verify DEMO=symfony8"; exit 1; fi
 	@$(MAKE) verify-$(DEMO)
 
+update-bundle-all:
+	@for d in $(DEMOS); do $(MAKE) update-bundle-$$d || exit 1; done
+	@echo "All demos synced with the bundle code."
+
 test-all:
 	@for d in $(DEMOS); do $(MAKE) test-$$d || exit 1; done
 	@echo "All demos passed tests."
@@ -138,7 +144,8 @@ verify-all:
 	@for d in $(DEMOS); do $(MAKE) verify-$$d; $(MAKE) down-$$d || true; done
 	@echo "Verify-all done."
 
-release-check: test-coverage-all release-verify
+# REQ-DEMO-007: sync the bundle code into every demo (update-bundle) before its tests and the release healthcheck.
+release-check: update-bundle-all test-coverage-all release-verify
 	@echo "All demos passed release-check."
 
 release-verify:
