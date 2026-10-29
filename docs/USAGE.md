@@ -8,9 +8,14 @@
 - [Controller strategy](#controller-strategy)
 - [Options strategy (FormOptionsTrait)](#options-strategy-formoptionstrait)
 - [Conditional fields (show one field or another)](#conditional-fields-show-one-field-or-another)
+  - [1. Build-time (`if` on known options / data)](#1-build-time-if-on-known-options--data)
+  - [2. Form events (`PRE_SET_DATA` / `PRE_SUBMIT`)](#2-form-events-pre_set_data--pre_submit)
+  - [3. UI-only hide/show (Stimulus / CSS)](#3-ui-only-hideshow-stimulus--css)
+  - [4. Live Components (optional)](#4-live-components-optional)
 - [Kit strategy (FormKitTrait / FormKitAbstractType)](#kit-strategy-formkittrait--formkitabstracttype)
 - [Wrapped strategy (third-party types)](#wrapped-strategy-third-party-types)
 - [Translations](#translations)
+  - [Overriding the bundle messages (`NowoFormKitBundle` domain)](#overriding-the-bundle-messages-nowoformkitbundle-domain)
 - [Disabling convention for a key](#disabling-convention-for-a-key)
 - [Custom static blocks in the form (HR, alert)](#custom-static-blocks-in-the-form-hr-alert)
 - [Input group (icon at start or end)](#input-group-icon-at-start-or-end)
@@ -23,12 +28,14 @@
   - [Steps definition](#steps-definition)
   - [Services](#services)
   - [Controller example](#controller-example)
-- [CSRF-only and GET filter forms](CSRF.md)
 - [Rendering forms in Twig (REQ-TWIG-005)](#rendering-forms-in-twig-req-twig-005)
 - [Form renderer component (Twig)](#form-renderer-component-twig)
 - [Layout examples (Bootstrap and Tailwind)](#layout-examples-bootstrap-and-tailwind)
+  - [Horizontal / grid (Bootstrap)](#horizontal--grid-bootstrap)
+  - [Floating labels (Bootstrap 5)](#floating-labels-bootstrap-5)
   - [Bootstrap 5 example](#bootstrap-5-example)
   - [Tailwind CSS example](#tailwind-css-example)
+- [CSRF-only and GET filter forms](CSRF.md)
 
 ## Usage strategies
 
@@ -383,6 +390,35 @@ user_profile:
     placeholder: you@example.com
     help: We will not share it.
 ```
+
+### Overriding the bundle messages (`NowoFormKitBundle` domain)
+
+The bundle ships its own UI strings (the [locale tabs](#locale-tabs-one-tab-per-language) labels) in the translation
+domain **`NowoFormKitBundle`**, with catalogues for `en`, `es`, `fr`, `de`, `it`, `pt` and `nl` under
+`src/Resources/translations/NowoFormKitBundle.<locale>.yaml`. Application translations take priority over bundle
+translations, so the bundle catalogue only acts as a fallback for keys your app does not define.
+
+To override (or add a locale):
+
+1. Use the same domain as the bundle: `NowoFormKitBundle`.
+2. Create `translations/NowoFormKitBundle.<locale>.yaml` (or `.xlf`) in your application.
+3. Define only the keys you want to change; every missing key falls back to the bundle value.
+
+```yaml
+# translations/NowoFormKitBundle.es.yaml (application)
+locale_tabs.label: "Traducciones"
+locale_tabs.required: "requerido"
+```
+
+| Key | Default (`en`) | Where it is used |
+| --- | --- | --- |
+| `locale_tabs.label` | `Languages` | Accessible name of the tab list when no `tabs_label` / field label is given |
+| `locale_tabs.default` | `default language` | Screen-reader hint on the default locale tab |
+| `locale_tabs.required` | `required` | Screen-reader hint on tabs of required locales |
+| `locale_tabs.invalid` | `contains errors` | Screen-reader hint on tabs whose panel has validation errors |
+
+Run `php bin/console cache:clear` after adding a new translation file, and `php bin/console debug:translation es --domain=NowoFormKitBundle`
+to check which value wins. Bundle maintainers validate the catalogues with `make validate-translations` (YAML syntax and key parity across locales).
 
 ## Disabling convention for a key
 

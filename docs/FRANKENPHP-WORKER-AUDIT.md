@@ -8,6 +8,18 @@
 | Method | Manual review of every file under `src/` (services, form types, type extensions, traits, DI extension, compiler passes, `Resources/config/services.yaml`) + PHPStan FrankenPHP classic/worker rulesets |
 | **Verdict** | ✅ **Compatible** with FrankenPHP worker when the kernel is **not** reset between requests (`FRANKENPHP_RESET_KERNEL` unset or `0`). Bundle services hold no per-request state. Trait setters are **DI / constructor configuration** only — misuse from an action is an integrator error (documented). |
 
+## Table of contents
+
+- [Execution model assumed](#execution-model-assumed)
+- [Summary](#summary)
+- [Services reviewed](#services-reviewed)
+- [Findings](#findings)
+  - [W-01 — Public setters on shared form types persist across requests (Accepted / documented)](#w-01--public-setters-on-shared-form-types-persist-across-requests-accepted--documented)
+  - [W-02 — `FormKitControllerTrait` naming/profile state (Accepted / documented)](#w-02--formkitcontrollertrait-namingprofile-state-accepted--documented)
+  - [W-03 — `MultiStepWizardSession` session binding — **Fixed in 2.5.3**](#w-03--multistepwizardsession-session-binding--fixed-in-253)
+- [Usage recommendations](#usage-recommendations)
+- [Re-audit triggers](#re-audit-triggers)
+
 ## Execution model assumed
 
 FrankenPHP worker mode boots the Symfony kernel once per worker and serves many requests with the same container. Symfony Runtime default is **kernel reused** (`FRANKENPHP_RESET_KERNEL` unset/false). Setting `FRANKENPHP_RESET_KERNEL=1` clones the application after each request (escape hatch; lower throughput). This audit targets the **strict** default:

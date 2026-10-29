@@ -64,6 +64,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Symfony wiring (REQ-SF-003):** the bundle form types, form type extensions and Twig extensions (`LocaleTabsTwigExtension`, `CsrfActionFormExtension`, `UnlabelledChoiceAriaLabelExtension`, the types and extensions of `services.yaml`) are now tagged through Symfony autoconfiguration (FrameworkBundle / TwigBundle) instead of manual `form.type` / `form.type_extension` / `twig.extension` tags. Service ids, classes, arguments and runtime behaviour are unchanged; only the per-type `stateless_csrf` extensions keep their explicit `extended_type` tag. See [UPGRADING](UPGRADING.md#unreleased).
+- **Demo (REQ-DEMO-007):** `make update-bundle` (demo/symfony8) runs `composer update nowo-tech/form-kit-bundle` (without `--with-all-dependencies`), `dump-autoload`, `cache:clear` and `assets:install`; the demo `release-check` targets run it before the tests and the HTTP verification.
+
+### Added
+
+- **`make validate-translations` (REQ-MAKE-004):** YAML lint, `NowoFormKitBundle.<locale>.yaml`-only catalogues and key parity across the 7 locales (`.scripts/validate-translations.php`); part of `make release-check` and CI.
+
+### Documentation
+
+- USAGE: how applications override the bundle messages (`translations/NowoFormKitBundle.<locale>.yaml`) with the key list (REQ-I18N-001).
+- SECURITY: scope, attack surface, threat model, secrets, logging, dependencies and exposure sections; release checklist item for the AI security audit (REQ-SEC-001 / REQ-SEC-002). `.github/SECURITY.md`: repository name and supported 2.x line (REQ-SEC-003).
+- CONTRIBUTING: Cursor Agent settings (Ctrl+Enter submit, queued follow-ups; REQ-IDE-006) and translation validation.
+- README `## Documentation`: base links in the canonical order, non-base docs under *Additional documentation* (REQ-DOCS-002); measured coverage (REQ-TEST-007).
+- Tables of contents with every `##` / `###` section in the long docs (REQ-DOCS-005); `SPEC-DRIVEN-DEVELOPMENT.md` `REQ-*` table, user stories and scope (REQ-DOCS-013); Spec Kit baseline and inventory cover all 77 production files (REQ-SPECKIT-001 / REQ-SPECKIT-003).
+
+### Fixed
+
+- Twig-CS-Fixer lint is clean again: help-modal shells use the `include()` function instead of the `include` tag (same output) and `form_renderer.html.twig` hash spacing.
+- Rector (`ExplicitNullableObjectInstanceRector`) in `ConstraintDefinitionFactory::constructorAccepts()` (no behaviour change).
+
+### Tests
+
+- PHPUnit docblock annotations (`@dataProvider`, `@runInSeparateProcess`, `@preserveGlobalState`) migrated to attributes (REQ-TEST-010); autoconfiguration test for the bundle services.
+- Vitest: covers mutations that only add non-element nodes, restoring the 100% TypeScript coverage gate of `make test-ts` (the `help-modal.ts` early return was uncovered since 2.14.1).
+
 ## [2.14.1] - 2026-10-28
 
 Security: the help modal only processes labels inside a form (no HTML from labels in user content). See [UPGRADING](UPGRADING.md#to-2141).

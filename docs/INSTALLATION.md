@@ -12,6 +12,7 @@ This guide covers installing Form Kit Bundle in a Symfony application.
   - [Manual registration](#manual-registration)
   - [Help modal assets (REQ-ASSETS-004)](#help-modal-assets-req-assets-004)
 - [Using in form types](#using-in-form-types)
+- [Twig Extra Bundle (REQ-TWIG-004)](#twig-extra-bundle-req-twig-004)
 - [Next steps](#next-steps)
 
 ## Requirements

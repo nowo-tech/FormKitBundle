@@ -69,6 +69,13 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+No action is needed for applications built on the Symfony FrameworkBundle and TwigBundle (every supported setup: `twig/extra-bundle`, a hard requirement, pulls both in).
+
+- **Autoconfigured services (REQ-SF-003).** The bundle form types (`CsrfOnlyType`, `HiddenFieldsCsrfType`, `SearchQueryType`, `TranslatableMapType`), form type extensions (`InputGroupExtension`, `LocaleTabsExtension`, `CheckboxRowExtension`, `RequiredLabelSuffixExtension`, `HelpModalExtension`, `UnlabelledChoiceAriaLabelExtension`) and Twig extensions (`LocaleTabsTwigExtension`, `CsrfActionFormExtension`) no longer carry hand-written `form.type` / `form.type_extension` / `twig.extension` tags: they are `autoconfigure: true` and Symfony adds the same tags while compiling the container. Service ids, classes, arguments, options, form themes and Twig functions are unchanged.
+  - Only if your application **decorates or re-registers** one of these services and **turns autoconfiguration off** for it, tag it yourself (`form.type`, `form.type_extension` or `twig.extension`).
+  - Code that inspects the *uncompiled* `ContainerBuilder` (custom compiler passes running before `PassConfig::TYPE_BEFORE_OPTIMIZATION` priority 100, or tests calling `FormKitExtension::load()` alone) sees `isAutoconfigured() === true` instead of the tags; the tags appear after `ResolveInstanceofConditionalsPass`.
+- **Demo only:** `make update-bundle` in `demo/symfony8` no longer passes `--with-all-dependencies` (it updates the bundle only, then dumps the autoloader, clears the cache and re-installs assets).
+
 ## To 2.14.1
 
 From **2.14.0**:

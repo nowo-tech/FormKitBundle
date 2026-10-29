@@ -7,7 +7,7 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
 - [Current state (v2.x)](#current-state-v2x)
 - [Short term](#short-term)
 - [Medium term](#medium-term)
-- [Long term / ideas](#long-term-ideas)
+- [Long term / ideas](#long-term--ideas)
 - [Non-goals](#non-goals)
 
 ---
