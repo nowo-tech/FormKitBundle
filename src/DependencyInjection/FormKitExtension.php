@@ -151,7 +151,7 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
 
     /**
      * Locale tabs (2.13): parameters for {@see TranslatableMapType} and the {@see LocaleTabsTwigExtension}
-     * (tag twig.extension). Empty locales / null default locale are filled from
+     * (autoconfigured as twig.extension). Empty locales / null default locale are filled from
      * framework.enabled_locales / default_locale by LocaleTabsLocalesPass.
      *
      * @param array{locales: list<string>, default_locale: string|null, renderer: string, form_theme: bool} $localeTabs
@@ -170,7 +170,8 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
                 '%nowo_form_kit.locale_tabs.default_locale%',
                 $localeTabs['renderer'] === 'native' ? false : null,
             ])
-            ->addTag('twig.extension')
+            // REQ-SF-003: tagged twig.extension by TwigBundle autoconfiguration (Twig ExtensionInterface), no manual tag.
+            ->setAutoconfigured(true)
             ->setPublic(false);
     }
 
@@ -209,7 +210,8 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
 
         $container->register(CsrfActionFormExtension::class, CsrfActionFormExtension::class)
             ->setArguments([new Reference(CsrfOnlyFormFactory::class)])
-            ->addTag('twig.extension')
+            // REQ-SF-003: tagged twig.extension by TwigBundle autoconfiguration (Twig ExtensionInterface), no manual tag.
+            ->setAutoconfigured(true)
             ->setPublic(false);
     }
 
@@ -230,7 +232,8 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
 
         $container->register(UnlabelledChoiceAriaLabelExtension::class, UnlabelledChoiceAriaLabelExtension::class)
             ->setArguments([new Reference(TranslatorInterface::class, ContainerInterface::NULL_ON_INVALID_REFERENCE)])
-            ->addTag('form.type_extension')
+            // REQ-SF-003: tagged form.type_extension by FrameworkBundle autoconfiguration (getExtendedTypes()), no manual tag.
+            ->setAutoconfigured(true)
             ->setPublic(false);
     }
 
@@ -248,6 +251,8 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('nowo_form_kit.stateless_csrf.form_types', $formTypes);
 
         foreach ($formTypes as $index => $formType) {
+            // Explicit tag on purpose (REQ-SF-003 rule 4): the extended type comes from configuration, one service per
+            // listed type, which neither an attribute nor autoconfiguration (static getExtendedTypes()) can express.
             $container->register('nowo_form_kit.stateless_csrf_extension.' . $index, StatelessCsrfTokenIdExtension::class)
                 ->setArguments([$statelessCsrf['token_id']])
                 ->addTag('form.type_extension', ['extended_type' => $formType])

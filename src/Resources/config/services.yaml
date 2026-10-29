@@ -1,4 +1,6 @@
 services:
+  # REQ-SF-003: form types and type extensions are tagged by FrameworkBundle autoconfiguration
+  # (FormTypeInterface -> form.type, FormTypeExtensionInterface -> form.type_extension); no manual tags here.
   _defaults:
     autowire: true
     autoconfigure: true
@@ -29,42 +31,33 @@ services:
   Nowo\FormKitBundle\Form\GetFilterFormFactory: ~
 
   Nowo\FormKitBundle\Form\Type\CsrfOnlyType:
-    tags: ['form.type']
 
   Nowo\FormKitBundle\Form\Type\HiddenFieldsCsrfType:
-    tags: ['form.type']
 
   Nowo\FormKitBundle\Form\Type\SearchQueryType:
-    tags: ['form.type']
 
   Nowo\FormKitBundle\Form\Type\TranslatableMapType:
     arguments:
       $locales: '%nowo_form_kit.locale_tabs.locales%'
       $defaultLocale: '%nowo_form_kit.locale_tabs.default_locale%'
-    tags: ['form.type']
 
   Nowo\FormKitBundle\Form\Extension\InputGroupExtension:
-    tags: ['form.type_extension']
 
   Nowo\FormKitBundle\Form\Extension\LocaleTabsExtension:
-    tags: ['form.type_extension']
 
   Nowo\FormKitBundle\Form\Extension\CheckboxRowExtension:
     arguments:
       $profiles: '%nowo_form_kit.profiles%'
       $defaultProfileName: '%nowo_form_kit.default_profile%'
       $cssFramework: '%nowo_form_kit.css_framework%'
-    tags: ['form.type_extension']
 
   Nowo\FormKitBundle\Form\Extension\RequiredLabelSuffixExtension:
     arguments:
       $profiles: '%nowo_form_kit.profiles%'
       $defaultProfileName: '%nowo_form_kit.default_profile%'
-    tags: ['form.type_extension']
 
   Nowo\FormKitBundle\Form\Extension\HelpModalExtension:
     arguments:
       $profiles: '%nowo_form_kit.profiles%'
       $defaultProfileName: '%nowo_form_kit.default_profile%'
       $iconRenderer: '@?Symfony\UX\Icons\IconRendererInterface'
-    tags: ['form.type_extension']

@@ -27,9 +27,9 @@ final class LocaleTabsConfigTest extends TestCase
         self::assertSame([], $container->getParameter('nowo_form_kit.locale_tabs.locales'));
         self::assertNull($container->getParameter('nowo_form_kit.locale_tabs.default_locale'));
         self::assertSame('auto', $container->getParameter('nowo_form_kit.locale_tabs.renderer'));
-        self::assertTrue($container->getDefinition(TranslatableMapType::class)->hasTag('form.type'));
+        self::assertTrue($container->getDefinition(TranslatableMapType::class)->isAutoconfigured());
         $twig = $container->getDefinition(LocaleTabsTwigExtension::class);
-        self::assertTrue($twig->hasTag('twig.extension'));
+        self::assertTrue($twig->isAutoconfigured());
         self::assertSame(['%nowo_form_kit.locale_tabs.locales%', '%nowo_form_kit.locale_tabs.default_locale%', null], $twig->getArguments());
     }
 

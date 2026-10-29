@@ -326,7 +326,8 @@ final class FormKitExtensionTest extends TestCase
         $definition = $container->getDefinition(UnlabelledChoiceAriaLabelExtension::class);
         self::assertSame(UnlabelledChoiceAriaLabelExtension::class, $definition->getClass());
         self::assertFalse($definition->isPublic());
-        self::assertSame([[]], $definition->getTag('form.type_extension'));
+        self::assertTrue($definition->isAutoconfigured());
+        self::assertFalse($definition->hasTag('form.type_extension'));
         $translator = $definition->getArgument(0);
         self::assertInstanceOf(Reference::class, $translator);
         self::assertSame(TranslatorInterface::class, (string) $translator);
@@ -351,7 +352,8 @@ final class FormKitExtensionTest extends TestCase
         self::assertTrue($container->hasDefinition(CsrfActionFormExtension::class));
         $definition = $container->getDefinition(CsrfActionFormExtension::class);
         self::assertFalse($definition->isPublic());
-        self::assertSame([[]], $definition->getTag('twig.extension'));
+        self::assertTrue($definition->isAutoconfigured());
+        self::assertFalse($definition->hasTag('twig.extension'));
         $factory = $definition->getArgument(0);
         self::assertInstanceOf(Reference::class, $factory);
         self::assertSame(CsrfOnlyFormFactory::class, (string) $factory);
