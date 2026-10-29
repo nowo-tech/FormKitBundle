@@ -8,6 +8,8 @@ DEMOS := symfony8
 # phony targets and skip pattern rules (up-%, assets-%, …).
 .PHONY: help clean update-bundle-all test-all test-coverage-all verify-all release-verify assets-all
 .PHONY: up down restart build install update-bundle test test-coverage shell logs verify
+# Keep release-check stages in order under make -j (REQ-DEMO-007: sync before tests and verification).
+.NOTPARALLEL: release-check
 
 help:
 	@echo "Form Kit Bundle - Demos"

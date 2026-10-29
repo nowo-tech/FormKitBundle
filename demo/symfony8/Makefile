@@ -27,7 +27,7 @@ help:
 	@echo "  make logs          Show container logs"
 	@echo "  make cache-clear   Clear Symfony cache"
 	@echo "  make update-bundle Sync bundle from path repo (composer update + autoload + cache:clear)"
-	@echo "  make release-check update-bundle, then test, test-coverage and verify"
+	@echo "  make release-check update-bundle, then test-coverage (HTTP smoke)"
 	@echo "  make test          Run tests"
 	@echo "  make test-coverage Run tests with coverage"
 	@echo "  make verify       Ensure up and check HTTP 200"
@@ -96,7 +96,9 @@ update-bundle: ensure-up
 	$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) php bin/console assets:install public --symlink --no-interaction
 
 # REQ-DEMO-007: the demo release check syncs the bundle code before running the tests and the HTTP verification.
-release-check: ensure-up update-bundle test test-coverage verify
+# test-coverage is the HTTP smoke of this PHPUnit-less demo (REQ-TEST-011), so verify runs on the host.
+.NOTPARALLEL: release-check
+release-check: ensure-up update-bundle test-coverage
 
 test: ensure-up
 	@$(DOCKER_COMPOSE) exec -T $(SERVICE_PHP) sh -c 'composer test 2>/dev/null || $(MAKE) verify'

@@ -402,7 +402,7 @@ To override (or add a locale):
 
 1. Use the same domain as the bundle: `NowoFormKitBundle`.
 2. Create `translations/NowoFormKitBundle.<locale>.yaml` (or `.xlf`) in your application.
-3. Define only the keys you want to change; every missing key falls back to the bundle value.
+3. Define only the keys you want to change; every missing key falls back to the bundle value **for the locales the bundle ships**. For a locale the bundle does not ship (e.g. `ja`), define every key in your file or keep a shipped locale in `framework.translator.fallbacks` (default: your `default_locale`, so keep it to one of the 7 above or add `en`), otherwise Symfony prints the key itself.
 
 ```yaml
 # translations/NowoFormKitBundle.es.yaml (application)

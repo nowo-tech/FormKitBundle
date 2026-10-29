@@ -44,7 +44,7 @@ FormKit is a **form-building library**: it merges form field options and transla
 
 | Threat | Applies | Notes |
 | --- | --- | --- |
-| **XSS** through options printed as HTML | Yes | `help_modal` title/content/icon, `input_group_prefix` / `_suffix`, `StaticHtmlType` `html`, `required_label_suffix`, renderer `form_buttons` are **trusted developer markup** (`|raw`). Passing visitor input there is an XSS. Everything else (labels, help, placeholders, locale tab titles, translated strings) is auto-escaped by Twig. |
+| **XSS** through options printed as HTML | Yes | `help_modal` title/content/icon, `input_group_prefix` / `_suffix`, `StaticHtmlType` `html`, `required_label_suffix`, renderer `form_buttons` are **trusted developer markup** (`\|raw`). Passing visitor input there is an XSS. Everything else (labels, help, placeholders, locale tab titles, translated strings) is auto-escaped by Twig. |
 | **DOM XSS** through the help modal | Yes (mitigated) | The script copies developer HTML options with `innerHTML`; since 2.14.1 it only processes labels inside a `<form>`, so a `data-nowo-help-modal` label injected through sanitised user HTML outside a form is ignored. |
 | **CSRF** on single-action POSTs | Yes (mitigated) | `CsrfOnlyType`, `HiddenFieldsCsrfType`, `csrf_action_form()` fail closed when form CSRF is unavailable. |
 | **CSRF** on anonymous forms with stateless tokens | Opt-in | `stateless_csrf` relies on Origin/Referer + double-submit cookie; only for anonymous forms. |
@@ -123,7 +123,7 @@ Before tagging a release, confirm:
 | **`.gitignore` and `.env`** | `.env` and local env files are ignored; no committed secrets. |
 | **No secrets in repo** | No API keys, passwords, or tokens in tracked files (GitGuardian check green). |
 | **Recipe / Flex** | Default recipe or installer templates do not ship production secrets. |
-| **Input / output** | Inputs validated; outputs escaped in Twig/templates where user-controlled; `|raw` only on developer-controlled options listed in the [Threat model](#threat-model). |
+| **Input / output** | Inputs validated; outputs escaped in Twig/templates where user-controlled; `\|raw` only on developer-controlled options listed in the [Threat model](#threat-model). |
 | **Dependencies** | `composer audit` run; issues triaged. |
 | **Logging** | Logs do not print secrets, tokens, or session identifiers unnecessarily. |
 | **Cryptography** | If used: keys from secure config; never hardcoded. |
