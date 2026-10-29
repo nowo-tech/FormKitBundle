@@ -480,6 +480,18 @@ describe('help-modal', () => {
     expect(nested.parentElement).toBe(document.body);
   });
 
+  it('ignores mutations that only add non-element nodes', async () => {
+    await importModuleFresh();
+    const raf = vi.spyOn(window, 'requestAnimationFrame');
+
+    document.body.appendChild(document.createTextNode('only text'));
+    document.body.appendChild(document.createComment('only a comment'));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(raf).not.toHaveBeenCalled();
+  });
+
   it('re-reads updated label payload on click and keyboard open', async () => {
     setDom(`<label id="label-k" data-nowo-help-modal='${payload({ id: 'hm-k', content: '<p>v1</p>' })}'></label>`);
     await importModuleFresh();

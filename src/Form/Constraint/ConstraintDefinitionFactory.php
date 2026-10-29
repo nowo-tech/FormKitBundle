@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Form\Constraint;
 
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionMethod;
 use Symfony\Component\Validator\Constraint;
 
 use function array_key_exists;
@@ -150,7 +151,7 @@ final class ConstraintDefinitionFactory
     private function constructorAccepts(string $class, string $paramName): bool
     {
         $ctor = (new ReflectionClass($class))->getConstructor();
-        if ($ctor === null) {
+        if (!$ctor instanceof ReflectionMethod) {
             return false;
         }
         foreach ($ctor->getParameters() as $param) {
