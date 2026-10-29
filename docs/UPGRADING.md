@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.15.0](#to-2150)
 - [To 2.14.1](#to-2141)
 - [To 2.14.0](#to-2140)
   - [CSRF action forms fail closed](#csrf-action-forms-fail-closed)
@@ -68,6 +69,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.15.0
+
+From **2.14.1**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 No action is needed for applications built on the Symfony FrameworkBundle and TwigBundle (every supported setup: `twig/extra-bundle`, a hard requirement, pulls both in).
 
