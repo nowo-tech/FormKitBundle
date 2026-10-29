@@ -27,6 +27,9 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\DataTransformerInterface;
@@ -843,11 +846,8 @@ final class FormKitControllerTraitTest extends TestCase
         ], $calls);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddMultiSelectSelectAllTypeUsesChoiceWhenBundleInstalled(): void
     {
         require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
@@ -915,11 +915,8 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->addAutocomplete($builder);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddCKEditorFieldTypeAddsFieldWhenBundleInstalled(): void
     {
         require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
@@ -1020,11 +1017,8 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->build($builder);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddMultiSelectSelectAllTypeThrowsWhenBundleMissing(): void
     {
         $subject = new class($this->createMerger(), new FormTypeMap([])) {
@@ -1050,11 +1044,8 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->addSelectAll($builder);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddCKEditorFieldTypeThrowsWhenBundleMissing(): void
     {
         $subject = new class($this->createMerger(), new FormTypeMap([])) {
@@ -1232,13 +1223,9 @@ final class FormKitControllerTraitTest extends TestCase
         ];
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     *
-     * @dataProvider provideMissingNowoInputHelpers
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    #[DataProvider('provideMissingNowoInputHelpers')]
     public function testNowoInputHelpersThrowWhenBundleMissing(string $method, string $package): void
     {
         $subject = new class($this->createMerger(), new FormTypeMap([])) {

@@ -19,6 +19,9 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -286,13 +289,9 @@ final class FormKitTraitTest extends TestCase
         ];
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     *
-     * @dataProvider provideMissingNowoInputHelpers
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    #[DataProvider('provideMissingNowoInputHelpers')]
     public function testNowoInputHelpersThrowWhenBundleMissing(string $method, string $package): void
     {
         $type = $this->createType();

@@ -14,6 +14,8 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -67,11 +69,8 @@ final class FormTypeMapTest extends TestCase
         self::assertSame(CollectionType::class, $map->resolve('collection'));
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testOptionalTypesAreRegisteredWhenClassesExist(): void
     {
         require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';

@@ -26,6 +26,9 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -807,11 +810,8 @@ final class FormOptionsTraitTest extends TestCase
         ], $calls);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddMultiSelectSelectAllThrowsWhenBundleMissing(): void
     {
         $type = new class {
@@ -836,11 +836,8 @@ final class FormOptionsTraitTest extends TestCase
         $type->run($builder);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddCKEditorFieldThrowsWhenBundleMissing(): void
     {
         $type = new class {
@@ -865,11 +862,8 @@ final class FormOptionsTraitTest extends TestCase
         $type->run($builder);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddDropzoneThrowsWhenBundleMissing(): void
     {
         $type = new class {
@@ -895,11 +889,8 @@ final class FormOptionsTraitTest extends TestCase
         $type->run($builder);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddCropperThrowsWhenBundleMissing(): void
     {
         $type = new class {
@@ -943,13 +934,9 @@ final class FormOptionsTraitTest extends TestCase
         ];
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     *
-     * @dataProvider provideMissingNowoInputHelpers
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    #[DataProvider('provideMissingNowoInputHelpers')]
     public function testNowoInputHelpersThrowWhenBundleMissing(string $method, string $package): void
     {
         $type = new class {
@@ -1303,11 +1290,8 @@ final class FormOptionsTraitTest extends TestCase
         $type->addTranslationsField($builder);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddMultiSelectSelectAllAddsChoiceWhenBundleInstalled(): void
     {
         require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
@@ -1341,11 +1325,8 @@ final class FormOptionsTraitTest extends TestCase
         $type->run($builder);
     }
 
-    /**
-     * @runInSeparateProcess
-     *
-     * @preserveGlobalState false
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testAddCKEditorFieldAddsFieldWhenBundleInstalled(): void
     {
         require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
