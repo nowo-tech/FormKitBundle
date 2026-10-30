@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Tests\Unit\Form\Extension;
 
 use Nowo\FormKitBundle\Form\Extension\HelpModalExtension;
+use Nowo\FormKitBundle\HelpModal\HelpModalNonce;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use const JSON_THROW_ON_ERROR;
@@ -277,5 +280,51 @@ final class HelpModalExtensionTest extends TestCase
 
         $data = json_decode((string) $view->vars['label_attr']['data-nowo-help-modal'], true, 512, JSON_THROW_ON_ERROR);
         self::assertSame('<span>fallback</span>', $data['icon_html']);
+    }
+
+    public function testPayloadCarriesRequestNonceAndOptInContentHtml(): void
+    {
+        $request = new Request();
+        $stack   = new RequestStack();
+        $stack->push($request);
+        $nonce = new HelpModalNonce($stack);
+
+        $ext = new HelpModalExtension(
+            profiles: ['default' => ['help_modal' => []]],
+            defaultProfileName: 'default',
+            nonce: $nonce,
+        );
+
+        $view             = new FormView();
+        $view->vars['id'] = 'field_nonce';
+        $ext->buildView($view, $this->createStub(FormInterface::class), [
+            'help_modal' => [
+                'content'      => 'Plain <b>text</b>',
+                'content_html' => '<p>Trusted</p>',
+            ],
+        ]);
+
+        $json = $view->vars['label_attr']['data-nowo-help-modal'];
+        self::assertIsString($json);
+        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame($nonce->get(), $data['nonce']);
+        self::assertSame('Plain <b>text</b>', $data['content']);
+        self::assertSame('<p>Trusted</p>', $data['content_html']);
+    }
+
+    public function testContentHtmlIsNullWhenNotAString(): void
+    {
+        $ext = new HelpModalExtension(profiles: ['default' => ['help_modal' => []]], defaultProfileName: 'default');
+
+        $view = new FormView();
+        $ext->buildView($view, $this->createStub(FormInterface::class), ['help_modal' => ['content_html' => ['x']]]);
+
+        $json = $view->vars['label_attr']['data-nowo-help-modal'];
+        self::assertIsString($json);
+        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertNull($data['content_html']);
+        self::assertMatchesRegularExpression('/^[A-Za-z0-9_-]{24}$/', $data['nonce']);
     }
 }

@@ -70,6 +70,39 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+Security hardening from the REQ-SEC-004 audit of 2026-10-30 (see [CHANGELOG](CHANGELOG.md#unreleased)). Run `php bin/console assets:install public` after updating so the rebuilt `help-modal.js` is served (bust any immutable / CDN cache of `/bundles/nowoformkit/help-modal.js`).
+
+**Who must act:** only applications that use the **`help_modal`** field option (steps 1–2), call **`CsrfOnlyFormFactory` / `csrf_action_form()` with a method other than POST / PUT / PATCH / DELETE (GET, HEAD, OPTIONS, TRACE, empty) or an empty / blank token id** (step 3), or list **Symfony base types in `stateless_csrf.form_types`** (step 4). Applications that use none of these need no change. **core-nowo-v2** (pins `nowo-tech/form-kit-bundle`): no `help_modal` usage and only POST `CsrfOnlyFormFactory::createNamed()` calls with non-empty token ids, so it is **not affected**; bumping the pin needs no code change.
+
+1. **Print the help-modal nonce in `<head>`** of every layout that renders forms with `help_modal` (without it the script attaches no trigger and prints one `console.warn` hint):
+
+   ```twig
+   <head>
+       {{ nowo_form_kit_help_modal_meta() }}
+       {# … #}
+   </head>
+   ```
+
+   Fragments rendered by **another request** (Turbo Frames, AJAX) carry that request's nonce: same-origin Turbo Frame requests already send the page nonce in `X-Nowo-Form-Kit-Help-Modal-Nonce` (the server reuses it only when the request also carries `Turbo-Frame` and is same-origin, and then sends `Cache-Control: private` + `Vary`); for your own `fetch()` calls, send that header with the meta value **and** a `Turbo-Frame` header. Do not serve pages that mix `help_modal` fields with user content from a shared cache (CDN / Varnish / `HttpCache`). A Live Component re-render keeps the last bound payload of each existing label; labels that appear for the first time in a Live re-render get no trigger.
+
+2. **Rename `content` to `content_html` when the help body is HTML.** `content` is now plain text (shown escaped). `title` / `title_html` are unchanged. Example:
+
+   ```diff
+    'help_modal' => [
+        'title' => 'Full name',
+   -    'content' => '<p>Use your legal name.</p>',
+   +    'content_html' => '<p>Use your legal name.</p>',
+    ],
+   ```
+
+   `content_html` and `icon_html` are trusted developer HTML: never pass visitor input.
+
+3. **CSRF-only forms must use an unsafe method and a non-empty token id.** `CsrfOnlyFormFactory::create()` / `createNamed()` / `createWithFields()` and `csrf_action_form()` now throw `InvalidArgumentException` for any method other than POST / PUT / PATCH / DELETE (GET, HEAD, OPTIONS, TRACE, empty…) and for an empty / blank `csrfTokenId`. Use POST (or PUT / PATCH / DELETE) for actions; for read-only filters use `GetFilterFormFactory` / `SearchQueryType` (no CSRF token in the URL).
+
+4. **`stateless_csrf.form_types`** must list your own form types as literal FQCNs: `FormType` and any type under `Symfony\Component\Form\` or `Symfony\Bridge\` fail with an `InvalidConfigurationException`, and `%env()%` entries with an `InvalidArgumentException`, at container compile time.
+
+Other changes need no action: help-modal console diagnostics are off unless `window.NOWO_FORM_KIT_DEBUG = true`; only modal roots created by the script are moved to `<body>`; the Composer dist no longer contains `demo/`, `tests/`, `specs/` and tooling files.
+
 ## To 2.15.0
 
 From **2.14.1**:

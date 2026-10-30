@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 
 use Nowo\FormKitBundle\DependencyInjection\Configuration;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class ConfigurationTest extends TestCase
 {
@@ -56,6 +59,29 @@ final class ConfigurationTest extends TestCase
 
         self::assertTrue($processed['stateless_csrf']['enabled']);
         self::assertSame(['App\\Form\\A'], $processed['stateless_csrf']['form_types']);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function baseFormTypes(): iterable
+    {
+        yield 'FormType' => [FormType::class];
+        yield 'FormType leading slash' => ['\\' . FormType::class];
+        yield 'TextType' => [TextType::class];
+        yield 'EntityType (bridge)' => ['Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType'];
+        yield 'case-insensitive FQCN' => ['symfony\\component\\form\\extension\\core\\type\\formtype'];
+    }
+
+    #[DataProvider('baseFormTypes')]
+    public function testStatelessCsrfRejectsBaseFormTypes(string $type): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessageMatches('/stateless_csrf\.form_types must list your own form types/');
+
+        (new Processor())->processConfiguration(new Configuration(), [[
+            'stateless_csrf' => ['enabled' => true, 'form_types' => ['App\\Form\\NewsletterType', $type]],
+        ]]);
     }
 
     public function testRequiresAliasForNamedProfile(): void

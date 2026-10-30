@@ -100,8 +100,8 @@ Since **2.11.0**. Build the same forms straight from a template (shared includes
 | Argument | Default | Notes |
 |----------|---------|-------|
 | `action` | — | Form action URL |
-| `csrfTokenId` | — | Token id the controller validates (`isCsrfTokenValid()` / form `isValid()`) |
-| `method` | `'POST'` | Upper-cased |
+| `csrfTokenId` | — | Token id the controller validates (`isCsrfTokenValid()` / form `isValid()`). Must not be empty (`InvalidArgumentException`) |
+| `method` | `'POST'` | Upper-cased. Only POST / PUT / PATCH / DELETE: GET, HEAD, OPTIONS, TRACE or empty throw `InvalidArgumentException` (the token would end up in the URL); use `GetFilterFormFactory` for GET filters |
 | `named` | `true` | `true` → `csrf_only[_token]`; `false` → flat field. Ignored when `fields` is not empty |
 | `csrfFieldName` | `'_token'` | e.g. `'_csrf_token'` for kit forks |
 | `fields` | `{}` | Field name ⇒ default value (`null` ⇒ `''`); switches to `HiddenFieldsCsrfType` |

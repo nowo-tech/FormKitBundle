@@ -269,6 +269,20 @@ final class FormKitExtensionTest extends TestCase
         self::assertFalse($container->hasDefinition('nowo_form_kit.stateless_csrf_extension.2'));
     }
 
+    public function testStatelessCsrfRejectsEnvPlaceholderFormTypes(): void
+    {
+        $container   = new ContainerBuilder();
+        $placeholder = $container->getParameterBag()->get('env(FORM_TYPE)');
+        self::assertIsString($placeholder);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('literal form type FQCNs');
+
+        (new FormKitExtension())->load([[
+            'stateless_csrf' => ['enabled' => true, 'form_types' => ['App\\Form\\NewsletterType', $placeholder]],
+        ]], $container);
+    }
+
     public function testPrependRegistersStatelessTokenIdWhenEnabled(): void
     {
         $container = new ContainerBuilder();

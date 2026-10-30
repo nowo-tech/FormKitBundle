@@ -44,8 +44,8 @@ class DemoContactType extends AbstractType
             'full_name' => [
                 'type'       => TextType::class,
                 'help_modal' => [
-                    'title'   => $this->translator->trans('demo_contact.help_modal.full_name_title'),
-                    'content' => $this->translator->trans('demo_contact.help_modal.full_name_content'),
+                    'title'        => $this->translator->trans('demo_contact.help_modal.full_name_title'),
+                    'content_html' => $this->translator->trans('demo_contact.help_modal.full_name_content'),
                 ],
                 ...$rowHalf,
             ],

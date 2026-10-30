@@ -8,7 +8,13 @@
  * Help modal roots are always portaled to `document.body` (direct child, last) so they remain
  * visible even when the form lives inside a container that is later hidden, clipped, or replaced
  * (Turbo / Live Component / AJAX). A MutationObserver keeps watching for new labels and for
- * refreshed modal roots that need to be re-homed.
+ * refreshed modal roots that need to be re-homed. Only roots created by this script are moved.
+ *
+ * Origin binding (security): a payload is honoured only when its `nonce` equals the per-request nonce the
+ * server printed in `<meta name="nowo-form-kit-help-modal-nonce">` inside `document.head` (Twig:
+ * `{{ nowo_form_kit_help_modal_meta() }}`). Markup that reaches the page through user HTML cannot know that
+ * value, so a forged `label[data-nowo-help-modal]` is ignored even inside a `<form>`. Text fields are escaped
+ * by default; only `icon_html`, `title_html` and `content_html` are inserted as HTML.
  *
  * @packageDocumentation
  */
@@ -26,10 +32,14 @@ export type HelpModalData = {
   title: string | null;
   /** Optional HTML title (not escaped); takes precedence over title */
   title_html?: string | null;
-  /** Modal body HTML (trusted; from your app / translations) */
-  content: string;
+  /** Plain-text modal body (escaped in DOM when content_html is not set) */
+  content?: string | null;
+  /** Optional HTML modal body (trusted developer markup, not escaped); takes precedence over content */
+  content_html?: string | null;
   /** a11y label for the trigger button */
   aria_label?: string | null;
+  /** Per-request nonce; must equal the `<meta name="nowo-form-kit-help-modal-nonce">` value of the page */
+  nonce?: string;
 };
 
 declare const __FORM_KIT_HELP_MODAL_BUILD_TIME__: string;
@@ -37,9 +47,12 @@ declare const __FORM_KIT_HELP_MODAL_BUILD_TIME__: string;
 const resolvedBuildTime =
   (globalThis as Record<string, unknown>).__FORM_KIT_HELP_MODAL_BUILD_TIME__ as string | undefined;
 
+/**
+ * Diagnostics are off by default; set `window.NOWO_FORM_KIT_DEBUG = true` before the script loads to enable them.
+ */
 const log = createBundleLogger('form-kit-help-modal', {
   buildTime: resolvedBuildTime,
-  alwaysLog: true,
+  alwaysLog: (globalThis as Record<string, unknown>).NOWO_FORM_KIT_DEBUG === true,
 });
 log.scriptLoaded();
 setBundleLogger(log);
@@ -50,20 +63,59 @@ setBundleLogger(log);
  */
 export const HELP_MODAL_ROOT_ATTR = 'data-nowo-formkit-help-modal';
 
+/** `<meta name>` (in `document.head`) carrying the per-request nonce printed by `nowo_form_kit_help_modal_meta()`. */
+export const HELP_MODAL_NONCE_META = 'nowo-form-kit-help-modal-nonce';
+
+/** Request header that lets fragment requests (Turbo Frames, AJAX) reuse the page nonce. */
+export const HELP_MODAL_NONCE_HEADER = 'X-Nowo-Form-Kit-Help-Modal-Nonce';
+
 /** Labels that carry a help-modal JSON payload. */
 const HELP_MODAL_LABEL_SELECTOR = `label[data-nowo-help-modal]`;
 
 /**
- * The payload's `icon_html` / `title_html` / `content` are inserted as HTML, so only labels rendered by Symfony
- * forms count: they always sit inside a `<form>`. A `<label data-nowo-help-modal>` that reaches the page through
- * sanitised user HTML (comments, rich text — sanitizers keep `label` and `data-*`) outside a form is ignored.
+ * Only labels rendered by Symfony forms count: they always sit inside a `<form>`. A `<label data-nowo-help-modal>`
+ * that reaches the page through sanitised user HTML (comments, rich text — sanitizers keep `label` and `data-*`)
+ * outside a form is ignored. This is a cheap pre-filter; the nonce check ({@link isBoundPayload}) is the binding.
  */
 export function isFormHelpLabel(label: Element): boolean {
   return label.closest('form') !== null;
 }
 
-/** Help-modal roots previously marked by this script (or server markup that opts in). */
+/**
+ * Per-request nonce of the current page, read from `<meta name="nowo-form-kit-help-modal-nonce">` in
+ * `document.head` only (user HTML lives in `body` and cannot add trusted head metadata). Null when missing/empty.
+ */
+export function getPageNonce(): string | null {
+  const meta = document.head.querySelector<HTMLMetaElement>(`meta[name="${HELP_MODAL_NONCE_META}"]`);
+  const value = meta?.content.trim() ?? '';
+
+  return value !== '' ? value : null;
+}
+
+/** True when the payload carries the page nonce, i.e. it was rendered by the server for this page. */
+export function isBoundPayload(data: HelpModalData): boolean {
+  const nonce = getPageNonce();
+
+  return nonce !== null && data.nonce === nonce;
+}
+
+/** Help-modal roots marked by this script. */
 const HELP_MODAL_ROOT_SELECTOR = `[${HELP_MODAL_ROOT_ATTR}]`;
+
+/** Roots built by {@link createModalElement}; only these are ever moved to `document.body`. */
+const createdRoots = new WeakSet<HTMLElement>();
+
+/**
+ * Payloads accepted for a label (keyed by the label node). A morph (Live Component) that keeps the label node but
+ * brings a payload rendered in another request (new nonce) falls back to the last accepted payload.
+ */
+const trustedPayloads = new WeakMap<Element, HelpModalData>();
+
+/** True once the "missing nonce meta" hint was printed (printed once per page). */
+let missingNonceWarned = false;
+
+/** True once the Turbo fetch listener is installed. */
+let turboHeaderListener = false;
 
 /** CSS selector for the title slot inside a shell template. */
 const TITLE_SLOT = '[data-nowo-help-modal-title]';
@@ -119,13 +171,17 @@ function fillModalTitle(root: HTMLElement, data: HelpModalData): void {
   }
 }
 
-/** Injects trusted HTML into {@link BODY_SLOT}. */
-function fillModalBody(root: HTMLElement, contentHtml: string): void {
+/** Writes the body into {@link BODY_SLOT}: `content_html` as trusted HTML, otherwise `content` as plain text. */
+function fillModalBody(root: HTMLElement, data: HelpModalData): void {
   const el = root.querySelector(BODY_SLOT);
   if (!el) {
     return;
   }
-  el.innerHTML = contentHtml;
+  if (data.content_html) {
+    el.innerHTML = data.content_html;
+  } else {
+    el.textContent = data.content ?? '';
+  }
 }
 
 /**
@@ -141,8 +197,9 @@ export function parseHelpModalData(raw: string): HelpModalData | null {
       return null;
     }
     return parsed;
-  } catch (error) {
-    getLogger().warn('Cannot parse help modal payload', { raw, error });
+  } catch {
+    // Never log the raw attribute: it may carry markup copied from the page.
+    getLogger().warn('Cannot parse help modal payload', { length: raw.length });
     return null;
   }
 }
@@ -231,6 +288,7 @@ function appendShellOrFallback(root: HTMLElement, shellKey: ShellKey, fallbackIn
  */
 function markHelpModalRoot(modal: HTMLElement): void {
   modal.setAttribute(HELP_MODAL_ROOT_ATTR, '1');
+  createdRoots.add(modal);
 }
 
 /**
@@ -240,7 +298,6 @@ function markHelpModalRoot(modal: HTMLElement): void {
  */
 export function createModalElement(data: HelpModalData): HTMLElement {
   const framework = data.framework || 'bootstrap5';
-  const contentHtml = data.content || '';
 
   if (framework === 'bootstrap5') {
     const modal = document.createElement('div');
@@ -251,7 +308,7 @@ export function createModalElement(data: HelpModalData): HTMLElement {
     markHelpModalRoot(modal);
 
     appendShellOrFallback(modal, 'bootstrap5', fallbackBootstrap5InnerHtml());
-    fillModalBody(modal, contentHtml);
+    fillModalBody(modal, data);
     fillModalTitle(modal, data);
 
     return modal;
@@ -267,7 +324,7 @@ export function createModalElement(data: HelpModalData): HTMLElement {
     markHelpModalRoot(modal);
 
     appendShellOrFallback(modal, 'bootstrap4', fallbackBootstrap4InnerHtml());
-    fillModalBody(modal, contentHtml);
+    fillModalBody(modal, data);
     fillModalTitle(modal, data);
 
     return modal;
@@ -282,7 +339,7 @@ export function createModalElement(data: HelpModalData): HTMLElement {
     markHelpModalRoot(root);
 
     appendShellOrFallback(root, 'tailwind', fallbackTailwindInnerHtml());
-    fillModalBody(root, contentHtml);
+    fillModalBody(root, data);
     fillModalTitle(root, data);
 
     return root;
@@ -297,7 +354,7 @@ export function createModalElement(data: HelpModalData): HTMLElement {
   markHelpModalRoot(root);
 
   appendShellOrFallback(root, 'foundation', fallbackFoundationInnerHtml());
-  fillModalBody(root, contentHtml);
+  fillModalBody(root, data);
   fillModalTitle(root, data);
 
   return root;
@@ -322,13 +379,16 @@ function removeStaleHelpModalsById(modal: HTMLElement): void {
 }
 
 /**
- * Moves a help-modal root to the end of `document.body` so stacking contexts / hidden ancestors
- * cannot hide it. Idempotent when the node is already the last child of body.
+ * Moves a help-modal root created by this script to the end of `document.body` so stacking contexts / hidden
+ * ancestors cannot hide it. Idempotent when the node is already the last child of body. Nodes that merely carry
+ * the marker attribute (server or user markup) are never moved.
  *
- * @returns true when the node was moved (or stale siblings removed), false when already portaled.
+ * @returns true when the node was moved, false when already portaled or not created by this script.
  */
 export function relocateHelpModalToBody(modal: HTMLElement): boolean {
-  markHelpModalRoot(modal);
+  if (!createdRoots.has(modal)) {
+    return false;
+  }
   removeStaleHelpModalsById(modal);
 
   const alreadyPortaled =
@@ -435,6 +495,39 @@ function defaultTriggerClass(): string {
 }
 
 /**
+ * Returns the payload of `label` when it is bound to this page (in a form, valid JSON, nonce = page nonce), else the
+ * last payload accepted for the same label node, else null.
+ */
+export function readTrustedPayload(label: Element): HelpModalData | null {
+  if (!isFormHelpLabel(label)) {
+    return null;
+  }
+  const raw = label.getAttribute('data-nowo-help-modal');
+  const data = raw ? parseHelpModalData(raw) : null;
+  if (data !== null) {
+    if (isBoundPayload(data)) {
+      trustedPayloads.set(label, data);
+
+      return data;
+    }
+    warnUnboundPayload(data);
+  }
+
+  return trustedPayloads.get(label) ?? null;
+}
+
+/** Explains why a payload was ignored (one console hint per page when the nonce meta is missing). */
+function warnUnboundPayload(data: HelpModalData): void {
+  if (getPageNonce() === null && !missingNonceWarned) {
+    missingNonceWarned = true;
+    console.warn(
+      `[form-kit-help-modal] help modals disabled: add {{ nowo_form_kit_help_modal_meta() }} to <head> (<meta name="${HELP_MODAL_NONCE_META}">).`,
+    );
+  }
+  getLogger().warn('Ignoring help modal payload not bound to this page (nonce mismatch)', { id: data.id });
+}
+
+/**
  * Finds all labels with `data-nowo-help-modal`, appends an icon trigger once per label, and binds open handlers.
  * Safe to call repeatedly (e.g. after background form loads); skips labels that already have a trigger.
  */
@@ -444,11 +537,7 @@ export function initHelpModal(): void {
   const labels = Array.from(document.querySelectorAll<HTMLLabelElement>(HELP_MODAL_LABEL_SELECTOR));
   getLogger().debug('labels detected', { count: labels.length });
   labels.forEach((label) => {
-    if (!isFormHelpLabel(label)) return;
-    const raw = label.getAttribute('data-nowo-help-modal');
-    if (!raw) return;
-
-    const data = parseHelpModalData(raw);
+    const data = readTrustedPayload(label);
     if (!data) return;
 
     const triggerSelector = '.nowo-help-modal-trigger';
@@ -461,25 +550,27 @@ export function initHelpModal(): void {
     wrap.setAttribute('role', 'button');
     wrap.setAttribute('tabindex', '0');
     wrap.setAttribute('aria-label', data.aria_label?.trim() || 'Help');
-    wrap.innerHTML = data.icon_html;
+    if (data.icon_html) {
+      wrap.innerHTML = data.icon_html;
+    } else {
+      wrap.textContent = '?';
+    }
     label.appendChild(wrap);
 
-    const open = (ev: Event): void => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      // Re-read payload on open so a morph that updated the attribute is honoured.
-      const latestRaw = label.getAttribute('data-nowo-help-modal');
-      const latest = latestRaw ? parseHelpModalData(latestRaw) : null;
-      showModal(latest ?? data);
+    // Re-read the payload on open so a morph that updated the attribute is honoured (only if still bound).
+    const open = (): void => {
+      showModal(readTrustedPayload(label) ?? data);
     };
 
-    wrap.addEventListener('click', open);
+    wrap.addEventListener('click', (ev: Event) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      open();
+    });
     wrap.addEventListener('keydown', (ev: KeyboardEvent) => {
       if (ev.key === 'Enter' || ev.key === ' ') {
         ev.preventDefault();
-        const latestRaw = label.getAttribute('data-nowo-help-modal');
-        const latest = latestRaw ? parseHelpModalData(latestRaw) : null;
-        showModal(latest ?? data);
+        open();
       }
     });
 
@@ -565,8 +656,44 @@ export function startHelpModalDomObserver(): void {
   getLogger().debug('Help modal DOM observer started');
 }
 
+/**
+ * `turbo:before-fetch-request` handler: same-origin Turbo fetches send the page nonce. The server reuses it only for
+ * Turbo Frame requests (`Turbo-Frame` header, same origin; response marked private + Vary), so frame fragments stay
+ * bound; Drive visits get a fresh nonce together with a fresh `<head>` meta.
+ */
+export function addNonceHeaderToTurboFetch(event: Event): void {
+  const detail = (event as CustomEvent<{ url?: URL | string; fetchOptions?: { headers?: unknown } }>).detail;
+  const nonce = getPageNonce();
+  const headers = detail?.fetchOptions?.headers;
+  if (nonce === null || headers === null || typeof headers !== 'object') {
+    return;
+  }
+  const url = new URL(String(detail.url ?? ''), window.location.href);
+  if (url.origin !== window.location.origin) {
+    return;
+  }
+  if (headers instanceof Headers) {
+    headers.set(HELP_MODAL_NONCE_HEADER, nonce);
+  } else {
+    (headers as Record<string, string>)[HELP_MODAL_NONCE_HEADER] = nonce;
+  }
+}
+
+/** Installs {@link addNonceHeaderToTurboFetch} once per page. */
+function installTurboNonceHeader(): void {
+  if (turboHeaderListener) {
+    return;
+  }
+  turboHeaderListener = true;
+  document.addEventListener('turbo:before-fetch-request', addNonceHeaderToTurboFetch);
+}
+
 /** Stops the MutationObserver (tests / HMR). */
 export function stopHelpModalDomObserver(): void {
+  if (turboHeaderListener) {
+    document.removeEventListener('turbo:before-fetch-request', addNonceHeaderToTurboFetch);
+    turboHeaderListener = false;
+  }
   if (domObserver !== null) {
     domObserver.disconnect();
     domObserver = null;
@@ -581,6 +708,7 @@ export function stopHelpModalDomObserver(): void {
  * Initial scan + continuous observation. Called on DOMContentLoaded or immediately if ready.
  */
 export function bootstrapHelpModal(): void {
+  installTurboNonceHeader();
   initHelpModal();
   relocateAllHelpModalsToBody();
   startHelpModalDomObserver();

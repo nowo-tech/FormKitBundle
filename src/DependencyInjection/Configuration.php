@@ -30,6 +30,9 @@ final class Configuration implements ConfigurationInterface
     /** Default stateless CSRF token id (matches Symfony's recipe `framework.csrf_protection.stateless_token_ids: [submit, authenticate, logout]`). */
     public const DEFAULT_STATELESS_CSRF_TOKEN_ID = 'submit';
 
+    /** Namespaces of Symfony base/core form types rejected in `stateless_csrf.form_types` (REQ-SEC-004, finding I4). */
+    private const BASE_FORM_TYPE_NAMESPACES = ['Symfony\\Component\\Form\\', 'Symfony\\Bridge\\'];
+
     /** @deprecated Use {@see DEFAULT_PROFILE_NAME} instead. */
     public const DEFAULT_CONFIG_NAME = self::DEFAULT_PROFILE_NAME;
 
@@ -129,10 +132,14 @@ final class Configuration implements ConfigurationInterface
                             ->cannotBeEmpty()
                         ->end()
                         ->arrayNode('form_types')
-                            ->info('Form type FQCNs (e.g. App\\Form\\NewsletterType) that receive the stateless token id. Explicit csrf_token_id options still win.')
+                            ->info('Form type FQCNs (e.g. App\\Form\\NewsletterType) that receive the stateless token id. Explicit csrf_token_id options still win. Symfony base/core types (FormType, TextType, EntityType…) are rejected: they would apply to every form.')
                             ->defaultValue([])
                             ->scalarPrototype()
                                 ->cannotBeEmpty()
+                                ->validate()
+                                    ->ifTrue(static fn (mixed $type): bool => self::isBaseFormType((string) $type))
+                                    ->thenInvalid('nowo_form_kit.stateless_csrf.form_types must list your own form types, not Symfony base/core types (FormType and every type under Symfony\\Component\\Form\\ or Symfony\\Bridge\\ apply to many or all forms): %s.')
+                                ->end()
                             ->end()
                         ->end()
                         ->booleanNode('register_stateless_token_id')
@@ -402,5 +409,21 @@ final class Configuration implements ConfigurationInterface
                 ->defaultValue([])
                 ->prototype('variable')->end()
             ->end();
+    }
+
+    /**
+     * True for `FormType` and any Symfony core/bridge form type: a stateless CSRF token id on them would apply to
+     * every form (or every form of a generic type) instead of the host's selected public forms.
+     */
+    private static function isBaseFormType(string $type): bool
+    {
+        $type = ltrim(trim($type), '\\');
+        foreach (self::BASE_FORM_TYPE_NAMESPACES as $namespace) {
+            if (str_starts_with(strtolower($type), strtolower($namespace))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

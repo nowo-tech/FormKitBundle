@@ -65,6 +65,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+AI security audit (REQ-SEC-004) of v2.15.0 on 2026-10-30: **Pass (good) / Low**; all findings fixed here. See [UPGRADING](UPGRADING.md#unreleased) — two changes need host action when you use `help_modal`.
+
+- **Help modal payloads are bound to the page (L1).** `help-modal.js` honoured any `label[data-nowo-help-modal]` inside a `<form>`, so sanitised user HTML that keeps `form` / `label` / `data-*` (e.g. DOMPurify defaults) rendered in a page could inject `icon_html` / `title_html` / `content` into `innerHTML` (stored XSS). Every payload now carries a per-request nonce (`HelpModalNonce`, kept in the main request attributes, worker-safe) and the script ignores payloads whose nonce differs from `<meta name="nowo-form-kit-help-modal-nonce">` in `<head>`, printed by the new Twig function `nowo_form_kit_help_modal_meta()` (`nowo_form_kit_help_modal_nonce()` returns the bare value). Same-origin Turbo fetches send the page nonce in `X-Nowo-Form-Kit-Help-Modal-Nonce` and the server reuses it for Turbo Frame fragments; Live Component morphs keep the last bound payload of a label.
+- **Help modal nonce header cannot prime shared caches (L3).** The page nonce sent back in `X-Nowo-Form-Kit-Help-Modal-Nonce` is honoured only on same-origin Turbo Frame requests (`Turbo-Frame` header; `Sec-Fetch-Site: same-origin` or a matching `Origin` / `Referer`), never on top-level pages, and the new `HelpModalNonceResponseListener` marks those responses `Cache-Control: private` + `Vary: X-Nowo-Form-Kit-Help-Modal-Nonce`. Pages that render `help_modal` fields together with user content must not be served from a shared cache (documented in SECURITY.md).
+- **Help modal text is escaped by default (L1).** `title` and `content` are inserted as text; HTML needs the explicit `title_html` (unchanged) or the new `content_html` option. `icon_html` stays trusted developer HTML.
+- **Help modal portal only moves its own roots (L2).** Elements that merely carry `data-nowo-formkit-help-modal` are no longer relocated to `document.body`.
+- **Browser logger off by default (I7).** `help-modal.js` diagnostics need `window.NOWO_FORM_KIT_DEBUG = true`; a payload parse error logs the length only, never the raw attribute.
+- **Smaller dist archive (I8).** New `.gitattributes` `export-ignore`s `demo/` (demo `APP_SECRET`, `0.0.0.0` port), `tests/`, `specs/`, `.specify/`, `.scripts/`, `.githooks/`, the e2e suite, Vitest specs and CI / tooling files.
+- **CSRF-only forms reject safe methods and empty token ids (I9).** `CsrfOnlyFormFactory::create()` / `createNamed()` / `createWithFields()` and `csrf_action_form()` throw `InvalidArgumentException` for any method other than POST / PUT / PATCH / DELETE (GET, HEAD, OPTIONS, TRACE, empty…) and for an empty or blank CSRF token id.
+- **`stateless_csrf.form_types` rejects base types (I4).** `FormType` and every type under `Symfony\Component\Form\` / `Symfony\Bridge\` (e.g. `TextType`, `EntityType`) fail configuration: a stateless token id there would apply to every form. `%env()%` entries are rejected too (they would bypass the check).
+
+### Changed
+
+- `help-modal.js` rebuilt from TypeScript (Vitest 100% statements / branches / functions / lines kept).
+- Demo: `base.html.twig` prints `nowo_form_kit_help_modal_meta()`; the contact form help modal uses `content_html`.
+
 ## [2.15.0] - 2026-10-29
 
 FormKit: services tagged by autoconfiguration, translation parity check, docs/spec refresh (no API change) See [UPGRADING](UPGRADING.md#to-2150).
