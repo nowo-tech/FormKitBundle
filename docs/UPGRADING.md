@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.16.0](#to-2160)
 - [To 2.15.0](#to-2150)
 - [To 2.14.1](#to-2141)
 - [To 2.14.0](#to-2140)
@@ -69,6 +70,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.16.0
+
+From **2.15.0**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 Security hardening from the REQ-SEC-004 audit of 2026-10-30 (see [CHANGELOG](CHANGELOG.md#unreleased)). Run `php bin/console assets:install public` after updating so the rebuilt `help-modal.js` is served (bust any immutable / CDN cache of `/bundles/nowoformkit/help-modal.js`).
 
