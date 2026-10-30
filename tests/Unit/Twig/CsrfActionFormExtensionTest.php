@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Twig;
 
+use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
@@ -11,6 +12,7 @@ use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\FormKitBundle\Form\Type\CsrfOnlyType;
 use Nowo\FormKitBundle\Form\Type\HiddenFieldsCsrfType;
 use Nowo\FormKitBundle\Twig\CsrfActionFormExtension;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
@@ -21,6 +23,7 @@ use Symfony\Component\Form\Forms;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Environment;
+use Twig\Error\RuntimeError;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
@@ -62,9 +65,41 @@ final class CsrfActionFormExtensionTest extends TestCase
 
     public function testMethodIsNormalised(): void
     {
-        $view = $this->extension()->csrfActionForm('/search', 'search', 'get');
+        $view = $this->extension()->csrfActionForm('/item/1', 'item_patch', ' patch ');
 
-        self::assertSame('GET', $view->vars['method']);
+        self::assertSame('PATCH', $view->vars['method']);
+    }
+
+    /**
+     * @return iterable<string, array{string, string, bool, array<string, scalar|null>}>
+     */
+    public static function rejectedCalls(): iterable
+    {
+        yield 'GET named' => ['get', 'search', true, []];
+        yield 'HEAD flat' => ['HEAD', 'search', false, []];
+        yield 'GET with fields' => ['GET', 'search', true, ['q' => 'x']];
+        yield 'empty token id' => ['POST', '', true, []];
+        yield 'blank token id' => ['POST', '  ', false, []];
+        yield 'empty id + fields' => ['POST', '', true, ['q' => 'x']];
+    }
+
+    /**
+     * @param array<string, scalar|null> $fields
+     */
+    #[DataProvider('rejectedCalls')]
+    public function testRejectsSafeMethodsAndEmptyTokenIds(string $method, string $tokenId, bool $named, array $fields): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->extension()->csrfActionForm('/x', $tokenId, $method, $named, fields: $fields);
+    }
+
+    public function testTwigCallWithGetFailsClosed(): void
+    {
+        $this->expectException(RuntimeError::class);
+        $this->expectExceptionMessageMatches('/unsafe HTTP method/');
+
+        $this->render("{% set f = csrf_action_form('/filter', 'filter', 'GET') %}{{ form_start(f) }}{{ form_end(f) }}");
     }
 
     public function testFieldsBuildFlatTypedForm(): void
@@ -103,7 +138,7 @@ final class CsrfActionFormExtensionTest extends TestCase
         $html = $this->render(
             "{% set form = csrf_action_form('/kit', 'kit_action', named: false, csrfFieldName: '_csrf_token') %}{{ form_start(form) }}{{ form_end(form) }}"
             . "{% set f2 = csrf_action_form('/locale', 'guest_locale', fields: {redirect: '/back'}) %}{{ form_start(f2) }}{{ form_end(f2) }}"
-            . "{% set f3 = csrf_action_form('/filter', 'filter', 'GET') %}{{ form_start(f3) }}{{ form_end(f3) }}",
+            . "{% set f3 = csrf_action_form('/item/9', 'item_delete', 'DELETE') %}{{ form_start(f3) }}{{ form_end(f3) }}",
         );
 
         self::assertStringContainsString('name="_csrf_token"', $html);
@@ -111,7 +146,8 @@ final class CsrfActionFormExtensionTest extends TestCase
         self::assertStringContainsString('name="redirect"', $html);
         self::assertStringContainsString('value="/back"', $html);
         self::assertStringContainsString('value="token:guest_locale"', $html);
-        self::assertStringContainsString('method="get" action="/filter"', $html);
+        self::assertStringContainsString('action="/item/9"', $html);
+        self::assertStringContainsString('name="_method" value="DELETE"', $html);
     }
 
     private function extension(): CsrfActionFormExtension

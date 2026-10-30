@@ -507,11 +507,13 @@ $this->buildFormFromArray($builder, [
 
 - `false` or omitted — no help trigger (default).
 - `true` — use defaults from `profiles.<name>.help_modal` in `nowo_form_kit` (see [Configuration](CONFIGURATION.md)).
-- `array` — merge with those defaults; keys include `id`, `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` when **symfony/ux-icons** is installed, `title`, `title_html`, `content` (HTML string for the modal body), `trigger_class`, `aria_label`.
+- `array` — merge with those defaults; keys include `id`, `framework` (`bootstrap5`, `bootstrap4`, `tailwind`, `foundation`), `icon_html`, optional `ux_icon` / `ux_icon_attributes` when **symfony/ux-icons** is installed, `title` (plain text), `title_html` (trusted HTML), `content` (plain text body, shown escaped), `content_html` (trusted HTML body; wins over `content`), `trigger_class`, `aria_label`. The `*_html` keys and `icon_html` are inserted as HTML: developer markup only, never visitor input.
 
 The extension sets `label_attr['data-nowo-help-modal']` to a JSON payload. The bundled script **`help-modal.js`** (built from TypeScript) scans `label[data-nowo-help-modal]`, injects the icon beside the label, and opens a modal. **Bootstrap 5** uses `window.bootstrap.Modal` when available; **Bootstrap 4** uses jQuery `.modal()`; **Tailwind** and **Foundation** use inline shells and `[data-help-modal-close]` buttons.
 
-Help modal roots are marked with `data-nowo-formkit-help-modal` and **always portaled to `document.body`**. A `MutationObserver` keeps watching the DOM so forms loaded later (Turbo / Live Component / AJAX) still get triggers, and if a help modal is re-injected inside a hidden/clipped container it is removed/replaced and moved to `body` again. Only Form Kit help modals are relocated — never generic `.modal` nodes.
+Help modal roots are marked with `data-nowo-formkit-help-modal` and **always portaled to `document.body`**. A `MutationObserver` keeps watching the DOM so forms loaded later (Turbo / Live Component / AJAX) still get triggers, and if a help modal is re-injected inside a hidden/clipped container it is removed/replaced and moved to `body` again. Only modal roots created by the script are relocated — never generic `.modal` nodes nor page markup that copies the marker.
+
+**Page nonce (required).** Each payload carries a per-request nonce; the script only honours labels inside a `<form>` whose payload nonce equals `<meta name="nowo-form-kit-help-modal-nonce">` in `<head>`. Print it in your layout with `{{ nowo_form_kit_help_modal_meta() }}` (or `{{ nowo_form_kit_help_modal_nonce() }}` for the bare value). Same-origin Turbo fetches send the page nonce back in the `X-Nowo-Form-Kit-Help-Modal-Nonce` header so fragments stay bound; add that header to your own `fetch()` calls that load forms. A Live Component re-render keeps the last bound payload of existing labels. See [Security — Help modal HTML](SECURITY.md#help-modal-html-frontend). Console diagnostics are off unless `window.NOWO_FORM_KIT_DEBUG = true` is set before the script loads.
 
 **0. Optional: render modal shell templates** (lets you override markup per framework; the script clones from `<template id="nowo-formkit-help-modal-shell-*">` or falls back to built-in HTML):
 
@@ -527,21 +529,24 @@ Override under `templates/bundles/NowoFormKitBundle/help_modal/shell_*.html.twig
 php bin/console assets:install public --symlink
 ```
 
-**2. Load the script after Bootstrap** (order matters: Bootstrap first, then this script):
+**2. Print the nonce in `<head>` and load the script after Bootstrap** (order matters: Bootstrap first, then this script):
 
 ```twig
+{# in <head> #}
+{{ nowo_form_kit_help_modal_meta() }}
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ...></script>
 <script defer src="{{ asset('help-modal.js', 'nowo_form_kit') }}"></script>
 <link rel="stylesheet" href="{{ asset('help-modal.css', 'nowo_form_kit') }}">
 ```
 
-**3. Enable on a field** (example with explicit title and HTML content):
+**3. Enable on a field** (example with explicit title and trusted HTML content):
 
 ```php
 $this->addText($builder, 'full_name', [
     'help_modal' => [
         'title' => 'Full name',
-        'content' => '<p>Use your legal name.</p>',
+        'content_html' => '<p>Use your legal name.</p>', // or 'content' => 'Use your legal name.' (plain text)
     ],
 ]);
 ```

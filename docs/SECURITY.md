@@ -20,6 +20,7 @@ Technical security guide of **FormKitBundle** (`nowo-tech/form-kit-bundle`): att
 - [Logging](#logging)
 - [Dependencies and updates](#dependencies-and-updates)
 - [Permissions and exposure](#permissions-and-exposure)
+- [AI security audit (REQ-SEC-004)](#ai-security-audit-req-sec-004)
 - [Release security checklist (12.4.1)](#release-security-checklist-1241)
 
 ## Scope
@@ -37,17 +38,18 @@ FormKit is a **form-building library**: it merges form field options and transla
 | Form options passed by host code (`label`, `help`, `help_modal`, `input_group_prefix` / `_suffix`, `html` of `StaticHtmlType`, `required_label_suffix`, `form_buttons` of the form renderer) | Host developer | Rendered by the bundle Twig themes; some are printed as HTML (see [Threat model](#threat-model)) |
 | Submitted form data (HTTP POST / GET of forms built on bundle types: CSRF action forms, GET filters, `TranslatableMapType`, multi-step wizard) | **End user (untrusted)** | Symfony Form component: data transformers, validation, CSRF check |
 | Session data (`MultiStepWizardSession`, key `nowo_form_kit_wizard_<name>`) | Server-side, filled from validated step data | Read back between wizard steps |
-| Page DOM read by `help-modal.js` (`label[data-nowo-help-modal]` inside a `<form>`) | Host templates (developer), possibly user HTML if the host renders it | Builds the modal content |
+| Page DOM read by `help-modal.js` (`label[data-nowo-help-modal]` inside a `<form>`, nonce `<meta>` in `<head>`) | Host templates (developer), possibly user HTML if the host renders it | Builds the modal content, only for payloads carrying the per-request nonce |
+| `X-Nowo-Form-Kit-Help-Modal-Nonce` request header | Browser (sent by `help-modal.js` on Turbo fetches) | Reused as the help-modal nonce of a fragment response when well-formed (base64url, 22–128 chars) |
 | Translation catalogues (`NowoFormKitBundle` domain, host `messages` / custom domains) | Host developer / translators | Labels, placeholders, help, locale-tab hints (auto-escaped) |
 
 ## Threat model
 
 | Threat | Applies | Notes |
 | --- | --- | --- |
-| **XSS** through options printed as HTML | Yes | `help_modal` title/content/icon, `input_group_prefix` / `_suffix`, `StaticHtmlType` `html`, `required_label_suffix`, renderer `form_buttons` are **trusted developer markup** (`\|raw`). Passing visitor input there is an XSS. Everything else (labels, help, placeholders, locale tab titles, translated strings) is auto-escaped by Twig. |
-| **DOM XSS** through the help modal | Yes (mitigated) | The script copies developer HTML options with `innerHTML`; since 2.14.1 it only processes labels inside a `<form>`, so a `data-nowo-help-modal` label injected through sanitised user HTML outside a form is ignored. |
-| **CSRF** on single-action POSTs | Yes (mitigated) | `CsrfOnlyType`, `HiddenFieldsCsrfType`, `csrf_action_form()` fail closed when form CSRF is unavailable. |
-| **CSRF** on anonymous forms with stateless tokens | Opt-in | `stateless_csrf` relies on Origin/Referer + double-submit cookie; only for anonymous forms. |
+| **XSS** through options printed as HTML | Yes | `help_modal` `title_html` / `content_html` / `icon_html`, `input_group_prefix` / `_suffix`, `StaticHtmlType` `html`, `required_label_suffix`, renderer `form_buttons` are **trusted developer markup** (`\|raw`). Passing visitor input there is an XSS. Everything else (labels, help, placeholders, locale tab titles, translated strings) is auto-escaped by Twig. |
+| **DOM XSS** through the help modal | Yes (mitigated) | The script copies developer HTML options (`*_html`) with `innerHTML` only for payloads bound to the page by the per-request nonce (unreleased; see [Help modal HTML](#help-modal-html-frontend)); a `data-nowo-help-modal` label forged through sanitised user HTML, even inside a `<form>`, is ignored. `title` / `content` are inserted as text. |
+| **CSRF** on single-action POSTs | Yes (mitigated) | `CsrfOnlyType`, `HiddenFieldsCsrfType`, `csrf_action_form()` fail closed when form CSRF is unavailable; `CsrfOnlyFormFactory` / `csrf_action_form()` reject GET/HEAD and empty token ids. |
+| **CSRF** on anonymous forms with stateless tokens | Opt-in | `stateless_csrf` relies on Origin/Referer + double-submit cookie; only for anonymous forms. Symfony base/core types (`FormType`, …) are rejected in `form_types`. |
 | **Injection / execution** | No | No SQL, shell, `eval`, template-from-string or dynamic includes from user data; Twig template names are fixed bundle paths or host-provided theme names. |
 | **Authorization / privilege** | Host | No routes or controllers; the bundle never grants or checks roles. |
 | **SSRF / outbound requests** | No | No HTTP client usage. |
@@ -60,7 +62,11 @@ FormKit is a **form-building library**: it merges form field options and transla
 
 ### Help modal HTML (frontend)
 
-`help-modal.js` may set `innerHTML` for `title_html`, `content`, and `icon_html` from **developer-controlled** form/YAML options (not end-user input). Treat those fields as trusted markup: do not pass unsanitized visitor content. Prefer plain `title` / escaped text when the value is not intentionally HTML. Only labels inside a `<form>` are processed (Symfony form rendering): a `<label data-nowo-help-modal>` reaching the page through sanitised user HTML (sanitizers keep `label` and `data-*`) outside a form is ignored. Do not render user HTML inside your forms. Integrators using a strict CSP should allow the bundled script (and optional CSS) from the `nowo_form_kit` asset package. With nonce-based CSP, pass the per-request nonce stored in the request attribute `csp_nonce`: `<script src="{{ asset('help-modal.js', 'nowo_form_kit') }}" defer nonce="{{ app.request.attributes.get('csp_nonce') }}"></script>`.
+`help-modal.js` sets `innerHTML` only for `title_html`, `content_html` and `icon_html`, which are **developer-controlled** form/YAML options (not end-user input): treat them as trusted markup and never pass unsanitized visitor content. `title` and `content` are plain text and are inserted with `textContent` (escape by default; `content` was HTML before the unreleased change, see [UPGRADING](UPGRADING.md)).
+
+**Origin binding (unreleased).** Every payload carries a per-request nonce (`HelpModalNonce`, stored in the main request attributes). The page prints the same value with `{{ nowo_form_kit_help_modal_meta() }}` inside `<head>`; the script reads it from `document.head` only and ignores any `label[data-nowo-help-modal]` whose payload nonce differs (or when the meta is missing). Markup that reaches the page through sanitised user HTML (sanitizers such as DOMPurify keep `form`, `label` and `data-*`) cannot know the nonce, so a forged label is ignored even inside a `<form>`; labels must also sit inside a `<form>`. For fragments loaded later, the script sends the page nonce in `X-Nowo-Form-Kit-Help-Modal-Nonce` on same-origin Turbo fetches and the server reuses it; a Live Component morph keeps the last bound payload of an existing label. The script only moves modal roots it created itself to `document.body` (never page markup that copies the `data-nowo-formkit-help-modal` marker), and its console diagnostics are off unless `window.NOWO_FORM_KIT_DEBUG = true`.
+
+Integrators using a strict CSP should allow the bundled script (and optional CSS) from the `nowo_form_kit` asset package. With nonce-based CSP, pass the per-request nonce stored in the request attribute `csp_nonce`: `<script src="{{ asset('help-modal.js', 'nowo_form_kit') }}" defer nonce="{{ app.request.attributes.get('csp_nonce') }}"></script>`.
 
 ### CSRF action forms (fail closed)
 
@@ -101,7 +107,7 @@ The bundle stores **no secrets** and implements **no cryptography**. CSRF tokens
 
 ## Logging
 
-The PHP code **does not log** (no PSR-3 logger, no `error_log`). Exceptions thrown by the bundle (`LogicException` for missing optional packages or missing form CSRF, `InvalidArgumentException` for invalid configuration) carry configuration names only, never submitted values or tokens. The browser logger of `help-modal.js` prints a "script loaded" line with the build id and, only when debug is enabled, diagnostic messages about modal wiring; it never logs field values.
+The PHP code **does not log** (no PSR-3 logger, no `error_log`). Exceptions thrown by the bundle (`LogicException` for missing optional packages or missing form CSRF, `InvalidArgumentException` for invalid configuration) carry configuration names only, never submitted values or tokens. The browser logger of `help-modal.js` prints a "script loaded" line with the build id; its diagnostic messages about modal wiring are **off by default** and only enabled when the page sets `window.NOWO_FORM_KIT_DEBUG = true` before the script loads. It never logs field values or raw payloads (a parse error logs the payload length only). One fixed `console.warn` hint is printed when help labels are present but the nonce `<meta>` is missing.
 
 ## Dependencies and updates
 
@@ -112,6 +118,29 @@ The PHP code **does not log** (no PSR-3 logger, no `error_log`). Exceptions thro
 ## Permissions and exposure
 
 FormKit exposes **no endpoints**: no routes, controllers, commands or public services meant to be called from HTTP. Public assets are the help-modal script/CSS and the locale-tabs CSS under `/bundles/nowoformkit` (asset package `nowo_form_kit`); with a strict CSP, allow them by path or nonce (see [Help modal HTML](#help-modal-html-frontend)). Access control of the actions that handle FormKit forms is the host's: protect them with `#[IsGranted]` / access_control as for any Symfony form.
+
+## AI security audit (REQ-SEC-004)
+
+| Field | Value |
+| --- | --- |
+| Date | 2026-10-30 |
+| Version | v2.15.0 (`8bef3ab`) |
+| Method | Claude Code static review (AI security audit of `src/`, Twig, `help-modal.ts`, configuration, packaging) |
+| Grade | **Pass (good)** — overall risk **Low** |
+| Recorded in | Nowo bundles monorepo `BUNDLES_SECURITY_ANALYSIS.md`, Appendix BH |
+
+**Findings** (all **fixed in the next release**, see [CHANGELOG](CHANGELOG.md) `[Unreleased]` → Security):
+
+| Id | Severity | Finding | Fix |
+| --- | --- | --- | --- |
+| L1 | Low | `help-modal.js` trusted any `label[data-nowo-help-modal]` inside a `<form>`; sanitised user HTML keeping `label` + `data-*` rendered in a host form reached `innerHTML` (`icon_html`, `title_html`, `content`) on init (stored XSS). | Per-request nonce in every payload checked against `<meta name="nowo-form-kit-help-modal-nonce">` in `<head>`; `title` / `content` escaped by default, `title_html` / `content_html` / `icon_html` opt-in HTML. |
+| L2 | Low | The portal moved any element carrying `data-nowo-formkit-help-modal` to `document.body`. | Only roots created by the script (tracked in a `WeakSet`) are relocated. |
+| I7 | Info | Browser logger had `alwaysLog: true` and logged the raw payload on parse errors (contradicting the [Logging](#logging) section). | Diagnostics off by default (`window.NOWO_FORM_KIT_DEBUG` opt-in); parse errors log the length only. |
+| I8 | Info | No `.gitattributes`: Composer dist / `git archive` shipped `demo/` (demo `APP_SECRET`, port bound to `0.0.0.0`), tests, specs, `.scripts`, e2e and CI files. | `.gitattributes` `export-ignore` for demo, tests, specs, tooling and CI files. |
+| I9 | Info | `CsrfOnlyFormFactory::create*()` / `csrf_action_form()` accepted GET and an empty CSRF token id. | GET/HEAD (and an empty method) and empty / blank token ids throw `InvalidArgumentException`. |
+| I4 | Info | `stateless_csrf.form_types` accepted `FormType` and other base types (stateless token id on every form). | `FormType` and every type under `Symfony\Component\Form\` / `Symfony\Bridge\` are rejected at config time. |
+
+**Verified:** `CsrfProtectionGuard` makes `CsrfOnlyType` / `HiddenFieldsCsrfType` fail closed when form CSRF is unavailable; stateless CSRF token ids are opt-in (`stateless_csrf.enabled: false` by default); bundle Twig output is auto-escaped except the documented trusted-HTML options (`*_html` help-modal fields, `input_group_prefix` / `_suffix`, `StaticHtmlType` `html`, `required_label_suffix`, renderer `form_buttons`).
 
 ## Release security checklist (12.4.1)
 

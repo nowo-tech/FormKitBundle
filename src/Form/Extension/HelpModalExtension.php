@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form\Extension;
 
+use Nowo\FormKitBundle\HelpModal\HelpModalNonce;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
@@ -32,6 +33,10 @@ use const JSON_UNESCAPED_UNICODE;
  * before the script. Override per framework in your app under
  * templates/bundles/NowoFormKitBundle/help_modal/shell_*.html.twig.
  * If templates are omitted, the script falls back to built-in HTML.
+ *
+ * Security (REQ-SEC-004): every payload carries the per-request {@see HelpModalNonce}; the script ignores payloads
+ * whose nonce differs from `{{ nowo_form_kit_help_modal_meta() }}` in `<head>`. `title` and `content` are plain
+ * text (escaped by the script); `title_html`, `content_html` and `icon_html` are trusted developer HTML.
  */
 final class HelpModalExtension extends AbstractTypeExtension
 {
@@ -39,11 +44,13 @@ final class HelpModalExtension extends AbstractTypeExtension
      * @param array<string, array<string, mixed>> $profiles merged Form Kit configuration (all named profiles)
      * @param string $defaultProfileName key used when resolving `help_modal` defaults
      * @param object|null $iconRenderer optional; Symfony UX Icons renderer when the package is installed
+     * @param HelpModalNonce $nonce per-request nonce binding payloads to the page (`nowo_form_kit_help_modal_meta()`)
      */
     public function __construct(
         private readonly array $profiles,
         private readonly string $defaultProfileName,
         private readonly ?object $iconRenderer = null,
+        private readonly HelpModalNonce $nonce = new HelpModalNonce(),
     ) {
     }
 
@@ -110,6 +117,8 @@ final class HelpModalExtension extends AbstractTypeExtension
         $titleHtml = isset($merged['title_html']) && is_string($merged['title_html']) ? $merged['title_html'] : null;
 
         $content = $merged['content'] ?? null;
+        /** @var string|null $contentHtml Raw HTML for the modal body (optional); plain $content is escaped on the client if this is null */
+        $contentHtml = isset($merged['content_html']) && is_string($merged['content_html']) ? $merged['content_html'] : null;
 
         $triggerClass = (string) ($merged['trigger_class'] ?? 'nowo-help-modal-trigger nowo-help-modal-trigger--circle');
 
@@ -140,7 +149,9 @@ final class HelpModalExtension extends AbstractTypeExtension
                 'title'         => $title,
                 'title_html'    => $titleHtml,
                 'content'       => $contentValue,
+                'content_html'  => $contentHtml,
                 'aria_label'    => $ariaLabel,
+                'nonce'         => $this->nonce->get(),
             ],
             JSON_UNESCAPED_UNICODE,
         );

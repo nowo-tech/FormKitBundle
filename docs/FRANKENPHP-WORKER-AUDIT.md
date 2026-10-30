@@ -54,6 +54,7 @@ A bundle that is safe under **B** is safe under **A**, under `FRANKENPHP_RESET_K
 | `CssClassUtilities` | yes | none (`final readonly`) | ✅ | ✅ |
 | `MultiStepFormBuilder`, `MultiStepWizardSessionFactory`, `CsrfOnlyFormFactory`, `GetFilterFormFactory` | yes | none (`final readonly`) | ✅ | ✅ |
 | Form type extensions (`HelpModal`, `RequiredLabelSuffix`, `InputGroup`) | yes | readonly config only | ✅ | ✅ |
+| `HelpModalNonce`, `HelpModalTwigExtension` | yes | none (`final readonly` / readonly ctor); the per-request nonce lives in the main request attributes | ✅ | ✅ |
 | Built-in form types (`CsrfOnlyType`, `HiddenFieldsCsrfType`, `SearchQueryType`, …) | yes | trait config properties (see findings) | ✅ | ✅ |
 | Application form types / controllers using Form Kit traits | yes | setter-backed config (see findings) | ✅ with documented usage | ✅ with documented usage |
 

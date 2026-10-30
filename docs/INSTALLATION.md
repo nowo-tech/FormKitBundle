@@ -95,6 +95,9 @@ php bin/console assets:install public
 2. Load the script (and optional CSS) with the **`nowo_form_kit`** asset package registered by the bundle (`prepend()` → `framework.assets.packages.nowo_form_kit`, `base_path: /bundles/nowoformkit`):
 
 ```twig
+{# inside <head>: per-request nonce that binds help-modal payloads to the page (required) #}
+{{ nowo_form_kit_help_modal_meta() }}
+
 <script defer src="{{ asset('help-modal.js', 'nowo_form_kit') }}"></script>
 <link rel="stylesheet" href="{{ asset('help-modal.css', 'nowo_form_kit') }}">
 ```

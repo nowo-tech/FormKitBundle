@@ -61,3 +61,12 @@ services:
       $profiles: '%nowo_form_kit.profiles%'
       $defaultProfileName: '%nowo_form_kit.default_profile%'
       $iconRenderer: '@?Symfony\UX\Icons\IconRendererInterface'
+      $nonce: '@Nowo\FormKitBundle\HelpModal\HelpModalNonce'
+
+  # REQ-SEC-004 (L1): per-request nonce binding help-modal payloads to the page; stored in request attributes.
+  Nowo\FormKitBundle\HelpModal\HelpModalNonce:
+    arguments:
+      $requestStack: '@?request_stack'
+
+  # nowo_form_kit_help_modal_meta() / nowo_form_kit_help_modal_nonce() (twig/twig is a hard dependency).
+  Nowo\FormKitBundle\Twig\HelpModalTwigExtension: ~

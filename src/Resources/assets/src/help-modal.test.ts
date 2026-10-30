@@ -4,6 +4,20 @@ type HelpModalModule = typeof import('./help-modal');
 
 let mod: HelpModalModule;
 
+const NONCE = 'test-nonce-0123456789ab';
+
+/** Prints the per-request nonce meta in <head> (Twig: nowo_form_kit_help_modal_meta()). */
+function setNonceMeta(value: string | null = NONCE): void {
+  document.head.querySelectorAll('meta[name="nowo-form-kit-help-modal-nonce"]').forEach((m) => m.remove());
+  if (value === null) {
+    return;
+  }
+  const meta = document.createElement('meta');
+  meta.name = 'nowo-form-kit-help-modal-nonce';
+  meta.content = value;
+  document.head.appendChild(meta);
+}
+
 function setDom(body: string): void {
   // Help labels are only honoured inside a <form> (Symfony form rendering).
   document.body.innerHTML = `<form>${body}</form>`;
@@ -16,7 +30,8 @@ function payload(overrides: Record<string, unknown> = {}): string {
     icon_html: '<button type="button" class="icon-btn">?</button>',
     trigger_class: 'nowo-help-modal-trigger nowo-help-modal-trigger--circle',
     title: 'Help',
-    content: '<p>content</p>',
+    content_html: '<p>content</p>',
+    nonce: NONCE,
     ...overrides,
   });
 }
@@ -51,6 +66,7 @@ describe('help-modal', () => {
     vi.restoreAllMocks();
     mod?.stopHelpModalDomObserver();
     setDom('');
+    setNonceMeta();
     delete (window as any).bootstrap;
     delete (window as any).$;
     delete (window as any).jQuery;
@@ -118,7 +134,7 @@ describe('help-modal', () => {
       `<label id="label-d" data-nowo-help-modal='${payload({
         id: 'hm-b5',
         framework: 'bootstrap5',
-        content: '<button data-help-modal-close="1">Close</button>',
+        content_html: '<button data-help-modal-close="1">Close</button>',
       })}'></label>`,
     );
 
@@ -149,7 +165,7 @@ describe('help-modal', () => {
       `<label id="label-e" data-nowo-help-modal='${payload({
         id: 'hm-b4',
         framework: 'bootstrap4',
-        content: '<button data-help-modal-close="1">Close</button>',
+        content_html: '<button data-help-modal-close="1">Close</button>',
       })}'></label>`,
     );
     await importModuleFresh();
@@ -212,7 +228,7 @@ describe('help-modal', () => {
       framework: 'foundation',
       icon_html: '?',
       title: null,
-      content: '<p>fresh</p>',
+      content_html: '<p>fresh</p>',
     });
 
     const portaled = document.getElementById('hm-refresh') as HTMLElement;
@@ -265,7 +281,7 @@ describe('help-modal', () => {
       framework: 'bootstrap5',
       icon_html: '?',
       title: 'From Twig',
-      content: '<p>twig-body</p>',
+      content_html: '<p>twig-body</p>',
     });
     expect(b5.querySelector('.modal-dialog--from-twig')).toBeTruthy();
     expect(b5.querySelector('[data-nowo-help-modal-body]')?.innerHTML).toBe('<p>twig-body</p>');
@@ -333,15 +349,17 @@ describe('help-modal', () => {
     expect(implicitB5.className).toContain('modal');
   });
 
-  it('showModal logs at info level when opening', async () => {
+  it('showModal logs at info level when opening (debug opt-in)', async () => {
+    (globalThis as any).NOWO_FORM_KIT_DEBUG = true;
     const { showModal } = await importModuleFresh();
+    delete (globalThis as any).NOWO_FORM_KIT_DEBUG;
     const info = vi.spyOn(console, 'info');
     showModal({
       id: 'info-open',
       framework: 'foundation',
       icon_html: '?',
       title: 'T',
-      content: '<p>x</p>',
+      content_html: '<p>x</p>',
     });
     expect(info).toHaveBeenCalled();
   });
@@ -379,7 +397,7 @@ describe('help-modal', () => {
       framework: 'tailwind',
       icon_html: '?',
       title: 'N',
-      content: '<p>n</p>',
+      content_html: '<p>n</p>',
     });
     wrapper.appendChild(modal);
 
@@ -402,7 +420,7 @@ describe('help-modal', () => {
       framework: 'foundation',
       icon_html: '?',
       title: 'old',
-      content: '<p>old</p>',
+      content_html: '<p>old</p>',
     });
     document.body.appendChild(oldModal);
 
@@ -415,7 +433,7 @@ describe('help-modal', () => {
       framework: 'foundation',
       icon_html: '?',
       title: 'new',
-      content: '<p>new</p>',
+      content_html: '<p>new</p>',
     });
     panel.appendChild(refreshed);
 
@@ -472,7 +490,7 @@ describe('help-modal', () => {
       framework: 'tailwind',
       icon_html: '?',
       title: 'obs',
-      content: '<p>obs</p>',
+      content_html: '<p>obs</p>',
     });
     hidden.appendChild(nested);
     await flushPortalScan();
@@ -493,18 +511,18 @@ describe('help-modal', () => {
   });
 
   it('re-reads updated label payload on click and keyboard open', async () => {
-    setDom(`<label id="label-k" data-nowo-help-modal='${payload({ id: 'hm-k', content: '<p>v1</p>' })}'></label>`);
+    setDom(`<label id="label-k" data-nowo-help-modal='${payload({ id: 'hm-k', content_html: '<p>v1</p>' })}'></label>`);
     await importModuleFresh();
 
     const label = document.getElementById('label-k') as HTMLLabelElement;
     const trigger = label.querySelector('.nowo-help-modal-trigger') as HTMLElement;
 
-    label.setAttribute('data-nowo-help-modal', payload({ id: 'hm-k', content: '<p>v2</p>' }));
+    label.setAttribute('data-nowo-help-modal', payload({ id: 'hm-k', content_html: '<p>v2</p>' }));
     trigger.click();
     expect(document.querySelector('#hm-k [data-nowo-help-modal-body]')?.innerHTML).toBe('<p>v2</p>');
 
     document.getElementById('hm-k')?.remove();
-    label.setAttribute('data-nowo-help-modal', payload({ id: 'hm-k', content: '<p>v3</p>' }));
+    label.setAttribute('data-nowo-help-modal', payload({ id: 'hm-k', content_html: '<p>v3</p>' }));
     trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     expect(document.querySelector('#hm-k [data-nowo-help-modal-body]')?.innerHTML).toBe('<p>v3</p>');
 
@@ -598,6 +616,7 @@ describe('help-modal', () => {
         icon_html: '?',
         title: null,
         content: '',
+        nonce: NONCE,
       })}'></label>
     `);
     // Re-init after DOM change without a second module load.
@@ -632,7 +651,7 @@ describe('help-modal', () => {
       icon_html: '?',
       title: 't',
       title_html: '<b>x</b>',
-      content: '<p>y</p>',
+      content_html: '<p>y</p>',
     });
     expect(noSlots.querySelector('.shell-without-slots')).toBeTruthy();
     expect(noSlots.querySelector('[data-nowo-help-modal-title]')).toBeNull();
@@ -670,7 +689,8 @@ describe('help-modal', () => {
 
     expect(a.querySelector('.nowo-help-modal-trigger')).toBeTruthy();
     expect(b.querySelector('.nowo-help-modal-trigger')).toBeTruthy();
-    expect(marked.parentElement).toBe(document.body);
+    // Marker set by page markup (not created by the script): never relocated (L2).
+    expect(marked.parentElement).toBe(nest);
   });
 
   it('uses custom aria_label from payload when provided', async () => {
@@ -701,5 +721,201 @@ describe('help-modal', () => {
     document.getElementById('hm-cleared')?.remove();
     trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     expect(document.getElementById('hm-cleared')).toBeTruthy();
+  });
+
+  describe('origin binding (SEC-004 L1)', () => {
+    it('ignores a forged label inside a host form when the payload nonce does not match the page nonce', async () => {
+      setDom(`<div class="comment"><label id="forged" data-nowo-help-modal='${payload({
+        id: 'hm-forged',
+        nonce: 'guessed-nonce-000000000000',
+        icon_html: '<img src=x onerror="window.__pwned=1">',
+      })}'></label></div>`);
+      await importModuleFresh();
+
+      const label = document.getElementById('forged') as HTMLLabelElement;
+      expect(label.innerHTML).toBe('');
+      expect(label.querySelector('img')).toBeNull();
+    });
+
+    it('ignores payloads without nonce and warns once when the page has no nonce meta', async () => {
+      setNonceMeta(null);
+      const warn = vi.spyOn(console, 'warn');
+      setDom(`
+        <label id="nm-a" data-nowo-help-modal='${payload({ id: 'hm-nm-a' })}'></label>
+        <label id="nm-b" data-nowo-help-modal='${payload({ id: 'hm-nm-b', nonce: undefined })}'></label>
+      `);
+      const m = await importModuleFresh();
+
+      expect(m.getPageNonce()).toBeNull();
+      expect((document.getElementById('nm-a') as HTMLElement).innerHTML).toBe('');
+      expect((document.getElementById('nm-b') as HTMLElement).innerHTML).toBe('');
+      const hints = warn.mock.calls.filter((c) => String(c[0]).includes('nowo_form_kit_help_modal_meta'));
+      expect(hints).toHaveLength(1);
+    });
+
+    it('treats an empty nonce meta as missing and only reads the meta from <head>', async () => {
+      setNonceMeta('   ');
+      const m = await importModuleFresh();
+      expect(m.getPageNonce()).toBeNull();
+
+      setNonceMeta(null);
+      const bodyMeta = document.createElement('meta');
+      bodyMeta.name = 'nowo-form-kit-help-modal-nonce';
+      bodyMeta.content = 'from-user-html-0000000000';
+      document.body.appendChild(bodyMeta);
+      expect(m.getPageNonce()).toBeNull();
+      expect(m.isBoundPayload({ id: 'x', framework: 'tailwind', icon_html: '?', title: null, nonce: 'from-user-html-0000000000' })).toBe(false);
+    });
+
+    it('escapes content and title by default; *_html fields are opt-in HTML', async () => {
+      const { createModalElement } = await importModuleFresh();
+      const plain = createModalElement({
+        id: 'esc-1',
+        framework: 'foundation',
+        icon_html: '?',
+        title: '<b>t</b>',
+        content: '<img src=x onerror="window.__pwned=1">',
+      });
+      expect(plain.querySelector('[data-nowo-help-modal-body]')?.textContent).toBe('<img src=x onerror="window.__pwned=1">');
+      expect(plain.querySelector('img')).toBeNull();
+      expect(plain.querySelector('[data-nowo-help-modal-title]')?.textContent).toBe('<b>t</b>');
+
+      const html = createModalElement({
+        id: 'esc-2',
+        framework: 'foundation',
+        icon_html: '?',
+        title: null,
+        content: 'ignored',
+        content_html: '<p>trusted</p>',
+      });
+      expect(html.querySelector('[data-nowo-help-modal-body]')?.innerHTML).toBe('<p>trusted</p>');
+
+      const empty = createModalElement({ id: 'esc-3', framework: 'foundation', icon_html: '?', title: null });
+      expect(empty.querySelector('[data-nowo-help-modal-body]')?.textContent).toBe('');
+    });
+
+    it('uses a text "?" trigger when icon_html is empty', async () => {
+      setDom(`<label id="no-icon" data-nowo-help-modal='${payload({ id: 'hm-no-icon', icon_html: '' })}'></label>`);
+      await importModuleFresh();
+      const trigger = document.querySelector('#no-icon .nowo-help-modal-trigger') as HTMLElement;
+      expect(trigger.textContent).toBe('?');
+      expect(trigger.children).toHaveLength(0);
+    });
+
+    it('keeps the last bound payload when a morph brings a payload with another nonce', async () => {
+      setDom(`<label id="morph" data-nowo-help-modal='${payload({ id: 'hm-morph', content_html: '<p>v1</p>' })}'></label>`);
+      const m = await importModuleFresh();
+      const label = document.getElementById('morph') as HTMLLabelElement;
+      const trigger = label.querySelector('.nowo-help-modal-trigger') as HTMLElement;
+
+      label.setAttribute('data-nowo-help-modal', payload({ id: 'hm-morph', nonce: 'other-request-nonce-00000', content_html: '<img src=x>' }));
+      trigger.click();
+      expect(document.querySelector('#hm-morph [data-nowo-help-modal-body]')?.innerHTML).toBe('<p>v1</p>');
+
+      // Trigger removed by the morph: re-attached from the remembered payload.
+      trigger.remove();
+      m.initHelpModal();
+      expect(label.querySelector('.nowo-help-modal-trigger')).toBeTruthy();
+
+      // A label node never accepted before gets nothing.
+      const fresh = document.createElement('label');
+      fresh.setAttribute('data-nowo-help-modal', payload({ id: 'hm-fresh', nonce: 'other-request-nonce-00000' }));
+      helpForm().appendChild(fresh);
+      expect(m.readTrustedPayload(fresh)).toBeNull();
+      expect(m.readTrustedPayload(document.createElement('label'))).toBeNull();
+    });
+  });
+
+  it('opens the captured payload when the label left its form before the click', async () => {
+    setDom(`<label id="moved" data-nowo-help-modal='${payload({ id: 'hm-moved' })}'></label>`);
+    await importModuleFresh();
+    const label = document.getElementById('moved') as HTMLLabelElement;
+    document.body.appendChild(label);
+    (label.querySelector('.nowo-help-modal-trigger') as HTMLElement).click();
+    expect(document.getElementById('hm-moved')).toBeTruthy();
+  });
+
+  describe('relocation (SEC-004 L2)', () => {
+    it('never moves page markup that only carries the help-modal marker', async () => {
+      const { HELP_MODAL_ROOT_ATTR, relocateHelpModalToBody, relocateAllHelpModalsToBody } = await importModuleFresh();
+      const container = document.createElement('section');
+      const fake = document.createElement('div');
+      fake.id = 'phish';
+      fake.setAttribute(HELP_MODAL_ROOT_ATTR, '1');
+      container.appendChild(fake);
+      document.body.appendChild(container);
+
+      expect(relocateHelpModalToBody(fake)).toBe(false);
+      relocateAllHelpModalsToBody();
+      await flushPortalScan();
+      expect(fake.parentElement).toBe(container);
+    });
+  });
+
+  describe('logging (SEC-004 I7)', () => {
+    it('is silent by default and never logs the raw payload', async () => {
+      const warn = vi.spyOn(console, 'warn');
+      const m = await importModuleFresh();
+      expect(m.parseHelpModalData('<img src=x onerror=alert(1)>')).toBeNull();
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('logs diagnostics without the raw payload when window.NOWO_FORM_KIT_DEBUG is true', async () => {
+      (globalThis as any).NOWO_FORM_KIT_DEBUG = true;
+      try {
+        const warn = vi.spyOn(console, 'warn');
+        const m = await importModuleFresh();
+        m.parseHelpModalData('<img src=x onerror=alert(1)>');
+        expect(warn).toHaveBeenCalled();
+        expect(JSON.stringify(warn.mock.calls)).not.toContain('onerror');
+      } finally {
+        delete (globalThis as any).NOWO_FORM_KIT_DEBUG;
+      }
+    });
+  });
+
+  describe('Turbo fetch nonce header', () => {
+    function turboEvent(detail: unknown): Event {
+      return new CustomEvent('turbo:before-fetch-request', { detail });
+    }
+
+    it('adds the page nonce to same-origin Turbo requests (plain object and Headers)', async () => {
+      await importModuleFresh();
+      const headers: Record<string, string> = {};
+      document.dispatchEvent(turboEvent({ url: new URL('/frame', window.location.href), fetchOptions: { headers } }));
+      expect(headers['X-Nowo-Form-Kit-Help-Modal-Nonce']).toBe(NONCE);
+
+      const h = new Headers();
+      document.dispatchEvent(turboEvent({ url: '/frame', fetchOptions: { headers: h } }));
+      expect(h.get('X-Nowo-Form-Kit-Help-Modal-Nonce')).toBe(NONCE);
+
+      // Installed once even if bootstrapped again.
+      mod.bootstrapHelpModal();
+      const once: Record<string, string> = {};
+      document.dispatchEvent(turboEvent({ fetchOptions: { headers: once } }));
+      expect(once['X-Nowo-Form-Kit-Help-Modal-Nonce']).toBe(NONCE);
+    });
+
+    it('never sends the nonce cross-origin, without a nonce, or without headers; stop removes the listener', async () => {
+      const m = await importModuleFresh();
+      const cross: Record<string, string> = {};
+      document.dispatchEvent(turboEvent({ url: 'https://evil.example/x', fetchOptions: { headers: cross } }));
+      expect(cross).toEqual({});
+
+      expect(() => document.dispatchEvent(turboEvent({ url: '/x', fetchOptions: {} }))).not.toThrow();
+      expect(() => document.dispatchEvent(turboEvent({ url: '/x', fetchOptions: { headers: null } }))).not.toThrow();
+      expect(() => document.dispatchEvent(new CustomEvent('turbo:before-fetch-request'))).not.toThrow();
+
+      setNonceMeta(null);
+      const noNonce: Record<string, string> = {};
+      document.dispatchEvent(turboEvent({ url: '/x', fetchOptions: { headers: noNonce } }));
+      expect(noNonce).toEqual({});
+
+      setNonceMeta();
+      m.stopHelpModalDomObserver();
+      const stopped: Record<string, string> = {};
+      document.dispatchEvent(turboEvent({ url: '/x', fetchOptions: { headers: stopped } }));
+      expect(stopped).toEqual({});
+    });
   });
 });

@@ -33,6 +33,18 @@ test.describe('Form Kit demo', () => {
     await expect(page.getByText('Ada Lovelace').first()).toBeVisible();
   });
 
+  test('help modal opens from a nonce-bound label (REQ-SEC-004)', async ({ page }) => {
+    await page.goto('/en/form-type');
+    const nonce = await page.locator('head meta[name="nowo-form-kit-help-modal-nonce"]').getAttribute('content');
+    expect(nonce).toMatch(/^[A-Za-z0-9_-]{22,}$/);
+    const label = page.locator('label[data-nowo-help-modal]').first();
+    expect(JSON.parse((await label.getAttribute('data-nowo-help-modal')) ?? '{}').nonce).toBe(nonce);
+    await label.locator('.nowo-help-modal-trigger').click();
+    const modal = page.locator('[data-nowo-formkit-help-modal]');
+    await expect(modal.getByText('Use your legal name')).toBeVisible();
+    await expect(modal.locator('[data-nowo-help-modal-body] p')).toHaveCount(1);
+  });
+
   test('locale tabs flag the invalid languages', async ({ page }) => {
     await page.goto('/en/locale-tabs?errors=1');
     await expect(page.getByRole('tab').first()).toBeVisible();
