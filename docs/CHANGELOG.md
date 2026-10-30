@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.17.0] - 2026-10-30](#2170---2026-10-30)
 - [[2.16.0] - 2026-10-30](#2160---2026-10-30)
 - [[2.15.0] - 2026-10-29](#2150---2026-10-29)
 - [[2.14.1] - 2026-10-28](#2141---2026-10-28)
@@ -65,6 +66,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.17.0] - 2026-10-30
+
+Every nowo-tech widget mapped (milkdown, altcha, barcode, date_range added; guard test), explicit label: false kept, doctrine/collections ^2.2 || ^3.0. See [UPGRADING](UPGRADING.md#to-2170).
 
 ### Added
 
@@ -336,6 +341,7 @@ Locale tabs for translation entities, field_<locale> groups and TranslatableMapT
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.17.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.17.0
 [2.16.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.16.0
 [2.15.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.15.0
 [2.14.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.14.1

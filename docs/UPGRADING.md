@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.17.0](#to-2170)
 - [To 2.16.0](#to-2160)
 - [To 2.15.0](#to-2150)
 - [To 2.14.1](#to-2141)
@@ -70,6 +71,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.17.0
+
+From **2.16.0**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 **Explicit `label: false` is honoured:** a field option `'label' => false` now reaches Symfony as `false` (no label). Before, Form Kit dropped it and Symfony rendered the humanized field name. Workarounds that re-set `label: false` after the merge (e.g. a local `addKitField()` helper) can be removed once you require this release. If a form relied on the humanized fallback, pass the label text instead of `false`.
 
