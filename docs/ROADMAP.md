@@ -19,7 +19,7 @@ Current tag **v2.5.3**.
 - **Options** strategy (`FormOptionsTrait` + FQCN): primary path; `profiles` / `default_profile`; `by_form`; `constraint_message_convention`; `#[FormKitConfig]`; **bound-builder** / **array-build**.
 - **Kit** strategy (`FormKitTrait` / `FormKitAbstractType` + `FormTypeMap`): snake_case types; same merge model.
 - **Controller** strategy (`FormKitControllerTrait`) and **Wrapped** strategy (`AbstractFormKitWrappedType`).
-- Choice presets, model transformers, help modal, optional UX helpers (Autocomplete, CKEditor 4, Dropzone, Cropper) and optional nowo-tech widgets (OTP, phone, password toggle/strength, icon selector, CKEditor 5, Tiptap, tag input, slide-to-confirm).
+- Choice presets, model transformers, help modal, optional UX helpers (Autocomplete, CKEditor 4, Dropzone, Cropper) and optional nowo-tech widgets (OTP, phone, password toggle/strength, icon selector, CKEditor 5, Tiptap, Milkdown, tag input, slide-to-confirm, ALTCHA, barcode, UiKit date range).
 - **Wizard / CSRF-only / GET filters:** `MultiStepFormBuilder`, `CsrfOnlyFormFactory`, `GetFilterFormFactory`, `SearchQueryType`, static field types.
 - **FrankenPHP worker:** compatible with kernel reuse (`FRANKENPHP_RESET_KERNEL` unset/false); see [FRANKENPHP-WORKER-AUDIT.md](FRANKENPHP-WORKER-AUDIT.md).
 - **Demos**: **demo/symfony8** — see [USAGE — strategies](USAGE.md#usage-strategies) for the naming used in docs.

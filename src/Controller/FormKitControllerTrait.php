@@ -7,6 +7,8 @@ namespace Nowo\FormKitBundle\Controller;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use InvalidArgumentException;
 use LogicException;
+use Nowo\AltchaTypeBundle\Form\Type\AltchaType;
+use Nowo\BarcodeInputBundle\Form\BarcodeType;
 use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\CsvModelTransformer;
@@ -19,6 +21,7 @@ use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Nowo\OtpInputBundle\Form\OtpType;
 use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
 use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
@@ -27,6 +30,7 @@ use Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use Nowo\UiKitBundle\Form\DateRangeType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -578,6 +582,19 @@ trait FormKitControllerTrait
     }
 
     /**
+     * Optional nowo-tech Milkdown Markdown editor. Requires `nowo-tech/milkdown-editor-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addMilkdownEditorFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
+    {
+        $this->addOptionalSuggestedFieldType($builder, $fieldName, MilkdownEditorType::class, 'nowo-tech/milkdown-editor-bundle', 'addMilkdownEditorFieldType', $options, $configName, $formName);
+    }
+
+    /**
      * Optional nowo-tech Tagify tags field. Requires `nowo-tech/tag-input-bundle`.
      *
      * @param FormBuilderInterface<mixed> $builder
@@ -601,6 +618,45 @@ trait FormKitControllerTrait
     protected function addSlideToConfirmFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
         $this->addOptionalSuggestedFieldType($builder, $fieldName, SlideToConfirmType::class, 'nowo-tech/slide-to-confirm-bundle', 'addSlideToConfirmFieldType', $options, $configName, $formName);
+    }
+
+    /**
+     * Optional nowo-tech ALTCHA proof-of-work captcha (unmapped by default). Requires `nowo-tech/altcha-type-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addAltchaFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
+    {
+        $this->addOptionalSuggestedFieldType($builder, $fieldName, AltchaType::class, 'nowo-tech/altcha-type-bundle', 'addAltchaFieldType', $options, $configName, $formName);
+    }
+
+    /**
+     * Optional nowo-tech barcode / QR input with camera scanner. Requires `nowo-tech/barcode-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addBarcodeFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
+    {
+        $this->addOptionalSuggestedFieldType($builder, $fieldName, BarcodeType::class, 'nowo-tech/barcode-input-bundle', 'addBarcodeFieldType', $options, $configName, $formName);
+    }
+
+    /**
+     * Optional nowo-tech date range (from/to) filter field (ui-kit-bundle ^2.15.0). Requires `nowo-tech/ui-kit-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addDateRangeFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
+    {
+        $this->addOptionalSuggestedFieldType($builder, $fieldName, DateRangeType::class, 'nowo-tech/ui-kit-bundle', 'addDateRangeFieldType', $options, $configName, $formName);
     }
 
     /**

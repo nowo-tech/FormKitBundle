@@ -6,12 +6,15 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
 use InvalidArgumentException;
 use LogicException;
+use Nowo\AltchaTypeBundle\Form\Type\AltchaType;
+use Nowo\BarcodeInputBundle\Form\BarcodeType;
 use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormKitTrait;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Nowo\OtpInputBundle\Form\OtpType;
 use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
 use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
@@ -19,6 +22,7 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use Nowo\UiKitBundle\Form\DateRangeType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -284,8 +288,11 @@ final class FormKitTraitTest extends TestCase
             ['addIconSelector', 'nowo-tech/icon-selector-bundle'],
             ['addCkeditor5Editor', 'nowo-tech/ckeditor5-editor-bundle'],
             ['addTiptapEditor', 'nowo-tech/tiptap-editor-bundle'],
+            ['addMilkdownEditor', 'nowo-tech/milkdown-editor-bundle'],
             ['addTagInput', 'nowo-tech/tag-input-bundle'],
             ['addSlideToConfirm', 'nowo-tech/slide-to-confirm-bundle'],
+            ['addAltcha', 'nowo-tech/altcha-type-bundle'],
+            ['addBarcode', 'nowo-tech/barcode-input-bundle'],
         ];
     }
 
@@ -315,7 +322,7 @@ final class FormKitTraitTest extends TestCase
 
         $calls   = [];
         $builder = $this->createMock(FormBuilderInterface::class);
-        $builder->expects(self::exactly(9))
+        $builder->expects(self::exactly(13))
             ->method('add')
             ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): FormBuilderInterface {
                 $calls[] = [$name, $fqcn];
@@ -334,8 +341,12 @@ final class FormKitTraitTest extends TestCase
             ['icon', IconSelectorType::class],
             ['ckeditor5', Ckeditor5EditorType::class],
             ['tiptap', TiptapEditorType::class],
+            ['milkdown', MilkdownEditorType::class],
             ['tags', TagType::class],
             ['confirm', SlideToConfirmType::class],
+            ['altcha', AltchaType::class],
+            ['barcode', BarcodeType::class],
+            ['period', DateRangeType::class],
         ], $calls);
     }
 }
@@ -467,8 +478,12 @@ final class FormKitTraitTestType
             $this->addIconSelectorField('icon');
             $this->addCkeditor5EditorField('ckeditor5');
             $this->addTiptapEditorField('tiptap');
+            $this->addMilkdownEditorField('milkdown');
             $this->addTagInputField('tags');
             $this->addSlideToConfirmField('confirm');
+            $this->addAltchaField('altcha');
+            $this->addBarcodeField('barcode');
+            $this->addDateRangeField('period');
         });
     }
 

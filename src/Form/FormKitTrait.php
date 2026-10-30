@@ -6,9 +6,12 @@ namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
 use LogicException;
+use Nowo\AltchaTypeBundle\Form\Type\AltchaType;
+use Nowo\BarcodeInputBundle\Form\BarcodeType;
 use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
 use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Nowo\OtpInputBundle\Form\OtpType;
 use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
 use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
@@ -16,6 +19,7 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use Nowo\UiKitBundle\Form\DateRangeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\UX\Cropperjs\Form\CropperType;
@@ -539,6 +543,26 @@ trait FormKitTrait
     }
 
     /**
+     * Optional nowo-tech Milkdown Markdown editor (`milkdown` in FormTypeMap).
+     * Requires `nowo-tech/milkdown-editor-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addMilkdownEditor(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'milkdown', MilkdownEditorType::class, 'nowo-tech/milkdown-editor-bundle', 'addMilkdownEditor', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addMilkdownEditorField(string $name, array $options = []): void
+    {
+        $this->addMilkdownEditor($this->boundBuilder(), $name, $options);
+    }
+
+    /**
      * Optional nowo-tech Tagify field (`tag` in FormTypeMap). Requires `nowo-tech/tag-input-bundle`.
      *
      * @param FormBuilderInterface<mixed> $builder
@@ -575,6 +599,66 @@ trait FormKitTrait
     protected function addSlideToConfirmField(string $name, array $options = []): void
     {
         $this->addSlideToConfirm($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech ALTCHA proof-of-work captcha (unmapped by default) (`altcha` in FormTypeMap).
+     * Requires `nowo-tech/altcha-type-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addAltcha(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'altcha', AltchaType::class, 'nowo-tech/altcha-type-bundle', 'addAltcha', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addAltchaField(string $name, array $options = []): void
+    {
+        $this->addAltcha($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech barcode / QR input with camera scanner (`barcode` in FormTypeMap).
+     * Requires `nowo-tech/barcode-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addBarcode(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'barcode', BarcodeType::class, 'nowo-tech/barcode-input-bundle', 'addBarcode', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addBarcodeField(string $name, array $options = []): void
+    {
+        $this->addBarcode($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech date range (from/to) filter field (ui-kit-bundle ^2.15.0) (`date_range` in FormTypeMap).
+     * Requires `nowo-tech/ui-kit-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addDateRange(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'date_range', DateRangeType::class, 'nowo-tech/ui-kit-bundle', 'addDateRange', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addDateRangeField(string $name, array $options = []): void
+    {
+        $this->addDateRange($this->boundBuilder(), $name, $options);
     }
 
     /**

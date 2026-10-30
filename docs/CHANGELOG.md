@@ -66,6 +66,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Milkdown editor** — `milkdown` in `FormTypeMap` (`Nowo\MilkdownEditorBundle\Form\MilkdownEditorType`), `addMilkdownEditor()` / `addMilkdownEditorField()` on `FormKitTrait` and `FormOptionsTrait`, `addMilkdownEditorFieldType()` on `FormKitControllerTrait`; Composer **suggest** `nowo-tech/milkdown-editor-bundle`. `LogicException` when the package is missing.
+- **ALTCHA, barcode and date range widgets** — `altcha` (`nowo-tech/altcha-type-bundle`), `barcode` (`nowo-tech/barcode-input-bundle`) and `date_range` (`nowo-tech/ui-kit-bundle` ^2.15.0) in `FormTypeMap`, with `addAltcha*()`, `addBarcode*()` and `addDateRange*()` helpers on the three traits and Composer **suggest** entries.
+- **`FormTypeMap::NOWO_WIDGETS`** — central list of the nowo-tech widgets (map key, package, helper); a test fails when a widget is missing from the map, `suggest`, the helper trio or the docs table **nowo-tech widgets supported** (USAGE, CONFIGURATION).
+
 ## [2.16.0] - 2026-10-30
 
 FormKit: SEC-004 BH hardening — help-modal nonce (escape-by-default, frame-only reuse with private+Vary), CSRF factory allowlist, stateless_csrf form_types validation See [UPGRADING](UPGRADING.md#to-2160).

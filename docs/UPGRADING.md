@@ -71,6 +71,8 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+New optional helpers `addMilkdownEditor()`, `addAltcha()`, `addBarcode()`, `addDateRange()` (with `*Field` / `*FieldType` variants) and map keys `milkdown`, `altcha`, `barcode`, `date_range`. No host change required; install only the packages you use. If your `nowo_form_kit.type_map` already defines one of these keys, your entry still wins.
+
 ## To 2.16.0
 
 From **2.15.0**:
