@@ -657,8 +657,9 @@ export function startHelpModalDomObserver(): void {
 }
 
 /**
- * `turbo:before-fetch-request` handler: same-origin Turbo fetches (frames, Drive visits) send the page nonce so the
- * fragment rendered by the server reuses it and its help labels stay bound.
+ * `turbo:before-fetch-request` handler: same-origin Turbo fetches send the page nonce. The server reuses it only for
+ * Turbo Frame requests (`Turbo-Frame` header, same origin; response marked private + Vary), so frame fragments stay
+ * bound; Drive visits get a fresh nonce together with a fresh `<head>` meta.
  */
 export function addNonceHeaderToTurboFetch(event: Event): void {
   const detail = (event as CustomEvent<{ url?: URL | string; fetchOptions?: { headers?: unknown } }>).detail;

@@ -83,7 +83,7 @@ Security hardening from the REQ-SEC-004 audit of 2026-10-30 (see [CHANGELOG](CHA
    </head>
    ```
 
-   Fragments rendered by **another request** (Turbo Frames, AJAX) carry that request's nonce: same-origin Turbo fetches already send the page nonce in `X-Nowo-Form-Kit-Help-Modal-Nonce` (the server reuses it); for your own `fetch()` calls, send the header with the meta value. A Live Component re-render keeps the last bound payload of each existing label; labels that appear for the first time in a Live re-render get no trigger.
+   Fragments rendered by **another request** (Turbo Frames, AJAX) carry that request's nonce: same-origin Turbo Frame requests already send the page nonce in `X-Nowo-Form-Kit-Help-Modal-Nonce` (the server reuses it only when the request also carries `Turbo-Frame` and is same-origin, and then sends `Cache-Control: private` + `Vary`); for your own `fetch()` calls, send that header with the meta value **and** a `Turbo-Frame` header. Do not serve pages that mix `help_modal` fields with user content from a shared cache (CDN / Varnish / `HttpCache`). A Live Component re-render keeps the last bound payload of each existing label; labels that appear for the first time in a Live re-render get no trigger.
 
 2. **Rename `content` to `content_html` when the help body is HTML.** `content` is now plain text (shown escaped). `title` / `title_html` are unchanged. Example:
 

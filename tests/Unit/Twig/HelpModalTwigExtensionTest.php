@@ -18,6 +18,7 @@ final class HelpModalTwigExtensionTest extends TestCase
     {
         $request = new Request();
         $request->headers->set(HelpModalNonce::HEADER, 'AbCdEfGhIjKlMnOpQrStUvWx');
+        $request->headers->set('Turbo-Frame', 'frame');
         $stack = new RequestStack();
         $stack->push($request);
 

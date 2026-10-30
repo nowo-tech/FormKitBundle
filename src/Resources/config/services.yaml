@@ -68,5 +68,8 @@ services:
     arguments:
       $requestStack: '@?request_stack'
 
+  # REQ-SEC-004 (L3): responses that reused the nonce header are private + Vary (autoconfigured kernel.event_subscriber).
+  Nowo\FormKitBundle\HelpModal\HelpModalNonceResponseListener: ~
+
   # nowo_form_kit_help_modal_meta() / nowo_form_kit_help_modal_nonce() (twig/twig is a hard dependency).
   Nowo\FormKitBundle\Twig\HelpModalTwigExtension: ~

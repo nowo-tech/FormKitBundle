@@ -39,15 +39,74 @@ final class HelpModalNonceTest extends TestCase
         self::assertSame($value, $main->attributes->get(HelpModalNonce::REQUEST_ATTRIBUTE));
     }
 
-    public function testReusesAWellFormedNonceSentByAFragmentRequest(): void
+    private const SENT = 'AbCdEfGhIjKlMnOpQrStUvWx';
+
+    /**
+     * @param array<string, string> $headers
+     *
+     * @return array{string, Request}
+     */
+    private function nonceFor(array $headers): array
     {
-        $sent    = 'AbCdEfGhIjKlMnOpQrStUvWx';
-        $request = new Request();
-        $request->headers->set(HelpModalNonce::HEADER, $sent);
+        $request = Request::create('https://app.example/frame');
+        $request->headers->set(HelpModalNonce::HEADER, self::SENT);
+        foreach ($headers as $name => $value) {
+            $request->headers->set($name, $value);
+        }
         $stack = new RequestStack();
         $stack->push($request);
 
-        self::assertSame($sent, (new HelpModalNonce($stack))->get());
+        return [(new HelpModalNonce($stack))->get(), $request];
+    }
+
+    /**
+     * @return iterable<string, array{array<string, string>}>
+     */
+    public static function sameOriginFragments(): iterable
+    {
+        yield 'Turbo-Frame, no origin info' => [['Turbo-Frame' => 'f1']];
+        yield 'Sec-Fetch-Site same-origin' => [['Turbo-Frame' => 'f1', 'Sec-Fetch-Site' => 'same-origin', 'Origin' => 'https://evil.example']];
+        yield 'matching Origin' => [['Turbo-Frame' => 'f1', 'Origin' => 'https://app.example']];
+        yield 'matching Referer' => [['Turbo-Frame' => 'f1', 'Referer' => 'https://app.example/page?x=1']];
+    }
+
+    /**
+     * @param array<string, string> $headers
+     */
+    #[DataProvider('sameOriginFragments')]
+    public function testReusesTheHeaderOnSameOriginTurboFrameRequests(array $headers): void
+    {
+        [$nonce, $request] = $this->nonceFor($headers);
+
+        self::assertSame(self::SENT, $nonce);
+        self::assertTrue($request->attributes->get(HelpModalNonce::REUSED_ATTRIBUTE));
+    }
+
+    /**
+     * @return iterable<string, array{array<string, string>}>
+     */
+    public static function nonFragmentOrCrossOrigin(): iterable
+    {
+        yield 'top-level request (no Turbo-Frame)' => [[]];
+        yield 'top-level with same-origin fetch' => [['Sec-Fetch-Site' => 'same-origin']];
+        yield 'Sec-Fetch-Site cross-site' => [['Turbo-Frame' => 'f1', 'Sec-Fetch-Site' => 'cross-site']];
+        yield 'Sec-Fetch-Site none' => [['Turbo-Frame' => 'f1', 'Sec-Fetch-Site' => 'none']];
+        yield 'foreign Origin' => [['Turbo-Frame' => 'f1', 'Origin' => 'https://app.example.evil.test']];
+        yield 'foreign Referer' => [['Turbo-Frame' => 'f1', 'Referer' => 'https://evil.test/https://app.example/']];
+        yield 'scheme mismatch' => [['Turbo-Frame' => 'f1', 'Origin' => 'http://app.example']];
+    }
+
+    /**
+     * @param array<string, string> $headers
+     */
+    #[DataProvider('nonFragmentOrCrossOrigin')]
+    public function testNeverReusesTheHeaderOutsideSameOriginFragments(array $headers): void
+    {
+        [$nonce, $request] = $this->nonceFor($headers);
+
+        self::assertNotSame(self::SENT, $nonce);
+        self::assertMatchesRegularExpression('/^[A-Za-z0-9_-]{24}$/', $nonce);
+        self::assertNull($request->attributes->get(HelpModalNonce::REUSED_ATTRIBUTE));
     }
 
     /**
@@ -66,6 +125,7 @@ final class HelpModalNonceTest extends TestCase
     {
         $request = new Request();
         $request->headers->set(HelpModalNonce::HEADER, $header);
+        $request->headers->set('Turbo-Frame', 'f1');
         $stack = new RequestStack();
         $stack->push($request);
 
