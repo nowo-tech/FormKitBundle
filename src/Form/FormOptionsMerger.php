@@ -542,10 +542,12 @@ final class FormOptionsMerger
     }
 
     /**
-     * If user passed label => false or help => false in field options, remove those keys
-     * so the form component does not use the convention key.
+     * Explicit {@code false} in the field options disables the convention key for that option.
      *
-     * Profile / field_types {@code label: false} is left as boolean false (Symfony suppresses the label).
+     * {@code label: false} is kept as boolean false, which Symfony renders as "no label" (removing it would make
+     * Symfony render the humanized field name). {@code help: false} is removed, as Symfony's {@code help} option
+     * does not accept false (null means "no help"). {@code placeholder: false} is handled by the placeholder
+     * normalisation.
      *
      * @param array<string, mixed> $merged
      * @param array<string, mixed> $options
@@ -554,10 +556,11 @@ final class FormOptionsMerger
      */
     private function removeExplicitFalseConventionKeys(array $merged, array $options): array
     {
-        foreach (['label', 'help'] as $key) {
-            if (array_key_exists($key, $options) && $options[$key] === false) {
-                unset($merged[$key]);
-            }
+        if (array_key_exists('label', $options) && $options['label'] === false) {
+            $merged['label'] = false;
+        }
+        if (array_key_exists('help', $options) && $options['help'] === false) {
+            unset($merged['help']);
         }
 
         return $merged;

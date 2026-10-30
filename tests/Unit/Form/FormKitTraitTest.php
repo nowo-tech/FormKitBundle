@@ -41,6 +41,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\UX\Cropperjs\Form\CropperType;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
+use function array_key_exists;
 use function dirname;
 
 final class FormKitTraitTest extends TestCase
@@ -273,6 +274,21 @@ final class FormKitTraitTest extends TestCase
             ['document', DropzoneType::class],
             ['avatar', CropperType::class],
         ], $calls);
+    }
+
+    public function testExplicitLabelFalseSurvivesTheMerge(): void
+    {
+        $type = $this->createType();
+        $type->setFormOptionsMerger($this->createMerger());
+        $type->setFormTypeMap(new FormTypeMap([]));
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with('internal_note', self::anything(), self::callback(static fn (array $options): bool => ($options['label'] ?? null) === false && !array_key_exists('help', $options)))
+            ->willReturnSelf();
+
+        $type->callAddText($builder, 'internal_note', ['label' => false, 'help' => false]);
     }
 
     /**

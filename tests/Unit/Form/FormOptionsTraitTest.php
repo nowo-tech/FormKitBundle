@@ -920,6 +920,33 @@ final class FormOptionsTraitTest extends TestCase
         $type->run($builder);
     }
 
+    public function testExplicitLabelFalseSurvivesTheMerge(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'nowo_demo';
+            }
+
+            /** @param FormBuilderInterface<mixed> $builder */
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addText($builder, 'internal_note', ['label' => false, 'help' => false]);
+            }
+        };
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with('internal_note', self::anything(), self::callback(static fn (array $options): bool => ($options['label'] ?? null) === false && !array_key_exists('help', $options)))
+            ->willReturnSelf();
+
+        $type->run($builder);
+    }
+
     /**
      * @return list<array{0: string, 1: string}>
      */
@@ -1495,7 +1522,7 @@ final class FormOptionsTraitTest extends TestCase
         self::assertSame('demo_form.full_name.label', $calls[0][2]['label']);
         self::assertSame('email', $calls[1][0]);
         self::assertSame(EmailType::class, $calls[1][1]);
-        self::assertArrayNotHasKey('label', $calls[1][2]);
+        self::assertFalse($calls[1][2]['label']);
     }
 
     public function testBoundBuilderThrowsOutsideWithBuilder(): void

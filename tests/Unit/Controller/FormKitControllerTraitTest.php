@@ -1209,6 +1209,34 @@ final class FormKitControllerTraitTest extends TestCase
         ], $calls);
     }
 
+    public function testExplicitLabelFalseSurvivesTheMerge(): void
+    {
+        $subject = new class($this->createMerger(), new FormTypeMap([])) {
+            use FormKitControllerTrait;
+
+            public function __construct(FormOptionsMerger $merger, FormTypeMap $map)
+            {
+                $this->setFormOptionsMerger($merger);
+                $this->setFormTypeMap($map);
+            }
+
+            /** @param FormBuilderInterface<mixed> $builder */
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addTextType($builder, 'internal_note', ['label' => false, 'help' => false]);
+            }
+        };
+        $subject->setFormKitFormName('controller_contact');
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with('internal_note', self::anything(), self::callback(static fn (array $options): bool => ($options['label'] ?? null) === false && !array_key_exists('help', $options)))
+            ->willReturnSelf();
+
+        $subject->run($builder);
+    }
+
     /**
      * @return list<array{0: string, 1: string}>
      */

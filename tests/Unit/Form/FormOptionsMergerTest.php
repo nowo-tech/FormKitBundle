@@ -245,14 +245,14 @@ final class FormOptionsMergerTest extends TestCase
         self::assertArrayNotHasKey('placeholder', $merged['attr'] ?? []);
     }
 
-    public function testResolveRemovesLabelAndHelpWhenExplicitFalse(): void
+    public function testResolveKeepsLabelFalseAndRemovesHelpWhenExplicitFalse(): void
     {
         $merged = $this->createMerger()->resolve('demo_form', 'name', 'text', [
             'label' => false,
             'help'  => false,
         ]);
 
-        self::assertArrayNotHasKey('label', $merged);
+        self::assertFalse($merged['label']);
         self::assertArrayNotHasKey('help', $merged);
     }
 

@@ -71,6 +71,8 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+**Explicit `label: false` is honoured:** a field option `'label' => false` now reaches Symfony as `false` (no label). Before, Form Kit dropped it and Symfony rendered the humanized field name. Workarounds that re-set `label: false` after the merge (e.g. a local `addKitField()` helper) can be removed once you require this release. If a form relied on the humanized fallback, pass the label text instead of `false`.
+
 New optional helpers `addMilkdownEditor()`, `addAltcha()`, `addBarcode()`, `addDateRange()` (with `*Field` / `*FieldType` variants) and map keys `milkdown`, `altcha`, `barcode`, `date_range`. No host change required; install only the packages you use. If your `nowo_form_kit.type_map` already defines one of these keys, your entry still wins.
 
 ## To 2.16.0

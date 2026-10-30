@@ -74,6 +74,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **ALTCHA validation kept** — `addAltcha*()` default `required` to `true`, so a profile-wide `required: false` cannot remove the proof-of-work constraint; pass `required => false` explicitly to opt out.
 - **`FormTypeMap::NOWO_WIDGETS`** — central list of the nowo-tech widgets (map key, package, helper); a test fails when a widget is missing from the map, `suggest`, the helper trio or the docs table **nowo-tech widgets supported** (USAGE, CONFIGURATION).
 
+### Fixed
+
+- **Explicit `label: false` means "no label" again** — `FormOptionsMerger` used to drop an explicit `'label' => false`, so Symfony rendered the humanized field name instead of no label (contrary to USAGE "Disabling convention for a key"). It now keeps `label: false` on every strategy (`FormKitTrait`, `FormOptionsTrait`, `FormKitControllerTrait`, `addWithDefaults()`); `help: false` is still removed (Symfony's `help` does not accept `false`) and `placeholder: false` still clears the placeholder.
+
 ### Changed
 
 - Dev dependency `nowo-tech/ui-kit-bundle` raised to `^2.15` (ships `DateRangeType`).
