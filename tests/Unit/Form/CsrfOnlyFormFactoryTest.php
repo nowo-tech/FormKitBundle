@@ -114,6 +114,9 @@ final class CsrfOnlyFormFactoryTest extends TestCase
         yield 'get lowercase' => [' get ', 'action'];
         yield 'HEAD' => ['HEAD', 'action'];
         yield 'empty method' => ['  ', 'action'];
+        yield 'OPTIONS' => ['OPTIONS', 'action'];
+        yield 'TRACE' => ['trace', 'action'];
+        yield 'unknown' => ['PURGE', 'action'];
         yield 'empty token id' => ['POST', ''];
         yield 'blank token id' => ['POST', "  \t"];
     }

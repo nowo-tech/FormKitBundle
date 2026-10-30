@@ -18,14 +18,18 @@ use function trim;
 /**
  * Creates lightweight CSRF-only forms for single POST actions.
  *
- * Fails fast (REQ-SEC-004, finding I9): GET/HEAD methods (the token would leak in the URL and the action would be
- * a safe method) and empty CSRF token ids throw {@see InvalidArgumentException}.
+ * Fails fast (REQ-SEC-004, finding I9): methods other than POST / PUT / PATCH / DELETE (GET, HEAD, OPTIONS, TRACE,
+ * empty: the token would leak in the URL or the action would be a safe method) and empty CSRF token ids throw
+ * {@see InvalidArgumentException}.
  *
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
 final readonly class CsrfOnlyFormFactory
 {
+    /** State-changing methods a CSRF-protected action may use (PUT / PATCH / DELETE through `_method`). */
+    private const UNSAFE_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
+
     public function __construct(
         private FormFactoryInterface $formFactory,
     ) {
@@ -120,12 +124,12 @@ final readonly class CsrfOnlyFormFactory
     }
 
     /**
-     * Normalises the method and rejects safe methods: a CSRF-protected action must not be a GET/HEAD request.
+     * Normalises the method and only accepts state-changing methods ({@see UNSAFE_METHODS}).
      */
     private function assertUnsafeMethod(string $method): string
     {
         $normalized = strtoupper(trim($method));
-        if ($normalized === '' || in_array($normalized, ['GET', 'HEAD'], true)) {
+        if (!in_array($normalized, self::UNSAFE_METHODS, true)) {
             throw new InvalidArgumentException(sprintf('CSRF-only forms must use an unsafe HTTP method (POST, PUT, PATCH or DELETE); "%s" given.', $normalized));
         }
 

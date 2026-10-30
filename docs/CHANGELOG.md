@@ -74,8 +74,8 @@ AI security audit (REQ-SEC-004) of v2.15.0 on 2026-10-30: **Pass (good) / Low**;
 - **Help modal portal only moves its own roots (L2).** Elements that merely carry `data-nowo-formkit-help-modal` are no longer relocated to `document.body`.
 - **Browser logger off by default (I7).** `help-modal.js` diagnostics need `window.NOWO_FORM_KIT_DEBUG = true`; a payload parse error logs the length only, never the raw attribute.
 - **Smaller dist archive (I8).** New `.gitattributes` `export-ignore`s `demo/` (demo `APP_SECRET`, `0.0.0.0` port), `tests/`, `specs/`, `.specify/`, `.scripts/`, `.githooks/`, the e2e suite, Vitest specs and CI / tooling files.
-- **CSRF-only forms reject safe methods and empty token ids (I9).** `CsrfOnlyFormFactory::create()` / `createNamed()` / `createWithFields()` and `csrf_action_form()` throw `InvalidArgumentException` for GET / HEAD / an empty method and for an empty or blank CSRF token id.
-- **`stateless_csrf.form_types` rejects base types (I4).** `FormType` and every type under `Symfony\Component\Form\` / `Symfony\Bridge\` (e.g. `TextType`, `EntityType`) fail configuration: a stateless token id there would apply to every form.
+- **CSRF-only forms reject safe methods and empty token ids (I9).** `CsrfOnlyFormFactory::create()` / `createNamed()` / `createWithFields()` and `csrf_action_form()` throw `InvalidArgumentException` for any method other than POST / PUT / PATCH / DELETE (GET, HEAD, OPTIONS, TRACE, empty…) and for an empty or blank CSRF token id.
+- **`stateless_csrf.form_types` rejects base types (I4).** `FormType` and every type under `Symfony\Component\Form\` / `Symfony\Bridge\` (e.g. `TextType`, `EntityType`) fail configuration: a stateless token id there would apply to every form. `%env()%` entries are rejected too (they would bypass the check).
 
 ### Changed
 

@@ -251,6 +251,11 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('nowo_form_kit.stateless_csrf.form_types', $formTypes);
 
         foreach ($formTypes as $index => $formType) {
+            // REQ-SEC-004 (I4): FormPass keys the tag by its raw value, so an %env()% entry would bypass the base-type
+            // check and never match a real type: require literal FQCNs.
+            if ($container->resolveEnvPlaceholders($formType) !== $formType) {
+                throw new InvalidArgumentException('nowo_form_kit.stateless_csrf.form_types must list literal form type FQCNs; environment variables are not supported.');
+            }
             // Explicit tag on purpose (REQ-SF-003 rule 4): the extended type comes from configuration, one service per
             // listed type, which neither an attribute nor autoconfiguration (static getExtendedTypes()) can express.
             $container->register('nowo_form_kit.stateless_csrf_extension.' . $index, StatelessCsrfTokenIdExtension::class)
