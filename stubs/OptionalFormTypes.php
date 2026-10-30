@@ -151,3 +151,36 @@ namespace Nowo\SlideToConfirmBundle\Form\Type {
     {
     }
 }
+
+namespace Nowo\MilkdownEditorBundle\Form {
+    use Symfony\Component\Form\AbstractType;
+
+    /**
+     * @extends \Symfony\Component\Form\AbstractType<mixed>
+     */
+    class MilkdownEditorType extends AbstractType
+    {
+    }
+}
+
+namespace Nowo\AltchaTypeBundle\Form\Type {
+    use Symfony\Component\Form\AbstractType;
+
+    /**
+     * @extends \Symfony\Component\Form\AbstractType<mixed>
+     */
+    class AltchaType extends AbstractType
+    {
+    }
+}
+
+namespace Nowo\BarcodeInputBundle\Form {
+    use Symfony\Component\Form\AbstractType;
+
+    /**
+     * @extends \Symfony\Component\Form\AbstractType<mixed>
+     */
+    class BarcodeType extends AbstractType
+    {
+    }
+}

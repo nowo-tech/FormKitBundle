@@ -7,6 +7,8 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use InvalidArgumentException;
 use LogicException;
+use Nowo\AltchaTypeBundle\Form\Type\AltchaType;
+use Nowo\BarcodeInputBundle\Form\BarcodeType;
 use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
@@ -19,6 +21,7 @@ use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Nowo\OtpInputBundle\Form\OtpType;
 use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
 use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
@@ -26,6 +29,7 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use Nowo\UiKitBundle\Form\DateRangeType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -916,6 +920,33 @@ final class FormOptionsTraitTest extends TestCase
         $type->run($builder);
     }
 
+    public function testExplicitLabelFalseSurvivesTheMerge(): void
+    {
+        $type = new class {
+            use FormOptionsTrait;
+
+            public function getBlockPrefix(): string
+            {
+                return 'nowo_demo';
+            }
+
+            /** @param FormBuilderInterface<mixed> $builder */
+            public function run(FormBuilderInterface $builder): void
+            {
+                $this->addText($builder, 'internal_note', ['label' => false, 'help' => false]);
+            }
+        };
+        $type->setFormOptionsMerger($this->createMerger());
+
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $builder->expects(self::once())
+            ->method('add')
+            ->with('internal_note', self::anything(), self::callback(static fn (array $options): bool => ($options['label'] ?? null) === false && !array_key_exists('help', $options)))
+            ->willReturnSelf();
+
+        $type->run($builder);
+    }
+
     /**
      * @return list<array{0: string, 1: string}>
      */
@@ -929,8 +960,11 @@ final class FormOptionsTraitTest extends TestCase
             ['addIconSelector', 'nowo-tech/icon-selector-bundle'],
             ['addCkeditor5Editor', 'nowo-tech/ckeditor5-editor-bundle'],
             ['addTiptapEditor', 'nowo-tech/tiptap-editor-bundle'],
+            ['addMilkdownEditor', 'nowo-tech/milkdown-editor-bundle'],
             ['addTagInput', 'nowo-tech/tag-input-bundle'],
             ['addSlideToConfirm', 'nowo-tech/slide-to-confirm-bundle'],
+            ['addAltcha', 'nowo-tech/altcha-type-bundle'],
+            ['addBarcode', 'nowo-tech/barcode-input-bundle'],
         ];
     }
 
@@ -985,8 +1019,12 @@ final class FormOptionsTraitTest extends TestCase
                     $this->addIconSelectorField('icon');
                     $this->addCkeditor5EditorField('ckeditor5');
                     $this->addTiptapEditorField('tiptap');
+                    $this->addMilkdownEditorField('milkdown');
                     $this->addTagInputField('tags');
                     $this->addSlideToConfirmField('confirm');
+                    $this->addAltchaField('altcha');
+                    $this->addBarcodeField('barcode');
+                    $this->addDateRangeField('period');
                 });
             }
         };
@@ -994,12 +1032,14 @@ final class FormOptionsTraitTest extends TestCase
         $type->setFormOptionsMerger($this->createMerger());
 
         $calls   = [];
+        $byName  = [];
         $builder = $this->createMock(FormBuilderInterface::class);
-        $builder->expects(self::exactly(9))
+        $builder->expects(self::exactly(13))
             ->method('add')
-            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): FormBuilderInterface {
+            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, &$byName, $builder): FormBuilderInterface {
                 self::assertIsArray($opts);
-                $calls[] = [$name, $fqcn];
+                $byName[$name] = $opts;
+                $calls[]       = [$name, $fqcn];
 
                 return $builder;
             });
@@ -1014,9 +1054,14 @@ final class FormOptionsTraitTest extends TestCase
             ['icon', IconSelectorType::class],
             ['ckeditor5', Ckeditor5EditorType::class],
             ['tiptap', TiptapEditorType::class],
+            ['milkdown', MilkdownEditorType::class],
             ['tags', TagType::class],
             ['confirm', SlideToConfirmType::class],
+            ['altcha', AltchaType::class],
+            ['barcode', BarcodeType::class],
+            ['period', DateRangeType::class],
         ], $calls);
+        self::assertTrue($byName['altcha']['required']);
     }
 
     public function testAddDropzoneDelegatesWhenStubPresent(): void
@@ -1477,7 +1522,7 @@ final class FormOptionsTraitTest extends TestCase
         self::assertSame('demo_form.full_name.label', $calls[0][2]['label']);
         self::assertSame('email', $calls[1][0]);
         self::assertSame(EmailType::class, $calls[1][1]);
-        self::assertArrayNotHasKey('label', $calls[1][2]);
+        self::assertFalse($calls[1][2]['label']);
     }
 
     public function testBoundBuilderThrowsOutsideWithBuilder(): void

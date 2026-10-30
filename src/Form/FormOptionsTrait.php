@@ -7,6 +7,8 @@ namespace Nowo\FormKitBundle\Form;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use InvalidArgumentException;
 use LogicException;
+use Nowo\AltchaTypeBundle\Form\Type\AltchaType;
+use Nowo\BarcodeInputBundle\Form\BarcodeType;
 use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Attribute\FormKitConfig;
 use Nowo\FormKitBundle\Form\DataTransformer\BoolModelTransformer;
@@ -17,6 +19,7 @@ use Nowo\FormKitBundle\Form\DataTransformer\SwitchModelTransformer;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Nowo\OtpInputBundle\Form\OtpType;
 use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
 use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
@@ -25,6 +28,7 @@ use Nowo\SelectAllChoiceBundle\NowoSelectAllChoiceBundle;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use Nowo\UiKitBundle\Form\DateRangeType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -945,6 +949,25 @@ trait FormOptionsTrait
     }
 
     /**
+     * Optional nowo-tech Milkdown Markdown editor. Requires `nowo-tech/milkdown-editor-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addMilkdownEditor(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, MilkdownEditorType::class, 'nowo-tech/milkdown-editor-bundle', 'addMilkdownEditor', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addMilkdownEditorField(string $name, array $options = []): void
+    {
+        $this->addMilkdownEditor($this->boundBuilder(), $name, $options);
+    }
+
+    /**
      * Optional nowo-tech Tagify tags field. Requires `nowo-tech/tag-input-bundle`.
      *
      * @param FormBuilderInterface<mixed> $builder
@@ -980,6 +1003,64 @@ trait FormOptionsTrait
     protected function addSlideToConfirmField(string $name, array $options = []): void
     {
         $this->addSlideToConfirm($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech ALTCHA proof-of-work captcha (unmapped by default). `required` defaults to true here so a
+     * profile-wide `required: false` cannot drop the proof-of-work check; pass `required => false` to opt out. Requires `nowo-tech/altcha-type-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addAltcha(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, AltchaType::class, 'nowo-tech/altcha-type-bundle', 'addAltcha', $options + ['required' => true]);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addAltchaField(string $name, array $options = []): void
+    {
+        $this->addAltcha($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech barcode / QR input with camera scanner. Requires `nowo-tech/barcode-input-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addBarcode(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, BarcodeType::class, 'nowo-tech/barcode-input-bundle', 'addBarcode', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addBarcodeField(string $name, array $options = []): void
+    {
+        $this->addBarcode($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech date range (from/to) filter field (ui-kit-bundle ^2.15.0). Requires `nowo-tech/ui-kit-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addDateRange(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalSuggestedType($builder, $name, DateRangeType::class, 'nowo-tech/ui-kit-bundle', 'addDateRange', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addDateRangeField(string $name, array $options = []): void
+    {
+        $this->addDateRange($this->boundBuilder(), $name, $options);
     }
 
     /**

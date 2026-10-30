@@ -76,11 +76,11 @@ class FormOptionsMergerTest extends TestCase
         self::assertArrayNotHasKey('placeholder', $options['attr']);
     }
 
-    public function testResolveLabelFalseRemovesLabel(): void
+    public function testResolveLabelFalseKeepsLabelFalse(): void
     {
         $options = $this->merger->resolve('user_profile', 'internal_note', 'text', ['label' => false]);
 
-        self::assertArrayNotHasKey('label', $options);
+        self::assertFalse($options['label']);
     }
 
     public function testResolveDoesNotPassRequiredLabelSuffixToType(): void

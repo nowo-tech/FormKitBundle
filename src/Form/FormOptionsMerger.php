@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
@@ -74,6 +75,16 @@ final class FormOptionsMerger
         ChoiceType::class, EnumType::class, CountryType::class, CurrencyType::class,
         LanguageType::class, LocaleType::class, TimezoneType::class,
         'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
+    ];
+
+    /**
+     * Text-like widgets whose own root {@code placeholder} option configures a JavaScript editor: after the usual
+     * normalisation the resolved {@code attr.placeholder} is also copied back to the root option.
+     *
+     * @var list<string>
+     */
+    private const ROOT_PLACEHOLDER_TYPES = [
+        'milkdown', 'milkdown_editor', MilkdownEditorType::class,
     ];
 
     /**
@@ -232,6 +243,7 @@ final class FormOptionsMerger
         }
 
         $merged = $this->removeExplicitFalseConventionKeys($merged, $options);
+        $merged = $this->copyPlaceholderToRoot($merged, $type);
 
         $constraintDefs = array_values(array_merge($typeConstraintDefs, $formConstraintDefs, $optionsConstraints));
         if ($constraintDefs !== []) {
@@ -444,6 +456,27 @@ final class FormOptionsMerger
     }
 
     /**
+     * Copies {@code attr.placeholder} to the root option for {@see self::ROOT_PLACEHOLDER_TYPES} (e.g. Milkdown).
+     *
+     * @param array<string, mixed> $merged
+     *
+     * @return array<string, mixed>
+     */
+    private function copyPlaceholderToRoot(array $merged, string $type): array
+    {
+        if (!in_array($type, self::ROOT_PLACEHOLDER_TYPES, true)
+            && !in_array($this->formTypeMap?->resolve($type), self::ROOT_PLACEHOLDER_TYPES, true)) {
+            return $merged;
+        }
+        $placeholder = $this->attrOf($merged)['placeholder'] ?? null;
+        if (is_string($placeholder)) {
+            $merged['placeholder'] = $placeholder;
+        }
+
+        return $merged;
+    }
+
+    /**
      * @param array<string, mixed> $options
      */
     private function hasAttrPlaceholder(array $options): bool
@@ -509,10 +542,12 @@ final class FormOptionsMerger
     }
 
     /**
-     * If user passed label => false or help => false in field options, remove those keys
-     * so the form component does not use the convention key.
+     * Explicit {@code false} in the field options disables the convention key for that option.
      *
-     * Profile / field_types {@code label: false} is left as boolean false (Symfony suppresses the label).
+     * {@code label: false} is kept as boolean false, which Symfony renders as "no label" (removing it would make
+     * Symfony render the humanized field name). {@code help: false} is removed, as Symfony's {@code help} option
+     * does not accept false (null means "no help"). {@code placeholder: false} is handled by the placeholder
+     * normalisation.
      *
      * @param array<string, mixed> $merged
      * @param array<string, mixed> $options
@@ -521,10 +556,11 @@ final class FormOptionsMerger
      */
     private function removeExplicitFalseConventionKeys(array $merged, array $options): array
     {
-        foreach (['label', 'help'] as $key) {
-            if (array_key_exists($key, $options) && $options[$key] === false) {
-                unset($merged[$key]);
-            }
+        if (array_key_exists('label', $options) && $options['label'] === false) {
+            $merged['label'] = false;
+        }
+        if (array_key_exists('help', $options) && $options['help'] === false) {
+            unset($merged['help']);
         }
 
         return $merged;

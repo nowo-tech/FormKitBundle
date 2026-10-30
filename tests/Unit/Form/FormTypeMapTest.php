@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Tests\Unit\Form;
 
+use Nowo\AltchaTypeBundle\Form\Type\AltchaType;
+use Nowo\BarcodeInputBundle\Form\BarcodeType;
 use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Nowo\OtpInputBundle\Form\OtpType;
 use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
 use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
@@ -14,6 +17,7 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use Nowo\UiKitBundle\Form\DateRangeType;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -98,5 +102,9 @@ final class FormTypeMapTest extends TestCase
         self::assertSame(TiptapEditorType::class, $map->resolve('tiptap'));
         self::assertSame(TagType::class, $map->resolve('tag'));
         self::assertSame(SlideToConfirmType::class, $map->resolve('slide_to_confirm'));
+        self::assertSame(MilkdownEditorType::class, $map->resolve('milkdown'));
+        self::assertSame(AltchaType::class, $map->resolve('altcha'));
+        self::assertSame(BarcodeType::class, $map->resolve('barcode'));
+        self::assertSame(DateRangeType::class, $map->resolve('date_range'));
     }
 }

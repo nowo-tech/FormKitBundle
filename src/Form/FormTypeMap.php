@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Form;
 
+use Nowo\AltchaTypeBundle\Form\Type\AltchaType;
+use Nowo\BarcodeInputBundle\Form\BarcodeType;
 use Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType;
 use Nowo\IconSelectorBundle\Form\IconSelectorType;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Nowo\OtpInputBundle\Form\OtpType;
 use Nowo\PasswordStrengthBundle\Form\PasswordStrengthType;
 use Nowo\PasswordToggleBundle\Form\Type\PasswordType as PasswordToggleType;
@@ -13,6 +16,7 @@ use Nowo\PhoneInputBundle\Form\Type\PhoneType;
 use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
+use Nowo\UiKitBundle\Form\DateRangeType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -114,8 +118,35 @@ final class FormTypeMap
         'icon_selector'     => IconSelectorType::class,
         'ckeditor5'         => Ckeditor5EditorType::class,
         'tiptap'            => TiptapEditorType::class,
+        'milkdown'          => MilkdownEditorType::class,
         'tag'               => TagType::class,
         'slide_to_confirm'  => SlideToConfirmType::class,
+        'altcha'            => AltchaType::class,
+        'barcode'           => BarcodeType::class,
+        'date_range'        => DateRangeType::class,
+    ];
+
+    /**
+     * Central list of the nowo-tech form widgets: map key => [Composer package, trait helper].
+     * Each one is an OPTIONAL entry, a Composer `suggest`, a helper trio on the traits
+     * (`<helper>()`, `<helper>Field()`, `<helper>FieldType()`) and a row of the docs table; a test guards it.
+     *
+     * @var array<string, array{0: string, 1: string}>
+     */
+    public const NOWO_WIDGETS = [
+        'otp'               => ['nowo-tech/otp-input-bundle', 'addOtp'],
+        'phone'             => ['nowo-tech/phone-input-bundle', 'addPhone'],
+        'password_toggle'   => ['nowo-tech/password-toggle-bundle', 'addPasswordToggle'],
+        'password_strength' => ['nowo-tech/password-strength-bundle', 'addPasswordStrength'],
+        'icon_selector'     => ['nowo-tech/icon-selector-bundle', 'addIconSelector'],
+        'ckeditor5'         => ['nowo-tech/ckeditor5-editor-bundle', 'addCkeditor5Editor'],
+        'tiptap'            => ['nowo-tech/tiptap-editor-bundle', 'addTiptapEditor'],
+        'milkdown'          => ['nowo-tech/milkdown-editor-bundle', 'addMilkdownEditor'],
+        'tag'               => ['nowo-tech/tag-input-bundle', 'addTagInput'],
+        'slide_to_confirm'  => ['nowo-tech/slide-to-confirm-bundle', 'addSlideToConfirm'],
+        'altcha'            => ['nowo-tech/altcha-type-bundle', 'addAltcha'],
+        'barcode'           => ['nowo-tech/barcode-input-bundle', 'addBarcode'],
+        'date_range'        => ['nowo-tech/ui-kit-bundle', 'addDateRange'],
     ];
 
     /** @var array<string, string> */

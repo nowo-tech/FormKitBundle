@@ -141,3 +141,36 @@ if (!class_exists(SlideToConfirmType::class)) {
     {
     }
 }
+
+namespace Nowo\MilkdownEditorBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+
+if (!class_exists(MilkdownEditorType::class)) {
+    /** @extends AbstractType<mixed> */
+    final class MilkdownEditorType extends AbstractType
+    {
+    }
+}
+
+namespace Nowo\AltchaTypeBundle\Form\Type;
+
+use Symfony\Component\Form\AbstractType;
+
+if (!class_exists(AltchaType::class)) {
+    /** @extends AbstractType<mixed> */
+    final class AltchaType extends AbstractType
+    {
+    }
+}
+
+namespace Nowo\BarcodeInputBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+
+if (!class_exists(BarcodeType::class)) {
+    /** @extends AbstractType<mixed> */
+    final class BarcodeType extends AbstractType
+    {
+    }
+}

@@ -14,6 +14,7 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 - [Money fields (`addMoneyType`)](#money-fields-addmoneytype)
 - [Example with multiple profiles](#example-with-multiple-profiles)
 - [Suggested optional Composer packages](#suggested-optional-composer-packages)
+  - [nowo-tech widgets supported](#nowo-tech-widgets-supported)
 - [Optional and custom types (type_map)](#optional-and-custom-types-type_map)
 - [Using a specific profile in a form type](#using-a-specific-profile-in-a-form-type)
 
@@ -264,8 +265,12 @@ The bundle core has no hard dependency on UX or third-party form integrations. C
 | **nowo-tech/icon-selector-bundle** | `addIconSelector()` / `addIconSelectorField()` / `addIconSelectorFieldType()` (`icon_selector`) |
 | **nowo-tech/ckeditor5-editor-bundle** | `addCkeditor5Editor()` / `addCkeditor5EditorField()` / `addCkeditor5EditorFieldType()` (`ckeditor5`; distinct from FOS `addCKEditorField()`) |
 | **nowo-tech/tiptap-editor-bundle** | `addTiptapEditor()` / `addTiptapEditorField()` / `addTiptapEditorFieldType()` (`tiptap`) |
+| **nowo-tech/milkdown-editor-bundle** | `addMilkdownEditor()` / `addMilkdownEditorField()` / `addMilkdownEditorFieldType()` (`milkdown`; Markdown) |
 | **nowo-tech/tag-input-bundle** | `addTagInput()` / `addTagInputField()` / `addTagInputFieldType()` (`tag`) |
 | **nowo-tech/slide-to-confirm-bundle** | `addSlideToConfirm()` / `addSlideToConfirmField()` / `addSlideToConfirmFieldType()` (`slide_to_confirm`) |
+| **nowo-tech/altcha-type-bundle** | `addAltcha()` / `addAltchaField()` / `addAltchaFieldType()` (`altcha`) |
+| **nowo-tech/barcode-input-bundle** | `addBarcode()` / `addBarcodeField()` / `addBarcodeFieldType()` (`barcode`) |
+| **nowo-tech/ui-kit-bundle** | ^2.15.0: `addDateRange()` / `addDateRangeField()` / `addDateRangeFieldType()` (`date_range`); ^2.5.3: locale tabs through the UiKit partial |
 | **friendsofsymfony/ckeditor-bundle** | `addCKEditorField()` / `addCKEditorFieldType()` (CKEditor 4) |
 | **symfony/ux-autocomplete** | Use with `addAutocompleteField()` / `addAutocompleteFieldType()` and your autocomplete FormType FQCN |
 | **symfony/ux-dropzone** | `addDropzone()` / `addDropzoneField()` / `addDropzoneFieldType()` |
@@ -275,13 +280,40 @@ The bundle core has no hard dependency on UX or third-party form integrations. C
 
 Install only what you need; each helper documents runtime requirements (e.g. `LogicException` if a suggested class is missing).
 
+### nowo-tech widgets supported
+
+| Map key | Composer package | Form type | `FormKitTrait` / `FormOptionsTrait` | `FormKitControllerTrait` | Notes |
+|---------|------------------|-----------|-------------------------------------|--------------------------|-------|
+| `otp` | nowo-tech/otp-input-bundle | `Nowo\OtpInputBundle\Form\OtpType` | `addOtp()` / `addOtpField()` | `addOtpFieldType()` | |
+| `phone` | nowo-tech/phone-input-bundle | `Nowo\PhoneInputBundle\Form\Type\PhoneType` | `addPhone()` / `addPhoneField()` | `addPhoneFieldType()` | Country picker labels use domain `messages` |
+| `password_toggle` | nowo-tech/password-toggle-bundle | `Nowo\PasswordToggleBundle\Form\Type\PasswordType` | `addPasswordToggle()` / `addPasswordToggleField()` | `addPasswordToggleFieldType()` | Distinct from Symfony `addPassword()` |
+| `password_strength` | nowo-tech/password-strength-bundle | `Nowo\PasswordStrengthBundle\Form\PasswordStrengthType` | `addPasswordStrength()` / `addPasswordStrengthField()` | `addPasswordStrengthFieldType()` | |
+| `icon_selector` | nowo-tech/icon-selector-bundle | `Nowo\IconSelectorBundle\Form\IconSelectorType` | `addIconSelector()` / `addIconSelectorField()` | `addIconSelectorFieldType()` | |
+| `ckeditor5` | nowo-tech/ckeditor5-editor-bundle | `Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType` | `addCkeditor5Editor()` / `addCkeditor5EditorField()` | `addCkeditor5EditorFieldType()` | Distinct from FOS `addCKEditorField()` (CKEditor 4) |
+| `tiptap` | nowo-tech/tiptap-editor-bundle | `Nowo\TiptapEditorBundle\Form\TiptapEditorType` | `addTiptapEditor()` / `addTiptapEditorField()` | `addTiptapEditorFieldType()` | |
+| `milkdown` | nowo-tech/milkdown-editor-bundle | `Nowo\MilkdownEditorBundle\Form\MilkdownEditorType` | `addMilkdownEditor()` / `addMilkdownEditorField()` | `addMilkdownEditorFieldType()` | Markdown value; the resolved placeholder (convention key or explicit) is also passed as the root `placeholder` option the editor reads; options `profile`, `features`, `theme`, `min_height`, `placeholder`, `suggestions`, `upload_url`, `collaboration` (see the bundle docs) |
+| `tag` | nowo-tech/tag-input-bundle | `Nowo\TagInputBundle\Form\TagType` | `addTagInput()` / `addTagInputField()` | `addTagInputFieldType()` | Do not pass `placeholder => false` |
+| `slide_to_confirm` | nowo-tech/slide-to-confirm-bundle | `Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType` | `addSlideToConfirm()` / `addSlideToConfirmField()` | `addSlideToConfirmFieldType()` | `mapped: false` by default |
+| `altcha` | nowo-tech/altcha-type-bundle | `Nowo\AltchaTypeBundle\Form\Type\AltchaType` | `addAltcha()` / `addAltchaField()` | `addAltchaFieldType()` | ALTCHA proof-of-work; `mapped: false`, `label: false` by default; the helpers default `required` to `true` so a profile-wide `required: false` cannot drop the check (pass `required => false` to opt out); options `profile`, `floating`, `hide_logo`, `hide_footer`, `challenge_url` |
+| `barcode` | nowo-tech/barcode-input-bundle | `Nowo\BarcodeInputBundle\Form\BarcodeType` | `addBarcode()` / `addBarcodeField()` | `addBarcodeFieldType()` | Text input with camera scanner; options `enable_scanner`, `formats`, `max_length`, `facing_mode`, `trim_whitespace` |
+| `date_range` | nowo-tech/ui-kit-bundle (^2.15.0) | `Nowo\UiKitBundle\Form\DateRangeType` | `addDateRange()` / `addDateRangeField()` | `addDateRangeFieldType()` | From/to filter field (`['from' => ?string, 'to' => ?string]`); options `from_name`, `to_name`, `placeholder`, `picker` |
+
+Each helper throws `LogicException` when its package is not installed; on `FormKitTrait` the map key can also be
+remapped in `nowo_form_kit.type_map`. `FormTypeMap::NOWO_WIDGETS` is the central list of these widgets and a test
+fails when one is missing from the map, the Composer `suggest`, the helpers or this table. The **Select all** choice
+(`nowo-tech/select-all-choice-bundle`) is a `ChoiceType` extension, not a map key: use
+`addMultiSelectSelectAll()` / `addMultiSelectSelectAllField()` / `addMultiSelectSelectAllType()`.
+
+Editors (CKEditor 5, Tiptap, Milkdown) inside locale tabs or other panels mount when their panel shows; see
+[Locale tabs](USAGE.md#locale-tabs-one-tab-per-language).
+
 ## Optional and custom types (type_map)
 
 The bundle registers a **FormTypeMap** that resolves snake_case type names to form type FQCNs.
 
 **Built-in (always):** `text`, `email`, `textarea`, `password`, `url`, `integer`, `number`, `checkbox`, `choice`, `date`, `datetime`, `time`, `birthday`, `week`, `money`, `percent`, `currency`, `locale`, `language`, `country`, `timezone`, `file`, `hidden`, `tel`, `color`, `range`, `collection`, `repeated`, `submit`, `button`, `reset`, `date_interval`.
 
-**Optional (when the class exists):** `dropzone` (UX Dropzone), `cropper` (UX Cropper.js), `translations` (A2lix), `otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `tag`, `slide_to_confirm` (nowo-tech widgets). You can add more in config:
+**Optional (when the class exists):** `dropzone` (UX Dropzone), `cropper` (UX Cropper.js), `translations` (A2lix), `otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `milkdown`, `tag`, `slide_to_confirm`, `altcha`, `barcode`, `date_range` (nowo-tech widgets; see [nowo-tech widgets supported](#nowo-tech-widgets-supported)). You can add more in config:
 
 ```yaml
 nowo_form_kit:

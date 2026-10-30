@@ -44,7 +44,7 @@ final class HiddenFieldsCsrfTypeTest extends TestCase
             ->with(
                 'enabled',
                 HiddenType::class,
-                self::callback(static fn (array $options): bool => !array_key_exists('label', $options)
+                self::callback(static fn (array $options): bool => $options['label'] === false
                     && !array_key_exists('help', $options)
                     && !array_key_exists('placeholder', $options)
                     && $options['required'] === false

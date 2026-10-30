@@ -7,6 +7,7 @@
 - [FormOptionsMerger service](#formoptionsmerger-service)
 - [Controller strategy](#controller-strategy)
 - [Options strategy (FormOptionsTrait)](#options-strategy-formoptionstrait)
+- [nowo-tech widgets supported](#nowo-tech-widgets-supported)
 - [Conditional fields (show one field or another)](#conditional-fields-show-one-field-or-another)
   - [1. Build-time (`if` on known options / data)](#1-build-time-if-on-known-options--data)
   - [2. Form events (`PRE_SET_DATA` / `PRE_SUBMIT`)](#2-form-events-pre_set_data--pre_submit)
@@ -105,7 +106,7 @@ You can inject **FormOptionsMerger** and call `resolve($formName, $fieldName, $t
 
 If you build forms in controllers (without a Symfony `FormType`), use this trait.
 
-It provides helpers like `addTextType()`, `addEmailType()`, `addChoiceType()`, choice presets (`addSelectType`, `addMultiSelectType`, `addChoiceRadiosType`, `addChoiceCheckboxesType`, `addMultiSelectSelectAllType`), `addAutocompleteFieldType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, optional nowo-tech widgets (`addOtpFieldType`, `addPhoneFieldType`, `addPasswordToggleFieldType`, `addPasswordStrengthFieldType`, `addIconSelectorFieldType`, `addCkeditor5EditorFieldType`, `addTiptapEditorFieldType`, `addTagInputFieldType`, `addSlideToConfirmFieldType`), plus transformer presets like:
+It provides helpers like `addTextType()`, `addEmailType()`, `addChoiceType()`, choice presets (`addSelectType`, `addMultiSelectType`, `addChoiceRadiosType`, `addChoiceCheckboxesType`, `addMultiSelectSelectAllType`), `addAutocompleteFieldType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, optional nowo-tech widgets (`addOtpFieldType`, `addPhoneFieldType`, `addPasswordToggleFieldType`, `addPasswordStrengthFieldType`, `addIconSelectorFieldType`, `addCkeditor5EditorFieldType`, `addTiptapEditorFieldType`, `addMilkdownEditorFieldType`, `addTagInputFieldType`, `addSlideToConfirmFieldType`, `addAltchaFieldType`, `addBarcodeFieldType`, `addDateRangeFieldType`; see [nowo-tech widgets supported](#nowo-tech-widgets-supported)), plus transformer presets like:
 - `addSwitchType()` (model int/bool <-> ChoiceType switch)
 - `addJsonType()` (model array <-> JSON textarea)
 - `addBoolType()` (model 0/1 <-> CheckboxType)
@@ -211,7 +212,7 @@ $this->buildFormFromArray($builder, [
 
 **Choice presets** (wrap `ChoiceType` with common `expanded` / `multiple` combinations): `addSelect` / `addSelectField`, `addMultiSelect` / `addMultiSelectField`, `addChoiceRadios` / `addChoiceRadiosField`, `addChoiceCheckboxes` / `addChoiceCheckboxesField`. Radios and checkbox groups clear the global `form-control` class on the widget root and disable `placeholder` by default so Bootstrap 5 `form-check` markup renders correctly. **`addMultiSelectSelectAll`** / **`addMultiSelectSelectAllField`** adds `select_all: true` for **nowo-tech/select-all-choice-bundle**; it throws `LogicException` if that bundle is not installed (use `addMultiSelect` instead, or install the package — see Composer **suggest** in the bundle’s `composer.json`).
 
-**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle** (CKEditor 4). **`addDropzone` / `addDropzoneField`** require **symfony/ux-dropzone**. **`addCropper` / `addCropperField`** require **symfony/ux-cropperjs** (pass Cropper options such as `public_url`). **Nowo-tech widgets** (optional Composer **suggest**, `LogicException` if missing): `addOtp`, `addPhone`, `addPasswordToggle` (not Symfony `addPassword()`), `addPasswordStrength`, `addIconSelector`, `addCkeditor5Editor` (not FOS `addCKEditorField()`), `addTiptapEditor`, `addTagInput` (do not pass `placeholder => false`; `TagType` expects a string), `addSlideToConfirm` (defaults to `mapped: false`; set `mapped => true` to bind the value). All run through the same merge pipeline. Inside `withBuilder()`, use the `*Field` variants or pass `$this->boundBuilder()`. Generic bound helper: `addTypedField($name, $typeFqcn, $options)`. On **FormKitTrait**, the same helpers resolve snake_case entries in **FormTypeMap** (`otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `tag`, `slide_to_confirm`, plus `dropzone` / `cropper`). Some widgets render Twig that translates in domain **`messages`** (e.g. PhoneInput country picker, SlideToConfirm gate labels); add those keys to your catalogue or set each field’s `translation_domain` to the bundle domain.
+**FQCN helpers:** `addAutocompleteField($builder, $name, $formTypeFqcn, $options)` for Symfony UX Autocomplete (or any custom form type class). **`addCKEditorField`** requires **friendsofsymfony/ckeditor-bundle** (CKEditor 4). **`addDropzone` / `addDropzoneField`** require **symfony/ux-dropzone**. **`addCropper` / `addCropperField`** require **symfony/ux-cropperjs** (pass Cropper options such as `public_url`). **Nowo-tech widgets** (optional Composer **suggest**, `LogicException` if missing): `addOtp`, `addPhone`, `addPasswordToggle` (not Symfony `addPassword()`), `addPasswordStrength`, `addIconSelector`, `addCkeditor5Editor` (not FOS `addCKEditorField()`), `addTiptapEditor`, `addMilkdownEditor` (Markdown), `addTagInput` (do not pass `placeholder => false`; `TagType` expects a string), `addSlideToConfirm` (defaults to `mapped: false`; set `mapped => true` to bind the value), `addAltcha` (ALTCHA, `mapped: false` by default), `addBarcode`, `addDateRange` (ui-kit-bundle ^2.15.0). All run through the same merge pipeline. Inside `withBuilder()`, use the `*Field` variants or pass `$this->boundBuilder()`. Generic bound helper: `addTypedField($name, $typeFqcn, $options)`. On **FormKitTrait**, the same helpers resolve snake_case entries in **FormTypeMap** (`otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `milkdown`, `tag`, `slide_to_confirm`, `altcha`, `barcode`, `date_range`, plus `dropzone` / `cropper`). Some widgets render Twig that translates in domain **`messages`** (e.g. PhoneInput country picker, SlideToConfirm gate labels); add those keys to your catalogue or set each field’s `translation_domain` to the bundle domain.
 
 **Model transformers:** `addSwitchType` / `addSwitchField`, `addJsonType` / `addJsonField`, `addBoolType` / `addBoolField`, `addMoneyType` / `addMoneyField`, `addCsvType` / `addCsvField`.
 
@@ -219,7 +220,34 @@ $this->buildFormFromArray($builder, [
 
 The form block prefix (e.g. `user_profile` for `UserProfileType`) is used automatically. Field names are used as-is for the translation key segment (use snake_case for consistency: `full_name`, `email_address`).
 
-Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` / `*FieldType` suffix (e.g. `addSelectType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, `addOtpFieldType`, `addCkeditor5EditorFieldType`).
+Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` / `*FieldType` suffix (e.g. `addSelectType`, `addCKEditorFieldType`, `addDropzoneFieldType`, `addCropperFieldType`, `addOtpFieldType`, `addCkeditor5EditorFieldType`, `addMilkdownEditorFieldType`).
+
+## nowo-tech widgets supported
+
+| Map key | Composer package | Form type | `FormKitTrait` / `FormOptionsTrait` | `FormKitControllerTrait` | Notes |
+|---------|------------------|-----------|-------------------------------------|--------------------------|-------|
+| `otp` | nowo-tech/otp-input-bundle | `Nowo\OtpInputBundle\Form\OtpType` | `addOtp()` / `addOtpField()` | `addOtpFieldType()` | |
+| `phone` | nowo-tech/phone-input-bundle | `Nowo\PhoneInputBundle\Form\Type\PhoneType` | `addPhone()` / `addPhoneField()` | `addPhoneFieldType()` | Country picker labels use domain `messages` |
+| `password_toggle` | nowo-tech/password-toggle-bundle | `Nowo\PasswordToggleBundle\Form\Type\PasswordType` | `addPasswordToggle()` / `addPasswordToggleField()` | `addPasswordToggleFieldType()` | Distinct from Symfony `addPassword()` |
+| `password_strength` | nowo-tech/password-strength-bundle | `Nowo\PasswordStrengthBundle\Form\PasswordStrengthType` | `addPasswordStrength()` / `addPasswordStrengthField()` | `addPasswordStrengthFieldType()` | |
+| `icon_selector` | nowo-tech/icon-selector-bundle | `Nowo\IconSelectorBundle\Form\IconSelectorType` | `addIconSelector()` / `addIconSelectorField()` | `addIconSelectorFieldType()` | |
+| `ckeditor5` | nowo-tech/ckeditor5-editor-bundle | `Nowo\Ckeditor5EditorBundle\Form\Ckeditor5EditorType` | `addCkeditor5Editor()` / `addCkeditor5EditorField()` | `addCkeditor5EditorFieldType()` | Distinct from FOS `addCKEditorField()` (CKEditor 4) |
+| `tiptap` | nowo-tech/tiptap-editor-bundle | `Nowo\TiptapEditorBundle\Form\TiptapEditorType` | `addTiptapEditor()` / `addTiptapEditorField()` | `addTiptapEditorFieldType()` | |
+| `milkdown` | nowo-tech/milkdown-editor-bundle | `Nowo\MilkdownEditorBundle\Form\MilkdownEditorType` | `addMilkdownEditor()` / `addMilkdownEditorField()` | `addMilkdownEditorFieldType()` | Markdown value; the resolved placeholder (convention key or explicit) is also passed as the root `placeholder` option the editor reads; options `profile`, `features`, `theme`, `min_height`, `placeholder`, `suggestions`, `upload_url`, `collaboration` (see the bundle docs) |
+| `tag` | nowo-tech/tag-input-bundle | `Nowo\TagInputBundle\Form\TagType` | `addTagInput()` / `addTagInputField()` | `addTagInputFieldType()` | Do not pass `placeholder => false` |
+| `slide_to_confirm` | nowo-tech/slide-to-confirm-bundle | `Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType` | `addSlideToConfirm()` / `addSlideToConfirmField()` | `addSlideToConfirmFieldType()` | `mapped: false` by default |
+| `altcha` | nowo-tech/altcha-type-bundle | `Nowo\AltchaTypeBundle\Form\Type\AltchaType` | `addAltcha()` / `addAltchaField()` | `addAltchaFieldType()` | ALTCHA proof-of-work; `mapped: false`, `label: false` by default; the helpers default `required` to `true` so a profile-wide `required: false` cannot drop the check (pass `required => false` to opt out); options `profile`, `floating`, `hide_logo`, `hide_footer`, `challenge_url` |
+| `barcode` | nowo-tech/barcode-input-bundle | `Nowo\BarcodeInputBundle\Form\BarcodeType` | `addBarcode()` / `addBarcodeField()` | `addBarcodeFieldType()` | Text input with camera scanner; options `enable_scanner`, `formats`, `max_length`, `facing_mode`, `trim_whitespace` |
+| `date_range` | nowo-tech/ui-kit-bundle (^2.15.0) | `Nowo\UiKitBundle\Form\DateRangeType` | `addDateRange()` / `addDateRangeField()` | `addDateRangeFieldType()` | From/to filter field (`['from' => ?string, 'to' => ?string]`); options `from_name`, `to_name`, `placeholder`, `picker` |
+
+Each helper throws `LogicException` when its package is not installed; on `FormKitTrait` the map key can also be
+remapped in `nowo_form_kit.type_map`. `FormTypeMap::NOWO_WIDGETS` is the central list of these widgets and a test
+fails when one is missing from the map, the Composer `suggest`, the helpers or this table. The **Select all** choice
+(`nowo-tech/select-all-choice-bundle`) is a `ChoiceType` extension, not a map key: use
+`addMultiSelectSelectAll()` / `addMultiSelectSelectAllField()` / `addMultiSelectSelectAllType()`.
+
+Editors (CKEditor 5, Tiptap, Milkdown) inside locale tabs or other panels mount when their panel shows; see
+[Locale tabs](#locale-tabs-one-tab-per-language).
 
 ## Conditional fields (show one field or another)
 
@@ -744,13 +772,16 @@ slots `locale_tabs_nav` (UiKit 2.5.3+), `tab`, `tab_active`, `tab_panel`; the he
 (title size, muted help, label gap from `--nowo-ui-form-label-gap`) is styled by `locale-tabs.css` with both
 renderers; tune it with `--nfk-locale-tabs-title-size`, `--nfk-locale-tabs-help-size`, `--nfk-locale-tabs-label-gap`.
 
-Editors in panels (CKEditor, Tiptap) mount when their panel shows:
+Editors in panels (CKEditor, Tiptap, Milkdown) mount when their panel shows:
 
 ```js
 document.addEventListener('nowo-ui:tabs:change', (event) => {
   event.detail.panel?.querySelectorAll('[data-editor]:not([data-mounted])').forEach(mountEditor);
 });
 ```
+
+Milkdown mounts every widget on load and when one is added to the page; with `data-nowo-milkdown-manual` on
+`<html>`, call `window.NowoMilkdownEditor.mountAll(event.detail.panel)` in the same listener.
 
 ### Migrating your locale UI
 

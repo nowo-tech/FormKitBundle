@@ -7,8 +7,12 @@ namespace Nowo\FormKitBundle\Tests\Unit\Form;
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use Nowo\FormKitBundle\Form\FormTypeMap;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\NotBlank;
+
+use function dirname;
 
 final class FormOptionsMergerTest extends TestCase
 {
@@ -40,6 +44,52 @@ final class FormOptionsMergerTest extends TestCase
         $this->expectExceptionMessage('Unknown form kit profile "missing".');
 
         $this->createMerger()->resolve('demo_form', 'name', 'text', [], 'missing');
+    }
+
+    public function testMilkdownKeepsTheConventionPlaceholderAtTheRoot(): void
+    {
+        foreach (['milkdown', MilkdownEditorType::class] as $type) {
+            $merged = $this->createMerger()->resolve('demo_form', 'body', $type);
+
+            self::assertSame('demo_form.body.placeholder', $merged['attr']['placeholder']);
+            self::assertSame('demo_form.body.placeholder', $merged['placeholder']);
+        }
+    }
+
+    public function testMilkdownKeepsAnExplicitPlaceholderAtTheRoot(): void
+    {
+        $merged = $this->createMerger()->resolve('demo_form', 'body', 'milkdown', ['placeholder' => 'Write here']);
+
+        self::assertSame('Write here', $merged['placeholder']);
+        self::assertSame('Write here', $merged['attr']['placeholder']);
+    }
+
+    public function testMilkdownResolvedThroughTheTypeMapKeepsThePlaceholderAtTheRoot(): void
+    {
+        require_once dirname(__DIR__, 2) . '/Stubs/OptionalBundleStubs.php';
+
+        $merger = new FormOptionsMerger(
+            ['default' => ['translation_domain' => 'messages', 'defaults' => ['attr' => [], 'row_attr' => []], 'field_types' => []]],
+            'default',
+            new ConstraintDefinitionFactory(),
+            formTypeMap: new FormTypeMap(['editor' => MilkdownEditorType::class]),
+        );
+
+        self::assertSame('demo_form.body.placeholder', $merger->resolve('demo_form', 'body', 'editor')['placeholder']);
+    }
+
+    public function testMilkdownWithoutPlaceholderHasNoRootPlaceholder(): void
+    {
+        $merged = $this->createMerger()->resolve('demo_form', 'body', 'milkdown', ['placeholder' => false]);
+
+        self::assertArrayNotHasKey('placeholder', $merged);
+    }
+
+    public function testTextTypeDoesNotCopyThePlaceholderToTheRoot(): void
+    {
+        $merged = $this->createMerger()->resolve('demo_form', 'name', 'text');
+
+        self::assertArrayNotHasKey('placeholder', $merged);
     }
 
     public function testResolveBuildsConstraintsFromFieldTypeDefaults(): void
@@ -195,14 +245,14 @@ final class FormOptionsMergerTest extends TestCase
         self::assertArrayNotHasKey('placeholder', $merged['attr'] ?? []);
     }
 
-    public function testResolveRemovesLabelAndHelpWhenExplicitFalse(): void
+    public function testResolveKeepsLabelFalseAndRemovesHelpWhenExplicitFalse(): void
     {
         $merged = $this->createMerger()->resolve('demo_form', 'name', 'text', [
             'label' => false,
             'help'  => false,
         ]);
 
-        self::assertArrayNotHasKey('label', $merged);
+        self::assertFalse($merged['label']);
         self::assertArrayNotHasKey('help', $merged);
     }
 
