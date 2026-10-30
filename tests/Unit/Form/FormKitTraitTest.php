@@ -321,12 +321,14 @@ final class FormKitTraitTest extends TestCase
         $type->setFormTypeMap(new FormTypeMap([]));
 
         $calls   = [];
+        $byName  = [];
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::exactly(13))
             ->method('add')
-            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): FormBuilderInterface {
+            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, &$byName, $builder): FormBuilderInterface {
                 $calls[] = [$name, $fqcn];
                 self::assertIsArray($opts);
+                $byName[$name] = $opts;
 
                 return $builder;
             });
@@ -348,6 +350,7 @@ final class FormKitTraitTest extends TestCase
             ['barcode', BarcodeType::class],
             ['period', DateRangeType::class],
         ], $calls);
+        self::assertTrue($byName['altcha']['required']);
     }
 }
 

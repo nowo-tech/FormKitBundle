@@ -1294,12 +1294,14 @@ final class FormKitControllerTraitTest extends TestCase
         $subject->setFormKitFormName('controller_contact');
 
         $calls   = [];
+        $byName  = [];
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::exactly(13))
             ->method('add')
-            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, $builder): MockObject {
+            ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, &$byName, $builder): MockObject {
                 self::assertIsArray($opts);
-                $calls[] = [$name, $type];
+                $byName[$name] = $opts;
+                $calls[]       = [$name, $type];
 
                 return $builder;
             });
@@ -1321,5 +1323,6 @@ final class FormKitControllerTraitTest extends TestCase
             ['barcode', BarcodeType::class],
             ['period', DateRangeType::class],
         ], $calls);
+        self::assertTrue($byName['altcha']['required']);
     }
 }

@@ -621,7 +621,9 @@ trait FormKitControllerTrait
     }
 
     /**
-     * Optional nowo-tech ALTCHA proof-of-work captcha (unmapped by default). Requires `nowo-tech/altcha-type-bundle`.
+     * Optional nowo-tech ALTCHA proof-of-work captcha (unmapped by default).
+     * Requires `nowo-tech/altcha-type-bundle`. `required` defaults to true so a profile-wide `required: false`
+     * cannot drop the proof-of-work check; pass `required => false` to opt out.
      *
      * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed> $options
@@ -630,7 +632,7 @@ trait FormKitControllerTrait
      */
     protected function addAltchaFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
-        $this->addOptionalSuggestedFieldType($builder, $fieldName, AltchaType::class, 'nowo-tech/altcha-type-bundle', 'addAltchaFieldType', $options, $configName, $formName);
+        $this->addOptionalSuggestedFieldType($builder, $fieldName, AltchaType::class, 'nowo-tech/altcha-type-bundle', 'addAltchaFieldType', $options + ['required' => true], $configName, $formName);
     }
 
     /**

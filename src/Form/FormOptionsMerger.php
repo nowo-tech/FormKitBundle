@@ -6,6 +6,7 @@ namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
+use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
@@ -74,6 +75,16 @@ final class FormOptionsMerger
         ChoiceType::class, EnumType::class, CountryType::class, CurrencyType::class,
         LanguageType::class, LocaleType::class, TimezoneType::class,
         'Symfony\\Bridge\\Doctrine\\Form\\Type\\EntityType',
+    ];
+
+    /**
+     * Text-like widgets whose own root {@code placeholder} option configures a JavaScript editor: after the usual
+     * normalisation the resolved {@code attr.placeholder} is also copied back to the root option.
+     *
+     * @var list<string>
+     */
+    private const ROOT_PLACEHOLDER_TYPES = [
+        'milkdown', 'milkdown_editor', MilkdownEditorType::class,
     ];
 
     /**
@@ -232,6 +243,7 @@ final class FormOptionsMerger
         }
 
         $merged = $this->removeExplicitFalseConventionKeys($merged, $options);
+        $merged = $this->copyPlaceholderToRoot($merged, $type);
 
         $constraintDefs = array_values(array_merge($typeConstraintDefs, $formConstraintDefs, $optionsConstraints));
         if ($constraintDefs !== []) {
@@ -441,6 +453,27 @@ final class FormOptionsMerger
         }
 
         return self::ROLE_INPUT;
+    }
+
+    /**
+     * Copies {@code attr.placeholder} to the root option for {@see self::ROOT_PLACEHOLDER_TYPES} (e.g. Milkdown).
+     *
+     * @param array<string, mixed> $merged
+     *
+     * @return array<string, mixed>
+     */
+    private function copyPlaceholderToRoot(array $merged, string $type): array
+    {
+        if (!in_array($type, self::ROOT_PLACEHOLDER_TYPES, true)
+            && !in_array($this->formTypeMap?->resolve($type), self::ROOT_PLACEHOLDER_TYPES, true)) {
+            return $merged;
+        }
+        $placeholder = $this->attrOf($merged)['placeholder'] ?? null;
+        if (is_string($placeholder)) {
+            $merged['placeholder'] = $placeholder;
+        }
+
+        return $merged;
     }
 
     /**

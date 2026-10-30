@@ -70,7 +70,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Milkdown editor** — `milkdown` in `FormTypeMap` (`Nowo\MilkdownEditorBundle\Form\MilkdownEditorType`), `addMilkdownEditor()` / `addMilkdownEditorField()` on `FormKitTrait` and `FormOptionsTrait`, `addMilkdownEditorFieldType()` on `FormKitControllerTrait`; Composer **suggest** `nowo-tech/milkdown-editor-bundle`. `LogicException` when the package is missing.
 - **ALTCHA, barcode and date range widgets** — `altcha` (`nowo-tech/altcha-type-bundle`), `barcode` (`nowo-tech/barcode-input-bundle`) and `date_range` (`nowo-tech/ui-kit-bundle` ^2.15.0) in `FormTypeMap`, with `addAltcha*()`, `addBarcode*()` and `addDateRange*()` helpers on the three traits and Composer **suggest** entries.
+- **Milkdown placeholder** — `FormOptionsMerger` copies the resolved `attr.placeholder` to the root `placeholder` option for Milkdown (`milkdown`, `milkdown_editor` or the FQCN), which the editor reads.
+- **ALTCHA validation kept** — `addAltcha*()` default `required` to `true`, so a profile-wide `required: false` cannot remove the proof-of-work constraint; pass `required => false` explicitly to opt out.
 - **`FormTypeMap::NOWO_WIDGETS`** — central list of the nowo-tech widgets (map key, package, helper); a test fails when a widget is missing from the map, `suggest`, the helper trio or the docs table **nowo-tech widgets supported** (USAGE, CONFIGURATION).
+
+### Changed
+
+- Dev dependency `nowo-tech/ui-kit-bundle` raised to `^2.15` (ships `DateRangeType`).
+- **`doctrine/collections`** constraint widened to `^2.2 || ^3.0`: hosts on 3.x (PHP 8.4+) no longer downgrade to 2.x. Form Kit does not call the Collections API directly; the suite passes with 3.x installed.
 
 ## [2.16.0] - 2026-10-30
 

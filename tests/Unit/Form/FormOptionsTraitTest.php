@@ -1005,12 +1005,14 @@ final class FormOptionsTraitTest extends TestCase
         $type->setFormOptionsMerger($this->createMerger());
 
         $calls   = [];
+        $byName  = [];
         $builder = $this->createMock(FormBuilderInterface::class);
         $builder->expects(self::exactly(13))
             ->method('add')
-            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, $builder): FormBuilderInterface {
+            ->willReturnCallback(static function ($name, $fqcn, $opts) use (&$calls, &$byName, $builder): FormBuilderInterface {
                 self::assertIsArray($opts);
-                $calls[] = [$name, $fqcn];
+                $byName[$name] = $opts;
+                $calls[]       = [$name, $fqcn];
 
                 return $builder;
             });
@@ -1032,6 +1034,7 @@ final class FormOptionsTraitTest extends TestCase
             ['barcode', BarcodeType::class],
             ['period', DateRangeType::class],
         ], $calls);
+        self::assertTrue($byName['altcha']['required']);
     }
 
     public function testAddDropzoneDelegatesWhenStubPresent(): void
