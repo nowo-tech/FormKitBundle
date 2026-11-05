@@ -4,8 +4,15 @@
   A form theme copied from Symfony's base blocks easily calls `label|trans({}, domain)` and prints `Notify %title%`.
   `use` these blocks in your own theme instead of copying them:
 
-      {% extends 'bootstrap_5_layout.html.twig' %}  (or form_div_layout.html.twig, or your base theme)
+      {% extends 'bootstrap_5_layout.html.twig' %}  (or bootstrap_5_horizontal_layout.html.twig, or form_div_layout.html.twig)
       {% use '@NowoFormKitBundle/form/choice_blocks.html.twig' %}
+
+  Supported base layouts: form_div_layout, bootstrap_5_layout and bootstrap_5_horizontal_layout. The input is rendered by
+  `nowo_form_check_input` (a bare <input>, never the Bootstrap `checkbox_widget` / `radio_widget`, which print their own
+  <label>), so every check has exactly one <label for>. On Bootstrap themes (detected by their `checkbox_radio_label`
+  block) the blocks add `form-check`, `form-check-input` and `form-check-label` (`form-check-inline` / `form-switch` from
+  the parent `label_attr` class `checkbox-inline` / `radio-inline` / `checkbox-switch`, none of them with `btn-check`),
+  and on the horizontal theme (`form_group_class` block) `checkbox_row` keeps the offset grid of Symfony's row.
 
   - `checkbox_row` / `radio_row`: the input, then a <label> whose text uses `label_translation_parameters`;
   - `choice_widget_expanded`: one input + <label> per choice, translated with the choice's
@@ -15,8 +22,8 @@
     humanized name, like Symfony's `form_label`.
 
   Markup classes (`nowo-form-check`, `nowo-form-check__input`, `nowo-form-check__label`) are hooks only; pass `row_attr`,
-  `attr` and `label_attr` as usual. Every block only uses `form_widget`, `form_errors`, `form_help` and the `attributes`
-  / `widget_container_attributes` blocks of the base theme.
+  `attr` and `label_attr` as usual. Every block only uses `form_errors`, `form_help` and the `attributes` /
+  `widget_attributes` / `widget_container_attributes` blocks of the base theme.
 #}
 
 {#- The label text of the current field: translated with its parameters unless the domain is false. -#}
@@ -38,23 +45,56 @@
     {%- endif -%}
 {%- endblock nowo_form_label_text -%}
 
+{#- The bare checkbox / radio input of the current field, without the label some base themes add to their widget. -#}
+{%- block nowo_form_check_input -%}
+    <input type="{{ 'radio' in block_prefixes ? 'radio' : 'checkbox' }}" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{%- endblock nowo_form_check_input -%}
+
 {#- One input followed by its label (checkbox_row, radio_row and each expanded choice). -#}
 {%- block nowo_form_check -%}
-    {%- set _input_attr = attr|merge({class: (attr.class|default('') ~ ' nowo-form-check__input')|trim}) -%}
-    {{- form_widget(form, {attr: _input_attr}) -}}
+    {%- set _bootstrap = block('checkbox_radio_label') is defined and 'btn-check' not in attr.class|default('') -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ (_bootstrap ? ' form-check-input') ~ ' nowo-form-check__input')|trim}) -%}
+    {{- block('nowo_form_check_input') -}}
     {%- if label is not same as(false) -%}
-        {%- set _label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' nowo-form-check__label')|trim}) -%}
+        {%- set _label_attr = label_attr|merge({class: (label_attr.class|default('') ~ (_bootstrap ? ' form-check-label') ~ ' nowo-form-check__label')|trim}) -%}
         <label for="{{ id }}"{% with {attr: _label_attr} %}{{ block('attributes') }}{% endwith %}>{{ block('nowo_form_label_text') }}</label>
     {%- endif -%}
 {%- endblock nowo_form_check -%}
 
+{#- The wrapper classes of one check: `nowo-form-check`, plus `form-check` (and inline / switch) on Bootstrap themes. -#}
+{%- block nowo_form_check_class -%}
+    {%- set _class = 'nowo-form-check' -%}
+    {%- if block('checkbox_radio_label') is defined and 'btn-check' not in attr.class|default('') -%}
+        {%- set _parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+        {%- set _class = 'form-check'
+            ~ ('checkbox-inline' in _parent_label_class or 'radio-inline' in _parent_label_class ? ' form-check-inline')
+            ~ ('checkbox-switch' in _parent_label_class ? ' form-switch')
+            ~ ' ' ~ _class -%}
+    {%- endif -%}
+    {{- _class -}}
+{%- endblock nowo_form_check_class -%}
+
 {%- block checkbox_row -%}
-    {%- set _row_attr = row_attr|default({})|merge({class: (row_attr.class|default('') ~ ' nowo-form-check')|trim}) -%}
-    <div{% with {attr: _row_attr} %}{{ block('attributes') }}{% endwith %}>
-        {{- block('nowo_form_check') -}}
-        {{- form_errors(form) -}}
-        {{- form_help(form) -}}
-    </div>
+    {%- set _horizontal = block('form_group_class') is defined and block('form_label_class') is defined -%}
+    {%- set _row_class = row_attr.class|default(block('checkbox_radio_label') is defined ? 'mb-3' : '') -%}
+    {%- if _horizontal -%}
+        <div{% with {attr: row_attr|merge({class: (_row_class ~ ' row')|trim})} %}{{ block('attributes') }}{% endwith %}>
+            <div class="{{ block('form_label_class') }}"></div>
+            <div class="{{ block('form_group_class') }}">
+                <div class="{{ block('nowo_form_check_class') }}">
+                    {{- block('nowo_form_check') -}}
+                </div>
+                {{- form_errors(form) -}}
+                {{- form_help(form) -}}
+            </div>
+        </div>
+    {%- else -%}
+        <div{% with {attr: row_attr|merge({class: (_row_class ~ ' ' ~ block('nowo_form_check_class'))|trim})} %}{{ block('attributes') }}{% endwith %}>
+            {{- block('nowo_form_check') -}}
+            {{- form_errors(form) -}}
+            {{- form_help(form) -}}
+        </div>
+    {%- endif -%}
 {%- endblock checkbox_row -%}
 
 {%- block radio_row -%}
@@ -64,11 +104,11 @@
 {%- block choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
         {%- for child in form -%}
-            <div class="nowo-form-check">
-                {%- with child.vars|merge({form: child}) only -%}
+            {%- with child.vars|merge({form: child, parent_label_class: label_attr.class|default(''), valid: valid}) only -%}
+                <div class="{{ block('nowo_form_check_class') }}">
                     {{- block('nowo_form_check') -}}
-                {%- endwith -%}
-            </div>
+                </div>
+            {%- endwith -%}
         {%- endfor -%}
     </div>
 {%- endblock choice_widget_expanded -%}

@@ -73,8 +73,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `checkbox_row`, `radio_row` and `choice_widget_expanded` blocks to `use` in a host theme, translating labels with
   `label_translation_parameters` and each expanded choice with its `choice_translation_domain` /
   `choice_translation_parameters`; `translation_domain: false` prints the label as is; `label: false`, empty labels and
-  `label_html` behave like Symfony's `form_label`. Helper blocks `nowo_form_label_text` and `nowo_form_check`. Not
-  registered in `twig.form_themes`: existing themes are unchanged.
+  `label_html` behave like Symfony's `form_label`. Helper blocks `nowo_form_label_text`, `nowo_form_check`,
+  `nowo_form_check_input` and `nowo_form_check_class`. Works on `form_div_layout`, `bootstrap_5_layout` and
+  `bootstrap_5_horizontal_layout` with exactly one `<label for>` per input (bare input instead of the Bootstrap
+  widget, which prints its own label; Bootstrap `form-check*` classes, inline / switch, horizontal offset). With
+  `label_html: true` parameters are printed raw like in Symfony (documented in USAGE). Not registered in
+  `twig.form_themes`: existing themes are unchanged.
 
 ## [2.17.0] - 2026-10-30
 

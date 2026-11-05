@@ -867,10 +867,21 @@ $builder->add('actions', ChoiceType::class, [
 ]);
 ```
 
-The markup is an input followed by its `<label>` in `<div class="nowo-form-check">` (`nowo-form-check__input`,
-`nowo-form-check__label`); add framework classes with `row_attr`, `attr` and `label_attr`, or override
-`nowo_form_check` in your theme. The helper block `nowo_form_label_text` prints the translated label of the current
-field and can be reused in other blocks.
+Supported base layouts: `form_div_layout.html.twig`, `bootstrap_5_layout.html.twig` and
+`bootstrap_5_horizontal_layout.html.twig`. The markup is a bare input (block `nowo_form_check_input`, never the
+Bootstrap `checkbox_widget` / `radio_widget`, which print a `<label>` of their own) followed by **one** `<label for>`,
+in `<div class="nowo-form-check">` (`nowo-form-check__input`, `nowo-form-check__label`). On the Bootstrap layouts the
+blocks also add `form-check`, `form-check-input` and `form-check-label` (`form-check-inline` / `form-switch` from the
+`label_attr` class `checkbox-inline` / `radio-inline` / `checkbox-switch`; nothing with `btn-check`), the row keeps
+`mb-3` by default and, on the horizontal layout, the `col-sm-2` / `col-sm-10` offset of Symfony's `checkbox_row`.
+Add framework classes with `row_attr`, `attr` and `label_attr`, or override `nowo_form_check` /
+`nowo_form_check_class` in your theme. The helper block `nowo_form_label_text` prints the translated label of the
+current field and can be reused in other blocks.
+
+Escaping is the same as Symfony's `form_label`: the label is translated with its parameters and the **result** is
+escaped, so HTML in a parameter value (a page title from the database) is printed as text. With `label_html: true`
+the translated label is printed raw, **parameters included**: pass only trusted parameters or escape them yourself,
+e.g. `'%title%' => htmlspecialchars($page->getTitle(), ENT_QUOTES)`.
 
 ## Overriding bundle templates
 
