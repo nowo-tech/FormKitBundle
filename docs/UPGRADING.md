@@ -72,6 +72,10 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+No breaking change. A host theme with its own copies of `checkbox_row`, `radio_row` or `choice_widget_expanded` can
+`{% use '@NowoFormKitBundle/form/choice_blocks.html.twig' %}` and delete them (check the markup: input + `<label>` in
+`div.nowo-form-check`; add framework classes with `row_attr` / `attr` / `label_attr`).
+
 ## To 2.17.0
 
 From **2.16.0**:

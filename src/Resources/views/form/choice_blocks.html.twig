@@ -1,0 +1,74 @@
+{#
+  2.18 (KIT-72, REQ-I18N-001): checkbox / radio rows and expanded choices that always pass the translation parameters.
+
+  A form theme copied from Symfony's base blocks easily calls `label|trans({}, domain)` and prints `Notify %title%`.
+  `use` these blocks in your own theme instead of copying them:
+
+      {% extends 'bootstrap_5_layout.html.twig' %}  (or form_div_layout.html.twig, or your base theme)
+      {% use '@NowoFormKitBundle/form/choice_blocks.html.twig' %}
+
+  - `checkbox_row` / `radio_row`: the input, then a <label> whose text uses `label_translation_parameters`;
+  - `choice_widget_expanded`: one input + <label> per choice, translated with the choice's
+    `choice_translation_domain` and `choice_translation_parameters` (Symfony passes them to each child);
+  - `translation_domain: false` (or `choice_translation_domain: false`) prints the label as is; `label: false` prints no
+    label; `label_html: true` prints the translated label as HTML; an empty label falls back to `label_format` or the
+    humanized name, like Symfony's `form_label`.
+
+  Markup classes (`nowo-form-check`, `nowo-form-check__input`, `nowo-form-check__label`) are hooks only; pass `row_attr`,
+  `attr` and `label_attr` as usual. Every block only uses `form_widget`, `form_errors`, `form_help` and the `attributes`
+  / `widget_container_attributes` blocks of the base theme.
+#}
+
+{#- The label text of the current field: translated with its parameters unless the domain is false. -#}
+{%- block nowo_form_label_text -%}
+    {%- if label is not same as(false) -%}
+        {%- if label is empty -%}
+            {%- if label_format is defined and label_format is not empty -%}
+                {%- set label = label_format|replace({'%name%': name, '%id%': id}) -%}
+            {%- else -%}
+                {%- set label = name|humanize -%}
+            {%- endif -%}
+        {%- endif -%}
+        {%- set _text = translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) -%}
+        {%- if label_html is defined and label_html is same as(true) -%}
+            {{- _text|raw -}}
+        {%- else -%}
+            {{- _text -}}
+        {%- endif -%}
+    {%- endif -%}
+{%- endblock nowo_form_label_text -%}
+
+{#- One input followed by its label (checkbox_row, radio_row and each expanded choice). -#}
+{%- block nowo_form_check -%}
+    {%- set _input_attr = attr|merge({class: (attr.class|default('') ~ ' nowo-form-check__input')|trim}) -%}
+    {{- form_widget(form, {attr: _input_attr}) -}}
+    {%- if label is not same as(false) -%}
+        {%- set _label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' nowo-form-check__label')|trim}) -%}
+        <label for="{{ id }}"{% with {attr: _label_attr} %}{{ block('attributes') }}{% endwith %}>{{ block('nowo_form_label_text') }}</label>
+    {%- endif -%}
+{%- endblock nowo_form_check -%}
+
+{%- block checkbox_row -%}
+    {%- set _row_attr = row_attr|default({})|merge({class: (row_attr.class|default('') ~ ' nowo-form-check')|trim}) -%}
+    <div{% with {attr: _row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{- block('nowo_form_check') -}}
+        {{- form_errors(form) -}}
+        {{- form_help(form) -}}
+    </div>
+{%- endblock checkbox_row -%}
+
+{%- block radio_row -%}
+    {{- block('checkbox_row') -}}
+{%- endblock radio_row -%}
+
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form -%}
+            <div class="nowo-form-check">
+                {%- with child.vars|merge({form: child}) only -%}
+                    {{- block('nowo_form_check') -}}
+                {%- endwith -%}
+            </div>
+        {%- endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}

@@ -24,6 +24,7 @@
 - [Combobox (Stimulus peer, optional)](#combobox-stimulus-peer-optional)
 - [Locale tabs (one tab per language)](#locale-tabs-one-tab-per-language)
   - [Migrating your locale UI](#migrating-your-locale-ui)
+- [Choice rows with translation parameters](#choice-rows-with-translation-parameters)
 - [Overriding bundle templates](#overriding-bundle-templates)
 - [Multi-step forms (array-based wizard)](#multi-step-forms-array-based-wizard)
   - [Steps definition](#steps-definition)
@@ -837,11 +838,46 @@ Unknown locales already in the JSON are kept, so a disabled locale is not lost.
 **Editor remount**: replace a `locale-tabs:changed` (or Bootstrap `shown.bs.tab`) listener with
 `nowo-ui:tabs:change` (`event.detail.panel`).
 
+## Choice rows with translation parameters
+
+Since **2.18** (KIT-72), `@NowoFormKitBundle/form/choice_blocks.html.twig` holds `checkbox_row`, `radio_row` and
+`choice_widget_expanded` blocks that always translate labels **with their parameters**: `label_translation_parameters`
+for checkbox / radio rows, the choice's `choice_translation_domain` and `choice_translation_parameters` for each
+expanded choice. `translation_domain: false` / `choice_translation_domain: false` print the label as is; `label: false`,
+empty labels (`label_format`, humanized name) and `label_html: true` behave like Symfony's `form_label`.
+
+A custom theme copied from Symfony's base blocks easily calls `label|trans({}, domain)` and shows `Notify %title%`.
+`use` the blocks instead of copying them:
+
+```twig
+{# templates/form/app_theme.html.twig #}
+{% extends 'bootstrap_5_layout.html.twig' %}
+{% use '@NowoFormKitBundle/form/choice_blocks.html.twig' %}
+```
+
+```php
+$builder->add('notify', CheckboxType::class, [
+    'label'                        => 'Notify %title%',
+    'label_translation_parameters' => ['%title%' => $page->getTitle()],
+]);
+$builder->add('actions', ChoiceType::class, [
+    'expanded'                      => true,
+    'choices'                       => ['Notify %title%' => 'notify'],
+    'choice_translation_parameters' => ['%title%' => $page->getTitle()],
+]);
+```
+
+The markup is an input followed by its `<label>` in `<div class="nowo-form-check">` (`nowo-form-check__input`,
+`nowo-form-check__label`); add framework classes with `row_attr`, `attr` and `label_attr`, or override
+`nowo_form_check` in your theme. The helper block `nowo_form_label_text` prints the translated label of the current
+field and can be reused in other blocks.
+
 ## Overriding bundle templates
 
 The bundle provides Twig templates under `src/Resources/views/`:
 
 - `components/form_renderer.html.twig` — helper include for rendering a form with buttons.
+- `form/choice_blocks.html.twig` — (2.18) `checkbox_row`, `radio_row` and `choice_widget_expanded` with translation parameters, to `use` in a host theme ([details](#choice-rows-with-translation-parameters)).
 - `form/static_blocks.html.twig` — form theme used by `StaticSeparatorType` and `StaticAlertType` (and helpers like input-group prefix/suffix). `form_label_content` appends `required_label_suffix` only when `required` is defined and true, so Submit/Button/Reset widgets (which call this block without `required`) work with Twig `strict_variables`.
 - `help_modal/shells.html.twig` — includes `<template>` fragments for help-modal shells (Bootstrap 4/5, Tailwind, Foundation); optional if you rely on the script’s built-in HTML fallbacks.
 
