@@ -11,9 +11,12 @@ cd "$ROOT"
 # they emit <input> by design.
 #   - _locale_tabs.html.twig: rendered by the `locale_tabs` theme block (locale_tabs_theme.html.twig); writes the
 #     hidden locale child of each translation entry and marks its view rendered.
+#   - choice_blocks.html.twig: `nowo_form_check_input` writes the bare checkbox / radio input of form_div_layout's
+#     `checkbox_widget`, because the Bootstrap widgets print their own <label> (one label per choice, KIT-72).
 #   - nowo_special_fields_form_theme.html.twig: demo form theme overriding the `icon_selector_widget` block.
 ALLOWLIST=(
   src/Resources/views/form/_locale_tabs.html.twig
+  src/Resources/views/form/choice_blocks.html.twig
   demo/symfony8/templates/form_demo/nowo_special_fields_form_theme.html.twig
 )
 
