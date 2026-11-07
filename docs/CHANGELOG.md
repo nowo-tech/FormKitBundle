@@ -68,6 +68,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`emoji_picker` widget** for UiKit 2.37's `EmojiPickerType`: `FormTypeMap` and `NOWO_WIDGETS` entry, `addEmojiPicker()` / `addEmojiPickerField()` / `addEmojiPickerFieldType()`. It stays optional: without UiKit ^2.37 the key is not mapped and the helpers throw the usual `LogicException`.
+- **Optional `combobox.css`:** link it and the combobox list opens and closes on UiKit's `--nowo-ui-motion-small*`, `--nowo-ui-motion-lift` and easing tokens (own fallbacks: 150 ms in, 110 ms out, 4 px lift). Reduced motion keeps an 80 ms fade with no movement; `html[data-motion="full"]` keeps the full effect. No `!important`.
+
+### Changed
+
+- **Combobox peer:** a close sets `data-combobox-closing` on the list and hides it when its transition ends, with a timer if `transitionend` never fires. With no transition on the list, which is what a host that changes nothing has, it hides at once as before.
+
 ## [2.18.0] - 2026-11-05
 
 Minor release. See [UPGRADING](UPGRADING.md#to-2180).
