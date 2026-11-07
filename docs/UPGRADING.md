@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.19.0](#to-2190)
 - [To 2.18.0](#to-2180)
 - [To 2.17.0](#to-2170)
 - [To 2.16.0](#to-2160)
@@ -72,6 +73,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.19.0
+
+From **2.18.0**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 **Combobox motion is opt-in.** Link `{{ asset('combobox.css', 'nowo_form_kit') }}` (or copy its rules): the list then fades in and out, and hides up to 110 ms after the close. A test should wait for the closed state or set the durations to `0ms`. **`emoji_picker`** needs `nowo-tech/ui-kit-bundle` ^2.37.
 

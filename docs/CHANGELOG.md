@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.19.0] - 2026-11-07](#2190---2026-11-07)
 - [[2.18.0] - 2026-11-05](#2180---2026-11-05)
 - [[2.17.0] - 2026-10-30](#2170---2026-10-30)
 - [[2.16.0] - 2026-10-30](#2160---2026-10-30)
@@ -67,6 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.19.0] - 2026-11-07
 
 ### Added
 
@@ -370,6 +373,7 @@ Locale tabs for translation entities, field_<locale> groups and TranslatableMapT
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.19.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.19.0
 [2.18.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.18.0
 [2.17.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.17.0
 [2.16.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.16.0
