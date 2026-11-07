@@ -76,6 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Combobox peer:** a close sets `data-combobox-closing` on the list and hides it when its transition ends, with a timer if `transitionend` never fires. With no transition on the list, which is what a host that changes nothing has, it hides at once as before.
+- **Turbo:** running fades finish on `turbo:before-cache`, so that a cached page never holds a half-closed surface. Combobox list: audit finding HW-L5.
+- **Development only:** `require-dev` and the lock move to UiKit ^2.37, as the `emoji_picker` tests and PHPStan need `EmojiPickerType`.
 
 ## [2.18.0] - 2026-11-05
 
