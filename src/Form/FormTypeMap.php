@@ -17,6 +17,7 @@ use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use Nowo\UiKitBundle\Form\DateRangeType;
+use Nowo\UiKitBundle\Form\EmojiPickerType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -124,6 +125,7 @@ final class FormTypeMap
         'altcha'            => AltchaType::class,
         'barcode'           => BarcodeType::class,
         'date_range'        => DateRangeType::class,
+        'emoji_picker'      => EmojiPickerType::class,
     ];
 
     /**
@@ -147,6 +149,7 @@ final class FormTypeMap
         'altcha'            => ['nowo-tech/altcha-type-bundle', 'addAltcha'],
         'barcode'           => ['nowo-tech/barcode-input-bundle', 'addBarcode'],
         'date_range'        => ['nowo-tech/ui-kit-bundle', 'addDateRange'],
+        'emoji_picker'      => ['nowo-tech/ui-kit-bundle', 'addEmojiPicker'],
     ];
 
     /** @var array<string, string> */

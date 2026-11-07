@@ -18,6 +18,7 @@ use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use Nowo\UiKitBundle\Form\DateRangeType;
+use Nowo\UiKitBundle\Form\EmojiPickerType;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -106,5 +107,6 @@ final class FormTypeMapTest extends TestCase
         self::assertSame(AltchaType::class, $map->resolve('altcha'));
         self::assertSame(BarcodeType::class, $map->resolve('barcode'));
         self::assertSame(DateRangeType::class, $map->resolve('date_range'));
+        self::assertSame(EmojiPickerType::class, $map->resolve('emoji_picker'));
     }
 }

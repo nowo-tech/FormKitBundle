@@ -31,6 +31,7 @@ use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use Nowo\UiKitBundle\Form\DateRangeType;
+use Nowo\UiKitBundle\Form\EmojiPickerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -659,6 +660,19 @@ trait FormKitControllerTrait
     protected function addDateRangeFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
     {
         $this->addOptionalSuggestedFieldType($builder, $fieldName, DateRangeType::class, 'nowo-tech/ui-kit-bundle', 'addDateRangeFieldType', $options, $configName, $formName);
+    }
+
+    /**
+     * Optional nowo-tech emoji picker field (ui-kit-bundle ^2.37.0). Requires `nowo-tech/ui-kit-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed
+     */
+    protected function addEmojiPickerFieldType(FormBuilderInterface $builder, string $fieldName, array $options = [], ?string $configName = null, ?string $formName = null): void
+    {
+        $this->addOptionalSuggestedFieldType($builder, $fieldName, EmojiPickerType::class, 'nowo-tech/ui-kit-bundle', 'addEmojiPickerFieldType', $options, $configName, $formName);
     }
 
     /**

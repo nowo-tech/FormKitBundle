@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c1203c7dbc89ab19c5bca9631a231c11",
+    "content-hash": "80d9785b6636a8d786c70a42d3430384",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -4820,16 +4820,16 @@
         },
         {
             "name": "nowo-tech/ui-kit-bundle",
-            "version": "v2.17.3",
+            "version": "v2.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nowo-tech/UiKitBundle.git",
-                "reference": "0c56507b492d159ac8310d2d0fb42bff7d4c935e"
+                "reference": "46a117b81b2e95f5370173f0d0bd7c18b0bb7184"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nowo-tech/UiKitBundle/zipball/0c56507b492d159ac8310d2d0fb42bff7d4c935e",
-                "reference": "0c56507b492d159ac8310d2d0fb42bff7d4c935e",
+                "url": "https://api.github.com/repos/nowo-tech/UiKitBundle/zipball/46a117b81b2e95f5370173f0d0bd7c18b0bb7184",
+                "reference": "46a117b81b2e95f5370173f0d0bd7c18b0bb7184",
                 "shasum": ""
             },
             "require": {
@@ -4847,7 +4847,7 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "igor-php/igor-php": "^0.9.7",
+                "igor-php/igor-php": "^0.9.7 || ^0.10.0",
                 "nowo-tech/phpstan-frankenphp": "^1.0",
                 "phpstan/extension-installer": "^1.0",
                 "phpstan/phpstan": "^2.0",
@@ -4861,7 +4861,7 @@
                 "symfony/http-client": "^7.4 || ^8.0",
                 "symfony/validator": "^7.4 || ^8.0",
                 "symfony/yaml": "^7.4 || ^8.0",
-                "vincentlanglet/twig-cs-fixer": "^3.0"
+                "vincentlanglet/twig-cs-fixer": "^3.0 || ^4.0"
             },
             "suggest": {
                 "phpunit/phpunit": "UI bundles: require-dev, to run Nowo\\UiKitBundle\\Test\\PageContractTestCase (REQ-UI-003 contract test)",
@@ -4910,7 +4910,8 @@
                 "issues": "https://github.com/nowo-tech/UiKitBundle/issues",
                 "source": "https://github.com/nowo-tech/UiKitBundle"
             },
-            "time": "2026-10-29T07:27:14+00:00"
+            "time": "2026-11-07T08:44:06+00:00",
+            "published-time": "2026-11-07T08:46:25+00:00"
         },
         {
             "name": "phar-io/manifest",

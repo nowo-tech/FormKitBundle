@@ -20,6 +20,7 @@ use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use Nowo\UiKitBundle\Form\DateRangeType;
+use Nowo\UiKitBundle\Form\EmojiPickerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\UX\Cropperjs\Form\CropperType;
@@ -660,6 +661,26 @@ trait FormKitTrait
     protected function addDateRangeField(string $name, array $options = []): void
     {
         $this->addDateRange($this->boundBuilder(), $name, $options);
+    }
+
+    /**
+     * Optional nowo-tech emoji picker field (ui-kit-bundle ^2.37.0) (`emoji_picker` in FormTypeMap).
+     * Requires `nowo-tech/ui-kit-bundle`.
+     *
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed> $options
+     *
+     * @throws LogicException when the package is not installed / type not in the map
+     */
+    protected function addEmojiPicker(FormBuilderInterface $builder, string $name, array $options = []): void
+    {
+        $this->addOptionalMappedField($builder, $name, 'emoji_picker', EmojiPickerType::class, 'nowo-tech/ui-kit-bundle', 'addEmojiPicker', $options);
+    }
+
+    /** @param array<string, mixed> $options */
+    protected function addEmojiPickerField(string $name, array $options = []): void
+    {
+        $this->addEmojiPicker($this->boundBuilder(), $name, $options);
     }
 
     /**

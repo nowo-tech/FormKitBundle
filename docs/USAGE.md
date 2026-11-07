@@ -240,6 +240,7 @@ Equivalent **controller** methods on `FormKitControllerTrait` use the `*Type` / 
 | `altcha` | nowo-tech/altcha-type-bundle | `Nowo\AltchaTypeBundle\Form\Type\AltchaType` | `addAltcha()` / `addAltchaField()` | `addAltchaFieldType()` | ALTCHA proof-of-work; `mapped: false`, `label: false` by default; the helpers default `required` to `true` so a profile-wide `required: false` cannot drop the check (pass `required => false` to opt out); options `profile`, `floating`, `hide_logo`, `hide_footer`, `challenge_url` |
 | `barcode` | nowo-tech/barcode-input-bundle | `Nowo\BarcodeInputBundle\Form\BarcodeType` | `addBarcode()` / `addBarcodeField()` | `addBarcodeFieldType()` | Text input with camera scanner; options `enable_scanner`, `formats`, `max_length`, `facing_mode`, `trim_whitespace` |
 | `date_range` | nowo-tech/ui-kit-bundle (^2.15.0) | `Nowo\UiKitBundle\Form\DateRangeType` | `addDateRange()` / `addDateRangeField()` | `addDateRangeFieldType()` | From/to filter field (`['from' => ?string, 'to' => ?string]`); options `from_name`, `to_name`, `placeholder`, `picker` |
+| `emoji_picker` | nowo-tech/ui-kit-bundle (^2.37.0) | `Nowo\UiKitBundle\Form\EmojiPickerType` | `addEmojiPicker()` / `addEmojiPickerField()` | `addEmojiPickerFieldType()` | One emoji; options `emojis`, `labels`, `max_bytes`, `bundle`. See UiKit's docs. |
 
 Each helper throws `LogicException` when its package is not installed; on `FormKitTrait` the map key can also be
 remapped in `nowo_form_kit.type_map`. `FormTypeMap::NOWO_WIDGETS` is the central list of these widgets and a test
@@ -585,6 +586,8 @@ Or rely on config defaults only: `'help_modal' => true`.
 ## Combobox (Stimulus peer, optional)
 
 Since **2.12.0** the bundle ships an **opt-in** Stimulus controller for a searchable picker over a short, server-rendered list of options (WAI-ARIA 1.2 editable combobox with list autocomplete): `src/Resources/assets/stimulus-peers/combobox_controller.ts`, identifier **`combobox`**. It is not built into `public/` and not registered by the bundle; nothing changes until you import it. Your app needs `@hotwired/stimulus` (Symfony UX StimulusBundle, AssetMapper or Vite). Spec: [`specs/003-combobox-peer`](../specs/003-combobox-peer/spec.md).
+
+**Motion (optional):** link `{{ asset('combobox.css', 'nowo_form_kit') }}` and the list fades in and out on UiKit's `--nowo-ui-motion-*` tokens (with fallbacks, so UiKit's CSS is not needed). The peer sets `data-combobox-closing` on the list and hides it when its transition ends; with no transition it hides at once.
 
 **1. Register the peer** (keep the vendor path; adjust the relative path to your `assets/` layout):
 

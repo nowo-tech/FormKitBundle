@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { closeWithEffect, finishClosing } from './motion';
 
 /** Neutral fallback for {@link ComboboxController.requireValue}; override with the `requiredMessage` value. */
 export const DEFAULT_REQUIRED_MESSAGE = 'Please select an option.';
@@ -36,6 +37,9 @@ const setDefaultAttribute = (el: HTMLElement, name: string, value: string): void
  * - actions: `filter`, `onQueryFocus`, `onQueryKeydown`, `select`, `open`, `close`, `toggle`,
  *   `requireValue` (on the form `submit`).
  * - event: `combobox:change` (detail `{ value, label }`) on the controller element after a selection.
+ *
+ * A close sets `data-combobox-closing` on the list and hides it when its transition ends (combobox.css, or a host's own rule); with no
+ * transition it hides at once.
  *
  * Host-provided ARIA attributes are kept; missing ones (`role`, `aria-expanded`, `aria-controls`,
  * `aria-autocomplete`, `aria-selected`, ids) are filled in on connect.
@@ -76,6 +80,7 @@ export default class ComboboxController extends Controller<HTMLElement> {
   connect(): void {
     this.applyAria();
     this.filter();
+    this.listTarget.hidden = !this.openValue;
     this.syncListVisibility();
     document.addEventListener('pointerdown', this.onDocumentPointerDown);
   }
@@ -295,7 +300,15 @@ export default class ComboboxController extends Controller<HTMLElement> {
   }
 
   private syncListVisibility(): void {
-    this.listTarget.hidden = !this.openValue;
     this.queryTarget.setAttribute('aria-expanded', this.openValue ? 'true' : 'false');
+    if (this.openValue) {
+      finishClosing(this.listTarget);
+      this.listTarget.hidden = false;
+    } else if (!this.listTarget.hidden) {
+      // With the optional combobox.css the list fades first; without it this is synchronous.
+      closeWithEffect(this.listTarget, () => {
+        this.listTarget.hidden = true;
+      });
+    }
   }
 }

@@ -1,0 +1,45 @@
+/*
+ * Optional motion for the combobox peer: link it to fade the list in and out. Without it the list opens and closes at once.
+ * It reads UiKit's motion scale with its own fallbacks, so it works with or without the UiKit CSS. The rules use no `!important`.
+ */
+[data-combobox-target='list'] {
+  --nowo-form-kit-combobox-open: var(--nowo-ui-motion-small, 150ms);
+  --nowo-form-kit-combobox-close: var(--nowo-ui-motion-small-close, 110ms);
+  --nowo-form-kit-combobox-lift: var(--nowo-ui-motion-lift, 4px);
+}
+
+[data-combobox-target='list']:not([hidden]) {
+  animation: nowo-form-kit-combobox-in var(--nowo-form-kit-combobox-open) var(--nowo-ui-motion-ease-out, cubic-bezier(0.2, 0, 0, 1));
+}
+
+/* The peer sets `hidden` when this ends. */
+[data-combobox-target='list'][data-combobox-closing] {
+  animation: none;
+  opacity: 0;
+  transform: translateY(var(--nowo-form-kit-combobox-lift));
+  transition:
+    opacity var(--nowo-form-kit-combobox-close) var(--nowo-ui-motion-ease-in, cubic-bezier(0.4, 0, 1, 1)),
+    transform var(--nowo-form-kit-combobox-close) var(--nowo-ui-motion-ease-in, cubic-bezier(0.4, 0, 1, 1));
+}
+
+@keyframes nowo-form-kit-combobox-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--nowo-form-kit-combobox-lift));
+  }
+}
+
+/* Reduced motion keeps a short fade and no movement; html[data-motion='full'] keeps the full effect. */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) [data-combobox-target='list'] {
+    --nowo-form-kit-combobox-open: var(--nowo-ui-motion-small, 80ms);
+    --nowo-form-kit-combobox-close: var(--nowo-ui-motion-small-close, 80ms);
+    --nowo-form-kit-combobox-lift: 0px;
+  }
+}
+
+[data-motion='reduce'] [data-combobox-target='list'] {
+  --nowo-form-kit-combobox-open: var(--nowo-ui-motion-small, 80ms);
+  --nowo-form-kit-combobox-close: var(--nowo-ui-motion-small-close, 80ms);
+  --nowo-form-kit-combobox-lift: 0px;
+}
