@@ -73,6 +73,8 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+**Combobox motion is opt-in.** Link `{{ asset('combobox.css', 'nowo_form_kit') }}` (or copy its rules): the list then fades in and out, and hides up to 110 ms after the close. A test should wait for the closed state or set the durations to `0ms`. **`emoji_picker`** needs `nowo-tech/ui-kit-bundle` ^2.37.
+
 ## To 2.18.0
 
 From **2.17.0**:

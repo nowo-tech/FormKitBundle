@@ -270,7 +270,7 @@ The bundle core has no hard dependency on UX or third-party form integrations. C
 | **nowo-tech/slide-to-confirm-bundle** | `addSlideToConfirm()` / `addSlideToConfirmField()` / `addSlideToConfirmFieldType()` (`slide_to_confirm`) |
 | **nowo-tech/altcha-type-bundle** | `addAltcha()` / `addAltchaField()` / `addAltchaFieldType()` (`altcha`) |
 | **nowo-tech/barcode-input-bundle** | `addBarcode()` / `addBarcodeField()` / `addBarcodeFieldType()` (`barcode`) |
-| **nowo-tech/ui-kit-bundle** | ^2.15.0: `addDateRange()` / `addDateRangeField()` / `addDateRangeFieldType()` (`date_range`); ^2.5.3: locale tabs through the UiKit partial |
+| **nowo-tech/ui-kit-bundle** | ^2.37.0: `addEmojiPicker()` / `addEmojiPickerField()` / `addEmojiPickerFieldType()` (`emoji_picker`); ^2.15.0: `addDateRange()` / `addDateRangeField()` / `addDateRangeFieldType()` (`date_range`); ^2.5.3: locale tabs through the UiKit partial |
 | **friendsofsymfony/ckeditor-bundle** | `addCKEditorField()` / `addCKEditorFieldType()` (CKEditor 4) |
 | **symfony/ux-autocomplete** | Use with `addAutocompleteField()` / `addAutocompleteFieldType()` and your autocomplete FormType FQCN |
 | **symfony/ux-dropzone** | `addDropzone()` / `addDropzoneField()` / `addDropzoneFieldType()` |
@@ -297,6 +297,7 @@ Install only what you need; each helper documents runtime requirements (e.g. `Lo
 | `altcha` | nowo-tech/altcha-type-bundle | `Nowo\AltchaTypeBundle\Form\Type\AltchaType` | `addAltcha()` / `addAltchaField()` | `addAltchaFieldType()` | ALTCHA proof-of-work; `mapped: false`, `label: false` by default; the helpers default `required` to `true` so a profile-wide `required: false` cannot drop the check (pass `required => false` to opt out); options `profile`, `floating`, `hide_logo`, `hide_footer`, `challenge_url` |
 | `barcode` | nowo-tech/barcode-input-bundle | `Nowo\BarcodeInputBundle\Form\BarcodeType` | `addBarcode()` / `addBarcodeField()` | `addBarcodeFieldType()` | Text input with camera scanner; options `enable_scanner`, `formats`, `max_length`, `facing_mode`, `trim_whitespace` |
 | `date_range` | nowo-tech/ui-kit-bundle (^2.15.0) | `Nowo\UiKitBundle\Form\DateRangeType` | `addDateRange()` / `addDateRangeField()` | `addDateRangeFieldType()` | From/to filter field (`['from' => ?string, 'to' => ?string]`); options `from_name`, `to_name`, `placeholder`, `picker` |
+| `emoji_picker` | nowo-tech/ui-kit-bundle (^2.37.0) | `Nowo\UiKitBundle\Form\EmojiPickerType` | `addEmojiPicker()` / `addEmojiPickerField()` | `addEmojiPickerFieldType()` | One emoji; options `emojis`, `labels`, `max_bytes`, `bundle`. See UiKit's docs. |
 
 Each helper throws `LogicException` when its package is not installed; on `FormKitTrait` the map key can also be
 remapped in `nowo_form_kit.type_map`. `FormTypeMap::NOWO_WIDGETS` is the central list of these widgets and a test
@@ -313,7 +314,7 @@ The bundle registers a **FormTypeMap** that resolves snake_case type names to fo
 
 **Built-in (always):** `text`, `email`, `textarea`, `password`, `url`, `integer`, `number`, `checkbox`, `choice`, `date`, `datetime`, `time`, `birthday`, `week`, `money`, `percent`, `currency`, `locale`, `language`, `country`, `timezone`, `file`, `hidden`, `tel`, `color`, `range`, `collection`, `repeated`, `submit`, `button`, `reset`, `date_interval`.
 
-**Optional (when the class exists):** `dropzone` (UX Dropzone), `cropper` (UX Cropper.js), `translations` (A2lix), `otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `milkdown`, `tag`, `slide_to_confirm`, `altcha`, `barcode`, `date_range` (nowo-tech widgets; see [nowo-tech widgets supported](#nowo-tech-widgets-supported)). You can add more in config:
+**Optional (when the class exists):** `dropzone` (UX Dropzone), `cropper` (UX Cropper.js), `translations` (A2lix), `otp`, `phone`, `password_toggle`, `password_strength`, `icon_selector`, `ckeditor5`, `tiptap`, `milkdown`, `tag`, `slide_to_confirm`, `altcha`, `barcode`, `date_range`, `emoji_picker` (nowo-tech widgets; see [nowo-tech widgets supported](#nowo-tech-widgets-supported)). You can add more in config:
 
 ```yaml
 nowo_form_kit:

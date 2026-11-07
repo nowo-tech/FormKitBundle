@@ -31,6 +31,7 @@ use Nowo\SlideToConfirmBundle\Form\Type\SlideToConfirmType;
 use Nowo\TagInputBundle\Form\TagType;
 use Nowo\TiptapEditorBundle\Form\TiptapEditorType;
 use Nowo\UiKitBundle\Form\DateRangeType;
+use Nowo\UiKitBundle\Form\EmojiPickerType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -1316,6 +1317,7 @@ final class FormKitControllerTraitTest extends TestCase
                 $this->addAltchaFieldType($builder, 'altcha');
                 $this->addBarcodeFieldType($builder, 'barcode');
                 $this->addDateRangeFieldType($builder, 'period');
+                $this->addEmojiPickerFieldType($builder, 'emoji');
             }
         };
 
@@ -1324,7 +1326,7 @@ final class FormKitControllerTraitTest extends TestCase
         $calls   = [];
         $byName  = [];
         $builder = $this->createMock(FormBuilderInterface::class);
-        $builder->expects(self::exactly(13))
+        $builder->expects(self::exactly(14))
             ->method('add')
             ->willReturnCallback(static function ($name, $type, $opts) use (&$calls, &$byName, $builder): MockObject {
                 self::assertIsArray($opts);
@@ -1350,6 +1352,7 @@ final class FormKitControllerTraitTest extends TestCase
             ['altcha', AltchaType::class],
             ['barcode', BarcodeType::class],
             ['period', DateRangeType::class],
+            ['emoji', EmojiPickerType::class],
         ], $calls);
         self::assertTrue($byName['altcha']['required']);
     }

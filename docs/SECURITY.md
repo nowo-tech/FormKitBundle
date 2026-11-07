@@ -145,6 +145,8 @@ FormKit exposes **no endpoints**: no routes, controllers, commands or public ser
 
 **Verified:** `CsrfProtectionGuard` makes `CsrfOnlyType` / `HiddenFieldsCsrfType` fail closed when form CSRF is unavailable; stateless CSRF token ids are opt-in (`stateless_csrf.enabled: false` by default); bundle Twig output is auto-escaped except the documented trusted-HTML options (`*_html` help-modal fields, `input_group_prefix` / `_suffix`, `StaticHtmlType` `html`, `required_label_suffix`, renderer `form_buttons`).
 
+**Motion batch:** Independent audit 2026-11-07 (Appendix HW, PR #62 at `3a3d13e`): **Pass (good).** A host without `combobox.css` behaves as before. Can tag. HW-L5 fixed afterwards at `<final SHA>`, a commit outside that audit.
+
 ## Release security checklist (12.4.1)
 
 Before tagging a release, confirm:

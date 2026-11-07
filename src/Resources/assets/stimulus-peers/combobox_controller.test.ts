@@ -337,4 +337,25 @@ describe('combobox peer — lifecycle', () => {
     await tick();
     expect(remove).toHaveBeenCalledWith('pointerdown', expect.any(Function));
   });
+
+  it('fades the list before hiding it when it has a transition, and opening again ends the fade', async () => {
+    const controller = await mount(markup());
+    const query = document.querySelector<HTMLInputElement>('[data-combobox-target="query"]')!;
+    const list = document.querySelector<HTMLElement>('[data-combobox-target="list"]')!;
+    controller.open();
+    const style = vi.spyOn(window, 'getComputedStyle').mockReturnValue({ transitionDuration: '110ms', transitionDelay: '0s' } as CSSStyleDeclaration);
+    controller.close();
+    expect(query.getAttribute('aria-expanded')).toBe('false');
+    expect(list.hidden).toBe(false);
+    expect(list.hasAttribute('data-combobox-closing')).toBe(true);
+    list.dispatchEvent(new Event('transitionend'));
+    expect(list.hidden).toBe(true);
+
+    controller.open();
+    controller.close();
+    controller.open();
+    expect(list.hasAttribute('data-combobox-closing')).toBe(false);
+    expect(list.hidden).toBe(false);
+    style.mockRestore();
+  });
 });
