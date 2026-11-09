@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.20.0](#to-2200)
 - [To 2.19.0](#to-2190)
 - [To 2.18.0](#to-2180)
 - [To 2.17.0](#to-2170)
@@ -73,6 +74,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.20.0
+
+From **2.19.0**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
 
 Target **2.20.0**, from **2.19.0**:
 
