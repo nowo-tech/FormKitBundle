@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Tests\Unit\Form\Extension;
 
 use Nowo\FormKitBundle\Form\Extension\ImageCropExtension;
+use Nowo\FormKitBundle\Form\ImageCropAttributes;
 use Nowo\UiKitBundle\Form\ImageCrop;
+use Nowo\UiKitBundle\Form\ImageCropTypeExtension;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
@@ -16,10 +19,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormRenderer;
 use Symfony\Component\Form\Forms;
+use Symfony\Component\Form\FormTypeExtensionInterface;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\RuntimeLoader\FactoryRuntimeLoader;
@@ -137,6 +142,46 @@ final class ImageCropExtensionTest extends TestCase
         }
     }
 
+    public function testValidationRunsThroughThePathThatPrints(): void
+    {
+        foreach ([[null, ImageCrop::class], [false, ImageCropAttributes::class]] as [$uiKit, $thrower]) {
+            try {
+                $this->factory(new ImageCropExtension(null, $uiKit))->create(FileType::class, null, ['crop' => ['shape' => 'oval']]);
+                self::fail('Expected InvalidOptionsException');
+            } catch (InvalidOptionsException $exception) {
+                self::assertStringEndsWith('"crop": The image crop shape is "square" or "circle".', $exception->getMessage());
+                $cause = $exception;
+                while ($cause->getPrevious() instanceof Throwable) {
+                    $cause = $cause->getPrevious();
+                }
+                self::assertSame((new ReflectionClass($thrower))->getFileName(), $cause->getFile());
+            }
+        }
+    }
+
+    public function testCropTogetherWithUiKitOptionIsRefused(): void
+    {
+        $factory = $this->factory(new ImageCropExtension(), new ImageCropTypeExtension());
+        foreach ([true, ['shape' => 'circle']] as $uiKitCrop) {
+            try {
+                $factory->create(FileType::class, null, ['crop' => ['max_bytes' => 190_000], 'nowo_ui_image_crop' => $uiKitCrop]);
+                self::fail('Expected InvalidOptionsException');
+            } catch (InvalidOptionsException $exception) {
+                self::assertStringEndsWith('"crop" and "nowo_ui_image_crop" cannot both be set on one field: use one of them.', $exception->getMessage());
+            }
+        }
+
+        // One of them alone (the other false or left out) is fine.
+        $view = $factory->createNamedBuilder('form', FormType::class)
+            ->add('a', FileType::class, ['crop' => ['shape' => 'circle'], 'nowo_ui_image_crop' => false])
+            ->add('b', FileType::class, ['crop' => false, 'nowo_ui_image_crop' => ['shape' => 'circle']])
+            ->add('c', FileType::class, ['crop' => ['shape' => 'circle']])
+            ->getForm()->createView();
+        foreach (['a', 'b', 'c'] as $name) {
+            self::assertSame('circle', $view[$name]->vars['attr']['data-nowo-ui-image-crop-shape'], $name);
+        }
+    }
+
     public function testNonBoolNonArrayIsRefused(): void
     {
         $this->expectException(InvalidOptionsException::class);
@@ -151,9 +196,12 @@ final class ImageCropExtensionTest extends TestCase
         $this->factory(new ImageCropExtension())->create(TextType::class, null, ['crop' => true]);
     }
 
-    private function factory(ImageCropExtension $extension): FormFactoryInterface
+    /**
+     * @param FormTypeExtensionInterface<mixed> ...$extensions
+     */
+    private function factory(FormTypeExtensionInterface ...$extensions): FormFactoryInterface
     {
-        return Forms::createFormFactoryBuilder()->addTypeExtension($extension)->getFormFactory();
+        return Forms::createFormFactoryBuilder()->addTypeExtensions($extensions)->getFormFactory();
     }
 
     /**

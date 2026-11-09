@@ -75,6 +75,20 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+Target **2.20.1** (patch), from **2.20.0**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+- **A field with both `crop` and UiKit's `nowo_ui_image_crop` now fails when the form is built** (`InvalidOptionsException`).
+  Keep one of them on the field (set the other to `false` or remove it). The docs already said to use one or the other.
+- **With UiKit installed and `NowoUiKitBundle` registered, `crop` is validated by UiKit's `ImageCrop::normalize()`.** With
+  UiKit 2.43 the rules and messages are identical, so nothing changes. With a later UiKit, its rules apply at build time:
+  a value it accepts is no longer refused by FormKit's older copy, and a value it refuses fails with
+  `InvalidOptionsException` when the form is built instead of an error while rendering.
+- No configuration, template or asset changes.
+
 ## To 2.20.0
 
 From **2.19.0**:
