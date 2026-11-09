@@ -7,13 +7,16 @@ namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 use InvalidArgumentException;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
 use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
+use Nowo\FormKitBundle\Form\Extension\ImageCropExtension;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
 use Nowo\FormKitBundle\Form\FormTypeMap;
 use Nowo\FormKitBundle\Twig\CsrfActionFormExtension;
+use Nowo\UiKitBundle\NowoUiKitBundle;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
@@ -21,6 +24,29 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class FormKitExtensionTest extends TestCase
 {
+    public function testImageCropExtensionDelegatesToUiKitOnlyWhenItsBundleIsRegistered(): void
+    {
+        foreach ([
+            [null, null],
+            [['FrameworkBundle' => FrameworkBundle::class], false],
+            [['NowoUiKitBundle' => NowoUiKitBundle::class], null],
+        ] as [$bundles, $expected]) {
+            $container = new ContainerBuilder();
+            if ($bundles !== null) {
+                $container->setParameter('kernel.bundles', $bundles);
+            }
+            (new FormKitExtension())->load([], $container);
+
+            $definition = $container->getDefinition(ImageCropExtension::class);
+            self::assertTrue($definition->isAutoconfigured());
+            $translator = $definition->getArgument(0);
+            self::assertInstanceOf(Reference::class, $translator);
+            self::assertSame(TranslatorInterface::class, (string) $translator);
+            self::assertSame(ContainerInterface::NULL_ON_INVALID_REFERENCE, $translator->getInvalidBehavior());
+            self::assertSame($expected, $definition->getArgument(1));
+        }
+    }
+
     public function testLoadSetsParametersFromNamedProfilesAndLoadsServices(): void
     {
         $container = new ContainerBuilder();

@@ -69,6 +69,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Target: **2.20.0** (minor). See [UPGRADING](UPGRADING.md#unreleased).
+
+### Added
+
+- **`crop` option on `FileType`** (and every type built on it, e.g. UX Dropzone): `false` (default) | `true` | `{shape, aspect, max, min, format, quality, max_bytes, bake_circle, preview, labels}`. It only prints UiKit 2.43's image crop attribute contract (`data-nowo-ui-image-crop*`) on the `<input type="file">`; UiKit's `image-crop` script crops the picked image in the browser and the crop is what the form uploads. With UiKit ^2.43 installed and `NowoUiKitBundle` registered, FormKit delegates to `Nowo\UiKitBundle\Form\ImageCrop::attributes()` (validation and translated dialog labels); otherwise `Nowo\FormKitBundle\Form\ImageCropAttributes` validates with the same rules and prints the attributes itself, without `-labels` unless `labels` is given (the runtime falls back to English). Bad values throw `InvalidOptionsException` when the form is built; `crop` with `multiple` is refused; the field's own `attr` wins on conflicts. Without `crop` the output is byte-identical.
+
+### Changed
+
+- **Development only:** `require-dev` and the lock move to UiKit ^2.43, as the `crop` tests compare FormKit's printer with `ImageCrop`. UiKit stays optional at runtime (`suggest`).
+
 ## [2.19.0] - 2026-11-07
 
 ### Added

@@ -7,11 +7,13 @@ namespace Nowo\FormKitBundle\DependencyInjection;
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\AbstractGetFilterType;
 use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
+use Nowo\FormKitBundle\Form\Extension\ImageCropExtension;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
 use Nowo\FormKitBundle\Form\Type\TranslatableMapType;
 use Nowo\FormKitBundle\Twig\CsrfActionFormExtension;
 use Nowo\FormKitBundle\Twig\LocaleTabsTwigExtension;
+use Nowo\UiKitBundle\NowoUiKitBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,6 +28,7 @@ use function array_merge;
 use function array_unique;
 use function array_values;
 use function class_exists;
+use function in_array;
 use function is_array;
 use function is_string;
 use function sprintf;
@@ -147,6 +150,31 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         /** @var array{locales: list<string>, default_locale: string|null, renderer: string, form_theme: bool} $localeTabs */
         $localeTabs = $config['locale_tabs'];
         $this->registerLocaleTabs($container, $localeTabs);
+
+        $this->registerImageCrop($container);
+    }
+
+    /**
+     * Image crop (2.20): the `crop` option on FileType ({@see ImageCropExtension}). It delegates to UiKit's ImageCrop
+     * (translated labels) only when UiKit ^2.43 is installed and NowoUiKitBundle is registered (its translations are
+     * loaded); otherwise FormKit prints the attributes itself and the runtime keeps its English texts.
+     */
+    private function registerImageCrop(ContainerBuilder $container): void
+    {
+        $uiKit = null;
+        if ($container->hasParameter('kernel.bundles')) {
+            $bundles = $container->getParameter('kernel.bundles');
+            $uiKit   = is_array($bundles) && in_array(NowoUiKitBundle::class, $bundles, true) ? null : false;
+        }
+
+        $container->register(ImageCropExtension::class, ImageCropExtension::class)
+            ->setArguments([
+                new Reference(TranslatorInterface::class, ContainerInterface::NULL_ON_INVALID_REFERENCE),
+                $uiKit,
+            ])
+            // REQ-SF-003: tagged form.type_extension by FrameworkBundle autoconfiguration, no manual tag.
+            ->setAutoconfigured(true)
+            ->setPublic(false);
     }
 
     /**

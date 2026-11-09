@@ -74,6 +74,14 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+Target **2.20.0**, from **2.19.0**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+No breaking change: forms without the new `crop` option render byte-identical. A `FileType` field (or a type built on it) that already had a custom option named `crop` (through your own type extension) now collides with FormKit's: rename yours. To use `crop`, install `nowo-tech/ui-kit-bundle` ^2.43 for the browser script (`image-crop`) and translated labels; without UiKit FormKit still prints the attributes, and your own copy of the runtime reads them. Keep validating the upload on the server (type, size, dimensions, decoded pixels): the crop happens in the browser and can be skipped. See [USAGE](USAGE.md#image-crop-on-file-inputs).
+
 ## To 2.19.0
 
 From **2.18.0**:
