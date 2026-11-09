@@ -20,6 +20,7 @@
 - [Disabling convention for a key](#disabling-convention-for-a-key)
 - [Custom static blocks in the form (HR, alert)](#custom-static-blocks-in-the-form-hr-alert)
 - [Input group (icon at start or end)](#input-group-icon-at-start-or-end)
+- [Image crop on file inputs](#image-crop-on-file-inputs)
 - [Help modal (optional)](#help-modal-optional)
 - [Combobox (Stimulus peer, optional)](#combobox-stimulus-peer-optional)
 - [Locale tabs (one tab per language)](#locale-tabs-one-tab-per-language)
@@ -530,6 +531,85 @@ $this->buildFormFromArray($builder, [
     ],
 ]);
 ```
+
+## Image crop on file inputs
+
+FormKit adds a `crop` option to `FileType` and every type built on it (e.g. UX Dropzone) through **ImageCropExtension**.
+It only prints the attribute contract of UiKit 2.43's image crop step (`data-nowo-ui-image-crop*`) on the
+`<input type="file">`: when the user picks an image, UiKit's `image-crop` script shows it under a frame, the user moves and
+zooms it, and "Apply" puts the crop in the input **in place of the picked file**. The form then uploads an ordinary file,
+so keep your server constraints (`File`, `Image`, sizes, dimensions) as they are. Without the script, the picked file is
+uploaded unchanged.
+
+- `crop: false` (default): nothing printed; the output is byte-identical to a form without FormKit's extension.
+- `crop: true`: UiKit's defaults (a square, at most 1024 px, format `auto`, no byte limit).
+- `crop: {…}`: any of these keys (unknown keys and bad values throw `InvalidOptionsException` when the form is built).
+
+| Key | Values | Default |
+| --- | --- | --- |
+| `shape` | `square`, `circle` (a visual mask; the stored image stays square unless `bake_circle`) | `square` |
+| `aspect` | `1`, a number (`1.5`), a ratio (`'16/9'`, `'16:9'`), `'free'` (a circle is always 1) | `1` |
+| `max` | longest output edge in px, integer 16 to 8192 (the crop is never enlarged) | `1024` |
+| `min` | shortest crop edge in image px, integer ≥ 1 (zooming in stops there) | `1` |
+| `format` | `auto` (WebP where the browser encodes it, else PNG with transparency / JPEG), `png`, `webp`, `jpeg` | `auto` |
+| `quality` | 0 to 1, for WebP and JPEG | `0.92` |
+| `max_bytes` | largest output file in bytes, positive integer (quality, then size, step down to fit) | none |
+| `bake_circle` | `true`: pixels outside the circle become transparent (circle + `png`/`webp`/`auto` only) | `false` |
+| `preview` | id of an `<img>` that shows the crop once applied | none |
+| `labels` | dialog texts keyed `title`, `instructions`, `stage`, `zoom`, `zoom_status`, `apply`, `cancel`, `close`, `too_large`, `optimizing` | translations / English |
+
+Rules:
+
+- **`multiple` is refused** (`crop` crops one image).
+- **The field's own `attr` wins** over the printed attributes; `accept` stays as you set it.
+- **With UiKit ^2.43 installed and `NowoUiKitBundle` registered**, FormKit delegates to
+  `Nowo\UiKitBundle\Form\ImageCrop::attributes($crop, $translator)`: same validation, plus `data-nowo-ui-image-crop-labels`
+  translated from `image_crop.*` (domain `NowoUiKitBundle`), with `labels` overriding single texts.
+- **Without UiKit** (or with the package installed but the bundle not registered), FormKit validates with the same rules
+  and prints the attributes itself (`Nowo\FormKitBundle\Form\ImageCropAttributes::attributes()`); `-labels` is printed only
+  when you pass `labels`, otherwise the runtime uses its English texts.
+
+Avatar (round, small, WebP/PNG/JPEG picked automatically):
+
+```php
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\Image;
+
+$builder->add('avatar', FileType::class, [
+    'required'    => false,
+    'attr'        => ['accept' => 'image/png,image/jpeg,image/webp'],
+    'constraints' => [new Image(maxSize: '200k')],
+    'crop'        => ['shape' => 'circle', 'format' => 'auto', 'max' => 512, 'max_bytes' => 190_000, 'preview' => 'avatar-preview'],
+]);
+```
+
+Logo (free proportions, larger file allowed):
+
+```php
+$builder->add('logo', FileType::class, [
+    'required'    => false,
+    'attr'        => ['accept' => 'image/png,image/jpeg,image/webp'],
+    'constraints' => [new Image(maxSize: '1M')],
+    'crop'        => ['aspect' => 'free', 'format' => 'auto', 'max' => 512, 'max_bytes' => 996_000],
+]);
+```
+
+The same in an array-based form (`buildFormFromArray()` / `FormOptionsTrait`):
+
+```php
+'avatar' => ['type' => FileType::class, 'crop' => ['shape' => 'circle', 'format' => 'auto', 'max' => 512, 'max_bytes' => 190_000]],
+```
+
+Load UiKit's script on the page (it listens on `window`, so it also finds inputs inserted later, e.g. in a Turbo frame or a
+remote dialog):
+
+```twig
+{{ include(nowo_ui_partial('scripts'), {script_names: nowo_ui_script_names()|merge(['image-crop'])}) }}
+```
+
+Pick `max_bytes` a little below the server limit (190 000 for a 200 KB avatar rule, 996 000 for a 1 MB logo rule), and
+cap decoded pixels on the server: the crop runs in the browser and a client can skip it. UiKit's own
+`nowo_ui_image_crop` option on `FileType` prints the same contract; use one or the other on a field.
 
 ## Help modal (optional)
 
