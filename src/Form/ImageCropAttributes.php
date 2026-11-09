@@ -75,6 +75,37 @@ final class ImageCropAttributes
     }
 
     /**
+     * Whether {@see attributes()} delegates to UiKit's `ImageCrop` for this `$uiKit` setting.
+     *
+     * @param bool|null $uiKit null = delegate to UiKit when it is available, false = never (FormKit's own printer)
+     */
+    public static function delegates(?bool $uiKit = null): bool
+    {
+        return ($uiKit ?? true) && self::uiKitAvailable();
+    }
+
+    /**
+     * Validates the options through the same path that {@see attributes()} prints them with: UiKit's
+     * `ImageCrop::normalize()` when it delegates (so a newer UiKit's rules and messages apply), FormKit's own
+     * {@see normalize()} otherwise.
+     *
+     * @param array<mixed> $options
+     * @param bool|null $uiKit same meaning as in {@see attributes()}
+     *
+     * @throws InvalidArgumentException on an unknown key or a bad value
+     */
+    public static function validate(array $options, ?bool $uiKit = null): void
+    {
+        if (self::delegates($uiKit)) {
+            ImageCrop::normalize($options);
+
+            return;
+        }
+
+        self::normalize($options);
+    }
+
+    /**
      * Attributes to print on the input.
      *
      * @param array<mixed> $options
@@ -86,7 +117,7 @@ final class ImageCropAttributes
      */
     public static function attributes(array $options = [], ?TranslatorInterface $translator = null, ?bool $uiKit = null): array
     {
-        if (($uiKit ?? self::uiKitAvailable()) && self::uiKitAvailable()) {
+        if (self::delegates($uiKit)) {
             return ImageCrop::attributes($options, $translator);
         }
 
@@ -125,7 +156,8 @@ final class ImageCropAttributes
     }
 
     /**
-     * The validated options with their defaults (same rules as UiKit 2.43's `ImageCrop::normalize()`).
+     * The validated options with their defaults (same rules as UiKit 2.43's `ImageCrop::normalize()`), used when FormKit
+     * prints the attributes itself (no UiKit to delegate to).
      *
      * @param array<mixed> $options
      *

@@ -610,7 +610,7 @@ uploaded unchanged.
 | `shape` | `square`, `circle` (a visual mask; the stored image stays square unless `bake_circle`) | `square` |
 | `aspect` | `1`, a number (`1.5`), a ratio (`'16/9'`, `'16:9'`), `'free'` (a circle is always 1) | `1` |
 | `max` | longest output edge in px, integer 16 to 8192 (the crop is never enlarged) | `1024` |
-| `min` | shortest crop edge in image px, integer ≥ 1 (zooming in stops there) | `1` |
+| `min` | shortest crop edge in image px, integer 1 to 8192 (zooming in stops there) | `1` |
 | `format` | `auto` (WebP where the browser encodes it, else PNG with transparency / JPEG), `png`, `webp`, `jpeg` | `auto` |
 | `quality` | 0 to 1, for WebP and JPEG | `0.92` |
 | `max_bytes` | largest output file in bytes, positive integer (quality, then size, step down to fit) | none |
@@ -621,10 +621,14 @@ uploaded unchanged.
 Rules:
 
 - **`multiple` is refused** (`crop` crops one image).
+- **`crop` together with UiKit's own `nowo_ui_image_crop` option is refused** (`InvalidOptionsException` when the form is
+  built): both print the same attributes, so a field sets one of them (the other `false` or left out).
 - **The field's own `attr` wins** over the printed attributes; `accept` stays as you set it.
 - **With UiKit ^2.43 installed and `NowoUiKitBundle` registered**, FormKit delegates to
-  `Nowo\UiKitBundle\Form\ImageCrop::attributes($crop, $translator)`: same validation, plus `data-nowo-ui-image-crop-labels`
-  translated from `image_crop.*` (domain `NowoUiKitBundle`), with `labels` overriding single texts.
+  `Nowo\UiKitBundle\Form\ImageCrop::attributes($crop, $translator)`, plus `data-nowo-ui-image-crop-labels` translated
+  from `image_crop.*` (domain `NowoUiKitBundle`), with `labels` overriding single texts. The options are then validated
+  when the form is built by UiKit's own `ImageCrop::normalize()`, the code that prints them, so the installed UiKit's rules
+  and messages apply and a value it refuses fails at build time, never at render.
 - **Without UiKit** (or with the package installed but the bundle not registered), FormKit validates with the same rules
   and prints the attributes itself (`Nowo\FormKitBundle\Form\ImageCropAttributes::attributes()`); `-labels` is printed only
   when you pass `labels`, otherwise the runtime uses its English texts.
@@ -669,7 +673,8 @@ remote dialog):
 
 Pick `max_bytes` a little below the server limit (190 000 for a 200 KB avatar rule, 996 000 for a 1 MB logo rule), and
 cap decoded pixels on the server: the crop runs in the browser and a client can skip it. UiKit's own
-`nowo_ui_image_crop` option on `FileType` prints the same contract; use one or the other on a field.
+`nowo_ui_image_crop` option on `FileType` prints the same contract; use one or the other on a field (setting both is
+refused).
 
 ## Help modal (optional)
 
