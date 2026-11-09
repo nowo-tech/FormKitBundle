@@ -9,6 +9,7 @@ use Nowo\FormKitBundle\Form\ImageCropAttributes;
 use Nowo\UiKitBundle\Form\ImageCrop;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -194,5 +195,54 @@ final class ImageCropAttributesTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($uiKitMessage);
         ImageCropAttributes::attributes($options, null, false);
+    }
+
+    public function testDelegatesFollowsTheSetting(): void
+    {
+        self::assertTrue(ImageCropAttributes::delegates());
+        self::assertTrue(ImageCropAttributes::delegates());
+        self::assertTrue(ImageCropAttributes::delegates(true));
+        self::assertFalse(ImageCropAttributes::delegates(false));
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    #[DataProvider('validOptions')]
+    public function testValidateAcceptsValidOptionsOnBothPaths(array $options): void
+    {
+        ImageCropAttributes::validate($options);
+        ImageCropAttributes::validate($options, false);
+
+        $this->addToAssertionCount(2);
+    }
+
+    /**
+     * JN-L1: validation runs through the code that prints the attributes, UiKit's `ImageCrop::normalize()` when it
+     * delegates and FormKit's own copy otherwise, so a value never passes the build-time check and fails at render.
+     *
+     * @param array<mixed> $options
+     */
+    #[DataProvider('invalidOptions')]
+    public function testValidateUsesThePrintingPath(array $options): void
+    {
+        foreach ([[null, ImageCrop::class], [false, ImageCropAttributes::class]] as [$uiKit, $thrower]) {
+            $validated = $this->failure(static fn () => ImageCropAttributes::validate($options, $uiKit));
+            $printed   = $this->failure(static fn (): array => ImageCropAttributes::attributes($options, null, $uiKit));
+
+            self::assertSame($printed->getMessage(), $validated->getMessage());
+            self::assertSame((new ReflectionClass($thrower))->getFileName(), $validated->getFile());
+            self::assertSame($printed->getFile(), $validated->getFile());
+        }
+    }
+
+    private function failure(callable $call): InvalidArgumentException
+    {
+        try {
+            $call();
+        } catch (InvalidArgumentException $exception) {
+            return $exception;
+        }
+        self::fail('Expected InvalidArgumentException');
     }
 }

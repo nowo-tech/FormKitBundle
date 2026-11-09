@@ -70,6 +70,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Target: **2.20.1** (patch). See [UPGRADING](UPGRADING.md#unreleased).
+
+### Fixed
+
+- **`crop` validation follows the printing path (JN-L1).** When FormKit delegates to UiKit, the `crop` option is now validated when the form is built by UiKit's `ImageCrop::normalize()`, the same code that prints the attributes, instead of FormKit's copy of UiKit 2.43's rules. A newer UiKit's rules and messages apply, and a value it refuses throws `InvalidOptionsException` at build time instead of an `InvalidArgumentException` (HTTP 500) from `finishView` at render. FormKit's own rules are used only when it prints the attributes itself (no UiKit). New `ImageCropAttributes::delegates()` and `ImageCropAttributes::validate()`.
+- **`crop` together with `nowo_ui_image_crop` is refused (JN-L2).** A field that sets both FormKit's `crop` and UiKit's `nowo_ui_image_crop` (not `false`) now throws `InvalidOptionsException` when the form is built (`"crop" and "nowo_ui_image_crop" cannot both be set on one field: use one of them.`). Before, both extensions merged their attributes and could print a mix of the two configs that neither validated.
+
+### Documentation
+
+- **USAGE:** the `min` crop option is an integer from 1 to 8192, as the code enforces (JN-I2); the "use one or the other" rule for `crop` and `nowo_ui_image_crop` is now enforced and documented as such.
+
 ## [2.20.0] - 2026-11-09
 
 Target: **2.20.0** (minor). See [UPGRADING](UPGRADING.md#to-2200).
