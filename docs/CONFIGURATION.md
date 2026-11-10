@@ -20,6 +20,9 @@ The bundle is configured under the root key `nowo_form_kit`. Multiple profiles c
 
 ## Structure
 
+The `visible_when` field option (2.21, provider-dependent fields) needs no configuration: it is registered for every
+form type and defaults to `null`. See [USAGE](USAGE.md#2b-provider-dependent-fields-visible_when-221).
+
 | Option | Type | Description |
 |--------|------|-------------|
 | `default_profile` | `string` | Name (key) of the profile to use when a form does not specify one. Must be a key in `profiles`. Default: `default`. |

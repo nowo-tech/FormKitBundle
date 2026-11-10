@@ -12,6 +12,7 @@ use Nowo\FormKitBundle\Form\Extension\LocaleTabsExtension;
 use Nowo\FormKitBundle\Form\Extension\RequiredLabelSuffixExtension;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
+use Nowo\FormKitBundle\Form\Extension\VisibleWhenExtension;
 use Nowo\FormKitBundle\Form\Type\CsrfOnlyType;
 use Nowo\FormKitBundle\Form\Type\HiddenFieldsCsrfType;
 use Nowo\FormKitBundle\Form\Type\SearchQueryType;
@@ -48,6 +49,7 @@ final class AutoconfigurationTest extends TestCase
             RequiredLabelSuffixExtension::class,
             HelpModalExtension::class,
             UnlabelledChoiceAriaLabelExtension::class,
+            VisibleWhenExtension::class,
         ] as $id) {
             self::assertSame([[]], $container->getDefinition($id)->getTag('form.type_extension'), $id);
         }
