@@ -315,7 +315,7 @@ Editors (CKEditor 5, Tiptap, Milkdown) inside locale tabs or other panels mount 
 
 ## Conditional fields (show one field or another)
 
-Form Kit has no built-in `when` / `visible_if` option. Conditionals stay in Symfony (build-time `if`, `FormEvents`, or frontend). Use any strategy’s helpers: **bound-builder** + `add*Field()` when the shape is known at build time, or the **resolve-field-options** technique + `$form->add()` inside listeners.
+Form Kit has no built-in option that adds or removes fields; for fields that only apply to some values of another field, use the `visible_when` option (2b below), which hides rows and ignores what was typed in them. Other conditionals stay in Symfony (build-time `if`, `FormEvents`, or frontend). Use any strategy’s helpers: **bound-builder** + `add*Field()` when the shape is known at build time, or the **resolve-field-options** technique + `$form->add()` inside listeners.
 
 ### 1. Build-time (`if` on known options / data)
 
@@ -435,10 +435,12 @@ $builder
   in the browser from UiKit ^2.43.1). FormKit prints the attributes itself (no UiKit dependency); without JavaScript
   every row is visible.
 - **Submit** (one `PRE_SUBMIT` listener per compound form, a no-op without rules): a field hidden for the submitted
-  controlling value gets its current value back, so what was typed is ignored, no constraint or `required` check runs
-  on it and the stored value survives a provider switch. A `secret: true` field hidden this way drops a typed value
-  (blank = keep) and keeps only an explicit `clear` of a compound secret (DoctrineEncrypt's `SecretType`), which
-  deletes the stored secret.
+  controlling value gets its current value back, so what was typed is ignored and the stored value survives a provider
+  switch. The field is still validated, against that current value: its constraints must accept it (e.g. a `NotBlank`
+  field that is empty on a new record) or sit in a validation group that only runs when the row is visible, otherwise
+  the form shows an error the user cannot see. A `secret: true` field hidden this way drops a typed value: a plain
+  secret input (e.g. `PasswordType`) keeps its current value like any field, and a compound secret (DoctrineEncrypt's
+  `SecretType`) is submitted empty ("blank = keep") with only an explicit `clear`, which deletes the stored secret.
 - **Chains:** a field whose controlling field is itself hidden is hidden too, whatever its value and whatever the
   order of the fields (above: provider R2 hides `region`, so `custom_region` is ignored although region is "other").
 - Values compare as the browser submits them (a checkbox's `value`, a choice's option value); a disabled controlling

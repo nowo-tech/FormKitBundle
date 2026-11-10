@@ -45,9 +45,9 @@ use const JSON_UNESCAPED_UNICODE;
  * when any submitted value does.
  *
  * {@see self::keep()} (a `PRE_SUBMIT` listener on every compound form) gives a child hidden for the submitted values
- * its current value back, so what was typed is ignored, no constraint or `required` runs on it and the stored value
- * survives; a hidden `secret` drops a typed value and keeps only an explicit `clear` of a compound secret (e.g.
- * DoctrineEncrypt's SecretType). Rules chain like the peer (UiKit 2.43.1): a child whose controlling field is itself
+ * its current value back, so what was typed is ignored and the stored value survives (the field is still validated,
+ * against that value); a hidden `secret` drops a typed value: a plain input keeps its current value, a compound secret
+ * (e.g. DoctrineEncrypt's SecretType) is submitted empty with only an explicit `clear`. Rules chain like the peer (UiKit 2.43.1): a child whose controlling field is itself
  * hidden is hidden too, whatever the order of the children. A rule whose controlling field is not in the form leaves
  * the child as submitted (the peer shows it).
  *
@@ -270,12 +270,13 @@ final class VisibleWhenRules
      *
      * @param FormInterface<mixed> $child
      *
-     * @return array<string, string>|string
+     * @return mixed the current value of a plain input; `[]` or `['clear' => …]` for a compound secret
      */
-    private static function keptSecret(FormInterface $child, mixed $submitted): array|string
+    private static function keptSecret(FormInterface $child, mixed $submitted): mixed
     {
         if (!$child->getConfig()->getCompound()) {
-            return '';
+            // A plain secret input keeps its current value (the typed one is dropped, the stored one is not erased).
+            return self::currentSubmission($child);
         }
         $clear = is_array($submitted) ? ($submitted[self::CLEAR_KEY] ?? null) : null;
 

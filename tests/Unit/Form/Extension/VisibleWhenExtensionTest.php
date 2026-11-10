@@ -133,7 +133,7 @@ final class VisibleWhenExtensionTest extends TestCase
         // chained: region hidden → custom region hidden although "other" matches
         self::assertSame('stored-custom', $data['custom_region']);
         self::assertSame(['value' => null, 'clear' => false], $data['secret']);
-        self::assertNull($data['plain_secret']);
+        self::assertSame('stored-plain', $data['plain_secret'], 'typed plain secret dropped, stored one kept');
         self::assertSame('2026-01-02', $data['when']->format('Y-m-d'));
     }
 
