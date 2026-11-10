@@ -76,6 +76,23 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 
 ## Unreleased
 
+Target **2.21.0** (minor), from **2.20.1**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+- Nothing to do: the new `visible_when` option defaults to `null` and changes neither markup nor submission.
+- Every compound form now carries one more `PRE_SUBMIT` listener (FormKit's `visible_when` keeper). Without a
+  `visible_when` rule on its children it returns at once and leaves the submitted data untouched.
+- If your app registers its own form type extension with an option named `visible_when`, rename it or drop it in
+  favour of this one (the two normalizers would conflict).
+- Replacing a hand-written keeper (e.g. Beacon's `VisibleWhenKeeper`): set `visible_when` on the dependent fields,
+  remove the keeper's `row_attr` and `PRE_SUBMIT` registration. Differences: rules chain in any order (a dependent of
+  a hidden field is hidden too), the controlling value is compared as the browser submits it (not after the type's
+  transformers), a multiple choice matches when any value does, and a hidden compound field is restored child by
+  child. Pair with UiKit ^2.43.1 so the browser chains too.
+
 ## To 2.20.1
 
 From **2.20.0**:

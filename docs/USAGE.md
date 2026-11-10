@@ -14,6 +14,7 @@
 - [Conditional fields (show one field or another)](#conditional-fields-show-one-field-or-another)
   - [1. Build-time (`if` on known options / data)](#1-build-time-if-on-known-options--data)
   - [2. Form events (`PRE_SET_DATA` / `PRE_SUBMIT`)](#2-form-events-pre_set_data--pre_submit)
+  - [2b. Provider-dependent fields (`visible_when`, 2.21)](#2b-provider-dependent-fields-visible_when-221)
   - [3. UI-only hide/show (Stimulus / CSS)](#3-ui-only-hideshow-stimulus--css)
   - [4. Live Components (optional)](#4-live-components-optional)
 - [Kit strategy (FormKitTrait / FormKitAbstractType)](#kit-strategy-formkittrait--formkitabstracttype)
@@ -402,6 +403,51 @@ Demo: `/conditional-fields` — events form (`ConditionalFieldsDemoType`) and bu
 ```
 
 Changing the driving field in the browser does **not** rebuild the form until the next request (submit or Live Component refresh). Align validation (groups / constraints) with the fields that exist for each branch.
+
+### 2b. Provider-dependent fields (`visible_when`, 2.21)
+
+For fields that only apply to some values of another field (SMTP host for `smtp`, API key for `ses`, custom region
+for region "Other"…), every field takes the `visible_when` option. All fields stay in the form; the browser hides the
+rows (UiKit `visible-when` peer) and the server ignores what was typed in a hidden row:
+
+```php
+$builder
+    ->add('provider', EnumType::class, ['class' => StorageProvider::class])
+    ->add('region', ChoiceType::class, [
+        'choices'      => ['eu-west-1' => 'eu-west-1', 'Other' => 'other'],
+        'visible_when' => ['field' => 'provider', 'in' => [StorageProvider::S3]],
+    ])
+    ->add('custom_region', TextType::class, [
+        'visible_when' => ['field' => 'region', 'in' => ['other']],
+    ])
+    ->add('secret_key', SecretType::class, [
+        'visible_when' => ['field' => 'provider', 'in' => [StorageProvider::S3, StorageProvider::R2], 'secret' => true],
+    ]);
+```
+
+- `field`: a sibling child name. `in`: the values the row is shown for (strings, integers, booleans as `'1'` / `''`,
+  backed enums by value; at least one). `secret` (default `false`): see below. Unknown keys, a non-backed enum or an
+  empty `in` fail with `InvalidOptionsException` when the form is built; a field that names itself fails on render.
+- **Markup:** the row gets UiKit's `data-nowo-ui-visible-when-field` (the controlling input's full `name`, e.g.
+  `storage[provider]`; `[]` appended for a multiple select or multiple checkboxes) and `data-nowo-ui-visible-when-in`
+  in `row_attr`, merged with the field's own `row_attr`. Put `data-controller="visible-when"` on the form
+  (`form_start(form, {attr: {'data-controller': 'visible-when'}})`) and load the UiKit peer (UiKit ^2.23; rules chain
+  in the browser from UiKit ^2.43.1). FormKit prints the attributes itself (no UiKit dependency); without JavaScript
+  every row is visible.
+- **Submit** (one `PRE_SUBMIT` listener per compound form, a no-op without rules): a field hidden for the submitted
+  controlling value gets its current value back, so what was typed is ignored, no constraint or `required` check runs
+  on it and the stored value survives a provider switch. A `secret: true` field hidden this way drops a typed value
+  (blank = keep) and keeps only an explicit `clear` of a compound secret (DoctrineEncrypt's `SecretType`), which
+  deletes the stored secret.
+- **Chains:** a field whose controlling field is itself hidden is hidden too, whatever its value and whatever the
+  order of the fields (above: provider R2 hides `region`, so `custom_region` is ignored although region is "other").
+- Values compare as the browser submits them (a checkbox's `value`, a choice's option value); a disabled controlling
+  field, which the browser does not submit, counts with its current value. A multiple choice matches when any of its
+  values does. A rule whose `field` is not in the form leaves the field as submitted (the peer shows it).
+- Only siblings: a rule never looks into a parent or nested form. Keep the controlling field free of its own
+  provider-dependent secret (a secret's value is never rendered, so the peer cannot read it).
+
+This replaces hand-written keepers such as `PRE_SUBMIT` listeners that copy view data back for hidden rows.
 
 ### 3. UI-only hide/show (Stimulus / CSS)
 

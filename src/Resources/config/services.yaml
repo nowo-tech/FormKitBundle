@@ -45,6 +45,9 @@ services:
 
   Nowo\FormKitBundle\Form\Extension\LocaleTabsExtension:
 
+  # 2.21: visible_when option on every field (UiKit visible-when row_attr + PRE_SUBMIT keeper).
+  Nowo\FormKitBundle\Form\Extension\VisibleWhenExtension: ~
+
   Nowo\FormKitBundle\Form\Extension\CheckboxRowExtension:
     arguments:
       $profiles: '%nowo_form_kit.profiles%'
