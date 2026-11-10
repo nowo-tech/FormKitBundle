@@ -3,6 +3,9 @@
 ## Table of contents
 
 - [Usage strategies](#usage-strategies)
+- [Using it from a DDD / hexagonal application](#using-it-from-a-ddd--hexagonal-application)
+  - [Keeping your domain free of the bundle](#keeping-your-domain-free-of-the-bundle)
+  - [Known limitations](#known-limitations)
 - [FrankenPHP worker mode](#frankenphp-worker-mode)
 - [FormOptionsMerger service](#formoptionsmerger-service)
 - [Controller strategy](#controller-strategy)
@@ -62,6 +65,63 @@ Form Kit exposes four **usage strategies**. Pick one entry point; all share the 
 | **Field options for events** | `resolve-field-options` | `resolveFieldOptions()` then `$form->add()` in `PRE_SET_DATA` / `PRE_SUBMIT` |
 
 In docs and issues you can say e.g. “use the **Options** strategy with **bound-builder**” or “demo page uses **Kit** + **named-config**”.
+
+## Using it from a DDD / hexagonal application
+
+FormKitBundle belongs to the presentation layer. It has no entities, no persistence and no Doctrine ORM code. No
+form type requires a `data_class`, so your forms can bind to commands, DTOs or arrays and your domain never sees
+Symfony Form or FormKit classes.
+
+### Keeping your domain free of the bundle
+
+- Keep FormKit in your UI layer: form types extend `FormKitAbstractType` / `AbstractFormKitType` or use
+  `FormOptionsTrait`, and controllers may use `FormKitControllerTrait`. None of these belong in the domain.
+- Bind forms to an input DTO and map it to a command in the controller or an application service:
+
+```php
+final class RegisterCustomerInput
+{
+    public ?string $name = null;
+    public ?string $email = null;
+}
+
+#[FormKitConfig('bootstrap')]
+final class RegisterCustomerType extends FormKitAbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $this->withBuilder($builder, function (): void {
+            $this->addTextField('name');
+            $this->addEmailField('email');
+        });
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(['data_class' => RegisterCustomerInput::class]);
+    }
+}
+
+// Controller (UI layer)
+$form->handleRequest($request);
+if ($form->isSubmitted() && $form->isValid()) {
+    $input = $form->getData();
+    $this->bus->dispatch(new RegisterCustomer($input->name, $input->email));
+}
+```
+
+- For value objects, add a model transformer (or implement `Nowo\FormKitBundle\Form\DataTransformer\DataTransformer`)
+  in the form type, so the DTO already holds the value object.
+- Per-locale fields (locale tabs) work with any collection or array keyed by locale, e.g. a
+  `CollectionType` whose data is `['es' => new TranslationInput(), 'en' => new TranslationInput()]`.
+- `MultiStepWizardSession` keeps plain arrays per step in the session; build your command from
+  `getCollectedData()` once `isComplete()` is true.
+
+### Known limitations
+
+- `TranslationsFormsType` wraps A2lix TranslationFormBundle, which is built around translation entities. Prefer
+  locale tabs with DTOs in a DDD application.
+- The package requires `doctrine/collections` even though it does not use it.
 
 ## FrankenPHP worker mode
 
