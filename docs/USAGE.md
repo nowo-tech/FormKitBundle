@@ -425,9 +425,13 @@ $builder
     ]);
 ```
 
-- `field`: a sibling child name. `in`: the values the row is shown for (strings, integers, booleans as `'1'` / `''`,
-  backed enums by value; at least one). `secret` (default `false`): see below. Unknown keys, a non-backed enum or an
-  empty `in` fail with `InvalidOptionsException` when the form is built; a field that names itself fails on render.
+- `field`: a sibling child name. `in`: the values the row is shown for (strings, integers, booleans, backed enums; at
+  least one). They are mapped the way the controlling field renders them: through its choice list for a choice field
+  (a boolean choice `false` is `'0'`, `true` is `'1'`; an enum by its value), through its `value` option for a checkbox
+  (`true` = checked; `false` = unchecked, `''`); other values compare as strings (`true` → `'1'`, `false` → `''`).
+  `secret` (default `false`): see below. Unknown keys, a non-backed enum or an empty `in` fail with
+  `InvalidOptionsException` when the form is built; a field that names itself, or a `field` that is not a sibling
+  child (a typo, `provider[]`, a nested name), fails with a `LogicException` on render.
 - **Markup:** the row gets UiKit's `data-nowo-ui-visible-when-field` (the controlling input's full `name`, e.g.
   `storage[provider]`; `[]` appended for a multiple select or multiple checkboxes) and `data-nowo-ui-visible-when-in`
   in `row_attr`, merged with the field's own `row_attr`. Put `data-controller="visible-when"` on the form
@@ -438,14 +442,19 @@ $builder
   controlling value gets its current value back, so what was typed is ignored and the stored value survives a provider
   switch. The field is still validated, against that current value: its constraints must accept it (e.g. a `NotBlank`
   field that is empty on a new record) or sit in a validation group that only runs when the row is visible, otherwise
-  the form shows an error the user cannot see. A `secret: true` field hidden this way drops a typed value: a plain
-  secret input (e.g. `PasswordType`) keeps its current value like any field, and a compound secret (DoctrineEncrypt's
-  `SecretType`) is submitted empty ("blank = keep") with only an explicit `clear`, which deletes the stored secret.
+  the form shows an error the user cannot see. A `secret: true` field hidden this way drops a typed value and keeps
+  its current value, whatever its type (plain input, `RepeatedType`, compound group: the stored value is never
+  erased). The only part of the submission kept is an explicit `clear` of a compound secret that has a `clear` child
+  (DoctrineEncrypt's `SecretType`, submitted "blank = keep"), which deletes the stored secret. With a disabled
+  controlling field the browser cannot send that `clear`, but a crafted request can: as everywhere, the form only
+  protects what the user may already edit.
+- The keeper runs before the type's own `PRE_SUBMIT` listeners: children added in a `PRE_SUBMIT` listener (dynamic
+  forms) are not covered, and a listener that rewrites the controlling value afterwards is not seen by it.
 - **Chains:** a field whose controlling field is itself hidden is hidden too, whatever its value and whatever the
   order of the fields (above: provider R2 hides `region`, so `custom_region` is ignored although region is "other").
 - Values compare as the browser submits them (a checkbox's `value`, a choice's option value); a disabled controlling
   field, which the browser does not submit, counts with its current value. A multiple choice matches when any of its
-  values does. A rule whose `field` is not in the form leaves the field as submitted (the peer shows it).
+  values does.
 - Only siblings: a rule never looks into a parent or nested form. Keep the controlling field free of its own
   provider-dependent secret (a secret's value is never rendered, so the peer cannot read it).
 

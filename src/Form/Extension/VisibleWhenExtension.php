@@ -19,7 +19,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function array_merge;
 use function is_array;
-use function is_string;
 use function sprintf;
 
 /**
@@ -34,6 +33,8 @@ use function sprintf;
  *   submitted value keeps its current value; `secret: true` drops a typed value and keeps only an explicit `clear`.
  *
  * Stateless — safe for FrankenPHP worker mode.
+ *
+ * @phpstan-import-type Rule from VisibleWhenRules
  */
 final class VisibleWhenExtension extends AbstractTypeExtension
 {
@@ -76,6 +77,7 @@ final class VisibleWhenExtension extends AbstractTypeExtension
             return;
         }
         foreach ($form->all() as $child) {
+            /** @var Rule|null $rule normalized in configureOptions() */
             $rule = $child->getConfig()->getOption(self::OPTION);
             if (!is_array($rule)) {
                 continue;
@@ -84,27 +86,25 @@ final class VisibleWhenExtension extends AbstractTypeExtension
             if ($rule['field'] === $name) {
                 throw new LogicException(sprintf('Field "%s": visible_when.field cannot be the field itself.', $name));
             }
+            if (!$form->has($rule['field'])) {
+                // A typo, `provider[]` or a nested name would leave the row visible and its value written: fail early.
+                throw new LogicException(sprintf('Field "%s": visible_when.field "%s" is not a sibling field (use the child name, e.g. "provider").', $name, $rule['field']));
+            }
             $childView = $view->children[$name];
             /** @var array<string, mixed> $rowAttr */
             $rowAttr                     = $childView->vars['row_attr'] ?? [];
-            $childView->vars['row_attr'] = array_merge($rowAttr, VisibleWhenRules::attributes($this->controllerName($view, $rule['field']), $rule['in']));
+            $childView->vars['row_attr'] = array_merge($rowAttr, VisibleWhenRules::attributes($this->controllerName($view, $rule['field']), VisibleWhenRules::valuesFor($form->get($rule['field']), $rule)));
         }
     }
 
     /**
-     * `name` attribute of the controlling input: the sibling's full name (`[]` for multiple checkboxes), else the name
-     * it would have.
+     * `name` attribute of the controlling input: the sibling's full name (`[]` for multiple checkboxes).
      */
     private function controllerName(FormView $view, string $field): string
     {
-        $sibling = $view->children[$field] ?? null;
-        if ($sibling instanceof FormView && is_string($sibling->vars['full_name'] ?? null)) {
-            $name = $sibling->vars['full_name'];
+        $sibling = $view->children[$field];
+        $name    = (string) $sibling->vars['full_name'];
 
-            return ($sibling->vars['multiple'] ?? false) === true && ($sibling->vars['expanded'] ?? false) === true ? $name . '[]' : $name;
-        }
-        $root = $view->vars['full_name'] ?? '';
-
-        return is_string($root) && $root !== '' ? $root . '[' . $field . ']' : $field;
+        return ($sibling->vars['multiple'] ?? false) === true && ($sibling->vars['expanded'] ?? false) === true ? $name . '[]' : $name;
     }
 }

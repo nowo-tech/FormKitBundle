@@ -90,8 +90,9 @@ composer update nowo-tech/form-kit-bundle
 - Replacing a hand-written keeper (e.g. Beacon's `VisibleWhenKeeper`): set `visible_when` on the dependent fields,
   remove the keeper's `row_attr` and `PRE_SUBMIT` registration. Differences: rules chain in any order (a dependent of
   a hidden field is hidden too), the controlling value is compared as the browser submits it (not after the type's
-  transformers), a multiple choice matches when any value does, and a hidden compound field is restored child by
-  child. Pair with UiKit ^2.43.1 so the browser chains too.
+  transformers), a multiple choice matches when any value does, `in` values are mapped through the controlling choice list
+  / checkbox `value`, a hidden secret keeps its current value whatever its type, a hidden compound field is restored
+  child by child, and a rule whose `field` is not a sibling fails on render instead of being ignored. Pair with UiKit ^2.43.1 so the browser chains too.
 
 ## To 2.20.1
 

@@ -8,10 +8,13 @@ use BackedEnum;
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\Extension\VisibleWhenExtension;
 use Nowo\UiKitBundle\Form\VisibleWhen;
+use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\ResolvedFormTypeInterface;
+use Throwable;
 use UnitEnum;
 
 use function array_diff;
@@ -49,11 +52,11 @@ use const JSON_UNESCAPED_UNICODE;
  * against that value); a hidden `secret` drops a typed value: a plain input keeps its current value, a compound secret
  * (e.g. DoctrineEncrypt's SecretType) is submitted empty with only an explicit `clear`. Rules chain like the peer (UiKit 2.43.1): a child whose controlling field is itself
  * hidden is hidden too, whatever the order of the children. A rule whose controlling field is not in the form leaves
- * the child as submitted (the peer shows it).
+ * the child as submitted on submit; rendering such a form fails ({@see VisibleWhenExtension::finishView()}).
  *
  * Stateless — safe for FrankenPHP worker mode.
  *
- * @phpstan-type Rule array{field: string, in: list<string>, secret: bool}
+ * @phpstan-type Rule array{field: string, in: list<string>, secret: bool, values: list<bool|float|int|string|BackedEnum>}
  */
 final class VisibleWhenRules
 {
@@ -96,6 +99,7 @@ final class VisibleWhenRules
             throw new InvalidArgumentException('visible_when.in must be a list of strings, integers, booleans or backed enums.');
         }
         $values = [];
+        $raw    = [];
         foreach ($in as $value) {
             if ($value instanceof UnitEnum && !$value instanceof BackedEnum) {
                 throw new InvalidArgumentException(sprintf('visible_when.in: enum "%s" is not backed (its cases have no value the browser submits).', $value::class));
@@ -104,6 +108,7 @@ final class VisibleWhenRules
                 throw new InvalidArgumentException('visible_when.in values must be strings, integers, booleans or backed enums.');
             }
             $values[] = self::visibilityValue($value);
+            $raw[]    = $value;
         }
         if ($values === []) {
             throw new InvalidArgumentException('visible_when.in needs at least one value.');
@@ -113,7 +118,7 @@ final class VisibleWhenRules
             throw new InvalidArgumentException('visible_when.secret must be a boolean.');
         }
 
-        return ['field' => $field, 'in' => array_values(array_unique($values)), 'secret' => $secret];
+        return ['field' => $field, 'in' => array_values(array_unique($values)), 'secret' => $secret, 'values' => $raw];
     }
 
     /**
@@ -167,10 +172,11 @@ final class VisibleWhenRules
 
         $hidden = [];
         foreach ($rules as $name => $rule) {
-            $values = self::controllerValues($form->get($rule['field']), $data[$rule['field']] ?? null);
-            $match  = false;
-            foreach ($values as $value) {
-                $match = $match || in_array($value, $rule['in'], true);
+            $controller = $form->get($rule['field']);
+            $allowed    = self::valuesFor($controller, $rule);
+            $match      = false;
+            foreach (self::controllerValues($controller, $data[$rule['field']] ?? null) as $value) {
+                $match = $match || in_array($value, $allowed, true);
             }
             if (!$match) {
                 $hidden[$name] = true;
@@ -195,6 +201,41 @@ final class VisibleWhenRules
             $data[$name] = $rule['secret'] ? self::keptSecret($child, $data[$name] ?? null) : self::currentSubmission($child);
         }
         $event->setData($data);
+    }
+
+    /**
+     * The `in` values as the controlling field renders them: a choice field maps each value through its choice list
+     * (a boolean choice `false` is `'0'`, an integer `1` is `'1'`), a checkbox maps `true` to its `value` option; any
+     * other value (or one the choice list does not hold) compares as {@see self::visibilityValue()}.
+     *
+     * @param FormInterface<mixed> $controller
+     * @param Rule $rule
+     *
+     * @return list<string>
+     */
+    public static function valuesFor(FormInterface $controller, array $rule): array
+    {
+        $config     = $controller->getConfig();
+        $choiceList = $config->getAttribute('choice_list');
+        $checkbox   = self::inherits($controller, CheckboxType::class);
+        $values     = [];
+        foreach ($rule['values'] as $value) {
+            $mapped = null;
+            if ($choiceList instanceof ChoiceListInterface) {
+                try {
+                    $found  = $choiceList->getValuesForChoices([$value]);
+                    $mapped = $found === [] ? null : reset($found);
+                } catch (Throwable) {
+                    // A value of another type than the choices (e.g. a string for EnumType): compare it as a string.
+                }
+            } elseif ($checkbox && $value === true) {
+                $option = $config->getOption('value');
+                $mapped = is_scalar($option) ? (string) $option : null;
+            }
+            $values[] = $mapped ?? self::visibilityValue($value);
+        }
+
+        return array_values(array_unique($values));
     }
 
     /**
@@ -266,21 +307,21 @@ final class VisibleWhenRules
     }
 
     /**
-     * A hidden secret: a typed value is dropped; only an explicit `clear` of a compound secret survives.
+     * A hidden secret: a typed value is dropped (the current value is submitted again, so a stored value is never
+     * erased, whatever the type: plain input, RepeatedType, compound group); only an explicit `clear` of a compound
+     * secret that has a `clear` child (DoctrineEncrypt's SecretType) is kept from the submission.
      *
      * @param FormInterface<mixed> $child
-     *
-     * @return mixed the current value of a plain input; `[]` or `['clear' => …]` for a compound secret
      */
     private static function keptSecret(FormInterface $child, mixed $submitted): mixed
     {
-        if (!$child->getConfig()->getCompound()) {
-            // A plain secret input keeps its current value (the typed one is dropped, the stored one is not erased).
-            return self::currentSubmission($child);
+        $current = self::currentSubmission($child);
+        $clear   = is_array($submitted) ? ($submitted[self::CLEAR_KEY] ?? null) : null;
+        if (is_array($current) && is_string($clear) && $child->has(self::CLEAR_KEY)) {
+            $current[self::CLEAR_KEY] = $clear;
         }
-        $clear = is_array($submitted) ? ($submitted[self::CLEAR_KEY] ?? null) : null;
 
-        return is_string($clear) && $child->has(self::CLEAR_KEY) ? [self::CLEAR_KEY => $clear] : [];
+        return $current;
     }
 
     /**
@@ -288,8 +329,17 @@ final class VisibleWhenRules
      */
     private static function isChoice(FormInterface $form): bool
     {
+        return self::inherits($form, ChoiceType::class);
+    }
+
+    /**
+     * @param FormInterface<mixed> $form
+     * @param class-string $class
+     */
+    private static function inherits(FormInterface $form, string $class): bool
+    {
         for ($type = $form->getConfig()->getType(); $type instanceof ResolvedFormTypeInterface; $type = $type->getParent()) {
-            if ($type->getInnerType() instanceof ChoiceType) {
+            if ($type->getInnerType() instanceof $class) {
                 return true;
             }
         }

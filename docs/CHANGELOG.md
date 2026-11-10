@@ -79,9 +79,11 @@ Target 2.21.0. Request from Symfony Beacon (spec 222 "provider-dependent fields"
   `{field: string, in: list<string|int|bool|BackedEnum>, secret?: bool}` shows a field only while its sibling `field`
   holds one of `in`. The row gets UiKit's `visible-when` attributes in `row_attr` (merged with the field's own); one
   `PRE_SUBMIT` listener per compound form gives a field hidden for the submitted value its current value back (no
-  typed value ignored, stored value kept and validated), drops a value typed into a hidden `secret` field (a plain
-  input keeps its current value; a compound secret keeps only an explicit `clear`), and chains rules (a field controlled by a hidden field is hidden too, in any
-  order). Booleans compare as `'1'` / `''`, backed enums by value. See USAGE "Conditional fields" → 2b. Default `null`:
+  typed value ignored, stored value kept and validated), drops a value typed into a hidden `secret` field (its
+  current value is kept whatever the type; only an explicit `clear` of a compound secret with a `clear` child is
+  kept), and chains rules (a field controlled by a hidden field is hidden too, in any
+  order). `in` values are mapped as the controlling field renders them (choice list, checkbox `value`; otherwise
+  booleans as `'1'` / `''`, backed enums by value). A rule whose `field` is not a sibling fails on render. See USAGE "Conditional fields" → 2b. Default `null`:
   no attribute, no change on submit.
 
 ### Documentation

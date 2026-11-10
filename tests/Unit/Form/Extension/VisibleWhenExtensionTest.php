@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -49,6 +50,19 @@ final class VisibleWhenTestSecretType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('value', PasswordType::class, ['required' => false])->add('clear', CheckboxType::class, ['required' => false]);
+    }
+}
+
+/**
+ * A compound group of mapped fields (no `clear` child).
+ *
+ * @extends AbstractType<array<string, mixed>>
+ */
+final class VisibleWhenTestGroupType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder->add('user', TextType::class)->add('token', PasswordType::class);
     }
 }
 
@@ -89,19 +103,57 @@ final class VisibleWhenExtensionTest extends TestCase
         self::assertSame('boxes[]', $view->children['b']->vars['row_attr'][VisibleWhenRules::FIELD_ATTRIBUTE]);
     }
 
-    public function testControllerOutsideTheFormIsNamedAndLeftAsSubmitted(): void
+    public function testControllerOutsideTheFormIsLeftAsSubmittedAndFailsOnRender(): void
     {
-        $form = $this->factory()->createNamedBuilder('s', FormType::class)
-            ->add('host', TextType::class, ['visible_when' => ['field' => 'missing', 'in' => ['x']]])
-            ->getForm();
-        self::assertSame('s[missing]', $form->createView()->children['host']->vars['row_attr'][VisibleWhenRules::FIELD_ATTRIBUTE]);
-        $form->submit(['host' => 'typed']);
-        self::assertSame('typed', $form->get('host')->getData());
+        foreach (['missing', 'provider[]'] as $field) {
+            $form = $this->factory()->createNamedBuilder('s', FormType::class)
+                ->add('provider', TextType::class)
+                ->add('host', TextType::class, ['visible_when' => ['field' => $field, 'in' => ['x']]])
+                ->getForm();
+            $form->submit(['provider' => 'y', 'host' => 'typed']);
+            self::assertSame('typed', $form->get('host')->getData());
 
-        $root = $this->factory()->createNamedBuilder('', FormType::class)
-            ->add('host', TextType::class, ['visible_when' => ['field' => 'missing', 'in' => ['x']]])
+            try {
+                $form->createView();
+                self::fail('A rule on a missing sibling must fail on render.');
+            } catch (LogicException $exception) {
+                self::assertStringContainsString('is not a sibling field', $exception->getMessage());
+            }
+        }
+    }
+
+    public function testHiddenCompoundSecretsKeepTheirStoredValue(): void
+    {
+        $form = $this->factory()->createNamedBuilder('f', FormType::class, ['p' => 'a', 'password' => 'STORED', 'group' => ['user' => 'u1', 'token' => 'T1']])
+            ->add('p', TextType::class)
+            ->add('password', RepeatedType::class, ['type' => PasswordType::class, 'visible_when' => ['field' => 'p', 'in' => ['a'], 'secret' => true]])
+            ->add('group', VisibleWhenTestGroupType::class, ['visible_when' => ['field' => 'p', 'in' => ['a'], 'secret' => true]])
             ->getForm();
-        self::assertSame('missing', $root->createView()->children['host']->vars['row_attr'][VisibleWhenRules::FIELD_ATTRIBUTE]);
+        $form->submit(['p' => 'b', 'password' => ['first' => 'TYPED', 'second' => 'TYPED'], 'group' => ['user' => 'typed', 'token' => 'typed', 'clear' => '1']]);
+        self::assertTrue($form->isValid(), (string) $form->getErrors(true));
+        self::assertSame('STORED', $form->getData()['password']);
+        self::assertSame(['user' => 'u1', 'token' => 'T1'], $form->getData()['group'], 'no clear child: a forged clear is ignored');
+    }
+
+    public function testValuesFollowTheControllerChoicesAndCheckboxValue(): void
+    {
+        $form = $this->factory()->createNamedBuilder('f', FormType::class, ['flag' => false, 'box' => false, 'e' => VisibleWhenTestProvider::R2, 'a' => 'A', 'b' => 'B', 'c' => 'C', 'd' => 'D'])
+            ->add('flag', ChoiceType::class, ['choices' => ['Yes' => true, 'No' => false]])
+            ->add('box', CheckboxType::class, ['value' => 'yes', 'required' => false])
+            ->add('e', EnumType::class, ['class' => VisibleWhenTestProvider::class])
+            ->add('a', TextType::class, ['visible_when' => ['field' => 'flag', 'in' => [false]]])
+            ->add('b', TextType::class, ['visible_when' => ['field' => 'box', 'in' => [true]]])
+            ->add('c', TextType::class, ['visible_when' => ['field' => 'e', 'in' => ['r2']]])
+            ->add('d', TextType::class, ['visible_when' => ['field' => 'flag', 'in' => ['maybe']]])
+            ->getForm();
+        $view = $form->createView();
+        self::assertSame('["0"]', $view->children['a']->vars['row_attr'][VisibleWhenRules::VALUES_ATTRIBUTE]);
+        self::assertSame('["yes"]', $view->children['b']->vars['row_attr'][VisibleWhenRules::VALUES_ATTRIBUTE]);
+        self::assertSame('["r2"]', $view->children['c']->vars['row_attr'][VisibleWhenRules::VALUES_ATTRIBUTE]);
+        self::assertSame('["maybe"]', $view->children['d']->vars['row_attr'][VisibleWhenRules::VALUES_ATTRIBUTE]);
+
+        $form->submit(['flag' => '0', 'box' => 'yes', 'e' => 'r2', 'a' => 'a2', 'b' => 'b2', 'c' => 'c2', 'd' => 'd2']);
+        self::assertSame(['a2', 'b2', 'c2', 'D'], [$form->getData()['a'], $form->getData()['b'], $form->getData()['c'], $form->getData()['d']]);
     }
 
     public function testDefaultChangesNothing(): void
@@ -253,7 +305,7 @@ final class VisibleWhenExtensionTest extends TestCase
 
     public function testNormalizeAndValues(): void
     {
-        self::assertSame(['field' => 'p', 'in' => ['1', '', 's3', '2'], 'secret' => false], VisibleWhenRules::normalize(['field' => 'p', 'in' => [true, false, VisibleWhenTestProvider::S3, 2, '2']]));
+        self::assertSame(['field' => 'p', 'in' => ['1', '', 's3', '2'], 'secret' => false, 'values' => [true, false, VisibleWhenTestProvider::S3, 2, '2']], VisibleWhenRules::normalize(['field' => 'p', 'in' => [true, false, VisibleWhenTestProvider::S3, 2, '2']]));
         self::assertSame('', VisibleWhenRules::visibilityValue(null));
         self::assertSame('', VisibleWhenRules::visibilityValue([]));
         self::assertSame('1.5', VisibleWhenRules::visibilityValue(1.5));
