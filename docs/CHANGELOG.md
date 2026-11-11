@@ -72,6 +72,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Target 2.22.0 (minor). ROADMAP "Ideas from an admin-template review (2026-11)", P1 lot 1.
+
+### Added
+
+- **Choice cards** (`choice_cards` option, `Form\Extension\ChoiceCardsExtension`) on `ChoiceType` with
+  `expanded: true` and its subtypes (`EntityType`, `EnumType`…): each choice is drawn as a selectable card with a
+  title, an optional description, an icon (`icon_html`, trusted HTML) or an image (`{src, alt}`, `alt` required), in
+  1–4 columns or an auto-fit grid. Resolvers are arrays keyed by choice value or `choice_attr`-style callables; texts
+  follow the choice translation domain and parameters. Native radios / checkboxes stay visible, the label is stretched
+  over the card (CSS only), descriptions are linked with `aria-describedby`, and the group gets
+  `role="radiogroup"` / `group` labelled by the field label.
+- **Framework-neutral switch** (`switch` option, `Form\Extension\SwitchExtension`) on `CheckboxType`: a real checkbox
+  with `role="switch"`, the track inside its `<label>`, sizes `sm` / `md` / `lg` and optional on/off icons; the same
+  markup on Bootstrap, Tailwind, `form_div_layout` and UiKit. Radios reject it.
+- **Character counter** (`char_counter` option, `Form\Extension\CharCounterExtension`) on `TextType` and its
+  subtypes (`TextareaType`, `EmailType`…): limits from the option, the field's `Length` constraint, the `Length`
+  constraint of the mapped property (validator metadata) or the `maxlength` / `minlength` attributes; count unit from
+  `Length::$countUnit`. Without JavaScript the limit is printed and linked with `aria-describedby`; the new
+  `char-counter.js` (IIFE, CSP-safe) shows "42 / 160" and announces the remaining / over-limit count in a polite live
+  region near the limit only. Never adds `maxlength`.
+- Form theme `@NowoFormKitBundle/form/field_widgets_theme.html.twig`, registered in `twig.form_themes` by default
+  (`nowo_form_kit.field_widgets.form_theme`, default `true`); its blocks are reached only through the new block
+  prefixes `nowo_choice_cards`, `nowo_switch` and `nowo_char_counter`.
+- Public assets `field-widgets.css` (UiKit tokens with `currentColor` fallbacks, forced-colors and reduced-motion
+  rules) and `char-counter.js`.
+- Translations `char_counter.*` in the 7 bundle locales (en, es, fr, de, it, pt, nl).
+- Demo: the Choice fields page shows a plan picker with choice cards, a notifications switch and a bio with a
+  character counter.
+
+### Changed
+
+- `.scripts/check-no-raw-html-form.sh` (REQ-TWIG-005) allows `field_widgets_theme.html.twig`, a form theme that writes
+  the native radio / checkbox of its cards and switch.
+
+### Tests
+
+- `FieldWidgetsThemeTest`: fields without the new options render byte-identical on `form_div_layout`,
+  `bootstrap_5_layout`, `bootstrap_5_horizontal_layout`, `tailwind_2_layout` and UiKit's `nowo_ui_layout`; choice cards,
+  switch and counter on each of them; CSP checks (no inline script, style or handler); no state leak across forms.
+- `FieldWidgetsExtensionsTest`, `FieldWidgetsConfigTest`; Vitest `char-counter.test.ts` (100 % coverage).
+
 ### Documentation
 
 - USAGE (DDD / hexagonal section): standard vs DDD lead-in linking the entity path (locale tabs on a collection indexed by locale) and the DTO path.

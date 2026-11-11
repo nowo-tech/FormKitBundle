@@ -70,8 +70,7 @@ that belong to UiKit or to another bundle are routed at the end.
 no inline style, no `on*` attributes. It meets WCAG 2.2 AA (keyboard, labels, `aria-*`, visible focus). It uses UiKit
 tokens, so light and dark themes follow. Its strings ship in the 7 locales (en, es, fr, de, it, pt, nl). It is
 FrankenPHP worker-safe: no per-request state in services. It is opt-in when it changes existing markup. Items that
-need a script ship as an optional Stimulus peer or IIFE; when the first lands, the non-goal on frontend assets is
-reworded.
+need a script ship as an optional Stimulus peer or IIFE (the first one, `char-counter.js`, landed in 2.22).
 
 **Priority.** P1 = next minor releases. P2 = when a host asks or a related item is open. P3 = idea, no plan yet.
 **Size.** S = a few days. M = one to two weeks. L = more.
@@ -80,8 +79,8 @@ reworded.
 
 | Pri | Idea | Why for a Symfony host | Size | Fit | Constraints |
 |-----|------|------------------------|------|-----|-------------|
-| P1 | **Choice cards** — an expanded `ChoiceType` (radio or checkbox) drawn as selectable cards: title, short text, optional icon or image. | Plan, shipping and option pickers are common in admin and checkout forms; today each host writes its own theme block. | M | FormKit theme block (`choice_blocks`) + UiKit card tokens | Native input inside the `<label>`; checked state through CSS only; images need `alt`; works with `choice_attr` and translation parameters. |
-| P1 | **Framework-neutral switch** — a `switch` option on checkbox rows: `role="switch"`, sizes, optional on/off icon. | FormKit has no switch rendering of its own; hosts rely on the CSS framework's switch class, and Tailwind or plain hosts get a checkbox. | S | FormKit (`CheckboxRowExtension`) + UiKit tokens | Stays a real checkbox; label and state read by screen readers; no colour-only state. |
+| Done (2.22) | **Choice cards** (`choice_cards`, see [USAGE](USAGE.md#choice-cards)) — an expanded `ChoiceType` (radio or checkbox) drawn as selectable cards: title, short text, optional icon or image. | Plan, shipping and option pickers are common in admin and checkout forms; today each host writes its own theme block. | M | FormKit theme block (`choice_blocks`) + UiKit card tokens | Native input inside the `<label>`; checked state through CSS only; images need `alt`; works with `choice_attr` and translation parameters. Shipped: the input sits next to a `<label for>` stretched over the card, so the description is linked with `aria-describedby` instead of joining the accessible name; blocks in the new `field_widgets_theme`. |
+| Done (2.22) | **Framework-neutral switch** (see [USAGE](USAGE.md#switch)) — a `switch` option on checkbox rows: `role="switch"`, sizes, optional on/off icon. | FormKit has no switch rendering of its own; hosts rely on the CSS framework's switch class, and Tailwind or plain hosts get a checkbox. | S | FormKit (`CheckboxRowExtension`) + UiKit tokens | Stays a real checkbox; label and state read by screen readers; no colour-only state. |
 | P2 | **Segmented choice** — render a small single choice as a UiKit segmented control. | Short choices (period, view mode, monthly or yearly) read better as a button group than as a select. | S | FormKit option + UiKit `_segmented` | Radio group underneath; arrow keys move; falls back to radios. |
 | P2 | **Rich options in the combobox** — option icon, subtext, group headers, a selection limit and a "no results" text. | Long selects (users, countries, roles) need context per option and a cap on picks. | M | FormKit combobox peer | Option data comes from `choice_attr`, escaped; limit also enforced server side (`Count`). |
 | P3 | **Rating field** — a radio group drawn as stars (1 to N). | Reviews, feedback and QA scores. | S | FormKit type; read-only display in UiKit | Radios with labels ("3 of 5"); arrow keys; no half steps at first. |
@@ -90,7 +89,7 @@ reworded.
 
 | Pri | Idea | Why for a Symfony host | Size | Fit | Constraints |
 |-----|------|------------------------|------|-----|-------------|
-| P1 | **Character counter** — "42 / 160" under a field, taken from the `Length` constraint or the `maxlength` attribute. | SEO titles, SMS text, bios: users need the limit before they submit. | S | FormKit extension + small peer | Without JS the limit shows in the help text; count announced with `aria-live="polite"` only near the limit; counts graphemes, not bytes. |
+| Done (2.22) | **Character counter** (`char_counter`, see [USAGE](USAGE.md#character-counter)) — "42 / 160" under a field, taken from the `Length` constraint or the `maxlength` attribute. | SEO titles, SMS text, bios: users need the limit before they submit. | S | FormKit extension + small peer | Without JS the limit shows in the help text; count announced with `aria-live="polite"` only near the limit; counts graphemes, not bytes. Shipped: the limit is printed under the field (not merged into `help`); the count follows the `Length` constraint's unit (graphemes without one), so client and server agree. |
 | P2 | **Auto-growing textarea** — the textarea grows with its content. | Notes and comments without a scroll box inside the page. | S | FormKit option | CSS `field-sizing: content` first; a tiny peer only for older browsers; a max height keeps it bounded. |
 | P2 | **Input formatting (masks)** — display formatting for IBAN, card-like groups, dates, times and locale numbers. | Fewer typing errors on long codes; numbers show the locale grouping. | M | FormKit peer + existing model transformers | Never blocks paste; sets `inputmode`; the server transformer and constraints stay the source of truth; phone stays in PhoneInput. |
 | P2 | **More input-group addons** — text on both sides, a button addon, a select addon, a merged style. | Prices (€ … .00), URLs (https:// …), "copy" or "generate" buttons next to a field. | S | FormKit (`InputGroupExtension`) | Addon text linked with `aria-describedby`; button addons are real `<button type="button">`. |
@@ -153,7 +152,8 @@ reworded.
 
 - Replacing or wrapping the Symfony Form component.
 - Providing a full UI component library (only form option and convention layer).
-- Built-in frontend assets or JavaScript beyond the optional help modal.
+- A JavaScript framework of its own. Scripts stay optional enhancers (help modal, character counter, Stimulus peers)
+  over server-rendered markup that works without them; styles stay opt-in files on UiKit tokens.
 
 ---
 

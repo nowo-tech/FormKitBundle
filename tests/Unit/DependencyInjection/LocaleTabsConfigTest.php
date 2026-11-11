@@ -90,12 +90,12 @@ final class LocaleTabsConfigTest extends TestCase
     {
         $container = $this->withTwig();
         (new FormKitExtension())->prepend($container);
-        self::assertSame([['form_themes' => [FormKitExtension::LOCALE_TABS_FORM_THEME]]], $container->getExtensionConfig('twig'));
+        self::assertContains(['form_themes' => [FormKitExtension::LOCALE_TABS_FORM_THEME]], $container->getExtensionConfig('twig'));
 
         $container = $this->withTwig();
         $container->prependExtensionConfig('nowo_form_kit', ['locale_tabs' => ['form_theme' => false]]);
         (new FormKitExtension())->prepend($container);
-        self::assertSame([], $container->getExtensionConfig('twig'));
+        self::assertNotContains(['form_themes' => [FormKitExtension::LOCALE_TABS_FORM_THEME]], $container->getExtensionConfig('twig'));
 
         $noTwig = new ContainerBuilder();
         $noTwig->registerExtension(new FrameworkExtension());

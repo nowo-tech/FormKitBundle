@@ -1,0 +1,169 @@
+{#
+  Form theme (2.22): framework-neutral field widgets, opted in per field. Registered in twig.form_themes automatically
+  unless nowo_form_kit.field_widgets.form_theme is false; or {% form_theme form '@NowoFormKitBundle/form/field_widgets_theme.html.twig' %}.
+
+  Every block here is reached only through a block prefix that a FormKit extension adds when its option is set, so
+  fields without the options render exactly as before with any base theme (form_div_layout, bootstrap_5_layout,
+  tailwind_2_layout, UiKit's nowo_ui_layout…):
+  - `nowo_choice_cards_widget`: `choice_cards` on an expanded ChoiceType / EntityType (ChoiceCardsExtension);
+  - `nowo_switch_row` / `nowo_switch_widget`: `switch` on a CheckboxType (SwitchExtension);
+  - `nowo_char_counter_widget`: `char_counter` on a TextType / TextareaType (CharCounterExtension).
+
+  The file does not `use` a base layout (it is listed before the host's themes and must not override their blocks), so
+  the blocks print their inputs with the small `nowo_field_widgets_*` helpers below. Classes are prefixed
+  `nowo-form-kit-`; styles: `{{ asset('field-widgets.css', 'nowo_form_kit') }}` (UiKit tokens with fallbacks), counter
+  script: `{{ asset('char-counter.js', 'nowo_form_kit') }}`. No inline script, style or event handler.
+#}
+
+{#- Attributes of `attr` (true → name="name", false / null → omitted); `title` is translated like Symfony's. -#}
+{%- block nowo_field_widgets_attributes -%}
+    {%- for attrname, attrvalue in attr -%}
+        {%- if attrvalue is same as(true) -%}
+            {{- ' ' ~ attrname }}="{{ attrname }}"
+        {%- elseif attrvalue is not same as(false) and attrvalue is not null -%}
+            {%- if attrname == 'title' and translation_domain is not same as(false) -%}
+                {{- ' ' ~ attrname }}="{{ attrvalue|trans(attr_translation_parameters|default({}), translation_domain) }}"
+            {%- else -%}
+                {{- ' ' ~ attrname }}="{{ attrvalue }}"
+            {%- endif -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock nowo_field_widgets_attributes -%}
+
+{#- id, name, disabled, required and `attr` of the current checkbox / radio. -#}
+{%- block nowo_field_widgets_input_attributes -%}
+    id="{{ id }}" name="{{ full_name }}"
+    {%- if disabled %} disabled="disabled"{% endif -%}
+    {%- if required %} required="required"{% endif -%}
+    {%- if errors|default([])|length > 0 or nowo_invalid|default(false) %} aria-invalid="true"{% endif -%}
+    {{- block('nowo_field_widgets_attributes') -}}
+{%- endblock nowo_field_widgets_input_attributes -%}
+
+{#- The translated label text of the current field (same rules as Symfony's form_label). -#}
+{%- block nowo_field_widgets_label_text -%}
+    {%- if label is not same as(false) -%}
+        {%- if label is empty -%}
+            {%- if label_format is defined and label_format is not empty -%}
+                {%- set label = label_format|replace({'%name%': name, '%id%': id}) -%}
+            {%- else -%}
+                {%- set label = name|humanize -%}
+            {%- endif -%}
+        {%- endif -%}
+        {%- set _text = translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) -%}
+        {%- if label_html is defined and label_html is same as(true) -%}
+            {{- _text|raw -}}
+        {%- else -%}
+            {{- _text -}}
+        {%- endif -%}
+    {%- endif -%}
+{%- endblock nowo_field_widgets_label_text -%}
+
+{#- ===== Choice cards ===== -#}
+
+{%- block nowo_choice_cards_widget -%}
+    {%- set _class = ('nowo-form-kit-choice-cards' ~ (choice_cards.columns ? ' nowo-form-kit-choice-cards--cols-' ~ choice_cards.columns) ~ (errors|length > 0 ? ' nowo-form-kit-choice-cards--invalid'))|trim -%}
+    {%- set _container = attr|merge({class: (attr.class|default('') ~ ' ' ~ _class)|trim, role: multiple ? 'group' : 'radiogroup'}) -%}
+    {%- if choice_cards_label_id and _container['aria-labelledby'] is not defined and _container['aria-label'] is not defined -%}
+        {%- set _container = _container|merge({'aria-labelledby': choice_cards_label_id}) -%}
+    {%- endif -%}
+    {%- if required and not multiple -%}
+        {%- set _container = _container|merge({'aria-required': 'true'}) -%}
+    {%- endif -%}
+    <div id="{{ id }}"{% with {attr: _container, translation_domain: translation_domain} %}{{ block('nowo_field_widgets_attributes') }}{% endwith %}>
+        {%- for child in form -%}
+            {%- with child.vars|merge({nowo_invalid: errors|length > 0, nowo_multiple: multiple}) only -%}
+                {{- block('nowo_choice_card') -}}
+            {%- endwith -%}
+        {%- endfor -%}
+    </div>
+{%- endblock nowo_choice_cards_widget -%}
+
+{#- One card: a native input, its <label> (stretched over the card by the CSS) and the optional media and text. -#}
+{%- block nowo_choice_card -%}
+    {%- set _card = choice_card|default({description: null, icon_html: null, image: null}) -%}
+    {%- set _description_id = id ~ '_description' -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' nowo-form-kit-choice-card__input')|trim}) -%}
+    {%- if _card.description -%}
+        {%- set attr = attr|merge({'aria-describedby': (attr['aria-describedby']|default('') ~ ' ' ~ _description_id)|trim}) -%}
+    {%- endif -%}
+    {#- disabled by the field, or per choice through choice_attr -#}
+    {%- set _disabled = disabled or (attr.disabled is defined and attr.disabled is not same as(false) and attr.disabled is not null) -%}
+    <div class="nowo-form-kit-choice-card{{ _disabled ? ' nowo-form-kit-choice-card--disabled' }}">
+        <input type="{{ nowo_multiple ? 'checkbox' : 'radio' }}" {{ block('nowo_field_widgets_input_attributes') }} value="{{ value }}"{% if checked %} checked="checked"{% endif %} />
+        {%- if _card.image -%}
+            <img class="nowo-form-kit-choice-card__image" src="{{ _card.image.src }}" alt="{{ translation_domain is same as(false) or _card.image.alt == '' ? _card.image.alt : _card.image.alt|trans(label_translation_parameters|default({}), translation_domain) }}" loading="lazy" decoding="async" />
+        {%- elseif _card.icon_html -%}
+            <span class="nowo-form-kit-choice-card__icon" aria-hidden="true">{{ _card.icon_html|raw }}</span>
+        {%- endif -%}
+        <label for="{{ id }}"{% with {attr: label_attr|merge({class: (label_attr.class|default('') ~ ' nowo-form-kit-choice-card__title')|trim})} %}{{ block('nowo_field_widgets_attributes') }}{% endwith %}>{{ block('nowo_field_widgets_label_text') }}</label>
+        {%- if _card.description -%}
+            <span class="nowo-form-kit-choice-card__description" id="{{ _description_id }}">{{ translation_domain is same as(false) ? _card.description : _card.description|trans(label_translation_parameters|default({}), translation_domain) }}</span>
+        {%- endif -%}
+    </div>
+{%- endblock nowo_choice_card -%}
+
+{#- ===== Switch ===== -#}
+
+{%- block nowo_switch_row -%}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
+    {%- endif -%}
+    {%- set _row_class = row_attr.class|default(checkbox_row_class|default('')) -%}
+    {%- set _row_class = (_row_class ~ ' nowo-form-kit-switch nowo-form-kit-switch--' ~ switch.size ~ (switch.icons ? ' nowo-form-kit-switch--icons'))|trim -%}
+    <div{% with {attr: row_attr|merge({class: _row_class}), translation_domain: false} %}{{ block('nowo_field_widgets_attributes') }}{% endwith %}>
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_errors(form) -}}
+        {{- form_help(form) -}}
+    </div>
+{%- endblock nowo_switch_row -%}
+
+{%- block nowo_switch_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' nowo-form-kit-switch__input')|trim, role: 'switch'}) -%}
+    <input type="checkbox" {{ block('nowo_field_widgets_input_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+    <label for="{{ id }}"{% with {attr: label_attr|merge({class: (label_attr.class|default('') ~ ' nowo-form-kit-switch__label')|trim}), translation_domain: false} %}{{ block('nowo_field_widgets_attributes') }}{% endwith %}>
+        <span class="nowo-form-kit-switch__track" aria-hidden="true">
+            {%- if switch.icons -%}
+                <span class="nowo-form-kit-switch__icon nowo-form-kit-switch__icon--on"></span>
+                <span class="nowo-form-kit-switch__icon nowo-form-kit-switch__icon--off"></span>
+            {%- endif -%}
+            <span class="nowo-form-kit-switch__thumb"></span>
+        </span>
+        {%- if label is not same as(false) -%}
+            <span class="nowo-form-kit-switch__text">{{ block('nowo_field_widgets_label_text') }}</span>
+        {%- endif -%}
+    </label>
+{%- endblock nowo_switch_widget -%}
+
+{#- ===== Character counter ===== -#}
+
+{%- block nowo_char_counter_widget -%}
+    {%- set _counter = char_counter -%}
+    {%- set _counter_id = id ~ '_counter' -%}
+    {%- set _domain = 'NowoFormKitBundle' -%}
+    {{- form_widget(form, {attr: attr|merge({
+        'aria-describedby': (attr['aria-describedby']|default('') ~ ' ' ~ _counter_id)|trim,
+        'data-nowo-form-kit-counter': _counter_id,
+    })}) -}}
+    {%- if _counter.max is not null and _counter.min is not null -%}
+        {%- set _limit = 'char_counter.limit.range'|trans({'%min%': _counter.min, '%max%': _counter.max}, _domain) -%}
+    {%- elseif _counter.max is not null -%}
+        {%- set _limit = 'char_counter.limit.max'|trans({'%max%': _counter.max}, _domain) -%}
+    {%- elseif _counter.min is not null -%}
+        {%- set _limit = 'char_counter.limit.min'|trans({'%min%': _counter.min}, _domain) -%}
+    {%- else -%}
+        {%- set _limit = '' -%}
+    {%- endif -%}
+    <span id="{{ _counter_id }}" class="nowo-form-kit-counter" data-nowo-form-kit-counter-unit="{{ _counter.unit }}"
+        {%- if _counter.max is not null %} data-nowo-form-kit-counter-max="{{ _counter.max }}" data-nowo-form-kit-counter-threshold="{{ _counter.threshold }}"{% endif -%}
+        {%- if _counter.min is not null %} data-nowo-form-kit-counter-min="{{ _counter.min }}"{% endif %}
+        data-nowo-form-kit-counter-text-max="{{ 'char_counter.count.max'|trans({}, _domain) }}"
+        data-nowo-form-kit-counter-text-min="{{ 'char_counter.count.min'|trans({}, _domain) }}"
+        data-nowo-form-kit-counter-text-count="{{ 'char_counter.count.plain'|trans({}, _domain) }}"
+        data-nowo-form-kit-counter-text-remaining="{{ 'char_counter.remaining'|trans({}, _domain) }}"
+        data-nowo-form-kit-counter-text-over="{{ 'char_counter.over'|trans({}, _domain) }}">
+        {%- if _limit is not empty -%}<span class="nowo-form-kit-counter__limit">{{ _limit }}</span>{%- endif -%}
+        <span class="nowo-form-kit-counter__count" aria-hidden="true" hidden></span>
+    </span>
+    <span class="nowo-form-kit-counter__live" id="{{ _counter_id }}_live" aria-live="polite" aria-atomic="true"></span>
+{%- endblock nowo_char_counter_widget -%}

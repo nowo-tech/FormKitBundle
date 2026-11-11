@@ -13,10 +13,14 @@ cd "$ROOT"
 #     hidden locale child of each translation entry and marks its view rendered.
 #   - choice_blocks.html.twig: `nowo_form_check_input` writes the bare checkbox / radio input of form_div_layout's
 #     `checkbox_widget`, because the Bootstrap widgets print their own <label> (one label per choice, KIT-72).
+#   - field_widgets_theme.html.twig (2.22): `nowo_choice_card` / `nowo_switch_widget` write the native radio / checkbox
+#     of a choice card or switch; the theme is listed before the host's themes and does not `use` a base layout, so
+#     it cannot delegate to the framework's checkbox_widget (Bootstrap / Tailwind would print a second <label>).
 #   - nowo_special_fields_form_theme.html.twig: demo form theme overriding the `icon_selector_widget` block.
 ALLOWLIST=(
   src/Resources/views/form/_locale_tabs.html.twig
   src/Resources/views/form/choice_blocks.html.twig
+  src/Resources/views/form/field_widgets_theme.html.twig
   demo/symfony8/templates/form_demo/nowo_special_fields_form_theme.html.twig
 )
 

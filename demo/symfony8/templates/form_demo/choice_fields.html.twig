@@ -2,6 +2,14 @@
 
 {% block title %}{{ 'demo_pages.choice_fields.page_title'|trans }}{% endblock %}
 
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ asset('field-widgets.css', 'nowo_form_kit') }}">
+{% endblock %}
+
+{% block page_scripts %}
+  <script defer src="{{ asset('char-counter.js', 'nowo_form_kit') }}"></script>
+{% endblock %}
+
 {% block body %}
 {% set locale = app.request.locale %}
 <div class="d-flex justify-content-between align-items-center mb-3">

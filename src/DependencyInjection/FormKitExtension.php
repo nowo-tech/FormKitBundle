@@ -50,6 +50,8 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
 {
     public const LOCALE_TABS_FORM_THEME = '@NowoFormKitBundle/form/locale_tabs_theme.html.twig';
 
+    public const FIELD_WIDGETS_FORM_THEME = '@NowoFormKitBundle/form/field_widgets_theme.html.twig';
+
     /**
      * Registers the bundle asset package before FrameworkExtension processes assets.
      *
@@ -63,6 +65,7 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
 
         $this->prependStatelessCsrfTokenId($container);
         $this->prependLocaleTabsFormTheme($container);
+        $this->prependFieldWidgetsFormTheme($container);
 
         $container->prependExtensionConfig('framework', [
             'assets' => [
@@ -219,6 +222,25 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         }
 
         $container->prependExtensionConfig('twig', ['form_themes' => [self::LOCALE_TABS_FORM_THEME]]);
+    }
+
+    /**
+     * Registers the field widgets form theme (2.22: choice cards, switch, character counter), prepended so host themes
+     * listed later still win, unless `nowo_form_kit.field_widgets.form_theme` is false in any config file. Its blocks
+     * are only reached through the block prefixes added by the opt-in options, so other fields render as before.
+     */
+    private function prependFieldWidgetsFormTheme(ContainerBuilder $container): void
+    {
+        if (!$container->hasExtension('twig')) {
+            return;
+        }
+        foreach ($container->getExtensionConfig(Configuration::ALIAS) as $config) {
+            if (is_array($config['field_widgets'] ?? null) && ($config['field_widgets']['form_theme'] ?? true) === false) {
+                return;
+            }
+        }
+
+        $container->prependExtensionConfig('twig', ['form_themes' => [self::FIELD_WIDGETS_FORM_THEME]]);
     }
 
     /**

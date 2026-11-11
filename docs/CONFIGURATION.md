@@ -55,6 +55,7 @@ form type and defaults to `null`. See [USAGE](USAGE.md#2b-provider-dependent-fie
 | `locale_tabs.default_locale` | `string\|null` | Since 2.13. Default language (marked, listed first). Default `null` = `kernel.default_locale` when it is one of the locales, else the first locale. |
 | `locale_tabs.renderer` | `auto\|ui_kit\|native` | Since 2.13. `auto` (default): UiKit's `locale_tabs` partial when nowo-tech/ui-kit-bundle 2.5+ is installed, else the neutral markup; `native`: always the neutral markup; `ui_kit` behaves like `auto`. |
 | `locale_tabs.form_theme` | `bool` | Since 2.13. Default `true`: registers `@NowoFormKitBundle/form/locale_tabs_theme.html.twig` in `twig.form_themes` (it only renders fields with `locale_tabs`). |
+| `field_widgets.form_theme` | `bool` | Since 2.22. Default `true`: registers `@NowoFormKitBundle/form/field_widgets_theme.html.twig` in `twig.form_themes` (it only renders fields with the `choice_cards`, `switch` or `char_counter` options). See [USAGE](USAGE.md#field-widgets-choice-cards-switch-character-counter-222). |
 | `twig.csrf_action_form` | `bool` | Default `true`. Register the `csrf_action_form()` Twig function (only when Twig is installed). See [below](#twig-helpers-twig). |
 | `type_map` | `array` | Additional form type names (snake_case) => FQCN. Merged with built-in and optional types (e.g. Dropzone, Cropper, A2lix Translations when the package is installed). Use for custom types or to override. |
 
@@ -151,6 +152,9 @@ The bundle registers these **form type extensions** (they apply to all field typ
 | **HelpModalExtension** | Option `help_modal` (`false`, `true`, or array): injects JSON (with the per-request nonce) into `label[data-nowo-help-modal]` for the frontend script; the layout prints the nonce with `nowo_form_kit_help_modal_meta()`; see [Usage](USAGE.md#help-modal-optional). |
 | **LocaleTabsExtension** | Option `locale_tabs` (`false` default, `true`, or array of partial options): adds the `nowo_locale_tabs` block prefix + `locale_tabs` view var so `locale_tabs_theme.html.twig` renders one tab per locale; see [Usage](USAGE.md#locale-tabs-one-tab-per-language). |
 | **CheckboxRowExtension** | Since 2.13 (CheckboxType): `checkbox_bootstrap` / `checkbox_row_class` view vars from the default profile (`css_framework`, `defaults.row_attr.class`) for the `checkbox_row` block of `static_blocks.html.twig`. |
+| **ChoiceCardsExtension** | Since 2.22 (ChoiceType and subtypes): option `choice_cards` (`false` default, `true` or array) on expanded choices; adds the `nowo_choice_cards` block prefix. See [Usage](USAGE.md#choice-cards). |
+| **SwitchExtension** | Since 2.22 (CheckboxType): option `switch` (`false` default, `true` or `{size, icons}`); adds the `nowo_switch` block prefix. See [Usage](USAGE.md#switch). |
+| **CharCounterExtension** | Since 2.22 (TextType and subtypes): option `char_counter` (`false` default, `true` or `{max, min, unit, threshold}`); limits from the `Length` constraint (field or validator metadata) or `maxlength`; adds the `nowo_char_counter` block prefix. See [Usage](USAGE.md#character-counter). |
 | **StatelessCsrfTokenIdExtension** | Only when `stateless_csrf.enabled`: one service per listed form type (tag attribute `extended_type`) setting the `csrf_token_id` default. |
 | **UnlabelledChoiceAriaLabelExtension** | Only when `accessibility.unlabelled_choice_aria_label` (default `true`): names label-less selects from their help / placeholder. See [below](#accessibility-accessibility). |
 

@@ -7,13 +7,18 @@ namespace App\Form;
 use App\Model\ChoiceFieldsDemoData;
 use Nowo\FormKitBundle\Form\FormOptionsTrait;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 /**
  * Showcases addSelectField, addMultiSelectField, addChoiceRadiosField, addChoiceCheckboxesField,
  * addCheckboxField, addMultiSelectSelectAllField (when nowo-tech/select-all-choice-bundle is installed),
- * and documents addAutocompleteField for UX Autocomplete FQCNs.
+ * and documents addAutocompleteField for UX Autocomplete FQCNs; plus the 2.22 field widgets (choice_cards, switch,
+ * char_counter) on unmapped fields.
  */
 final class ChoiceFieldsDemoType extends AbstractType
 {
@@ -81,6 +86,42 @@ final class ChoiceFieldsDemoType extends AbstractType
                 $this->addMultiSelectField('permissions', $permissionsOptions);
             }
         });
+
+        // 2.22 field widgets (unmapped: shown and submitted, not stored on the model).
+        $builder->add('plan', ChoiceType::class, $rowFull + [
+            'mapped'       => false,
+            'expanded'     => true,
+            'data'         => 'pro',
+            'label'        => 'choice_fields_demo.plan.label',
+            'help'         => 'choice_fields_demo.plan.help',
+            'help_html'    => true,
+            'choices'      => ['Free' => 'free', 'Pro' => 'pro', 'Team' => 'team'],
+            'choice_cards' => [
+                'columns'     => 3,
+                'description' => [
+                    'free' => 'choice_fields_demo.plan.free',
+                    'pro'  => 'choice_fields_demo.plan.pro',
+                    'team' => 'choice_fields_demo.plan.team',
+                ],
+            ],
+        ]);
+        $builder->add('notifications', CheckboxType::class, $rowFull + [
+            'mapped'    => false,
+            'required'  => false,
+            'label'     => 'choice_fields_demo.notifications.label',
+            'help'      => 'choice_fields_demo.notifications.help',
+            'help_html' => true,
+            'switch'    => ['icons' => true],
+        ]);
+        $builder->add('bio', TextareaType::class, $rowFull + [
+            'mapped'       => false,
+            'required'     => false,
+            'label'        => 'choice_fields_demo.bio.label',
+            'help'         => 'choice_fields_demo.bio.help',
+            'help_html'    => true,
+            'constraints'  => [new Length(max: 160)],
+            'char_counter' => true,
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

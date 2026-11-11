@@ -30,6 +30,10 @@
 - [Locale tabs (one tab per language)](#locale-tabs-one-tab-per-language)
   - [Migrating your locale UI](#migrating-your-locale-ui)
 - [Choice rows with translation parameters](#choice-rows-with-translation-parameters)
+- [Field widgets: choice cards, switch, character counter (2.22)](#field-widgets-choice-cards-switch-character-counter-222)
+  - [Choice cards](#choice-cards)
+  - [Switch](#switch)
+  - [Character counter](#character-counter)
 - [Overriding bundle templates](#overriding-bundle-templates)
 - [Multi-step forms (array-based wizard)](#multi-step-forms-array-based-wizard)
   - [Steps definition](#steps-definition)
@@ -1096,11 +1100,113 @@ escaped, so HTML in a parameter value (a page title from the database) is printe
 the translated label is printed raw, **parameters included**: pass only trusted parameters or escape them yourself,
 e.g. `'%title%' => htmlspecialchars($page->getTitle(), ENT_QUOTES)`.
 
+## Field widgets: choice cards, switch, character counter (2.22)
+
+Three opt-in options draw common admin widgets with the **same markup on every CSS framework** (Bootstrap, Tailwind,
+plain `form_div_layout`, UiKit's `nowo_ui_layout`). They are form type extensions: nothing changes until a field sets
+the option, and fields without it render byte for byte as before.
+
+| Option | Field types | Renders |
+|--------|-------------|---------|
+| `choice_cards` | `ChoiceType` with `expanded: true` and its subtypes (`EntityType`, `EnumType`…) | Each choice as a selectable card: title, optional description, icon or image |
+| `switch` | `CheckboxType` | An on/off switch (`role="switch"`), sizes `sm` / `md` / `lg`, optional on/off icons |
+| `char_counter` | `TextType` and its subtypes (`TextareaType`, `EmailType`, `SearchType`…) | "42 / 160" under the field, limits taken from the `Length` constraint |
+
+**Setup.**
+
+1. The form theme `@NowoFormKitBundle/form/field_widgets_theme.html.twig` is added to `twig.form_themes` automatically
+   (before your own themes). Turn that off with `nowo_form_kit.field_widgets.form_theme: false` and add it yourself, or
+   add it per form with `{% form_theme form '@NowoFormKitBundle/form/field_widgets_theme.html.twig' %}` (needed when a
+   template uses `form_theme … only`). Its blocks are only reached through the block prefixes of the three options
+   (`nowo_choice_cards`, `nowo_switch`, `nowo_char_counter`), so it never overrides your theme for other fields.
+2. Link the stylesheet (UiKit tokens with `currentColor` fallbacks, so it also fits a host without UiKit):
+   `<link rel="stylesheet" href="{{ asset('field-widgets.css', 'nowo_form_kit') }}">`.
+3. For the live character count only, load the script (CSP-safe external file, no inline code):
+   `<script src="{{ asset('char-counter.js', 'nowo_form_kit') }}" defer></script>`.
+
+Run `php bin/console assets:install` after updating so `/bundles/nowoformkit/` holds the new files.
+
+### Choice cards
+
+```php
+$builder->add('plan', ChoiceType::class, [
+    'expanded'     => true,
+    'choices'      => ['plan.basic' => 'basic', 'plan.pro' => 'pro', 'plan.team' => 'team'],
+    'choice_cards' => [
+        'description' => ['basic' => 'plan.basic_text', 'pro' => 'plan.pro_text'],          // keyed by choice value…
+        'image'       => fn (string $choice, string $key, string $value): ?array => $value === 'team'
+            ? ['src' => '/images/plans/team.svg', 'alt' => '']                              // '' = decorative
+            : null,
+        'icon_html'   => fn ($choice): ?string => $choice === 'basic' ? $icons->render('tabler:user') : null,
+        'columns'     => 3,                                                                 // 1–4, else auto-fit
+    ],
+]);
+```
+
+`choice_cards: true` draws cards with titles only. `description`, `icon_html` and `image` take an array keyed by the
+choice **value**, or a callable with the `choice_attr` signature `($choice, $key, $value)` (so `EntityType` callables
+get the entity). The title and description are translated with the field's `choice_translation_domain` and
+`choice_translation_parameters`; `image.alt` too (an empty `alt` marks a decorative image; the key is required).
+`icon_html` is printed **as HTML** (trusted markup only: an inline SVG or the output of `symfony/ux-icons`), hidden from
+screen readers. `choice_attr` still lands on each input, `multiple: true` gives checkboxes, and the placeholder choice of
+a non-required radio group is a card too. Using the option without `expanded: true` throws an
+`InvalidOptionsException`.
+
+Markup and accessibility: each card is a `<div class="nowo-form-kit-choice-card">` with the native radio / checkbox
+(visible: the selected state never depends on the border colour), its `<label for>` (stretched over the whole card by
+the CSS, so a click anywhere selects it) and the description linked with `aria-describedby`. The group gets
+`role="radiogroup"` (or `group`) and `aria-labelledby` pointing at the field label (the extension sets
+`label_attr.id`, default `<id>_label`, unless you set one or pass `attr.aria-label`). Arrow keys move between radios as
+usual. Without the CSS the cards degrade to a plain list of radios with labels.
+
+### Switch
+
+```php
+$builder->add('notifications', CheckboxType::class, ['switch' => true]);
+$builder->add('dark_mode', CheckboxType::class, ['switch' => ['size' => 'lg', 'icons' => true]]);
+```
+
+The field stays a real `<input type="checkbox" role="switch">` (submitted, validated and transformed as before). The
+track and thumb are drawn inside its `<label>`, so screen readers read the label text and the on/off state, the thumb
+position (plus the optional tick / bar icons) shows the state without colour, and the focus ring is drawn on the track.
+`help` is linked with `aria-describedby`; errors set `aria-invalid`. The row keeps the profile's checkbox row class
+(`mb-3` on Bootstrap profiles, see `css_framework`) and your `row_attr`. Radios reject the option. Bootstrap hosts can
+keep using Bootstrap's own `form-switch` (`label_attr: {class: checkbox-switch}`) instead.
+
+### Character counter
+
+```php
+use Symfony\Component\Validator\Constraints\Length;
+
+$builder->add('seo_title', TextType::class, ['char_counter' => true, 'constraints' => [new Length(max: 60)]]);
+$builder->add('bio', TextareaType::class, ['char_counter' => true]);   // reads #[Assert\Length] on the mapped property
+$builder->add('sms', TextareaType::class, ['char_counter' => ['max' => 160, 'threshold' => 20, 'unit' => 'codepoints']]);
+```
+
+Limits, first match wins: the option's `max` / `min`; the first `Length` in the field's `constraints`; the first
+`Length` on the mapped property of the parent's `data_class` (validator metadata, all groups); the `maxlength` /
+`minlength` attributes. Without any limit only the count is shown. `unit` (`codepoints`, `graphemes`, `bytes`) follows
+the `Length` constraint's `countUnit` (Symfony's default is `codepoints`), else `graphemes`. `threshold` (default 10 % of
+`max`) is how close to the limit the remaining count starts being announced.
+
+- **Without JavaScript** the limit is printed under the field ("Maximum 60 characters.", translated in the 7 bundle
+  locales) and linked to the input with `aria-describedby`.
+- **With `char-counter.js`** the visible text becomes "42 / 60" (hidden from screen readers, the limit sentence stays
+  as the description) and a polite live region announces "Characters left: 5" only once the threshold is reached, and
+  "Characters over the limit: 3" past it (debounced). It counts like the server (a textarea line break counts as two
+  code points, CRLF), never adds `maxlength` and never truncates: the `Length` constraint stays the rule. Fields
+  inserted later (Turbo, Live Components, dialogs) are picked up; call `window.NowoFormKitCharCounter.refresh()` after
+  changing a value from code.
+
+Messages live in the `NowoFormKitBundle` domain (`char_counter.*`); override them like the other bundle messages.
+Everything is stateless on the server (no per-request data in services), so it is safe in FrankenPHP worker mode.
+
 ## Overriding bundle templates
 
 The bundle provides Twig templates under `src/Resources/views/`:
 
 - `components/form_renderer.html.twig` — helper include for rendering a form with buttons.
+- `form/field_widgets_theme.html.twig` — (2.22) blocks of the `choice_cards`, `switch` and `char_counter` options ([details](#field-widgets-choice-cards-switch-character-counter-222)); registered in `twig.form_themes` by default.
 - `form/choice_blocks.html.twig` — (2.18) `checkbox_row`, `radio_row` and `choice_widget_expanded` with translation parameters, to `use` in a host theme ([details](#choice-rows-with-translation-parameters)).
 - `form/static_blocks.html.twig` — form theme used by `StaticSeparatorType` and `StaticAlertType` (and helpers like input-group prefix/suffix). `form_label_content` appends `required_label_suffix` only when `required` is defined and true, so Submit/Button/Reset widgets (which call this block without `required`) work with Twig `strict_variables`.
 - `help_modal/shells.html.twig` — includes `<template>` fragments for help-modal shells (Bootstrap 4/5, Tailwind, Foundation); optional if you rely on the script’s built-in HTML fallbacks.
