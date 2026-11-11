@@ -72,6 +72,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- [ROADMAP.md](ROADMAP.md): new section "Ideas from an admin-template review (2026-11)" with prioritised gaps (choice cards, a framework-neutral switch, a character counter, date conventions, a file upload field, layout profiles, sticky actions, an error summary, a wizard review step and a checkbox matrix), and ideas routed to other bundles.
+
 ## [2.21.0] - 2026-11-10
 
 Target 2.21.0. Request from Symfony Beacon (spec 222 "provider-dependent fields", FR-016).
