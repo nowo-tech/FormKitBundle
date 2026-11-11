@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.22.0] - 2026-11-11](#2220---2026-11-11)
 - [[2.21.0] - 2026-11-10](#2210---2026-11-10)
 - [[2.20.1] - 2026-11-09](#2201---2026-11-09)
 - [[2.20.0] - 2026-11-09](#2200---2026-11-09)
@@ -71,6 +72,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.22.0] - 2026-11-11
 
 Target 2.22.0 (minor). ROADMAP "Ideas from an admin-template review (2026-11)", P1 lot 1.
 
@@ -475,6 +478,7 @@ Locale tabs for translation entities, field_<locale> groups and TranslatableMapT
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.22.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.22.0
 [2.21.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.21.0
 [2.20.1]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.20.1
 [2.20.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.20.0
