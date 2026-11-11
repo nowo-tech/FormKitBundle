@@ -73,6 +73,14 @@ FormKitBundle belongs to the presentation layer. It has no entities, no persiste
 form type requires a `data_class`, so your forms can bind to commands, DTOs or arrays and your domain never sees
 Symfony Form or FormKit classes.
 
+**Standard Symfony project (default):** bind the form types to your entities (`data_class`), with per-locale fields on a
+translation collection indexed by locale or A2lix translations; see
+[Locale tabs (one tab per language)](#locale-tabs-one-tab-per-language). **DDD / hexagonal project (opt-in):** bind
+the same types to input DTOs and map them to commands, as below. Both paths are covered by
+`tests/Integration/Form/HostPathsFormTest.php` (DTO + value-object transformer + locale-keyed DTOs; entity + Doctrine
+`Collection` indexed by locale). There are no ports to implement and no events: the extension points are the
+profiles, `#[FormKitConfig]`, form theming and your own transformers.
+
 ### Keeping your domain free of the bundle
 
 - Keep FormKit in your UI layer: form types extend `FormKitAbstractType` / `AbstractFormKitType` or use

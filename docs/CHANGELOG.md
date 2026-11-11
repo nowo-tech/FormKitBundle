@@ -74,6 +74,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- USAGE (DDD / hexagonal section): standard vs DDD lead-in linking the entity path (locale tabs on a collection indexed by locale) and the DTO path.
+
+### Tests
+
+- `HostPathsFormTest`: FormKit types bound to an input DTO with a value-object model transformer and locale tabs on locale-keyed DTOs (DDD host), and to an entity with a Doctrine `Collection` indexed by locale (standard host).
+
+### Documentation
+
 - [ROADMAP.md](ROADMAP.md): new section "Ideas from an admin-template review (2026-11)" with prioritised gaps (choice cards, a framework-neutral switch, a character counter, date conventions, a file upload field, layout profiles, sticky actions, an error summary, a wizard review step and a checkbox matrix), and ideas routed to other bundles.
 
 ## [2.21.0] - 2026-11-10
