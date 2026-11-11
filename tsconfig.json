@@ -7,6 +7,6 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src/Resources/assets/src/**/*.ts", "src/Resources/assets/stimulus-peers/**/*.ts"]
+  "include": ["src/Resources/assets/src/**/*.ts", "src/Resources/assets/stimulus-peers/**/*.ts", "src/Resources/assets/enhancers/**/*.ts"]
 }
 

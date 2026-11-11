@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.22.0](#to-2220)
 - [To 2.21.0](#to-2210)
 - [To 2.20.1](#to-2201)
 - [To 2.20.0](#to-2200)
@@ -76,6 +77,25 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.22.0
+
+Target **2.22.0** (minor), from **2.21.0**:
+
+```bash
+composer update nowo-tech/form-kit-bundle
+php bin/console assets:install
+```
+
+- Nothing to do: the new `choice_cards`, `switch` and `char_counter` options default to `false`, and fields without
+  them render exactly as before on every base theme.
+- `@NowoFormKitBundle/form/field_widgets_theme.html.twig` is now prepended to `twig.form_themes`. It only defines blocks
+  for the new block prefixes. To keep your theme list unchanged, set
+  `nowo_form_kit.field_widgets.form_theme: false` (then add the theme per form where you use the options).
+- To use the widgets, link `field-widgets.css` and, for the live count, `char-counter.js`
+  (`asset('…', 'nowo_form_kit')`). See [USAGE](USAGE.md#field-widgets-choice-cards-switch-character-counter-222).
+- If your app registers its own form type extension with an option named `choice_cards`, `switch` or `char_counter`
+  on these types, rename it (the option resolvers would conflict).
 
 ## To 2.21.0
 

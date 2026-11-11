@@ -270,6 +270,18 @@ choice_fields_demo:
     label: Permissions
     placeholder: ""
     help: '<code>addMultiSelectSelectAll()</code> when <strong>nowo-tech/select-all-choice-bundle</strong> is installed; otherwise plain <code>addMultiSelect()</code>.'
+  plan:
+    label: 'Plan'
+    help: '<code>choice_cards</code> — expanded choice drawn as cards.'
+    free: 'For one person.'
+    pro: 'For a growing team.'
+    team: 'For the whole company.'
+  notifications:
+    label: 'Email notifications'
+    help: '<code>switch</code> — a checkbox with <code>role="switch"</code>.'
+  bio:
+    label: 'Short bio'
+    help: '<code>char_counter</code> — limit from the <code>Length</code> constraint.'
 
 # CKEditor demo — keys: ckeditor_demo.*
 ckeditor_demo:

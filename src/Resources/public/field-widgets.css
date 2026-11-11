@@ -1,0 +1,328 @@
+/*
+ * Form Kit field widgets (2.22): choice cards, switch and character counter of
+ * `@NowoFormKitBundle/form/field_widgets_theme.html.twig`. Link it with `{{ asset('field-widgets.css', 'nowo_form_kit') }}`.
+ *
+ * Colours, radius and motion read UiKit's tokens (`--nowo-ui-*`), so light and dark themes follow UiKit. Each token has
+ * a fallback built on `currentColor`, so the widgets also fit a host without UiKit. Every rule is scoped to a
+ * `nowo-form-kit-` class; nothing here touches other fields. No `!important`.
+ * Override the widget-level custom properties (`--nowo-form-kit-*`) to restyle without rewriting selectors.
+ */
+
+:where(.nowo-form-kit-choice-cards, .nowo-form-kit-switch, .nowo-form-kit-counter) {
+  --nowo-form-kit-accent: var(--nowo-ui-accent, var(--nowo-ui-primary, #2563eb));
+  --nowo-form-kit-accent-contrast: var(--nowo-ui-primary-contrast, #ffffff);
+  --nowo-form-kit-border: var(--nowo-ui-border-strong, color-mix(in srgb, currentColor 30%, transparent));
+  --nowo-form-kit-control-border: var(--nowo-ui-muted, color-mix(in srgb, currentColor 60%, transparent));
+  --nowo-form-kit-surface: var(--nowo-ui-surface, transparent);
+  --nowo-form-kit-muted: var(--nowo-ui-muted, color-mix(in srgb, currentColor 70%, transparent));
+  --nowo-form-kit-danger: var(--nowo-ui-danger-text, #b91c1c);
+  --nowo-form-kit-radius: var(--nowo-ui-radius, 0.375rem);
+  --nowo-form-kit-focus: var(--nowo-ui-focus-ring-color, var(--nowo-form-kit-accent));
+  --nowo-form-kit-motion: var(--nowo-ui-motion-small, 150ms);
+}
+
+/* ===== Choice cards ===== */
+
+.nowo-form-kit-choice-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 40rem) {
+  .nowo-form-kit-choice-cards--cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nowo-form-kit-choice-cards--cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .nowo-form-kit-choice-cards--cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .nowo-form-kit-choice-cards--cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.nowo-form-kit-choice-cards--cols-1 {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.nowo-form-kit-choice-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.75rem;
+  row-gap: 0.25rem;
+  align-items: start;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--nowo-form-kit-border);
+  border-radius: var(--nowo-form-kit-radius);
+  background: var(--nowo-form-kit-surface);
+  color: inherit;
+  transition: border-color var(--nowo-form-kit-motion) ease, box-shadow var(--nowo-form-kit-motion) ease;
+}
+
+.nowo-form-kit-choice-card__input {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0.2rem 0 0;
+  accent-color: var(--nowo-form-kit-accent);
+}
+
+.nowo-form-kit-choice-card__image,
+.nowo-form-kit-choice-card__icon {
+  grid-column: 2;
+  max-width: 100%;
+}
+
+.nowo-form-kit-choice-card__image {
+  display: block;
+  height: auto;
+  max-height: 6rem;
+  object-fit: contain;
+  justify-self: start;
+}
+
+.nowo-form-kit-choice-card__icon {
+  display: inline-flex;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--nowo-form-kit-accent);
+}
+
+.nowo-form-kit-choice-card__icon :is(svg, img) {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.nowo-form-kit-choice-card__title {
+  grid-column: 2;
+  margin: 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* The label covers the whole card, so a click anywhere selects the choice. */
+.nowo-form-kit-choice-card__title::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.nowo-form-kit-choice-card__description {
+  grid-column: 2;
+  color: var(--nowo-form-kit-muted);
+  font-size: 0.875em;
+}
+
+/* The native radio / checkbox stays visible, so the state never depends on the border colour alone. */
+.nowo-form-kit-choice-card:has(> .nowo-form-kit-choice-card__input:checked) {
+  border-color: var(--nowo-form-kit-accent);
+  box-shadow: 0 0 0 1px var(--nowo-form-kit-accent);
+}
+
+.nowo-form-kit-choice-card:has(> .nowo-form-kit-choice-card__input:focus-visible) {
+  outline: 2px solid var(--nowo-form-kit-focus);
+  outline-offset: 2px;
+}
+
+.nowo-form-kit-choice-card:not(.nowo-form-kit-choice-card--disabled):hover {
+  border-color: var(--nowo-form-kit-accent);
+}
+
+.nowo-form-kit-choice-card--disabled {
+  opacity: 0.6;
+}
+
+.nowo-form-kit-choice-card--disabled .nowo-form-kit-choice-card__title {
+  cursor: not-allowed;
+}
+
+.nowo-form-kit-choice-cards--invalid .nowo-form-kit-choice-card {
+  border-color: var(--nowo-form-kit-danger);
+}
+
+/* ===== Switch ===== */
+
+.nowo-form-kit-switch {
+  --nowo-form-kit-switch-width: 2.5rem;
+  --nowo-form-kit-switch-height: 1.375rem;
+  position: relative;
+}
+
+.nowo-form-kit-switch--sm {
+  --nowo-form-kit-switch-width: 2rem;
+  --nowo-form-kit-switch-height: 1.125rem;
+}
+
+.nowo-form-kit-switch--lg {
+  --nowo-form-kit-switch-width: 3.25rem;
+  --nowo-form-kit-switch-height: 1.75rem;
+}
+
+/* The real checkbox sits under the track: invisible, still focusable and announced as a switch. */
+.nowo-form-kit-switch__input {
+  position: absolute;
+  width: var(--nowo-form-kit-switch-width);
+  height: var(--nowo-form-kit-switch-height);
+  margin: 0;
+  opacity: 0;
+}
+
+.nowo-form-kit-switch__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 1.5rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.nowo-form-kit-switch__track {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--nowo-form-kit-switch-width);
+  height: var(--nowo-form-kit-switch-height);
+  border: 2px solid var(--nowo-form-kit-control-border);
+  border-radius: 999px;
+  background: var(--nowo-form-kit-surface);
+  transition: background-color var(--nowo-form-kit-motion) ease, border-color var(--nowo-form-kit-motion) ease;
+}
+
+.nowo-form-kit-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(var(--nowo-form-kit-switch-height) - 8px);
+  height: calc(var(--nowo-form-kit-switch-height) - 8px);
+  border-radius: 50%;
+  background: var(--nowo-form-kit-control-border);
+  transition: transform var(--nowo-form-kit-motion) ease, background-color var(--nowo-form-kit-motion) ease;
+}
+
+.nowo-form-kit-switch__input:checked + .nowo-form-kit-switch__label .nowo-form-kit-switch__track {
+  border-color: var(--nowo-form-kit-accent);
+  background: var(--nowo-form-kit-accent);
+}
+
+.nowo-form-kit-switch__input:checked + .nowo-form-kit-switch__label .nowo-form-kit-switch__thumb {
+  background: var(--nowo-form-kit-accent-contrast);
+  transform: translateX(calc(var(--nowo-form-kit-switch-width) - var(--nowo-form-kit-switch-height)));
+}
+
+.nowo-form-kit-switch__input:focus-visible + .nowo-form-kit-switch__label .nowo-form-kit-switch__track {
+  outline: 2px solid var(--nowo-form-kit-focus);
+  outline-offset: 2px;
+}
+
+.nowo-form-kit-switch__input:disabled + .nowo-form-kit-switch__label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.nowo-form-kit-switch__input[aria-invalid='true'] + .nowo-form-kit-switch__label .nowo-form-kit-switch__track {
+  border-color: var(--nowo-form-kit-danger);
+}
+
+/* Optional on / off icons (drawn with borders, no image): a tick on the left when on, a bar on the right when off. */
+.nowo-form-kit-switch__icon {
+  position: absolute;
+  top: 50%;
+  box-sizing: border-box;
+}
+
+.nowo-form-kit-switch__icon--on {
+  left: 22%;
+  width: calc(var(--nowo-form-kit-switch-height) * 0.22);
+  height: calc(var(--nowo-form-kit-switch-height) * 0.4);
+  border: solid var(--nowo-form-kit-accent-contrast);
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -60%) rotate(45deg);
+  opacity: 0;
+}
+
+.nowo-form-kit-switch__icon--off {
+  right: 18%;
+  width: 2px;
+  height: calc(var(--nowo-form-kit-switch-height) * 0.4);
+  background: var(--nowo-form-kit-control-border);
+  transform: translateY(-50%);
+}
+
+.nowo-form-kit-switch__input:checked + .nowo-form-kit-switch__label .nowo-form-kit-switch__icon--on {
+  opacity: 1;
+}
+
+.nowo-form-kit-switch__input:checked + .nowo-form-kit-switch__label .nowo-form-kit-switch__icon--off {
+  opacity: 0;
+}
+
+@media (forced-colors: active) {
+  .nowo-form-kit-switch__track {
+    border-color: CanvasText;
+  }
+
+  .nowo-form-kit-switch__thumb {
+    background: CanvasText;
+  }
+
+  .nowo-form-kit-switch__input:checked + .nowo-form-kit-switch__label .nowo-form-kit-switch__track {
+    border-color: Highlight;
+    background: Highlight;
+  }
+
+  .nowo-form-kit-switch__input:checked + .nowo-form-kit-switch__label .nowo-form-kit-switch__thumb {
+    background: HighlightText;
+  }
+
+  .nowo-form-kit-choice-card:has(> .nowo-form-kit-choice-card__input:checked) {
+    border-color: Highlight;
+  }
+}
+
+/* ===== Character counter ===== */
+
+.nowo-form-kit-counter {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--nowo-form-kit-muted);
+  font-size: 0.875em;
+  font-variant-numeric: tabular-nums;
+}
+
+.nowo-form-kit-counter--over {
+  color: var(--nowo-form-kit-danger);
+  font-weight: 600;
+}
+
+/* Once the script shows the live count, the limit sentence stays for screen readers only. */
+.nowo-form-kit-counter[data-nowo-form-kit-counter-ready] .nowo-form-kit-counter__limit,
+.nowo-form-kit-counter__live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) :is(.nowo-form-kit-choice-card, .nowo-form-kit-switch__track, .nowo-form-kit-switch__thumb) {
+    transition: none;
+  }
+}
+
+[data-motion='reduce'] :is(.nowo-form-kit-choice-card, .nowo-form-kit-switch__track, .nowo-form-kit-switch__thumb) {
+  transition: none;
+}

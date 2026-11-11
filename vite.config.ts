@@ -1,6 +1,8 @@
 /**
- * Vite build for the Form Kit help-modal IIFE (`help-modal.js` → `src/Resources/public/`).
- * Injects `__FORM_KIT_HELP_MODAL_BUILD_TIME__` for console diagnostics.
+ * Vite build for the Form Kit IIFE scripts in `src/Resources/public/`:
+ * - default mode: `help-modal.js` (injects `__FORM_KIT_HELP_MODAL_BUILD_TIME__` for console diagnostics);
+ * - `--mode char-counter` (2.22): `char-counter.js` from `src/Resources/assets/enhancers/`.
+ * An IIFE build has one entry, so `pnpm run build` runs Vite once per script.
  */
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -25,7 +27,23 @@ function sourceBuildId(dir: string): string {
   return hash.digest('hex').slice(0, 12);
 }
 
-export default defineConfig({
+const charCounter = defineConfig({
+  build: {
+    outDir: 'src/Resources/public',
+    emptyOutDir: false,
+    rollupOptions: {
+      input: 'src/Resources/assets/enhancers/char-counter-entry.ts',
+      output: {
+        format: 'iife',
+        entryFileNames: 'char-counter.js',
+      },
+    },
+    minify: true,
+    sourcemap: false,
+  },
+});
+
+const helpModal = defineConfig({
   define: {
     __FORM_KIT_HELP_MODAL_BUILD_TIME__: JSON.stringify(sourceBuildId('src/Resources/assets/src')),
   },
@@ -44,3 +62,4 @@ export default defineConfig({
   },
 });
 
+export default defineConfig(({ mode }) => (mode === 'char-counter' ? charCounter : helpModal));

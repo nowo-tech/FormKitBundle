@@ -213,6 +213,18 @@ choice_fields_demo:
     label: Berechtigungen
     placeholder: ""
     help: '<code>addMultiSelectSelectAll()</code> mit <strong>nowo-tech/select-all-choice-bundle</strong>, sonst <code>addMultiSelect()</code>.'
+  plan:
+    label: 'Tarif'
+    help: '<code>choice_cards</code> — erweiterte Auswahl als Karten.'
+    free: 'Für eine Person.'
+    pro: 'Für ein wachsendes Team.'
+    team: 'Für das ganze Unternehmen.'
+  notifications:
+    label: 'E-Mail-Benachrichtigungen'
+    help: '<code>switch</code> — eine Checkbox mit <code>role="switch"</code>.'
+  bio:
+    label: 'Kurzbiografie'
+    help: '<code>char_counter</code> — Grenze aus der <code>Length</code>-Constraint.'
 
 ckeditor_demo:
   body:
