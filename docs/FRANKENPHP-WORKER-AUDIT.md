@@ -3,8 +3,8 @@
 | Field | Value |
 |-------|-------|
 | Package | `nowo-tech/form-kit-bundle` (`symfony-bundle`) |
-| Audited revision | post-`v2.5.2` (release **2.5.3**) |
-| Audit date | 2026-09-24 |
+| Audited revision | `v2.22.0` (kept-alive test added 2026-11-12; earlier review kept below) |
+| Audit date | 2026-11-12 (earlier audit dates kept in the history) |
 | Method | Manual review of every file under `src/` (services, form types, type extensions, traits, DI extension, compiler passes, `Resources/config/services.yaml`) + PHPStan FrankenPHP classic/worker rulesets |
 | **Verdict** | ✅ **Compatible** with FrankenPHP worker when the kernel is **not** reset between requests (`FRANKENPHP_RESET_KERNEL` unset or `0`). Bundle services hold no per-request state. Trait setters are **DI / constructor configuration** only — misuse from an action is an integrator error (documented). |
 
@@ -17,6 +17,7 @@
   - [W-01 — Public setters on shared form types persist across requests (Accepted / documented)](#w-01--public-setters-on-shared-form-types-persist-across-requests-accepted--documented)
   - [W-02 — `FormKitControllerTrait` naming/profile state (Accepted / documented)](#w-02--formkitcontrollertrait-namingprofile-state-accepted--documented)
   - [W-03 — `MultiStepWizardSession` session binding — **Fixed in 2.5.3**](#w-03--multistepwizardsession-session-binding--fixed-in-253)
+- [Kept-alive test (REQ-RUNTIME-002)](#kept-alive-test-req-runtime-002)
 - [Usage recommendations](#usage-recommendations)
 - [Re-audit triggers](#re-audit-triggers)
 
@@ -79,6 +80,14 @@ A bundle that is safe under **B** is safe under **A**, under `FRANKENPHP_RESET_K
 
 - **Was:** constructor captured `RequestStack::getSession()` into a `readonly` property.
 - **Now:** session is resolved via `RequestStack` on every read/write. Still create via `MultiStepWizardSessionFactory::create()` inside the action; do not store the object on a shared service.
+
+## Kept-alive test (REQ-RUNTIME-002)
+
+Test: `Nowo\FormKitBundle\Tests\Integration\Worker\WorkerKeptAliveKernelTest` (`tests/Integration/Worker/WorkerKeptAliveKernelTest.php`). It uses one booted kernel (`WorkerKeptAliveKernel`: FrameworkBundle, TwigBundle and the bundle) and drives `http_kernel` `handle()` + `terminate()`; each request builds a Form Kit search form from its own query string and renders it with Twig. `services_resetter` / `kernel.reset` is **never** called. It runs 1,200 iterations alternating two users, asserts every response contains only its own data (nothing of the other user or of the previous iteration), and that memory growth after a 100-iteration warm-up stays below 4 MiB.
+
+Result: no state is carried between requests, so the bundle is **safe with kernel reset false**.
+
+Rule 7: the bundle never clears or resets the host's default EntityManager (it has no persistence).
 
 ## Usage recommendations
 
