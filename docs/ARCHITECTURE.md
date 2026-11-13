@@ -6,6 +6,7 @@ build form options. It has no entities, no persistence and no events.
 ## Table of contents
 
 - [Public ports](#public-ports)
+- [UI service interfaces (presentation adapters)](#ui-service-interfaces-presentation-adapters)
 - [Extension points (SPI)](#extension-points-spi)
 - [Standard Symfony and DDD hosts](#standard-symfony-and-ddd-hosts)
 
@@ -15,11 +16,7 @@ build form options. It has no entities, no persistence and no events.
 | --- | --- | --- |
 | `Form\FormOptionsMergerInterface` | `Form\FormOptionsMerger` | Resolves the final options of a field (profile defaults, convention keys, explicit options). |
 | `Form\FormTypeMapInterface` | `Form\FormTypeMap` | Maps snake_case type names to form type classes (`FormTypeMap::NOWO_WIDGETS` stays on the class). |
-| `Form\Constraint\ConstraintDefinitionFactoryInterface` | `Form\Constraint\ConstraintDefinitionFactory` | Builds validator constraints from configuration definitions. |
 | `Css\CssClassUtilitiesInterface` | `Css\CssClassUtilities` | Normalises column classes and orders utility classes for the configured CSS framework. |
-| `Form\CsrfOnlyFormFactoryInterface` | `Form\CsrfOnlyFormFactory` | CSRF-only forms for state-changing actions. |
-| `Form\GetFilterFormFactoryInterface` | `Form\GetFilterFormFactory` | Rootless GET filter forms. |
-| `Form\MultiStepFormBuilderInterface` | `Form\MultiStepFormBuilder` | Form of one wizard step. |
 | `Form\MultiStepWizardSessionFactoryInterface` | `Form\MultiStepWizardSessionFactory` | Creates `MultiStepWizardSessionInterface` instances (session-backed by default). |
 | `HelpModal\HelpModalNonceInterface` | `HelpModal\HelpModalNonce` | Per-request nonce that binds help-modal payloads to the page. |
 | `Form\DataTransformer\DataTransformer` | `Bool/Csv/Json/Money/SwitchModelTransformer` | Model transformers for value objects. |
@@ -36,10 +33,23 @@ services:
     alias: App\Ui\TenantFormOptionsMerger
 ```
 
-The form-oriented ports use Symfony Form types (`FormInterface`, `FormFactoryInterface`) because their job is to build
-Symfony forms; a presentation bundle is expected to. Constants and static helpers (`CsrfProtectionGuard`,
+Constants and static helpers (`CsrfProtectionGuard`,
 `VisibleWhenRules`, `FormKitOptionMerger`) stay on their classes. Keep replacements stateless between requests
 (worker mode, kernel reset false).
+
+## UI service interfaces (presentation adapters)
+
+These interfaces are UI adapters, not domain ports. They may use Symfony Form and Validator types in their signatures
+(`FormInterface`, `FormFactoryInterface`, `Constraint`) because their job is to build forms and constraints. Each is
+still aliased to its default service and replaceable through the alias:
+
+- `Form\Constraint\ConstraintDefinitionFactoryInterface` (default ``Form\Constraint\ConstraintDefinitionFactory``): Builds validator constraints from configuration definitions.
+- `Form\CsrfOnlyFormFactoryInterface` (default ``Form\CsrfOnlyFormFactory``): CSRF-only forms for state-changing actions.
+- `Form\GetFilterFormFactoryInterface` (default ``Form\GetFilterFormFactory``): Rootless GET filter forms.
+- `Form\MultiStepFormBuilderInterface` (default ``Form\MultiStepFormBuilder``): Form of one wizard step.
+
+The ports in the table above stay free of Symfony, Doctrine and HTTP types (REQ-ARCH-001 rule 3); no exception to
+rule 3 is recorded for the UI adapters, they are simply outside the port list.
 
 ## Extension points (SPI)
 
