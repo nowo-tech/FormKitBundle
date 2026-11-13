@@ -63,7 +63,7 @@ use Symfony\UX\Dropzone\Form\DropzoneType;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final class FormTypeMap
+final class FormTypeMap implements FormTypeMapInterface
 {
     /** @var array<string, string> */
     private const BUILTIN = [

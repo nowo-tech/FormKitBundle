@@ -25,7 +25,7 @@ use function trim;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final readonly class CsrfOnlyFormFactory
+final readonly class CsrfOnlyFormFactory implements CsrfOnlyFormFactoryInterface
 {
     /** State-changing methods a CSRF-protected action may use (PUT / PATCH / DELETE through `_method`). */
     private const UNSAFE_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];

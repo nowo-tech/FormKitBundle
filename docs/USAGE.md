@@ -82,8 +82,9 @@ translation collection indexed by locale or A2lix translations; see
 [Locale tabs (one tab per language)](#locale-tabs-one-tab-per-language). **DDD / hexagonal project (opt-in):** bind
 the same types to input DTOs and map them to commands, as below. Both paths are covered by
 `tests/Integration/Form/HostPathsFormTest.php` (DTO + value-object transformer + locale-keyed DTOs; entity + Doctrine
-`Collection` indexed by locale). There are no ports to implement and no events: the extension points are the
-profiles, `#[FormKitConfig]`, form theming and your own transformers.
+`Collection` indexed by locale). There are no domain ports to implement and no events: the extension points are the
+profiles, `#[FormKitConfig]`, form theming, your own transformers and the service ports (see
+[ARCHITECTURE.md](ARCHITECTURE.md)): alias an interface such as `FormOptionsMergerInterface` to your own service to replace the default.
 
 ### Keeping your domain free of the bundle
 

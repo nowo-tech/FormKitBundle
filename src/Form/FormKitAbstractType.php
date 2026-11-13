@@ -26,7 +26,7 @@ abstract class FormKitAbstractType extends AbstractType
 {
     use FormKitTrait;
 
-    public function __construct(FormOptionsMerger $formOptionsMerger, FormTypeMap $formTypeMap)
+    public function __construct(FormOptionsMergerInterface $formOptionsMerger, FormTypeMapInterface $formTypeMap)
     {
         $this->formOptionsMerger = $formOptionsMerger;
         $this->formTypeMap       = $formTypeMap;

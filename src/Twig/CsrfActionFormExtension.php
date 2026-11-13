@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Nowo\FormKitBundle\Twig;
 
-use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
+use Nowo\FormKitBundle\Form\CsrfOnlyFormFactoryInterface;
 use Symfony\Component\Form\FormView;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
  * Twig function {@code csrf_action_form()} for CSRF-only single-action POST forms (delete, toggle,
- * retry buttons, kit forks) built on {@see CsrfOnlyFormFactory}.
+ * retry buttons, kit forks) built on {@see CsrfOnlyFormFactoryInterface}.
  *
  * Registered when Twig is available and {@code nowo_form_kit.twig.csrf_action_form} is true (default).
  *
@@ -23,7 +23,7 @@ final class CsrfActionFormExtension extends AbstractExtension
     public const FUNCTION_NAME = 'csrf_action_form';
 
     public function __construct(
-        private readonly CsrfOnlyFormFactory $csrfOnlyFormFactory,
+        private readonly CsrfOnlyFormFactoryInterface $csrfOnlyFormFactory,
     ) {
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Form\Extension;
 
 use Nowo\FormKitBundle\HelpModal\HelpModalNonce;
+use Nowo\FormKitBundle\HelpModal\HelpModalNonceInterface;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
@@ -44,13 +45,13 @@ final class HelpModalExtension extends AbstractTypeExtension
      * @param array<string, array<string, mixed>> $profiles merged Form Kit configuration (all named profiles)
      * @param string $defaultProfileName key used when resolving `help_modal` defaults
      * @param object|null $iconRenderer optional; Symfony UX Icons renderer when the package is installed
-     * @param HelpModalNonce $nonce per-request nonce binding payloads to the page (`nowo_form_kit_help_modal_meta()`)
+     * @param HelpModalNonceInterface $nonce per-request nonce binding payloads to the page (`nowo_form_kit_help_modal_meta()`)
      */
     public function __construct(
         private readonly array $profiles,
         private readonly string $defaultProfileName,
         private readonly ?object $iconRenderer = null,
-        private readonly HelpModalNonce $nonce = new HelpModalNonce(),
+        private readonly HelpModalNonceInterface $nonce = new HelpModalNonce(),
     ) {
     }
 

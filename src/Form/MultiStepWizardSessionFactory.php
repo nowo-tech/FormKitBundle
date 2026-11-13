@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final readonly class MultiStepWizardSessionFactory
+final readonly class MultiStepWizardSessionFactory implements MultiStepWizardSessionFactoryInterface
 {
     public function __construct(
         private RequestStack $requestStack

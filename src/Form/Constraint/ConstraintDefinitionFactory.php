@@ -34,7 +34,7 @@ use function str_starts_with;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final class ConstraintDefinitionFactory
+final class ConstraintDefinitionFactory implements ConstraintDefinitionFactoryInterface
 {
     private const CONSTRAINTS_PREFIX = 'Symfony\\Component\\Validator\\Constraints\\';
 

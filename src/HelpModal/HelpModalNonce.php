@@ -30,7 +30,7 @@ use function strtr;
  * nonce), and a response that reused it is marked `Cache-Control: private` + `Vary: X-Nowo-Form-Kit-Help-Modal-Nonce`
  * by {@see HelpModalNonceResponseListener}.
  */
-final readonly class HelpModalNonce
+final readonly class HelpModalNonce implements HelpModalNonceInterface
 {
     /** Main request attribute holding the nonce of the current request. */
     public const REQUEST_ATTRIBUTE = '_nowo_form_kit_help_modal_nonce';

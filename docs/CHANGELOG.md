@@ -73,6 +73,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Ports (REQ-ARCH-001 rule 1): interfaces for the UI services and factories, each implemented by the existing class and aliased to it in the container: `FormOptionsMergerInterface`, `FormTypeMapInterface`, `Constraint\ConstraintDefinitionFactoryInterface`, `Css\CssClassUtilitiesInterface`, `CsrfOnlyFormFactoryInterface`, `GetFilterFormFactoryInterface`, `MultiStepFormBuilderInterface`, `MultiStepWizardSessionFactoryInterface`, `MultiStepWizardSessionInterface` and `HelpModal\HelpModalNonceInterface`. The form base types, the three traits, the multi-step builder, the Twig extensions and the help-modal extension type-hint the interfaces, so a host can replace a service by aliasing its interface. `FormOptionsMergerInjectorCompilerPass` also injects the merger into `setFormOptionsMerger()` methods typed with the interface. Purely additive: the class ids still resolve and constants and static helpers stay on the classes.
+- `docs/ARCHITECTURE.md`: the four form and validator based interfaces (`CsrfOnlyFormFactoryInterface`, `GetFilterFormFactoryInterface`, `MultiStepFormBuilderInterface`, `ConstraintDefinitionFactoryInterface`) are listed as UI service interfaces (presentation adapters, which may use Symfony Form and Validator types), apart from the framework-free public ports; ports table, extension points and a "Standard Symfony and DDD hosts" section.
+
 ### Tests
 
 - Tests: kept-alive worker test `WorkerKeptAliveKernelTest` (one kernel or container, never reset, 1,200 alternating iterations, memory bound) and `docs/FRANKENPHP-WORKER-AUDIT.md` refreshed for v2.22.0; no runtime change.

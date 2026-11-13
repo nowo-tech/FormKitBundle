@@ -25,11 +25,11 @@ use function sprintf;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final readonly class MultiStepFormBuilder
+final readonly class MultiStepFormBuilder implements MultiStepFormBuilderInterface
 {
     public function __construct(
         private FormFactoryInterface $formFactory,
-        private FormOptionsMerger $formOptionsMerger
+        private FormOptionsMergerInterface $formOptionsMerger
     ) {
     }
 

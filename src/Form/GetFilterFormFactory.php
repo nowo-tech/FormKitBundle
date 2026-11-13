@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormTypeInterface;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final readonly class GetFilterFormFactory
+final readonly class GetFilterFormFactory implements GetFilterFormFactoryInterface
 {
     public function __construct(
         private FormFactoryInterface $formFactory,
