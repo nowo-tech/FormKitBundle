@@ -13,7 +13,7 @@ services:
       $profiles: '%nowo_form_kit.profiles%'
       $defaultProfileName: '%nowo_form_kit.default_profile%'
       $formRegistry: '@?form.registry'
-      $formTypeMap: '@Nowo\FormKitBundle\Form\FormTypeMap'
+      $formTypeMap: '@Nowo\FormKitBundle\Form\FormTypeMapInterface'
       $translator: '@?translator'
 
   Nowo\FormKitBundle\Form\FormTypeMap:
@@ -29,6 +29,34 @@ services:
 
   Nowo\FormKitBundle\Form\CsrfOnlyFormFactory: ~
   Nowo\FormKitBundle\Form\GetFilterFormFactory: ~
+
+  # Ports (REQ-ARCH-001 rule 1): autowire the interface; alias it to your own service to replace the default.
+  Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactoryInterface:
+    alias: Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory
+
+  Nowo\FormKitBundle\Form\FormOptionsMergerInterface:
+    alias: Nowo\FormKitBundle\Form\FormOptionsMerger
+
+  Nowo\FormKitBundle\Form\FormTypeMapInterface:
+    alias: Nowo\FormKitBundle\Form\FormTypeMap
+
+  Nowo\FormKitBundle\Css\CssClassUtilitiesInterface:
+    alias: Nowo\FormKitBundle\Css\CssClassUtilities
+
+  Nowo\FormKitBundle\Form\MultiStepFormBuilderInterface:
+    alias: Nowo\FormKitBundle\Form\MultiStepFormBuilder
+
+  Nowo\FormKitBundle\Form\MultiStepWizardSessionFactoryInterface:
+    alias: Nowo\FormKitBundle\Form\MultiStepWizardSessionFactory
+
+  Nowo\FormKitBundle\Form\CsrfOnlyFormFactoryInterface:
+    alias: Nowo\FormKitBundle\Form\CsrfOnlyFormFactory
+
+  Nowo\FormKitBundle\Form\GetFilterFormFactoryInterface:
+    alias: Nowo\FormKitBundle\Form\GetFilterFormFactory
+
+  Nowo\FormKitBundle\HelpModal\HelpModalNonceInterface:
+    alias: Nowo\FormKitBundle\HelpModal\HelpModalNonce
 
   Nowo\FormKitBundle\Form\Type\CsrfOnlyType:
 
@@ -73,7 +101,7 @@ services:
       $profiles: '%nowo_form_kit.profiles%'
       $defaultProfileName: '%nowo_form_kit.default_profile%'
       $iconRenderer: '@?Symfony\UX\Icons\IconRendererInterface'
-      $nonce: '@Nowo\FormKitBundle\HelpModal\HelpModalNonce'
+      $nonce: '@Nowo\FormKitBundle\HelpModal\HelpModalNonceInterface'
 
   # REQ-SEC-004 (L1): per-request nonce binding help-modal payloads to the page; stored in request attributes.
   Nowo\FormKitBundle\HelpModal\HelpModalNonce:

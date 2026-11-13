@@ -16,8 +16,8 @@ use Nowo\FormKitBundle\Form\DataTransformer\JsonModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\MoneyModelTransformer;
 use Nowo\FormKitBundle\Form\DataTransformer\SwitchModelTransformer;
 use Nowo\FormKitBundle\Form\FormFieldOptionsHelper;
-use Nowo\FormKitBundle\Form\FormOptionsMerger;
-use Nowo\FormKitBundle\Form\FormTypeMap;
+use Nowo\FormKitBundle\Form\FormOptionsMergerInterface;
+use Nowo\FormKitBundle\Form\FormTypeMapInterface;
 use Nowo\FormKitBundle\Form\Type\StaticHtmlType;
 use Nowo\FormKitBundle\Form\Type\TranslationsFormsType;
 use Nowo\IconSelectorBundle\Form\IconSelectorType;
@@ -76,10 +76,10 @@ trait FormKitControllerTrait
      * Unique property name to avoid collisions with controllers that declare
      * their own `$formOptionsMerger` via constructor property promotion.
      */
-    private ?FormOptionsMerger $formKitOptionsMerger = null;
+    private ?FormOptionsMergerInterface $formKitOptionsMerger = null;
 
     /** Unique property name to avoid collisions with controller properties. */
-    private ?FormTypeMap $formKitTypeMap = null;
+    private ?FormTypeMapInterface $formKitTypeMap = null;
 
     /**
      * Key in nowo_form_kit.profiles. When null, FormOptionsMerger will use default_profile.
@@ -97,13 +97,13 @@ trait FormKitControllerTrait
     /** @var array<string, mixed> */
     private array $formKitTranslationsDefaults = [];
 
-    public function setFormOptionsMerger(FormOptionsMerger $formOptionsMerger): void
+    public function setFormOptionsMerger(FormOptionsMergerInterface $formOptionsMerger): void
     {
         // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formKitOptionsMerger = $formOptionsMerger;
     }
 
-    public function setFormTypeMap(FormTypeMap $formTypeMap): void
+    public function setFormTypeMap(FormTypeMapInterface $formTypeMap): void
     // @igor-ignore - Controller or form trait; used in request-scoped context
     {
         // @igor-ignore - Controller or form trait; used in request-scoped context

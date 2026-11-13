@@ -24,7 +24,7 @@ use function is_array;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final class MultiStepWizardSession
+final class MultiStepWizardSession implements MultiStepWizardSessionInterface
 {
     private readonly string $sessionKey;
 

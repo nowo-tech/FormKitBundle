@@ -41,8 +41,8 @@ use function sprintf;
  */
 trait FormKitTrait
 {
-    protected FormOptionsMerger $formOptionsMerger;
-    protected FormTypeMap $formTypeMap;
+    protected FormOptionsMergerInterface $formOptionsMerger;
+    protected FormTypeMapInterface $formTypeMap;
 
     /** @var FormBuilderInterface<mixed>|null Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
     private ?FormBuilderInterface $formKitBoundBuilder = null;
@@ -53,13 +53,13 @@ trait FormKitTrait
     /** True after setFormKitConfigName() or after resolving #[FormKitConfig]. */
     private bool $formKitConfigNameResolved = false;
 
-    public function setFormOptionsMerger(FormOptionsMerger $merger): void
+    public function setFormOptionsMerger(FormOptionsMergerInterface $merger): void
     {
         // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formOptionsMerger = $merger;
     }
 
-    public function setFormTypeMap(FormTypeMap $map): void
+    public function setFormTypeMap(FormTypeMapInterface $map): void
     // @igor-ignore - Controller or form trait; used in request-scoped context
     {
         // @igor-ignore - Controller or form trait; used in request-scoped context

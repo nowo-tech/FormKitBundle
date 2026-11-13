@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\DependencyInjection;
 
 use Nowo\FormKitBundle\Form\FormOptionsMerger;
+use Nowo\FormKitBundle\Form\FormOptionsMergerInterface;
 use ReflectionClass;
 use ReflectionNamedType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -28,7 +29,9 @@ final class FormOptionsMergerInjectorCompilerPass implements CompilerPassInterfa
             return;
         }
 
+        // The port alias lets a host replace the merger; the class id keeps working for setters typed with it.
         $mergerRef = new Reference(self::MERGER_SERVICE_ID);
+        $portRef   = new Reference(FormOptionsMergerInterface::class);
 
         foreach (array_keys($container->findTaggedServiceIds('form.type')) as $id) {
             $def   = $container->getDefinition($id);
@@ -49,7 +52,12 @@ final class FormOptionsMergerInjectorCompilerPass implements CompilerPassInterfa
             }
             $params    = $method->getParameters();
             $paramType = $params[0]->getType();
-            if ($paramType instanceof ReflectionNamedType && $paramType->getName() === FormOptionsMerger::class) {
+            if (!$paramType instanceof ReflectionNamedType) {
+                continue;
+            }
+            if ($paramType->getName() === FormOptionsMergerInterface::class) {
+                $def->addMethodCall('setFormOptionsMerger', [$portRef]);
+            } elseif ($paramType->getName() === FormOptionsMerger::class) {
                 $def->addMethodCall('setFormOptionsMerger', [$mergerRef]);
             }
         }

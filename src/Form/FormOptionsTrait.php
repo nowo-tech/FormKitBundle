@@ -63,7 +63,7 @@ use function sprintf;
  */
 trait FormOptionsTrait
 {
-    private FormOptionsMerger $formOptionsMerger;
+    private FormOptionsMergerInterface $formOptionsMerger;
 
     /** @var FormBuilderInterface<mixed>|null Builder bound by {@see withBuilder()}; used by add*Field() helpers. */
     private ?FormBuilderInterface $formKitBoundBuilder = null;
@@ -87,7 +87,7 @@ trait FormOptionsTrait
      */
     private $formKitTranslationsLocaleResolver;
 
-    public function setFormOptionsMerger(FormOptionsMerger $formOptionsMerger): void
+    public function setFormOptionsMerger(FormOptionsMergerInterface $formOptionsMerger): void
     {
         // @igor-ignore - Controller or form trait; used in request-scoped context
         $this->formOptionsMerger = $formOptionsMerger;

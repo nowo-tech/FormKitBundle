@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Form;
 
 use InvalidArgumentException;
-use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactory;
+use Nowo\FormKitBundle\Form\Constraint\ConstraintDefinitionFactoryInterface;
 use Nowo\MilkdownEditorBundle\Form\MilkdownEditorType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -51,7 +51,7 @@ use function sprintf;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final class FormOptionsMerger
+final class FormOptionsMerger implements FormOptionsMergerInterface
 {
     /** @var list<string> */
     private const SCALAR_DEFAULT_KEYS = ['label', 'placeholder', 'help', 'required'];
@@ -131,9 +131,9 @@ final class FormOptionsMerger
     public function __construct(
         private array $profiles,
         private readonly string $defaultProfileName,
-        private readonly ConstraintDefinitionFactory $constraintDefinitionFactory,
+        private readonly ConstraintDefinitionFactoryInterface $constraintDefinitionFactory,
         private readonly ?FormRegistryInterface $formRegistry = null,
-        private readonly ?FormTypeMap $formTypeMap = null,
+        private readonly ?FormTypeMapInterface $formTypeMap = null,
         private readonly ?TranslatorInterface $translator = null,
     ) {
     }

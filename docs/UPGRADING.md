@@ -5,6 +5,7 @@ This document describes how to upgrade between major versions of Form Kit Bundle
 ## Table of contents
 
 - [Unreleased](#unreleased)
+- [To 2.23.0](#to-2230)
 - [To 2.22.0](#to-2220)
 - [To 2.22.0](#to-2220-1)
 - [To 2.21.0](#to-2210)
@@ -78,6 +79,16 @@ This document describes how to upgrade between major versions of Form Kit Bundle
   - [1.0.0 (2025-03-03)](#100-2025-03-03)
 
 ## Unreleased
+
+## To 2.23.0
+
+From **2.22.0**: additive, no action needed.
+
+```bash
+composer update nowo-tech/form-kit-bundle
+```
+
+The UI services and factories now implement interfaces aliased to them (`FormOptionsMergerInterface`, `FormTypeMapInterface`, `ConstraintDefinitionFactoryInterface`, `CssClassUtilitiesInterface`, `CsrfOnlyFormFactoryInterface`, `GetFilterFormFactoryInterface`, `MultiStepFormBuilderInterface`, `MultiStepWizardSessionFactoryInterface`, `MultiStepWizardSessionInterface`, `HelpModalNonceInterface`). Type-hint the interfaces in new code; the class ids keep working. `setFormOptionsMerger()` / `setFormTypeMap()` of the traits and `FormKitAbstractType::__construct()` now take the interfaces: a host class that overrides one of them with a narrower, concrete parameter type must widen it to the interface (a host that only calls them, or passes the bundle services, needs no change). To replace a service, alias its interface to your own service.
 
 ## To 2.22.0
 

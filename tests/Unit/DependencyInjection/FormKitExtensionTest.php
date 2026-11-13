@@ -6,7 +6,7 @@ namespace Nowo\FormKitBundle\Tests\Unit\DependencyInjection;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\DependencyInjection\FormKitExtension;
-use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
+use Nowo\FormKitBundle\Form\CsrfOnlyFormFactoryInterface;
 use Nowo\FormKitBundle\Form\Extension\ImageCropExtension;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
@@ -396,7 +396,7 @@ final class FormKitExtensionTest extends TestCase
         self::assertFalse($definition->hasTag('twig.extension'));
         $factory = $definition->getArgument(0);
         self::assertInstanceOf(Reference::class, $factory);
-        self::assertSame(CsrfOnlyFormFactory::class, (string) $factory);
+        self::assertSame(CsrfOnlyFormFactoryInterface::class, (string) $factory);
     }
 
     public function testCsrfActionFormTwigExtensionIsNotRegisteredWhenDisabled(): void

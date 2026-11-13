@@ -19,7 +19,7 @@ use const PREG_SPLIT_NO_EMPTY;
  * @author Héctor Franco Aceituno <hectorfranco@nowo.tech>
  * @copyright 2026 Nowo.tech
  */
-final readonly class CssClassUtilities
+final readonly class CssClassUtilities implements CssClassUtilitiesInterface
 {
     public function __construct(private string $framework)
     {

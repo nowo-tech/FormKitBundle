@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nowo\FormKitBundle\Twig;
 
 use Nowo\FormKitBundle\HelpModal\HelpModalNonce;
+use Nowo\FormKitBundle\HelpModal\HelpModalNonceInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -24,7 +25,7 @@ use const ENT_SUBSTITUTE;
 final class HelpModalTwigExtension extends AbstractExtension
 {
     public function __construct(
-        private readonly HelpModalNonce $nonce,
+        private readonly HelpModalNonceInterface $nonce,
     ) {
     }
 

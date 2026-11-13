@@ -6,7 +6,7 @@ namespace Nowo\FormKitBundle\DependencyInjection;
 
 use InvalidArgumentException;
 use Nowo\FormKitBundle\Form\AbstractGetFilterType;
-use Nowo\FormKitBundle\Form\CsrfOnlyFormFactory;
+use Nowo\FormKitBundle\Form\CsrfOnlyFormFactoryInterface;
 use Nowo\FormKitBundle\Form\Extension\ImageCropExtension;
 use Nowo\FormKitBundle\Form\Extension\StatelessCsrfTokenIdExtension;
 use Nowo\FormKitBundle\Form\Extension\UnlabelledChoiceAriaLabelExtension;
@@ -259,7 +259,7 @@ class FormKitExtension extends Extension implements PrependExtensionInterface
         }
 
         $container->register(CsrfActionFormExtension::class, CsrfActionFormExtension::class)
-            ->setArguments([new Reference(CsrfOnlyFormFactory::class)])
+            ->setArguments([new Reference(CsrfOnlyFormFactoryInterface::class)])
             // REQ-SF-003: tagged twig.extension by TwigBundle autoconfiguration (Twig ExtensionInterface), no manual tag.
             ->setAutoconfigured(true)
             ->setPublic(false);
