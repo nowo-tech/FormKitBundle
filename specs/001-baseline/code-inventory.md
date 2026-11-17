@@ -2,8 +2,8 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/form-kit-bundle`  
-**Last audited**: 2026-10-29  
-**Audit command**: `find src -type f ! -name '*.test.ts' | wc -l` (77 production units; see [Coverage summary](#coverage-summary))
+**Last audited**: 2026-11-17  
+**Audit command**: `find src -type f ! -name '*.test.ts' | wc -l` (105 production units; see [Coverage summary](#coverage-summary))
 
 ## Symfony config
 
@@ -113,6 +113,44 @@
 | `Form/MultiStepWizardSession.php` | Session state | FR-WIZ-001 |
 | `Form/MultiStepWizardSessionFactory.php` | Session factory | FR-WIZ-001 |
 
+## Ports (interfaces)
+
+| Source file | Spec section | Requirement IDs |
+| --- | --- | --- |
+| `Css/CssClassUtilitiesInterface.php` | Class utilities contract | FR-CSS-001 |
+| `Form/FormOptionsMergerInterface.php` | Merge service contract | FR-FORM-002 |
+| `Form/FormTypeMapInterface.php` | Type map contract | FR-FORM-004 |
+| `Form/Constraint/ConstraintDefinitionFactoryInterface.php` | Constraint factory contract | FR-FORM-007 |
+| `Form/CsrfOnlyFormFactoryInterface.php` | CSRF-only factory contract | FR-FORM-016 |
+| `Form/GetFilterFormFactoryInterface.php` | Rootless GET factory contract | FR-FORM-017 |
+| `Form/MultiStepFormBuilderInterface.php` | Wizard builder contract | FR-WIZ-001 |
+| `Form/MultiStepWizardSessionInterface.php` | Wizard session contract | FR-WIZ-002 |
+| `Form/MultiStepWizardSessionFactoryInterface.php` | Wizard session factory contract | FR-WIZ-001, FR-WIZ-002 |
+
+## Field options and widgets
+
+| Source file | Spec section | Requirement IDs |
+| --- | --- | --- |
+| `Form/Extension/VisibleWhenExtension.php` | `visible_when` option | FR-FORM-020 |
+| `Form/VisibleWhenRules.php` | Server twin of the `visible-when` peer (hidden fields keep their value) | FR-FORM-020 |
+| `Form/Extension/ImageCropExtension.php` | `crop` option on file inputs | FR-FORM-021 |
+| `Form/ImageCropAttributes.php` | UiKit image-crop attribute contract | FR-FORM-021 |
+| `Form/Extension/ChoiceCardsExtension.php` | `choice_cards` option ([spec 004](../004-field-widgets/spec.md)) | FR-FORM-022 |
+| `Form/Extension/SwitchExtension.php` | `switch` option ([spec 004](../004-field-widgets/spec.md)) | FR-FORM-022 |
+| `Form/Extension/CharCounterExtension.php` | `char_counter` option ([spec 004](../004-field-widgets/spec.md)) | FR-FORM-022 |
+| `Resources/views/form/field_widgets_theme.html.twig` | Field widgets form theme | FR-FORM-022 |
+| `Resources/views/form/choice_blocks.html.twig` | Choice cards blocks | FR-FORM-022 |
+| `Resources/public/field-widgets.css` | Field widgets styles | FR-FORM-022 |
+
+## Help modal nonce
+
+| Source file | Spec section | Requirement IDs |
+| --- | --- | --- |
+| `HelpModal/HelpModalNonceInterface.php` | Nonce contract | FR-SEC-002 |
+| `HelpModal/HelpModalNonce.php` | Per-request nonce (request attributes, worker-safe) | FR-SEC-002 |
+| `HelpModal/HelpModalNonceResponseListener.php` | `Vary` / `Cache-Control: private` when the nonce came from the header | FR-SEC-002 |
+| `Twig/HelpModalTwigExtension.php` | `nowo_form_kit_help_modal_meta()` | FR-SEC-002, FR-TWIG-001 |
+
 ## Frontend assets
 
 | Source file | Spec section | Requirement IDs |
@@ -123,6 +161,11 @@
 | `Resources/public/help-modal.css` | Help modal styles (hand-written, shipped as is) | FR-ASSET-001 |
 | `Resources/public/locale-tabs.css` | Optional locale tabs styles | FR-FORM-013 |
 | `Resources/assets/stimulus-peers/combobox_controller.ts` | Opt-in combobox Stimulus peer | FR-ASSET-003 |
+| `Resources/assets/stimulus-peers/motion.ts` | Closing effect shared by the combobox peer ([spec 003](../003-combobox-peer/spec.md)) | FR-ASSET-003 |
+| `Resources/public/combobox.css` | Optional combobox list motion ([spec 003](../003-combobox-peer/spec.md)) | FR-ASSET-003 |
+| `Resources/assets/enhancers/char-counter.ts` | Character counter enhancer ([spec 004](../004-field-widgets/spec.md)) | FR-FORM-022 |
+| `Resources/assets/enhancers/char-counter-entry.ts` | Vite entry of the counter | FR-FORM-022 |
+| `Resources/public/char-counter.js` | **Build output** of the counter | FR-BUILD-001 |
 
 Co-located Vitest files are **excluded** from the inventory (test code, not shipped behaviour; they are listed only for traceability):
 `Resources/assets/src/help-modal.test.ts` (FR-ASSET-001), `Resources/assets/src/logger.test.ts` (FR-ASSET-001),
@@ -176,10 +219,13 @@ Co-located Vitest files are **excluded** from the inventory (test code, not ship
 | Form — constraints | 1 | 1 |
 | Form — static & translation types | 5 | 5 |
 | Form — multi-step wizard | 3 | 3 |
-| Frontend assets (incl. 1 build output) | 6 | 6 |
+| Ports (interfaces) | 9 | 9 |
+| Field options and widgets | 10 | 10 |
+| Help modal nonce | 4 | 4 |
+| Frontend assets (incl. 2 build outputs) | 11 | 11 |
 | Translations | 7 | 7 |
 | Twig extensions | 2 | 2 |
 | Twig views | 9 | 9 |
-| **Total production sources** | **77** | **77** |
+| **Total production sources** | **105** | **105** |
 
-Excluded from the total: 3 co-located Vitest files (`*.test.ts`), so `find src -type f | wc -l` = 80 = 77 + 3.
+Excluded from the total: 3 co-located Vitest files (`*.test.ts`), so `find src -type f | wc -l` = 108 = 105 + 3.

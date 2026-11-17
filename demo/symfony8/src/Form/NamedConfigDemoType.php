@@ -11,18 +11,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Demo: named config profile via #[FormKitConfig('bootstrap')] (US-02 / US-07).
+ * Demo: named config profile via #[FormKitConfig('wide')] (US-02 / US-07).
  *
- * Uses larger form-control classes from the bootstrap profile in nowo_form_kit.yaml.
+ * Uses wider UiKit input classes from the wide profile in nowo_form_kit.yaml.
  */
-#[FormKitConfig('bootstrap')]
+#[FormKitConfig('wide')]
 final class NamedConfigDemoType extends AbstractType
 {
     use FormOptionsTrait;
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $row = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $row = ['row_attr' => ['class' => 'nowo-ui-form-row']];
 
         $this->withBuilder($builder, function () use ($row): void {
             $this->addTextField('title', $row);

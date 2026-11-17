@@ -504,13 +504,13 @@ demo_pages:
   kit_api_patterns:
     page_title: 'Motifs API Kit - Démo Form Kit'
     heading: 'Motifs API Kit'
-    intro: '<code>FormKitAbstractType</code> / snake_case, <code>withBuilder</code>, profil YAML <code>bootstrap</code>.'
+    intro: '<code>FormKitAbstractType</code> / snake_case, <code>withBuilder</code>, profil YAML <code>wide</code>.'
     usage_1: 'Gauche : <code>SnakeCaseKitDemoType</code>.'
-    usage_2: 'Droite : <code>NamedConfigDemoType</code> + <code>#[FormKitConfig(''bootstrap'')]</code>.'
+    usage_2: 'Droite : <code>NamedConfigDemoType</code> + <code>#[FormKitConfig(''wide'')]</code>.'
     usage_3: '<code>internal_code</code> désactive la convention.'
     snake_heading: 'FormKitTrait (snake_case)'
     snake_intro: 'Types via <code>FormTypeMap</code>.'
-    named_heading: 'Config nommée (bootstrap)'
+    named_heading: 'Config nommée (wide)'
     named_intro: 'Comparer la taille des contrôles avec le profil default.'
   ckeditor:
     page_title: 'CKEditor - Démo Form Kit'
@@ -668,11 +668,11 @@ named_config_demo:
   title:
     label: Title
     placeholder: Large control title
-    help: 'Uses config profile <code>bootstrap</code> (<code>form-control-lg</code>).'
+    help: 'Uses config profile <code>wide</code> (<code>nowo-ui-input--wide</code>).'
   summary:
     label: Summary
     placeholder: Short summary
-    help: '<code>#[FormKitConfig(''bootstrap'')]</code>.'
+    help: '<code>#[FormKitConfig(''wide'')]</code>.'
   internal_code:
     label: Internal code
     placeholder: ""

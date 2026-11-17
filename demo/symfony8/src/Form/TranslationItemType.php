@@ -70,7 +70,7 @@ class TranslationItemType extends AbstractType
             }
         });
 
-        $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $rowFull = ['row_attr' => ['class' => 'nowo-ui-form-row']];
 
         $this->buildFormFromArray($builder, [
             'title'       => ['type' => TextType::class, ...$rowFull],

@@ -3,12 +3,12 @@
 {% block title %}{{ 'demo_pages.index.title'|trans }}{% endblock %}
 
 {% macro demo_card(title, description, url, button_text) %}
-  <div class="col-12 col-md-6 col-lg-4">
-    <div class="card form-card h-100">
-      <div class="card-body text-center py-4">
-        <h2 class="h6 mb-2">{{ title }}</h2>
-        <p class="text-secondary small mb-3">{{ description|raw }}</p>
-        <a href="{{ url }}" class="btn btn-outline-primary">{{ button_text }}</a>
+  <div>
+    <div class="nowo-ui-card">
+      <div class="nowo-ui-card__body">
+        <h2>{{ title }}</h2>
+        <p class="nowo-ui-muted">{{ description|raw }}</p>
+        <a href="{{ url }}" class="nowo-ui-btn nowo-ui-btn--outline">{{ button_text }}</a>
       </div>
     </div>
   </div>
@@ -16,9 +16,9 @@
 
 {% block body %}
 {% set locale = app.request.locale %}
-<div class="mb-4">
-  <h1 class="h3 mb-2">{{ 'demo_pages.index.title'|trans }}</h1>
-  <p class="text-secondary mb-0">{{ 'demo_pages.index.intro'|trans }}</p>
+<div>
+  <h1>{{ 'demo_pages.index.title'|trans }}</h1>
+  <p class="nowo-ui-muted">{{ 'demo_pages.index.intro'|trans }}</p>
 </div>
 
 {% set cards = [
@@ -42,7 +42,7 @@
   { id: 'multistep', route: 'form_demo_multistep' },
 ] %}
 
-<div class="row g-4">
+<div>
   {% for c in cards %}
     {{ _self.demo_card(
       ('demo_pages.index_cards.' ~ c.id ~ '.title')|trans,

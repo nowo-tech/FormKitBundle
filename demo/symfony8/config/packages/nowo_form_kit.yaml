@@ -6,6 +6,8 @@
 #   profiles        — Named profiles (translation domain, defaults, help_modal, field_types).
 
 nowo_form_kit:
+    # REQ-DEMO-014/015: forms sit on UiKit's form theme (twig.yaml), not on a CSS framework.
+    css_framework: none
     default_profile: default
 
     # Optional: extra types for FormKitTrait / snake_case fields (uncomment if you add custom types).
@@ -21,40 +23,32 @@ nowo_form_kit:
             required_label_suffix: ' *'
 
             defaults:
-                attr:
-                    class: 'form-control'
                 row_attr:
-                    class: 'mb-3'
+                    class: 'nowo-ui-form-row'
 
             # Defaults when help_modal: true on a field (HelpModalExtension + public/help-modal.js).
+            # The `foundation` shell is self-contained (inline styles), so it needs no CSS framework.
             help_modal:
-                framework: bootstrap5
+                framework: foundation
                 icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>'
 
             # Per field type: attr, row_attr, label, placeholder, help, translation_domain (see CONFIGURATION.md).
             field_types:
-                checkbox:
-                    attr:
-                        class: 'form-check-input'
-                    row_attr:
-                        class: 'form-check mb-3'
                 choice:
                     placeholder: false
-                    attr:
-                        class: ''
 
-        # Second profile — used by NamedConfigDemoType via setFormKitConfigName('bootstrap').
-        bootstrap:
-            alias: bootstrap
+        # Second profile — used by NamedConfigDemoType via #[FormKitConfig('wide')].
+        wide:
+            alias: wide
             translation_domain: messages
             required_label_suffix: ' *'
             defaults:
                 attr:
-                    class: 'form-control form-control-lg'
+                    class: 'nowo-ui-input--wide'
                 row_attr:
-                    class: 'mb-3'
+                    class: 'nowo-ui-form-row'
             help_modal:
-                framework: bootstrap5
+                framework: foundation
                 icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>'
             field_types: {}
 
@@ -62,7 +56,7 @@ nowo_form_kit:
 # nowo_form_kit:
 #     translation_domain: messages
 #     required_label_suffix: null
-#     help_modal: { framework: bootstrap5, icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>' }
-#     defaults: { attr: { class: form-control }, row_attr: { class: mb-3 } }
+#     help_modal: { framework: foundation, icon_html: '<span class="nowo-help-modal-icon" aria-hidden="true">?</span>' }
+#     defaults: { row_attr: { class: nowo-ui-form-row } }
 #     field_types: {}
 #     type_map: {}

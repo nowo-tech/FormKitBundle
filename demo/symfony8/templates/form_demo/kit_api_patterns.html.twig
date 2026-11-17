@@ -4,60 +4,60 @@
 
 {% block body %}
 {% set locale = app.request.locale %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">{{ 'demo_pages.kit_api_patterns.heading'|trans }}</h1>
-  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
+<div class="nowo-ui-page-header">
+  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.kit_api_patterns.heading'|trans }}</h1>
+  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
 </div>
-<p class="text-secondary mb-2">{{ 'demo_pages.kit_api_patterns.intro'|trans|raw }}</p>
-<ul class="small text-secondary mb-4">
+<p class="nowo-ui-muted">{{ 'demo_pages.kit_api_patterns.intro'|trans|raw }}</p>
+<ul class="nowo-ui-muted">
   <li>{{ 'demo_pages.kit_api_patterns.usage_1'|trans|raw }}</li>
   <li>{{ 'demo_pages.kit_api_patterns.usage_2'|trans|raw }}</li>
   <li>{{ 'demo_pages.kit_api_patterns.usage_3'|trans|raw }}</li>
 </ul>
 
-<div class="row g-4">
-  <div class="col-12 col-lg-6">
-    <div class="card form-card shadow-sm h-100">
-      <div class="card-body p-4">
-        <h2 class="h5 mb-3">{{ 'demo_pages.kit_api_patterns.snake_heading'|trans }}</h2>
-        <p class="small text-secondary mb-3">{{ 'demo_pages.kit_api_patterns.snake_intro'|trans|raw }}</p>
-        {{ form_start(snake_form) }}
-        <div class="row g-3">
+<div>
+  <div>
+    <div class="nowo-ui-card">
+      <div class="nowo-ui-card__body">
+        <h2>{{ 'demo_pages.kit_api_patterns.snake_heading'|trans }}</h2>
+        <p class="nowo-ui-muted">{{ 'demo_pages.kit_api_patterns.snake_intro'|trans|raw }}</p>
+        {{ form_start(snake_form, {attr: {class: 'nowo-ui-form'}}) }}
+        <div>
           {% for child in snake_form %}
             {% if not child.rendered %}
               {{ form_row(child) }}
             {% endif %}
           {% endfor %}
         </div>
-        <div class="form-kit-buttons mt-3">
-          <button type="submit" name="snake_submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
+        <div class="nowo-ui-form__actions">
+          <button type="submit" name="snake_submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
         </div>
         {{ form_end(snake_form, { render_rest: false }) }}
         {% if snake_submitted %}
-          <pre class="bg-light border rounded p-3 small mt-3 mb-0 overflow-auto">{{ snake_submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+          <pre class="nowo-ui-code">{{ snake_submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
         {% endif %}
       </div>
     </div>
   </div>
-  <div class="col-12 col-lg-6">
-    <div class="card form-card shadow-sm h-100">
-      <div class="card-body p-4">
-        <h2 class="h5 mb-3">{{ 'demo_pages.kit_api_patterns.named_heading'|trans }}</h2>
-        <p class="small text-secondary mb-3">{{ 'demo_pages.kit_api_patterns.named_intro'|trans|raw }}</p>
-        {{ form_start(named_form) }}
-        <div class="row g-3">
+  <div>
+    <div class="nowo-ui-card">
+      <div class="nowo-ui-card__body">
+        <h2>{{ 'demo_pages.kit_api_patterns.named_heading'|trans }}</h2>
+        <p class="nowo-ui-muted">{{ 'demo_pages.kit_api_patterns.named_intro'|trans|raw }}</p>
+        {{ form_start(named_form, {attr: {class: 'nowo-ui-form'}}) }}
+        <div>
           {% for child in named_form %}
             {% if not child.rendered %}
               {{ form_row(child) }}
             {% endif %}
           {% endfor %}
         </div>
-        <div class="form-kit-buttons mt-3">
-          <button type="submit" name="named_submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
+        <div class="nowo-ui-form__actions">
+          <button type="submit" name="named_submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
         </div>
         {{ form_end(named_form, { render_rest: false }) }}
         {% if named_submitted %}
-          <pre class="bg-light border rounded p-3 small mt-3 mb-0 overflow-auto">{{ named_submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+          <pre class="nowo-ui-code">{{ named_submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
         {% endif %}
       </div>
     </div>

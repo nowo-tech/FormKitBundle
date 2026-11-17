@@ -19,7 +19,7 @@ final class CkeditorDemoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $rowFull = ['row_attr' => ['class' => 'nowo-ui-form-row']];
 
         $this->addCKEditorField($builder, 'body', array_merge($rowFull, [
             'required' => false,

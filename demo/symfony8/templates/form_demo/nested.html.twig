@@ -4,29 +4,20 @@
 
 {% block body %}
 {% set locale = app.request.locale %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">{{ 'demo_pages.nested.heading'|trans }}</h1>
-  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
+<div class="nowo-ui-page-header">
+  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.nested.heading'|trans }}</h1>
+  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
 </div>
-<p class="text-secondary mb-4">{{ 'demo_pages.nested.intro'|trans|raw }}</p>
+<p class="nowo-ui-muted">{{ 'demo_pages.nested.intro'|trans|raw }}</p>
 
-<div class="card form-card shadow-sm">
-  <div class="card-body p-4">
-    {{ form_start(form) }}
+<div class="nowo-ui-card">
+  <div class="nowo-ui-card__body">
+    {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
     {#
       Child loop (REQ-TWIG-003): sections open at the field named in `sections`; the embedded address form is looped
-      in place so its fields keep their own grid columns (`columns`, default col-12).
+      in place.
     #}
     {% set sections = {fullName: 'demo_pages.nested.section_contact', address: 'demo_pages.nested.section_address'} %}
-    {% set columns = {
-      fullName: 'col-12 col-md-6',
-      email: 'col-12 col-md-6',
-      number: 'col-12 col-md-4',
-      floor: 'col-12 col-md-4',
-      postalCode: 'col-12 col-md-4',
-      city: 'col-12 col-md-6',
-      province: 'col-12 col-md-6',
-    } %}
     {% for child in form %}
       {% if not child.rendered %}
         {% if 'hidden' in child.vars.block_prefixes %}
@@ -37,13 +28,13 @@
       </div>
     </div>
             {% endif %}
-    <div class="form-section">
-      <h2 class="form-section-title">{{ sections[child.vars.name]|trans }}</h2>
-      <div class="row g-3">
+    <div>
+      <h2>{{ sections[child.vars.name]|trans }}</h2>
+      <div>
           {% endif %}
           {% for field in (child.vars.compound and child.children is not empty ? child : [child]) %}
             {% if not field.rendered %}
-        <div class="{{ columns[field.vars.name]|default('col-12') }}">{{ form_row(field) }}</div>
+        {{ form_row(field) }}
             {% endif %}
           {% endfor %}
         {% endif %}
@@ -51,15 +42,15 @@
     {% endfor %}
       </div>
     </div>
-    <div class="form-kit-buttons">
-      <button type="submit" class="btn btn-primary">{{ 'demo_pages.common.save'|trans }}</button>
+    <div class="nowo-ui-form__actions">
+      <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.save'|trans }}</button>
     </div>
     {{ form_end(form) }}
   </div>
 </div>
 
 {% if submitted %}
-  <div class="alert alert-success mt-4 mb-0 shadow-sm">
+  <div class="nowo-ui-flash nowo-ui-flash--success">
     <strong>{{ 'demo_pages.common.submitted'|trans }}:</strong>
     {{ submitted.fullName }}, {{ submitted.email }} — {{ submitted.address.street }} {{ submitted.address.number }}, {{ submitted.address.postalCode }} {{ submitted.address.city }}, {{ submitted.address.province }}
   </div>

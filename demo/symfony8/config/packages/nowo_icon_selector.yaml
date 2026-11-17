@@ -3,4 +3,4 @@ nowo_icon_selector:
         - heroicons
         - bootstrap-icons
     use_iconify_collection: false
-    form_theme: bootstrap_5_layout.html.twig
+    form_theme: form_div_layout.html.twig

@@ -29,7 +29,7 @@ final class ConditionalFieldsDemoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $row = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $row = ['row_attr' => ['class' => 'nowo-ui-form-row']];
 
         $this->withBuilder($builder, function () use ($row): void {
             $this->addChoiceRadiosField('account_type', array_merge($row, [
