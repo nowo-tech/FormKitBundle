@@ -74,6 +74,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Demo
+
+- The demo is built on UiKit (REQ-DEMO-014 / REQ-DEMO-015): `templates/base.html.twig` is UiKit's admin layout with its default theme and a UiKit masthead (active item, locale switcher, theme toggle) instead of the Bootstrap CDN navbar, the pages use UiKit cards, buttons, flashes, wizard steps and locale tabs, FormKit uses `css_framework: none` on UiKit's form theme (`@NowoUiKit/form/nowo_ui_layout.html.twig`, also for the widget bundles and the Select All Choice theme), the help modal uses its self-contained `foundation` shell, and no Bootstrap CSS/JS is loaded from a CDN. The `bootstrap` demo profile is now `wide`. The demo requires `nowo-tech/ui-kit-bundle` `^2.53`. The demo's `stimulus_bootstrap.ts` no longer calls the webpack-only `require.context` (a console `ReferenceError` on every page under AssetMapper). No bundle runtime change.
+
+### Docs
+
+- Spec Kit (REQ-SPECKIT-001 / 003): `code-inventory.md` maps all 105 production sources (ports, `visible_when`, image crop, field widgets, the help modal nonce, the combobox motion assets); the baseline spec gains FR-FORM-020 / 021 / 022 and FR-SEC-002 and drops the stale `visible_when` non-goal.
+- README / badge coverage figure 99.56% (2974/2987), as CI measures it (REQ-TEST-007).
+
 ## [2.23.0] - 2026-11-13
 
 ### Added

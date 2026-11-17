@@ -25,7 +25,7 @@ final class NowoSpecialFieldsDemoType extends AbstractType
     {
         // Grid columns live in the Twig template; row_attr only adds vertical spacing. The demo help texts (trusted
         // catalogue strings) contain <code>: render them as HTML.
-        $row = static fn (array $options = []): array => array_merge(['row_attr' => ['class' => 'mb-3'], 'help_html' => true], $options);
+        $row = static fn (array $options = []): array => array_merge(['row_attr' => ['class' => 'nowo-ui-form-row'], 'help_html' => true], $options);
 
         // Compound / custom widgets must not inherit global form-control on the widget root.
         $widgetRoot = static fn (array $options = []): array => array_merge([
@@ -54,13 +54,13 @@ final class NowoSpecialFieldsDemoType extends AbstractType
 
             $this->addPasswordStrengthField('strengthOnlyPassword', $row([
                 'required'            => false,
-                'ui_framework'        => 'bootstrap5',
+                'ui_framework'        => 'default',
                 'use_password_toggle' => false,
             ]));
 
             $this->addPasswordStrengthField('combinedPassword', $row([
                 'required'            => false,
-                'ui_framework'        => 'bootstrap5',
+                'ui_framework'        => 'default',
                 'use_password_toggle' => true,
                 'toggle'              => true,
             ]));

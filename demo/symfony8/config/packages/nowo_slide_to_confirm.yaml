@@ -1,2 +1,2 @@
 nowo_slide_to_confirm:
-    form_theme: bootstrap_5_layout.html.twig
+    form_theme: form_div_layout.html.twig

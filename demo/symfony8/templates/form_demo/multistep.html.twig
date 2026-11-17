@@ -4,34 +4,30 @@
 
 {% block body %}
 {% set locale = app.request.locale %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">{{ 'demo_pages.multistep.heading'|trans }}</h1>
-  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
+<div class="nowo-ui-page-header">
+  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.multistep.heading'|trans }}</h1>
+  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
 </div>
-<p class="text-secondary mb-4">{{ 'demo_pages.multistep.intro'|trans|raw }}</p>
+<p class="nowo-ui-muted">{{ 'demo_pages.multistep.intro'|trans|raw }}</p>
 
-<div class="card form-card shadow-sm">
-  <div class="card-body p-4">
-    <ul class="nav nav-pills nav-fill mb-4">
+<div class="nowo-ui-card">
+  <div class="nowo-ui-card__body">
+    <ol class="nowo-ui-wizard-steps">
       {% for key in wizard.stepKeys %}
-        <li class="nav-item">
-          <span class="nav-link {{ key == wizard.currentStepKey ? 'active' : '' }} {{ loop.index0 < wizard.currentIndex ? 'text-success' : '' }}">
-            {{ loop.index }}. {{ ('demo_wizard_nav.' ~ key)|trans }}
-          </span>
-        </li>
+        <li class="nowo-ui-wizard-steps__item{{ key == wizard.currentStepKey ? ' nowo-ui-wizard-steps__item--active' : '' }}{{ loop.index0 < wizard.currentIndex ? ' nowo-ui-wizard-steps__item--done' : '' }}"{% if key == wizard.currentStepKey %} aria-current="step"{% endif %}>{{ ('demo_wizard_nav.' ~ key)|trans }}</li>
       {% endfor %}
-    </ul>
+    </ol>
 
-    {{ form_start(form) }}
-    <div class="row g-3">
+    {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
+    <div>
       {% for child in form %}
         {% if not child.rendered %}
-          <div class="col-12">{{ form_row(child) }}</div>
+          <div>{{ form_row(child) }}</div>
         {% endif %}
       {% endfor %}
     </div>
-    <div class="form-kit-buttons">
-      <button type="submit" class="btn btn-primary">{{ wizard.currentIndex + 1 >= wizard.stepKeys|length ? ('demo_pages.common.finish'|trans) : ('demo_pages.common.next'|trans) }}</button>
+    <div class="nowo-ui-form__actions">
+      <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ wizard.currentIndex + 1 >= wizard.stepKeys|length ? ('demo_pages.common.finish'|trans) : ('demo_pages.common.next'|trans) }}</button>
     </div>
     {{ form_end(form, { render_rest: false }) }}
   </div>

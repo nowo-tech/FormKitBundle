@@ -4,69 +4,68 @@
 
 {% block body %}
 {% set locale = app.request.locale %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">{{ 'demo_pages.conditional_fields.heading'|trans }}</h1>
-  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
+<div class="nowo-ui-page-header">
+  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.conditional_fields.heading'|trans }}</h1>
+  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
 </div>
-<p class="text-secondary mb-2">{{ 'demo_pages.conditional_fields.intro'|trans|raw }}</p>
-<ul class="small text-secondary mb-4">
+<p class="nowo-ui-muted">{{ 'demo_pages.conditional_fields.intro'|trans|raw }}</p>
+<ul class="nowo-ui-muted">
   <li>{{ 'demo_pages.conditional_fields.usage_1'|trans|raw }}</li>
   <li>{{ 'demo_pages.conditional_fields.usage_2'|trans|raw }}</li>
   <li>{{ 'demo_pages.conditional_fields.usage_3'|trans|raw }}</li>
 </ul>
 
-<div class="row g-4">
-  <div class="col-12 col-lg-6">
-    <div class="card form-card shadow-sm h-100">
-      <div class="card-body p-4">
-        <h2 class="h5 mb-2">{{ 'demo_pages.conditional_fields.events_heading'|trans }}</h2>
-        <p class="small text-secondary mb-3">{{ 'demo_pages.conditional_fields.events_intro'|trans|raw }}</p>
-        {{ form_start(form) }}
-        {% set columns = {first_name: 'col-12 col-md-6', last_name: 'col-12 col-md-6'} %}
-        <div class="row g-3">
+<div>
+  <div>
+    <div class="nowo-ui-card">
+      <div class="nowo-ui-card__body">
+        <h2>{{ 'demo_pages.conditional_fields.events_heading'|trans }}</h2>
+        <p class="nowo-ui-muted">{{ 'demo_pages.conditional_fields.events_intro'|trans|raw }}</p>
+        {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
+        <div>
           {% for child in form %}
             {% if not child.rendered %}
               {% if 'hidden' in child.vars.block_prefixes %}
                 {{ form_row(child) }}
               {% else %}
-                <div class="{{ columns[child.vars.name]|default('col-12') }}">{{ form_row(child) }}</div>
+                {{ form_row(child) }}
               {% endif %}
             {% endif %}
           {% endfor %}
         </div>
-        <div class="form-kit-buttons mt-2">
-          <button type="submit" name="events_submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
+        <div class="nowo-ui-form__actions">
+          <button type="submit" name="events_submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
         </div>
         {{ form_end(form) }}
         {% if submitted %}
-          <pre class="bg-light border rounded p-3 small mt-3 mb-0 overflow-auto">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+          <pre class="nowo-ui-code">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
         {% endif %}
       </div>
     </div>
   </div>
-  <div class="col-12 col-lg-6">
-    <div class="card form-card shadow-sm h-100">
-      <div class="card-body p-4">
-        <h2 class="h5 mb-2">{{ 'demo_pages.conditional_fields.build_heading'|trans }}</h2>
-        <p class="small text-secondary mb-3">{{ 'demo_pages.conditional_fields.build_intro'|trans|raw }}</p>
-        <div class="btn-group btn-group-sm mb-3" role="group">
-          <a class="btn btn-outline-secondary{% if build_mode == 'individual' %} active{% endif %}" href="{{ path('form_demo_conditional_fields', {_locale: locale, account_mode: 'individual'}) }}">Individual</a>
-          <a class="btn btn-outline-secondary{% if build_mode == 'company' %} active{% endif %}" href="{{ path('form_demo_conditional_fields', {_locale: locale, account_mode: 'company'}) }}">Company</a>
+  <div>
+    <div class="nowo-ui-card">
+      <div class="nowo-ui-card__body">
+        <h2>{{ 'demo_pages.conditional_fields.build_heading'|trans }}</h2>
+        <p class="nowo-ui-muted">{{ 'demo_pages.conditional_fields.build_intro'|trans|raw }}</p>
+        <div  role="group">
+          <a class="nowo-ui-btn nowo-ui-btn--outline"{% if build_mode == 'individual' %} aria-current="true"{% endif %} href="{{ path('form_demo_conditional_fields', {_locale: locale, account_mode: 'individual'}) }}">Individual</a>
+          <a class="nowo-ui-btn nowo-ui-btn--outline"{% if build_mode == 'company' %} aria-current="true"{% endif %} href="{{ path('form_demo_conditional_fields', {_locale: locale, account_mode: 'company'}) }}">Company</a>
         </div>
-        {{ form_start(build_form) }}
-        <div class="row g-3">
+        {{ form_start(build_form, {attr: {class: 'nowo-ui-form'}}) }}
+        <div>
           {% for child in build_form %}
             {% if not child.rendered %}
               {{ form_row(child) }}
             {% endif %}
           {% endfor %}
         </div>
-        <div class="form-kit-buttons mt-2">
-          <button type="submit" name="build_submit" class="btn btn-primary">{{ 'demo_pages.common.submit'|trans }}</button>
+        <div class="nowo-ui-form__actions">
+          <button type="submit" name="build_submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
         </div>
         {{ form_end(build_form) }}
         {% if build_submitted %}
-          <pre class="bg-light border rounded p-3 small mt-3 mb-0 overflow-auto">{{ build_submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+          <pre class="nowo-ui-code">{{ build_submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
         {% endif %}
       </div>
     </div>

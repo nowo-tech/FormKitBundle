@@ -21,8 +21,8 @@ final class AutocompleteDemoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $rowHalf = ['row_attr' => ['class' => 'col-12 col-md-6 mb-3']];
-        $rowFull = ['row_attr' => ['class' => 'col-12 mb-3']];
+        $rowHalf = ['row_attr' => ['class' => 'nowo-ui-form-row']];
+        $rowFull = ['row_attr' => ['class' => 'nowo-ui-form-row']];
 
         $this->withBuilder($builder, function () use ($rowHalf, $rowFull): void {
             $this->addAutocompleteField($this->boundBuilder(), 'topic', ChoiceType::class, array_merge($rowHalf, [

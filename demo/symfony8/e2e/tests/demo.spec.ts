@@ -15,7 +15,7 @@ test.describe('Form Kit demo', () => {
     await page.getByLabel('Subject').fill('Form Kit');
     await page.getByLabel('Message').fill('Labels, placeholders and help come from translation keys.');
     await page.getByRole('button', { name: 'Send', exact: true }).click();
-    await expect(page.locator('.alert-success')).toContainText('Ada Lovelace');
+    await expect(page.locator('.nowo-ui-flash--success')).toContainText('Ada Lovelace');
   });
 
   test('multi-step wizard walks contact → address → confirm', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('Form Kit demo', () => {
     await page.getByLabel('City').fill('Madrid');
     await page.getByLabel('Province').fill('Madrid');
     await page.getByRole('button', { name: 'Next' }).click();
-    await expect(page.locator('.nav-pills .nav-link.active')).toContainText('Confirm');
+    await expect(page.locator('.nowo-ui-wizard-steps__item--active')).toContainText('Confirm');
     await page.getByRole('button', { name: 'Finish' }).click();
     await expect(page.getByRole('heading', { name: /Summary/ })).toBeVisible();
     await expect(page.getByText('Ada Lovelace').first()).toBeVisible();
@@ -48,6 +48,6 @@ test.describe('Form Kit demo', () => {
   test('locale tabs flag the invalid languages', async ({ page }) => {
     await page.goto('/en/locale-tabs?errors=1');
     await expect(page.getByRole('tab').first()).toBeVisible();
-    await expect(page.locator('.invalid-feedback, .form-error-message, .nowo-ui-field__error').first()).toBeVisible();
+    await expect(page.locator('.invalid-feedback, .form-error-message, .nowo-ui-field__error, .nowo-ui-form-error, [data-invalid]').first()).toBeVisible();
   });
 });

@@ -120,6 +120,9 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 - **FR-FORM-017**: GET filter forms — `AbstractGetFilterType` (`#[FormKitConfig('filter')]`, method GET, no CSRF, rootless), `GetFilterFormFactory::create()` (named `''` so field names stay query-string friendly) and `SearchQueryType` (`q` search field; requires `search` in `FormTypeMap`).
 - **FR-FORM-018**: `CheckboxRowExtension` (extends `CheckboxType`) exposes `checkbox_bootstrap` (profile / root `css_framework` is Bootstrap → `form-check` classes) and `checkbox_row_class` (field row class, else the profile `defaults.row_attr.class`, else `mb-3` on Bootstrap) to the `checkbox_row` block of `static_blocks.html.twig`; stateless.
 - **FR-FORM-019**: `TranslatableMapType` edits a `{locale: text}` map (array or JSON string with `input: json`) as one child per locale (`locales`, `default_locale`, `required_locales` → required + `NotBlank`, `entry_type` / `entry_options`, `remove_empty`), keeps model keys outside `locales` on submit, and enables `locale_tabs` by default.
+- **FR-FORM-020**: `VisibleWhenExtension` adds the `visible_when` option (`{field, in, secret?}`, default `null`) to every field: the row gets UiKit's `visible-when` attributes in `row_attr` so the peer hides it without disabling it, and `VisibleWhenRules::keep()` (one `PRE_SUBMIT` listener per compound form) gives a field hidden for the submitted values its current value back (a hidden `secret` drops a typed value, only an explicit `clear` empties it). Rules chain; a rule whose controlling field is missing fails the render. Stateless.
+- **FR-FORM-021**: `ImageCropExtension` adds the `crop` option (`false` | `true` | options) to `FileType` and subtypes: the input carries UiKit's `data-nowo-ui-image-crop*` attributes built by `ImageCropAttributes` (delegating to UiKit's `ImageCrop` when installed, same rules otherwise); refused with `multiple` and with UiKit's own `nowo_ui_image_crop`. The upload is still validated as an ordinary file. Stateless.
+- **FR-FORM-022**: The opt-in field widgets `choice_cards`, `switch` and `char_counter` (`ChoiceCardsExtension`, `SwitchExtension`, `CharCounterExtension`, theme `field_widgets_theme.html.twig` / `choice_blocks.html.twig`, `field-widgets.css`, `char-counter.js`) — specified in [spec 004](../004-field-widgets/spec.md) (FR-001..FR-008).
 
 ### Multi-step wizard
 
@@ -145,6 +148,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 ### Security
 
 - **FR-SEC-001**: State-changing bundle form types fail closed when form CSRF is unavailable (FR-FORM-016); developer-controlled HTML options (`help_modal` title/content/icon, `input_group_prefix` / `_suffix`) are documented as trusted markup; the help modal only processes labels inside a `<form>` ([`docs/SECURITY.md`](../../docs/SECURITY.md)).
+- **FR-SEC-002**: Help-modal payloads are bound to the server render (REQ-SEC-004): `HelpModalNonce` keeps a per-request nonce in the main request attributes (never in the service), `HelpModalExtension` puts it in every `data-nowo-help-modal` payload, `nowo_form_kit_help_modal_meta()` (`HelpModalTwigExtension`) prints it in `<head>`, and `help-modal.js` honours only payloads whose nonce equals the meta. A same-origin Turbo Frame request may send it back in `X-Nowo-Form-Kit-Help-Modal-Nonce`; a response that reused it gets `Vary` and `Cache-Control: private` from `HelpModalNonceResponseListener`.
 
 ### Translations
 
@@ -154,7 +158,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 
 ## Success Criteria
 
-- **SC-001**: **77/77** production files mapped in [`code-inventory.md`](code-inventory.md) (`find src -type f ! -name '*.test.ts' | wc -l` = 77; the 3 co-located Vitest files are excluded).
+- **SC-001**: **105/105** production files mapped in [`code-inventory.md`](code-inventory.md) (`find src -type f ! -name '*.test.ts' | wc -l` = 105; the 3 co-located Vitest files are excluded).
 - **SC-002**: Config keys match [`docs/CONFIGURATION.md`](../../docs/CONFIGURATION.md).
 - **SC-003**: `composer qa` / CI green.
 - **SC-004**: Bound-builder helpers and `resolveFieldOptions` are covered by unit tests; conditional-field patterns are documented in [`docs/USAGE.md`](../../docs/USAGE.md) and demonstrated in demos.
@@ -167,7 +171,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 
 - Rendering forms outside Symfony Form component.
 - Bundling optional third-party field types (FOS CKEditor 4, UX Autocomplete, Select All Choice, nowo-tech OTP/phone/password/icon/CKEditor 5/Tiptap/tag/slide widgets) — Composer **suggest** + helpers only; packages are not required.
-- A first-class field option such as `when` / `visible_if` for show/hide — use Symfony `FormEvents`, build-time `if`, UI toggling, or Live Components (documented under Conditional fields in USAGE).
+- Server-side conditional field *building* (adding or removing a child depending on another value): use Symfony `FormEvents`, build-time `if` or Live Components (documented under Conditional fields in USAGE). Showing and hiding an existing row is the `visible_when` option (FR-FORM-020).
 
 ---
 

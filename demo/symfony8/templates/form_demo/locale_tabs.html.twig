@@ -11,18 +11,18 @@
 
 {% block body %}
 {% set locale = app.request.locale %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">{{ 'demo_pages.locale_tabs.heading'|trans }}</h1>
-  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
+<div class="nowo-ui-page-header">
+  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.locale_tabs.heading'|trans }}</h1>
+  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
 </div>
-<p class="text-secondary mb-3">{{ 'demo_pages.locale_tabs.intro'|trans|raw }}</p>
-<p class="mb-4">
-  <a class="btn btn-sm btn-outline-danger" data-testid="locale-tabs-errors" href="{{ path('form_demo_locale_tabs', {_locale: locale, errors: 1}) }}">{{ 'demo_pages.locale_tabs.show_errors'|trans }}</a>
-  <a class="btn btn-sm btn-outline-secondary" href="{{ path('form_demo_locale_tabs', {_locale: locale}) }}">{{ 'demo_pages.locale_tabs.reset'|trans }}</a>
+<p class="nowo-ui-muted">{{ 'demo_pages.locale_tabs.intro'|trans|raw }}</p>
+<p>
+  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--danger" data-testid="locale-tabs-errors" href="{{ path('form_demo_locale_tabs', {_locale: locale, errors: 1}) }}">{{ 'demo_pages.locale_tabs.show_errors'|trans }}</a>
+  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_locale_tabs', {_locale: locale}) }}">{{ 'demo_pages.locale_tabs.reset'|trans }}</a>
 </p>
 
-<div class="card form-card shadow-sm rounded-3">
-  <div class="card-body p-4">
+<div class="nowo-ui-card">
+  <div class="nowo-ui-card__body">
     {{ form_start(form, {attr: {class: 'nowo-ui-form', 'data-testid': 'locale-tabs-form'}}) }}
       {#
         Child loop (REQ-TWIG-003), in FormType order:
@@ -47,16 +47,16 @@
         {% endif %}
       {% endfor %}
 
-      <div class="nowo-ui-form__actions d-flex flex-wrap gap-2">
-        <button type="submit" class="btn btn-primary rounded-2 px-4">{{ 'demo_pages.common.save'|trans }}</button>
+      <div class="nowo-ui-row-actions nowo-ui-form__actions">
+        <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.save'|trans }}</button>
       </div>
     {{ form_end(form) }}
   </div>
 </div>
 
 {% if submitted %}
-  <div class="alert alert-success mt-4 mb-0 shadow-sm rounded-3" data-testid="locale-tabs-submitted">
-    <pre class="mb-0 small">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
+  <div class="nowo-ui-flash nowo-ui-flash--success" data-testid="locale-tabs-submitted">
+    <pre class="nowo-ui-code">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
   </div>
 {% endif %}
 {% endblock %}

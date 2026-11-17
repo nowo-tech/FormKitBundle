@@ -1,0 +1,21 @@
+{#- REQ-DEMO-015: Select All Choice on top of UiKit's form theme. The bundle's own theme re-imports Symfony's base blocks
+    (which would undo UiKit's), so only its two choice blocks are kept here, with parent() as the fallback. -#}
+{% use '@NowoUiKit/form/nowo_ui_layout.html.twig' %}
+
+{% block choice_widget_expanded %}
+    {% if form.vars.select_all_enabled is defined and form.vars.select_all_enabled %}
+        {% set inner_content %}{{ parent() }}{% endset %}
+        {% include '@NowoSelectAllChoiceBundle/Form/_select_all_choice_wrapper.html.twig' with { form: form, expanded: true, inner_content: inner_content } %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block choice_widget_collapsed %}
+    {% if form.vars.select_all_enabled is defined and form.vars.select_all_enabled %}
+        {% set inner_content %}{{ parent() }}{% endset %}
+        {% include '@NowoSelectAllChoiceBundle/Form/_select_all_choice_wrapper.html.twig' with { form: form, expanded: false, inner_content: inner_content } %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

@@ -225,11 +225,11 @@ named_config_demo:
   title:
     label: Título
     placeholder: 'Título con control grande'
-    help: 'Perfil <code>bootstrap</code> (<code>form-control-lg</code>).'
+    help: 'Perfil <code>wide</code> (<code>nowo-ui-input--wide</code>).'
   summary:
     label: Resumen
     placeholder: 'Resumen corto'
-    help: '<code>#[FormKitConfig(''bootstrap'')]</code>.'
+    help: '<code>#[FormKitConfig(''wide'')]</code>.'
   internal_code:
     label: 'Código interno'
     placeholder: ""
@@ -560,11 +560,11 @@ demo_pages:
     heading: 'Patrones API Kit'
     intro: 'APIs restantes: <code>FormKitAbstractType</code> / type map snake_case, <code>withBuilder</code> + <code>add*Field</code>, y un segundo perfil YAML.'
     usage_1: 'Izquierda: <code>SnakeCaseKitDemoType</code> extiende <code>FormKitAbstractType</code>.'
-    usage_2: 'Derecha: <code>NamedConfigDemoType</code> con <code>#[FormKitConfig(''bootstrap'')]</code>.'
+    usage_2: 'Derecha: <code>NamedConfigDemoType</code> con <code>#[FormKitConfig(''wide'')]</code>.'
     usage_3: '<code>internal_code</code> desactiva la convención con <code>label/placeholder/help =&gt; false</code>.'
     snake_heading: 'FormKitTrait (snake_case)'
     snake_intro: 'Tipos vía <code>FormTypeMap</code> (<code>text</code>, <code>email</code>, <code>choice</code>, …).'
-    named_heading: 'Config nombrada (bootstrap)'
+    named_heading: 'Config nombrada (wide)'
     named_intro: 'Compara el tamaño de control con el perfil default de otras demos.'
   ckeditor:
     page_title: 'CKEditor - Demo Form Kit'
