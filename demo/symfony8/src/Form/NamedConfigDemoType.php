@@ -35,7 +35,7 @@ final class NamedConfigDemoType extends AbstractType
                 'help'        => false,
                 'required'    => false,
                 // No visible label (the point of this field), so the input carries its name.
-                'attr'        => ['aria-label' => 'Internal code'],
+                'attr' => ['aria-label' => 'Internal code'],
             ]));
         });
     }
