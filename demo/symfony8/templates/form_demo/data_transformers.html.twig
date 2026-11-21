@@ -2,43 +2,12 @@
 
 {% block title %}{{ 'demo_pages.data_transformers.page_title'|trans }}{% endblock %}
 
+{% set demo_page = 'data_transformers' %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.data_transformers.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.data_transformers.intro'|trans|raw }}</p>
-<ul class="nowo-ui-muted">
-  <li>{{ 'demo_pages.data_transformers.usage_1'|trans|raw }}</li>
-  <li>{{ 'demo_pages.data_transformers.usage_2'|trans|raw }}</li>
-</ul>
-
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-    <div>
-      {% for child in form %}
-        {% if not child.rendered %}
-          {% if 'hidden' in child.vars.block_prefixes %}
-            {{ form_row(child) }}
-          {% else %}
-            {{ form_row(child) }}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-    </div>
-    <div class="nowo-ui-form__actions">
-      <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
-    </div>
-    {{ form_end(form) }}
-  </div>
-</div>
-
-{% if submitted %}
-  <div>
-    <p>{{ 'demo_pages.data_transformers.normalized_title'|trans }}</p>
-    <pre class="nowo-ui-code">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-  </div>
-{% endif %}
+    {{ include('form_demo/_usage.html.twig', {page: 'data_transformers', count: 2}, false) }}
+    {{ include('form_demo/_form_card.html.twig', {demo_form: form, card_title: 'demo_pages.data_transformers.heading'|trans}, false) }}
+    {% if submitted %}
+        {{ include('form_demo/_result.html.twig', {result_title: 'demo_pages.data_transformers.normalized_title'|trans, data: submitted}, false) }}
+    {% endif %}
 {% endblock %}

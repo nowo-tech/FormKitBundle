@@ -1,19 +1,12 @@
 <div{{ attributes }}>
-  <p class="nowo-ui-muted">{{ 'demo_pages.conditional_fields_live.component_intro'|trans|raw }}</p>
   {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-  <div>
-    {% for child in form %}
-      {% if not child.rendered %}
-        {% if 'hidden' in child.vars.block_prefixes %}
-          {{ form_row(child) }}
-        {% else %}
-          {{ form_row(child) }}
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-  </div>
+  {% for child in form %}
+    {% if not child.rendered %}
+      {{ form_row(child) }}
+    {% endif %}
+  {% endfor %}
   <div class="nowo-ui-form__actions">
-    <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
+    <button type="submit" class="nowo-ui-btn nowo-ui-btn--outline">{{ 'demo_pages.common.submit'|trans }}</button>
   </div>
   {{ form_end(form) }}
 </div>

@@ -2,55 +2,53 @@
 
 {% block title %}{{ 'demo_pages.translations.page_title'|trans }}{% endblock %}
 
+{% set demo_page = 'translations' %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.translations.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.translations.intro'|trans|raw }}</p>
-{% if demo_translation_context is defined %}
-  <div class="nowo-ui-flash nowo-ui-flash--info">
-    <p>{{ 'demo_pages.translations.locale_pool_hint'|trans({'%pool%': demo_translation_context.enabled_locales|join(', ')}) }}</p>
-    <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_translations', {_locale: locale, reshuffle: 1}) }}">{{ 'demo_pages.translations.reshuffle'|trans }}</a>
-  </div>
-{% endif %}
+    {% set locale = app.request.locale %}
+    {% set _intro = demo_translation_context is defined ? 'demo_pages.translations.locale_pool_hint'|trans({'%pool%': demo_translation_context.enabled_locales|join(', ')}) : null %}
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.translations.heading'|trans, intro: _intro, kind: 'form'} %}
+        {% block section_actions %}
+            {% if demo_translation_context is defined %}
+                <a class="nowo-ui-btn nowo-ui-btn--outline nowo-ui-btn--sm" href="{{ path('form_demo_translations', {_locale: locale, reshuffle: 1}) }}">{{ 'demo_pages.translations.reshuffle'|trans }}</a>
+            {% endif %}
+        {% endblock %}
+        {% block section_body %}
+            {{ form_start(form, {attr: {id: 'demo-form', class: 'nowo-ui-form'}}) }}
+            {% set translations_form = form.translations %}
+            {# REQ-DEMO-014: one panel per locale behind UiKit's WAI-ARIA locale tabs (the panels render stacked without JS). #}
+            {% set _panels = [] %}
+            {% for locale_key, localeForm in translations_form %}
+                {% set _html %}
+                    {{ form_row(localeForm.title) }}
+                    {{ form_row(localeForm.description) }}
+                    {% for child in localeForm %}
+                        {% if not child.rendered %}
+                            {{ form_row(child) }}
+                        {% endif %}
+                    {% endfor %}
+                {% endset %}
+                {% set _panels = _panels|merge([{locale: locale_key, content: _html, label: localeForm.vars.label|default(locale_key)}]) %}
+            {% endfor %}
+            {{ include('@NowoUiKitBundle/partials/_locale_tabs.html.twig', {panels: _panels, id: 'translations'}, false) }}
+            {% for child in form %}
+                {% if not child.rendered %}
+                    {{ form_row(child) }}
+                {% endif %}
+            {% endfor %}
+            {{ form_end(form, { render_rest: false }) }}
+        {% endblock %}
+        {% block section_footer %}
+            <button type="submit" form="demo-form" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.save'|trans }}</button>
+        {% endblock %}
+    {% endembed %}
 
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-    {% set translations_form = form.translations %}
-    {# REQ-DEMO-014: one panel per locale behind UiKit's WAI-ARIA locale tabs (the panels render stacked without JS). #}
-    {% set _panels = [] %}
-    {% for locale_key, localeForm in translations_form %}
-      {% set _html %}
-        {{ form_row(localeForm.title) }}
-        {{ form_row(localeForm.description) }}
-        {% for child in localeForm %}
-          {% if not child.rendered %}
-            {{ form_row(child) }}
-          {% endif %}
-        {% endfor %}
-      {% endset %}
-      {% set _panels = _panels|merge([{locale: locale_key, content: _html, label: localeForm.vars.label|default(locale_key)}]) %}
-    {% endfor %}
-    {{ include('@NowoUiKitBundle/partials/_locale_tabs.html.twig', {panels: _panels, id: 'translations'}, false) }}
-    {% for child in form %}
-      {% if not child.rendered %}
-        {{ form_row(child) }}
-      {% endif %}
-    {% endfor %}
-    <div class="nowo-ui-form__actions">
-      <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.save'|trans }}</button>
-    </div>
-    {{ form_end(form, { render_rest: false }) }}
-  </div>
-</div>
-
-{% if submitted %}
-  <div class="nowo-ui-flash nowo-ui-flash--success">
-    <strong>{{ 'demo_pages.common.submitted'|trans }}:</strong>
-    <pre class="nowo-ui-code">{% for loc, t in submitted.translations %}{{ loc }}: {{ t.title }} — {{ t.description }}{{ "\n" }}{% endfor %}</pre>
-  </div>
-{% endif %}
+    {% if submitted %}
+        {% set _lines %}{% for loc, t in submitted.translations %}{{ loc }}: {{ t.title }} — {{ t.description }}{{ "\n" }}{% endfor %}{% endset %}
+        {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.common.submitted'|trans, kind: 'detail'} %}
+            {% block section_body %}
+                {{ include(nowo_ui_partial('code_block'), {code: _lines|trim, language: 'Translations'}) }}
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
 {% endblock %}

@@ -2,26 +2,9 @@
 
 {% block title %}{{ 'demo_pages.controller_form.page_title'|trans }}{% endblock %}
 
+{% set demo_page = 'controller_form' %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.controller_form.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.controller_form.intro'|trans|raw }}</p>
-
-<div class="nowo-ui-flash nowo-ui-flash--info">
-  <strong>{{ 'demo_pages.common.bundle_usage'|trans }}</strong>
-  <ul class="nowo-ui-muted">
-    <li>{{ 'demo_pages.controller_form.usage_1'|trans|raw }}</li>
-    <li>{{ 'demo_pages.controller_form.usage_2'|trans|raw }}</li>
-    <li>{{ 'demo_pages.controller_form.usage_3'|trans|raw }}</li>
-  </ul>
-</div>
-
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    {% include 'form_demo/_form_unrendered_loop.html.twig' with { demo_form: form, submit_label: 'demo_pages.common.submit'|trans } only %}
-  </div>
-</div>
+    {{ include('form_demo/_usage.html.twig', {page: 'controller_form', count: 3}, false) }}
+    {{ include('form_demo/_form_card.html.twig', {demo_form: form, card_title: 'demo_pages.controller_form.heading'|trans}, false) }}
 {% endblock %}

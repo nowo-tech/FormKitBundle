@@ -2,40 +2,19 @@
 
 {% block title %}{{ 'demo_pages.cropper.page_title'|trans }}{% endblock %}
 
+{% set demo_page = 'cropper' %}
+{% set demo_flash = not sample_exists
+    ? {warning: [('demo_pages.cropper.sample_missing_title'|trans) ~ ' ' ~ ('demo_pages.cropper.sample_missing_body'|trans|striptags)]}
+    : (submitted ? {success: [('demo_pages.cropper.crop_submitted_title'|trans) ~ ' ' ~ ('demo_pages.cropper.crop_submitted_body'|trans|striptags)]} : null) %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.cropper.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.cropper.intro'|trans|raw }}</p>
-
-{% if not sample_exists %}
-  <div class="nowo-ui-flash nowo-ui-flash--warning">
-    <strong>{{ 'demo_pages.cropper.sample_missing_title'|trans }}</strong> {{ 'demo_pages.cropper.sample_missing_body'|trans|raw }}
-  </div>
-  <p class="nowo-ui-muted">{{ 'demo_pages.cropper.expected_path'|trans }} <code class="nowo-ui-code">{{ image_path }}</code></p>
-{% else %}
-  <div class="nowo-ui-card">
-    <div class="nowo-ui-card__body">
-      {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-      {% for child in form %}
-        {% if not child.rendered %}
-          {{ form_row(child) }}
-        {% endif %}
-      {% endfor %}
-      {% set form_buttons %}
-        <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.crop'|trans }}</button>
-      {% endset %}
-      <div class="nowo-ui-form__actions">{{ form_buttons|raw }}</div>
-      {{ form_end(form) }}
-    </div>
-  </div>
-
-  {% if submitted %}
-    <div class="nowo-ui-flash nowo-ui-flash--success">
-      <strong>{{ 'demo_pages.cropper.crop_submitted_title'|trans }}</strong> {{ 'demo_pages.cropper.crop_submitted_body'|trans|raw }}
-    </div>
-  {% endif %}
-{% endif %}
+    {% if not sample_exists %}
+        {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.cropper.heading'|trans, kind: 'detail'} %}
+            {% block section_body %}
+                <p>{{ 'demo_pages.cropper.expected_path'|trans }} <code class="nowo-ui-code">{{ image_path }}</code></p>
+            {% endblock %}
+        {% endembed %}
+    {% else %}
+        {{ include('form_demo/_form_card.html.twig', {demo_form: form, card_title: 'demo_pages.cropper.heading'|trans, actions: [{label: 'demo_pages.common.crop'|trans, primary: true}]}, false) }}
+    {% endif %}
 {% endblock %}

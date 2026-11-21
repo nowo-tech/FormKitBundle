@@ -2,42 +2,17 @@
 
 {% block title %}{{ 'demo_pages.dropzone.page_title'|trans }}{% endblock %}
 
+{% set demo_page = 'dropzone' %}
+{% set demo_flash = uploaded ? {success: [('demo_pages.dropzone.uploaded_prefix'|trans) ~ ': ' ~ uploaded]} : null %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.dropzone.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.dropzone.intro'|trans|raw }}</p>
+    {% if default_image_url %}
+        {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.dropzone.default_image_heading'|trans, kind: 'detail'} %}
+            {% block section_body %}
+                <img src="{{ default_image_url }}" alt="{{ 'demo_pages.dropzone.demo_sample_alt'|trans }}" width="480" loading="lazy">
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
 
-{% if default_image_url %}
-  <div class="nowo-ui-card">
-    <div class="nowo-ui-card__body">
-      <h2 class="nowo-ui-muted">{{ 'demo_pages.dropzone.default_image_heading'|trans }}</h2>
-      <img src="{{ default_image_url }}" alt="{{ 'demo_pages.dropzone.demo_sample_alt'|trans }}"  style="max-height: 280px; object-fit: contain;">
-    </div>
-  </div>
-{% endif %}
-
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-    {% for child in form %}
-      {% if not child.rendered %}
-        {{ form_row(child) }}
-      {% endif %}
-    {% endfor %}
-    {% set form_buttons %}
-      <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.dropzone.upload_button'|trans }}</button>
-    {% endset %}
-    <div class="nowo-ui-form__actions">{{ form_buttons|raw }}</div>
-    {{ form_end(form) }}
-  </div>
-</div>
-
-{% if uploaded %}
-  <div class="nowo-ui-flash nowo-ui-flash--success">
-    <strong>{{ 'demo_pages.dropzone.uploaded_prefix'|trans }}:</strong> <code class="nowo-ui-code">{{ uploaded }}</code>
-  </div>
-{% endif %}
+    {{ include('form_demo/_form_card.html.twig', {demo_form: form, card_title: 'demo_pages.dropzone.heading'|trans, actions: [{label: 'demo_pages.dropzone.upload_button'|trans, primary: true}], render_rest: true}, false) }}
 {% endblock %}

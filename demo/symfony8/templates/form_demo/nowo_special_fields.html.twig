@@ -3,55 +3,24 @@
 {% block title %}{{ 'demo_pages.nowo_special_fields.page_title'|trans }}{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('/bundles/nowophoneinput/css/flag-icons.min.css') }}">
-<link rel="stylesheet" href="{{ asset('/bundles/nowophoneinput/css/phone_input.css') }}">
-<link rel="stylesheet" href="{{ asset('/bundles/nowopasswordtoggle/css/toggle_password.css') }}">
-<link rel="stylesheet" href="{{ asset('tag-input.css', 'nowo_tag_input') }}">
-<link rel="stylesheet" href="{{ asset('slide-to-confirm.css', 'nowo_slide_to_confirm') }}">
-<link rel="stylesheet" href="{{ asset(nowo_ckeditor5_editor_asset_path('ckeditor5-editor.css'), nowo_ckeditor5_editor_asset_package()) }}">
+    {# Bundle-shipped assets only (REQ-DEMO-014 rule 1). #}
+    <link rel="stylesheet" href="{{ asset('/bundles/nowophoneinput/css/flag-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/bundles/nowophoneinput/css/phone_input.css') }}">
+    <link rel="stylesheet" href="{{ asset('/bundles/nowopasswordtoggle/css/toggle_password.css') }}">
+    <link rel="stylesheet" href="{{ asset('/bundles/nowotaginput/tag-input.css') }}">
+    <link rel="stylesheet" href="{{ asset('/bundles/nowoslidetoconfirm/slide-to-confirm.css') }}">
+    <link rel="stylesheet" href="{{ asset('/bundles/nowockeditor5editor/ckeditor5-editor.css') }}">
 {% endblock %}
 
+{% set demo_page = 'nowo_special_fields' %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.nowo_special_fields.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.nowo_special_fields.intro'|trans|raw }}</p>
-<ul class="nowo-ui-muted">
-  <li>{{ 'demo_pages.nowo_special_fields.usage_1'|trans|raw }}</li>
-  <li>{{ 'demo_pages.nowo_special_fields.usage_2'|trans|raw }}</li>
-  <li>{{ 'demo_pages.nowo_special_fields.usage_3'|trans|raw }}</li>
-</ul>
-
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
+    {{ include('form_demo/_usage.html.twig', {page: 'nowo_special_fields', count: 3}, false) }}
     {% form_theme form 'form_demo/nowo_special_fields_form_theme.html.twig' %}
-    {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-    <div>
-      {% for child in form %}
-        {% if not child.rendered %}
-          {% if 'hidden' in child.vars.block_prefixes %}
-            {{ form_row(child) }}
-          {% else %}
-            {{ form_row(child) }}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-    </div>
-    <div class="nowo-ui-form__actions">
-      <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
-    </div>
-    {{ form_end(form) }}
-  </div>
-</div>
-
-{% if submitted %}
-  <div>
-    <p>{{ 'demo_pages.nowo_special_fields.normalized_title'|trans }}</p>
-    <pre class="nowo-ui-code">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-  </div>
-{% endif %}
+    {{ include('form_demo/_form_card.html.twig', {demo_form: form, card_title: 'demo_pages.nowo_special_fields.heading'|trans}, false) }}
+    {% if submitted %}
+        {{ include('form_demo/_result.html.twig', {result_title: 'demo_pages.nowo_special_fields.normalized_title'|trans, data: submitted}, false) }}
+    {% endif %}
 {% endblock %}
 
 {% block page_scripts %}

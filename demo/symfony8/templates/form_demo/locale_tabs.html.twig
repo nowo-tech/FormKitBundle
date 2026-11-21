@@ -3,65 +3,57 @@
 {% block title %}{{ 'demo_pages.locale_tabs.page_title'|trans }}{% endblock %}
 
 {% block stylesheets %}
-  {{ parent() }}
-  {# UiKit renderer (nowo-tech/ui-kit-bundle ^2.5) and the neutral FormKit renderer of the `slugs` field #}
-  <link rel="stylesheet" href="{{ asset('css/nowo-ui.css', 'nowo_ui_kit') }}">
-  <link rel="stylesheet" href="{{ asset('locale-tabs.css', 'nowo_form_kit') }}">
+    {{ parent() }}
+    {# The neutral FormKit renderer of the `slugs` field (bundle-shipped asset) #}
+    <link rel="stylesheet" href="{{ asset('/bundles/nowoformkit/locale-tabs.css') }}">
 {% endblock %}
 
+{% set demo_page = 'locale_tabs' %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.locale_tabs.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.locale_tabs.intro'|trans|raw }}</p>
-<p>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--danger" data-testid="locale-tabs-errors" href="{{ path('form_demo_locale_tabs', {_locale: locale, errors: 1}) }}">{{ 'demo_pages.locale_tabs.show_errors'|trans }}</a>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_locale_tabs', {_locale: locale}) }}">{{ 'demo_pages.locale_tabs.reset'|trans }}</a>
-</p>
+    {% set locale = app.request.locale %}
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.locale_tabs.heading'|trans, kind: 'form'} %}
+        {% block section_actions %}
+            <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--danger" data-testid="locale-tabs-errors" href="{{ path('form_demo_locale_tabs', {_locale: locale, errors: 1}) }}">{{ 'demo_pages.locale_tabs.show_errors'|trans }}</a>
+            <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_locale_tabs', {_locale: locale}) }}">{{ 'demo_pages.locale_tabs.reset'|trans }}</a>
+        {% endblock %}
+        {% block section_body %}
+            {{ form_start(form, {attr: {id: 'demo-form', class: 'nowo-ui-form', 'data-testid': 'locale-tabs-form'}}) }}
+            {#
+              Child loop (REQ-TWIG-003), in FormType order:
+              (a) translations: list of translation entities, the locale_tabs option on the collection;
+              (b) name_<locale> / description_<locale>: at the first name_* child the _locale_tabs include groups them
+                  (rule 3: the include renders them, the loop skips them afterwards);
+              (c) labels: JSON map (TranslatableMapType), slugs: the neutral renderer (ui_kit: false).
+            #}
+            {% for child in form %}
+                {% if not child.rendered %}
+                    {% if child.vars.name starts with 'name_' %}
+                        {% include '@NowoFormKitBundle/form/_locale_tabs.html.twig' with {
+                            field: form,
+                            fields: ['name', 'description'],
+                            required_locales: ['en'],
+                            tabs_id: 'permission-i18n',
+                            title: 'Permission (name_<locale> / description_<locale> fields)',
+                        } only %}
+                    {% else %}
+                        {{ form_row(child) }}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {{ form_end(form) }}
+        {% endblock %}
+        {% block section_footer %}
+            <button type="submit" form="demo-form" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.save'|trans }}</button>
+        {% endblock %}
+    {% endembed %}
 
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    {{ form_start(form, {attr: {class: 'nowo-ui-form', 'data-testid': 'locale-tabs-form'}}) }}
-      {#
-        Child loop (REQ-TWIG-003), in FormType order:
-        (a) translations: list of translation entities, the locale_tabs option on the collection;
-        (b) name_<locale> / description_<locale>: at the first name_* child the _locale_tabs include groups them
-            (rule 3: the include renders them, the loop skips them afterwards);
-        (c) labels: JSON map (TranslatableMapType), slugs: the neutral renderer (ui_kit: false).
-      #}
-      {% for child in form %}
-        {% if not child.rendered %}
-          {% if child.vars.name starts with 'name_' %}
-            {% include '@NowoFormKitBundle/form/_locale_tabs.html.twig' with {
-              field: form,
-              fields: ['name', 'description'],
-              required_locales: ['en'],
-              tabs_id: 'permission-i18n',
-              title: 'Permission (name_<locale> / description_<locale> fields)',
-            } only %}
-          {% else %}
-            {{ form_row(child) }}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-
-      <div class="nowo-ui-row-actions nowo-ui-form__actions">
-        <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.save'|trans }}</button>
-      </div>
-    {{ form_end(form) }}
-  </div>
-</div>
-
-{% if submitted %}
-  <div class="nowo-ui-flash nowo-ui-flash--success" data-testid="locale-tabs-submitted">
-    <pre class="nowo-ui-code">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
-  </div>
-{% endif %}
+    {% if submitted %}
+        {{ include('form_demo/_result.html.twig', {result_title: 'demo_pages.common.submitted'|trans, data: submitted, result_testid: 'locale-tabs-submitted'}, false) }}
+    {% endif %}
 {% endblock %}
 
 {% block page_scripts %}
-  {{ parent() }}
-  <script defer src="{{ asset('js/nowo-ui-tabs.js', 'nowo_ui_kit') }}"></script>
+    {{ parent() }}
+    <script defer src="{{ asset('js/nowo-ui-tabs.js', 'nowo_ui_kit') }}"></script>
 {% endblock %}

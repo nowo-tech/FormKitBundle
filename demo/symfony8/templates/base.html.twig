@@ -1,7 +1,37 @@
-{#- REQ-DEMO-014: the demo shell is UiKit's admin layout with UiKit's default theme (nowo-ui.css from the bundle's own
-    asset package, no CSS framework, no CDN, inline SVG icons). The Form Kit help modal uses its self-contained shell. -#}
-{% extends '@NowoUiKit/layout/admin.html.twig' %}
-
+{#- REQ-DEMO-014: the demo runs inside UiKit's shared demo platform shell. This file declares the demo and gives every page
+    its page header: a page sets `demo_page` (the demo_pages.<key> translations) at the top level, and `demo_flash` for fixed
+    flash messages (plain text). The Form Kit help modal uses its self-contained shell. -#}
+{% extends '@NowoUiKit/demo_platform/layout.html.twig' %}
+{% set _locale = app.request.locale|default('en') %}
+{% set nowo_ui_demo_platform = {
+    bundle: 'Form Kit',
+    home_route: 'form_demo_index',
+    home_params: {_locale: _locale},
+    repository: 'https://github.com/nowo-tech/FormKitBundle',
+    translation_domain: 'messages',
+    locales: demo_enabled_locales,
+    nav: [
+        {label: 'demo_nav.home', route: 'form_demo_index', params: {_locale: _locale}, section: 'Demo'},
+        {label: 'demo_nav.form_type', route: 'form_demo_form_type', params: {_locale: _locale}, section: 'Basics'},
+        {label: 'demo_nav.controller_form', route: 'form_demo_controller_form', params: {_locale: _locale}, section: 'Basics'},
+        {label: 'demo_nav.search', route: 'form_demo_search', params: {_locale: _locale}, section: 'Basics'},
+        {label: 'demo_nav.example', route: 'form_demo_example_form', params: {_locale: _locale}, section: 'Basics'},
+        {label: 'demo_nav.nested', route: 'form_demo_nested', params: {_locale: _locale}, section: 'Data and layout'},
+        {label: 'demo_nav.data_transformers', route: 'form_demo_data_transformers', params: {_locale: _locale}, section: 'Data and layout'},
+        {label: 'demo_nav.choice_fields', route: 'form_demo_choice_fields', params: {_locale: _locale}, section: 'Data and layout'},
+        {label: 'demo_nav.conditional_fields', route: 'form_demo_conditional_fields', params: {_locale: _locale}, section: 'Data and layout'},
+        {label: 'demo_nav.conditional_fields_live', route: 'form_demo_conditional_fields_live', params: {_locale: _locale}, section: 'Data and layout'},
+        {label: 'demo_nav.kit_api_patterns', route: 'form_demo_kit_api_patterns', params: {_locale: _locale}, section: 'Data and layout'},
+        {label: 'demo_nav.multi_step', route: 'form_demo_multistep', params: {_locale: _locale}, section: 'Data and layout'},
+        {label: 'demo_nav.translations', route: 'form_demo_translations', params: {_locale: _locale}, section: 'Translations'},
+        {label: 'demo_nav.locale_tabs', route: 'form_demo_locale_tabs', params: {_locale: _locale}, section: 'Translations'},
+        {label: 'demo_nav.dropzone', route: 'form_demo_dropzone', params: {_locale: _locale}, section: 'Widgets'},
+        {label: 'demo_nav.cropper', route: 'form_demo_cropper', params: {_locale: _locale}, section: 'Widgets'},
+        {label: 'demo_nav.nowo_special_fields', route: 'form_demo_nowo_special_fields', params: {_locale: _locale}, section: 'Widgets'},
+        {label: 'demo_nav.ckeditor', route: 'form_demo_ckeditor', params: {_locale: _locale}, section: 'Widgets'},
+        {label: 'demo_nav.ux_autocomplete', route: 'form_demo_ux_autocomplete', params: {_locale: _locale}, section: 'Widgets'},
+    ],
+} %}
 {% block nowo_ui_document_title %}{% block title %}{{ 'demo_pages.layout.default_title'|trans }}{% endblock %}{% endblock %}
 
 {% block nowo_ui_head %}
@@ -15,55 +45,24 @@
     {% block stylesheets %}{% endblock %}
 {% endblock %}
 
-{% block nowo_ui_navigation %}
-    {% set route = app.request.attributes.get('_route') %}
-    {% set locale = app.request.locale %}
-    {% set route_params = app.request.attributes.get('_route_params')|default({}) %}
-    {% set _locales = [] %}
-    {% for loc in demo_enabled_locales %}
-        {% set _locales = _locales|merge([{
-            code: loc,
-            label: loc|upper,
-            href: route ? path(route, route_params|merge({_locale: loc})) : path('form_demo_index', {_locale: loc}),
-            current: loc == locale,
-        }]) %}
-    {% endfor %}
-    <header class="nowo-ui-header" data-testid="demo-masthead">
-        <a class="nowo-ui-brand" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_nav.brand'|trans }}</a>
-        {% if route %}
-        <nav class="nowo-ui-menu" aria-label="{{ 'demo_nav.brand'|trans }}">
-            {% for item in [
-                {route: 'form_demo_form_type', label: 'demo_nav.form_type'},
-                {route: 'form_demo_controller_form', label: 'demo_nav.controller_form'},
-                {route: 'form_demo_search', label: 'demo_nav.search'},
-                {route: 'form_demo_example_form', label: 'demo_nav.example'},
-                {route: 'form_demo_dropzone', label: 'demo_nav.dropzone'},
-                {route: 'form_demo_cropper', label: 'demo_nav.cropper'},
-                {route: 'form_demo_translations', label: 'demo_nav.translations'},
-                {route: 'form_demo_locale_tabs', label: 'demo_nav.locale_tabs'},
-                {route: 'form_demo_nested', label: 'demo_nav.nested'},
-                {route: 'form_demo_data_transformers', label: 'demo_nav.data_transformers'},
-                {route: 'form_demo_choice_fields', label: 'demo_nav.choice_fields'},
-                {route: 'form_demo_conditional_fields', label: 'demo_nav.conditional_fields'},
-                {route: 'form_demo_conditional_fields_live', label: 'demo_nav.conditional_fields_live'},
-                {route: 'form_demo_kit_api_patterns', label: 'demo_nav.kit_api_patterns'},
-                {route: 'form_demo_nowo_special_fields', label: 'demo_nav.nowo_special_fields'},
-                {route: 'form_demo_ckeditor', label: 'demo_nav.ckeditor'},
-                {route: 'form_demo_ux_autocomplete', label: 'demo_nav.ux_autocomplete'},
-                {route: 'form_demo_multistep', label: 'demo_nav.multi_step'},
-            ] %}
-                <a class="nowo-ui-link" href="{{ path(item.route, {_locale: locale}) }}"{% if route == item.route %} aria-current="page"{% endif %}>{{ item.label|trans }}</a>
-            {% endfor %}
-        </nav>
-        {% endif %}
-        <div class="nowo-ui-header__end">
-            {{ include('@NowoUiKitBundle/partials/_locale_switcher.html.twig', { locales: _locales, current: locale, compact: true }, false) }}
-            {{ include('@NowoUiKitBundle/partials/_theme_toggle.html.twig', { compact: true }, false) }}
-        </div>
-    </header>
+{% block nowo_ui_page_header %}
+    {% if demo_page is defined %}
+        {% set _toolbar %}
+            {% if demo_page != 'index' %}<a class="nowo-ui-btn nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: _locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>{% endif %}
+        {% endset %}
+        {% set _intro_key = 'demo_pages.' ~ demo_page ~ '.intro' %}
+        {% set _intro = _intro_key|trans %}
+        {{ include(nowo_ui_partial('page_header'), {
+            title: ('demo_pages.' ~ demo_page ~ '.' ~ (demo_page == 'index' ? 'title' : 'heading'))|trans,
+            intro: _intro == _intro_key ? null : _intro|striptags|raw,
+            toolbar: _toolbar|trim,
+        }) }}
+    {% endif %}
 {% endblock %}
 
-{% block nowo_ui_content %}{% block body %}{% endblock %}{% endblock %}
+{% block nowo_ui_flashes %}
+    {{ include('@NowoUiKit/demo_platform/_flashes.html.twig', {flash_messages: demo_flash|default(null)}) }}
+{% endblock %}
 
 {% block nowo_ui_scripts %}
     {{ parent() }}

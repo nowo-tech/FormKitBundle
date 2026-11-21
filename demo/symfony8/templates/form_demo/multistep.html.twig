@@ -2,34 +2,27 @@
 
 {% block title %}{{ 'demo_pages.multistep.page_title'|trans }}{% endblock %}
 
+{% set demo_page = 'multistep' %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.multistep.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.multistep.intro'|trans|raw }}</p>
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.multistep.heading'|trans, kind: 'form'} %}
+        {% block section_body %}
+            <ol class="nowo-ui-wizard-steps">
+                {% for key in wizard.stepKeys %}
+                    <li class="nowo-ui-wizard-steps__item{{ key == wizard.currentStepKey ? ' nowo-ui-wizard-steps__item--active' : '' }}{{ loop.index0 < wizard.currentIndex ? ' nowo-ui-wizard-steps__item--done' : '' }}"{% if key == wizard.currentStepKey %} aria-current="step"{% endif %}>{{ ('demo_wizard_nav.' ~ key)|trans }}</li>
+                {% endfor %}
+            </ol>
 
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    <ol class="nowo-ui-wizard-steps">
-      {% for key in wizard.stepKeys %}
-        <li class="nowo-ui-wizard-steps__item{{ key == wizard.currentStepKey ? ' nowo-ui-wizard-steps__item--active' : '' }}{{ loop.index0 < wizard.currentIndex ? ' nowo-ui-wizard-steps__item--done' : '' }}"{% if key == wizard.currentStepKey %} aria-current="step"{% endif %}>{{ ('demo_wizard_nav.' ~ key)|trans }}</li>
-      {% endfor %}
-    </ol>
-
-    {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-    <div>
-      {% for child in form %}
-        {% if not child.rendered %}
-          <div>{{ form_row(child) }}</div>
-        {% endif %}
-      {% endfor %}
-    </div>
-    <div class="nowo-ui-form__actions">
-      <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ wizard.currentIndex + 1 >= wizard.stepKeys|length ? ('demo_pages.common.finish'|trans) : ('demo_pages.common.next'|trans) }}</button>
-    </div>
-    {{ form_end(form, { render_rest: false }) }}
-  </div>
-</div>
+            {{ form_start(form, {attr: {id: 'demo-form', class: 'nowo-ui-form'}}) }}
+            {% for child in form %}
+                {% if not child.rendered %}
+                    {{ form_row(child) }}
+                {% endif %}
+            {% endfor %}
+            {{ form_end(form, { render_rest: false }) }}
+        {% endblock %}
+        {% block section_footer %}
+            <button type="submit" form="demo-form" class="nowo-ui-btn nowo-ui-btn--primary">{{ wizard.currentIndex + 1 >= wizard.stepKeys|length ? ('demo_pages.common.finish'|trans) : ('demo_pages.common.next'|trans) }}</button>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

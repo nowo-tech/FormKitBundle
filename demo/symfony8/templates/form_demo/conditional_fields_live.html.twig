@@ -2,22 +2,14 @@
 
 {% block title %}{{ 'demo_pages.conditional_fields_live.page_title'|trans }}{% endblock %}
 
-{% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.conditional_fields_live.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.conditional_fields_live.intro'|trans|raw }}</p>
-<ul class="nowo-ui-muted">
-  <li>{{ 'demo_pages.conditional_fields_live.usage_1'|trans|raw }}</li>
-  <li>{{ 'demo_pages.conditional_fields_live.usage_2'|trans|raw }}</li>
-  <li>{{ 'demo_pages.conditional_fields_live.usage_3'|trans|raw }}</li>
-</ul>
+{% set demo_page = 'conditional_fields_live' %}
 
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    {{ component('ConditionalFieldsLive') }}
-  </div>
-</div>
+{% block body %}
+    {{ include('form_demo/_usage.html.twig', {page: 'conditional_fields_live', count: 3}, false) }}
+
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.conditional_fields_live.heading'|trans, intro: 'demo_pages.conditional_fields_live.component_intro'|trans|striptags|raw, kind: 'form'} %}
+        {% block section_body %}
+            {{ component('ConditionalFieldsLive') }}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

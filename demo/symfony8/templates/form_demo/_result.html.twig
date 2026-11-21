@@ -1,0 +1,6 @@
+{#- REQ-DEMO-014: a submitted payload (JSON) in a "detail" section. result_title, data, result_testid. -#}
+{% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: result_title, kind: 'detail', testid: result_testid|default(null)} %}
+    {% block section_body %}
+        {{ include(nowo_ui_partial('code_block'), {code: data|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')), language: 'JSON'}) }}
+    {% endblock %}
+{% endembed %}
