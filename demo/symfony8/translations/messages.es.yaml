@@ -1,5 +1,6 @@
 demo_nav:
   brand: 'Demo Form Kit'
+  home: Resumen
   form_type: FormType
   controller_form: 'Formulario en controlador'
   search: Buscar

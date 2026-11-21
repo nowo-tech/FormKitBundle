@@ -1,0 +1,10 @@
+{#- REQ-DEMO-014: the "Bundle usage" list of a demo page (translation keys demo_pages.<page>.usage_N, HTML allowed). -#}
+{% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.common.bundle_usage'|trans, kind: 'list'} %}
+    {% block section_body %}
+        <ul>
+            {% for _n in 1..count %}
+                <li>{{ ('demo_pages.' ~ page ~ '.usage_' ~ _n)|trans|raw }}</li>
+            {% endfor %}
+        </ul>
+    {% endblock %}
+{% endembed %}

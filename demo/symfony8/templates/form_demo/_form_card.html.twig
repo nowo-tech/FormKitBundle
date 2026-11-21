@@ -1,0 +1,39 @@
+{#-
+  REQ-DEMO-014: one Form Kit demo form in a demo platform "form" section (the form sits in the card body, its actions in the
+  card footer, bound with form="<id>"). Rendered-aware child loop (REQ-TWIG-003): fields listed in a section render there,
+  any child not listed (and the CSRF token) still renders after them.
+
+  demo_form (FormView), form_id, card_title, card_intro, card_testid, card_actions (HTML for the card header), sections ([{title, fields}], optional),
+  actions ([{label, name, value, primary}], default one "Submit"), form_attr, render_rest (default true).
+-#}
+{% set fk_fid = form_id|default('demo-form') %}
+{% set fk_actions = actions|default([{label: 'demo_pages.common.submit'|trans, primary: true}]) %}
+{% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: card_title|default(null), intro: card_intro|default(null), kind: 'form', testid: card_testid|default(null)} %}
+    {% block section_actions %}{{ card_actions|default('')|raw }}{% endblock %}
+    {% block section_body %}
+        {{ form_start(demo_form, {attr: (form_attr|default({}))|merge({id: fk_fid, class: 'nowo-ui-form'})}) }}
+        {% if sections is defined and sections %}
+            {% for section in sections %}
+                <fieldset class="nowo-ui-fieldset">
+                    <legend class="nowo-ui-fieldset__legend">{{ section.title }}</legend>
+                    {% for field_name in section.fields %}
+                        {% if demo_form[field_name] is defined and not demo_form[field_name].rendered %}
+                            {{ form_row(demo_form[field_name]) }}
+                        {% endif %}
+                    {% endfor %}
+                </fieldset>
+            {% endfor %}
+        {% endif %}
+        {% for child in demo_form %}
+            {% if not child.rendered %}
+                {{ form_row(child) }}
+            {% endif %}
+        {% endfor %}
+        {{ form_end(demo_form, {render_rest: render_rest|default(true)}) }}
+    {% endblock %}
+    {% block section_footer %}
+        {% for fk_action in fk_actions %}
+            <button type="submit" form="{{ fk_fid }}"{% if fk_action.name is defined and fk_action.name %} name="{{ fk_action.name }}"{% endif %}{% if fk_action.value is defined %} value="{{ fk_action.value }}"{% endif %} class="nowo-ui-btn nowo-ui-btn--{{ (fk_action.primary ?? true) ? 'primary' : 'outline' }}">{{ fk_action.label }}</button>
+        {% endfor %}
+    {% endblock %}
+{% endembed %}

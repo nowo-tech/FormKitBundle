@@ -2,28 +2,16 @@
 
 {% block title %}{{ 'demo_pages.example.page_title'|trans }}{% endblock %}
 
+{% set demo_page = 'example' %}
+{% set demo_flash = submitted ? {success: [('demo_pages.common.submitted'|trans) ~ ': ' ~ ('demo_pages.example.submitted_line'|trans({ '%name%': submitted.name, '%email%': submitted.email, '%subject%': submitted.subject }))]} : null %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.example.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.example.intro'|trans|raw }}</p>
-
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    {% set submit_buttons %}
-      <button type="submit" name="action" value="send" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.example.send'|trans }}</button>
-      <button type="submit" name="action" value="send_copy" class="nowo-ui-btn nowo-ui-btn--outline">{{ 'demo_pages.example.send_copy'|trans }}</button>
-    {% endset %}
-    {% include 'form_demo/_form_unrendered_loop.html.twig' with { demo_form: form, submit_buttons: submit_buttons } only %}
-  </div>
-</div>
-
-{% if submitted %}
-  <div class="nowo-ui-flash nowo-ui-flash--success">
-    <strong>{{ 'demo_pages.common.submitted'|trans }}:</strong>
-    {{ 'demo_pages.example.submitted_line'|trans({ '%name%': submitted.name, '%email%': submitted.email, '%subject%': submitted.subject }) }}
-  </div>
-{% endif %}
+    {{ include('form_demo/_form_card.html.twig', {
+        demo_form: form,
+        card_title: 'demo_pages.example.heading'|trans,
+        actions: [
+            {label: 'demo_pages.example.send'|trans, name: 'action', value: 'send', primary: true},
+            {label: 'demo_pages.example.send_copy'|trans, name: 'action', value: 'send_copy', primary: false},
+        ],
+    }, false) }}
 {% endblock %}

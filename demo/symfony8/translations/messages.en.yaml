@@ -1,6 +1,7 @@
 # UI (navbar, etc.)
 demo_nav:
   brand: 'Form Kit Demo'
+  home: Overview
   form_type: FormType
   controller_form: 'Controller Form'
   search: Search

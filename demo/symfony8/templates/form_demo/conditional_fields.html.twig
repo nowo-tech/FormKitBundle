@@ -2,73 +2,38 @@
 
 {% block title %}{{ 'demo_pages.conditional_fields.page_title'|trans }}{% endblock %}
 
-{% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.conditional_fields.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.conditional_fields.intro'|trans|raw }}</p>
-<ul class="nowo-ui-muted">
-  <li>{{ 'demo_pages.conditional_fields.usage_1'|trans|raw }}</li>
-  <li>{{ 'demo_pages.conditional_fields.usage_2'|trans|raw }}</li>
-  <li>{{ 'demo_pages.conditional_fields.usage_3'|trans|raw }}</li>
-</ul>
+{% set demo_page = 'conditional_fields' %}
 
-<div>
-  <div>
-    <div class="nowo-ui-card">
-      <div class="nowo-ui-card__body">
-        <h2>{{ 'demo_pages.conditional_fields.events_heading'|trans }}</h2>
-        <p class="nowo-ui-muted">{{ 'demo_pages.conditional_fields.events_intro'|trans|raw }}</p>
-        {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-        <div>
-          {% for child in form %}
-            {% if not child.rendered %}
-              {% if 'hidden' in child.vars.block_prefixes %}
-                {{ form_row(child) }}
-              {% else %}
-                {{ form_row(child) }}
-              {% endif %}
-            {% endif %}
-          {% endfor %}
+{% block body %}
+    {% set locale = app.request.locale %}
+    {{ include('form_demo/_usage.html.twig', {page: 'conditional_fields', count: 3}, false) }}
+
+    {{ include('form_demo/_form_card.html.twig', {
+        demo_form: form,
+        form_id: 'demo-form-events',
+        card_title: 'demo_pages.conditional_fields.events_heading'|trans,
+        card_intro: 'demo_pages.conditional_fields.events_intro'|trans|striptags|raw,
+        actions: [{label: 'demo_pages.common.submit'|trans, name: 'events_submit', primary: true}],
+    }, false) }}
+    {% if submitted %}
+        {{ include('form_demo/_result.html.twig', {result_title: 'demo_pages.common.submitted'|trans, data: submitted}, false) }}
+    {% endif %}
+
+    {% set _build_modes %}
+        <div role="group" aria-label="{{ 'demo_pages.conditional_fields.build_heading'|trans }}">
+            <a class="nowo-ui-btn nowo-ui-btn--outline nowo-ui-btn--sm"{% if build_mode == 'individual' %} aria-current="true"{% endif %} href="{{ path('form_demo_conditional_fields', {_locale: locale, account_mode: 'individual'}) }}">Individual</a>
+            <a class="nowo-ui-btn nowo-ui-btn--outline nowo-ui-btn--sm"{% if build_mode == 'company' %} aria-current="true"{% endif %} href="{{ path('form_demo_conditional_fields', {_locale: locale, account_mode: 'company'}) }}">Company</a>
         </div>
-        <div class="nowo-ui-form__actions">
-          <button type="submit" name="events_submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
-        </div>
-        {{ form_end(form) }}
-        {% if submitted %}
-          <pre class="nowo-ui-code">{{ submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-  <div>
-    <div class="nowo-ui-card">
-      <div class="nowo-ui-card__body">
-        <h2>{{ 'demo_pages.conditional_fields.build_heading'|trans }}</h2>
-        <p class="nowo-ui-muted">{{ 'demo_pages.conditional_fields.build_intro'|trans|raw }}</p>
-        <div  role="group">
-          <a class="nowo-ui-btn nowo-ui-btn--outline"{% if build_mode == 'individual' %} aria-current="true"{% endif %} href="{{ path('form_demo_conditional_fields', {_locale: locale, account_mode: 'individual'}) }}">Individual</a>
-          <a class="nowo-ui-btn nowo-ui-btn--outline"{% if build_mode == 'company' %} aria-current="true"{% endif %} href="{{ path('form_demo_conditional_fields', {_locale: locale, account_mode: 'company'}) }}">Company</a>
-        </div>
-        {{ form_start(build_form, {attr: {class: 'nowo-ui-form'}}) }}
-        <div>
-          {% for child in build_form %}
-            {% if not child.rendered %}
-              {{ form_row(child) }}
-            {% endif %}
-          {% endfor %}
-        </div>
-        <div class="nowo-ui-form__actions">
-          <button type="submit" name="build_submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.common.submit'|trans }}</button>
-        </div>
-        {{ form_end(build_form) }}
-        {% if build_submitted %}
-          <pre class="nowo-ui-code">{{ build_submitted|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</div>
+    {% endset %}
+    {{ include('form_demo/_form_card.html.twig', {
+        demo_form: build_form,
+        form_id: 'demo-form-build',
+        card_title: 'demo_pages.conditional_fields.build_heading'|trans,
+        card_intro: 'demo_pages.conditional_fields.build_intro'|trans|striptags|raw,
+        card_actions: _build_modes,
+        actions: [{label: 'demo_pages.common.submit'|trans, name: 'build_submit', primary: false}],
+    }, false) }}
+    {% if build_submitted %}
+        {{ include('form_demo/_result.html.twig', {result_title: 'demo_pages.common.submitted'|trans, data: build_submitted}, false) }}
+    {% endif %}
 {% endblock %}

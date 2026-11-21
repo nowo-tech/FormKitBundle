@@ -2,45 +2,34 @@
 
 {% block title %}{{ 'demo_pages.search.page_title'|trans }}{% endblock %}
 
+{% set demo_page = 'search' %}
+{% set demo_flash = submitted ? {info: [('demo_pages.common.submitted'|trans) ~ ': q = ' ~ submitted.q ~ ', category = ' ~ submitted.category]} : null %}
+
 {% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.search.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
-<p class="nowo-ui-muted">{{ 'demo_pages.search.intro'|trans|raw }}</p>
-
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    {{ form_start(form, {attr: {class: 'nowo-ui-form'}}) }}
-    <label for="{{ form.q.vars.id }}" class="nowo-ui-muted">{{ 'search_form.q.label'|trans }}</label>
-    <div class="nowo-ui-row-actions">
-      {{ form_widget(form.q, { attr: { class: 'nowo-ui-input', 'aria-label': ('demo_pages.search.aria_query'|trans) } }) }}
-      <span>{{ 'demo_pages.search.in_word'|trans }}</span>
-      {{ form_widget(form.category, { attr: { class: 'nowo-ui-input', 'aria-label': ('demo_pages.search.aria_category'|trans) } }) }}
-      <button type="submit" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.search.button_submit'|trans }}</button>
-    </div>
-    <div class="nowo-ui-row-actions">
-      {{ form_errors(form.q) }}
-      {{ form_errors(form.category) }}
-      {% if form.category.vars.help is defined and form.category.vars.help %}
-        <small class="nowo-ui-muted">{{ form.category.vars.help }}</small>
-      {% endif %}
-    </div>
-    {# Rule 3 (REQ-TWIG-003): q and category are placed in the input group above; the loop renders the rest. #}
-    {% for child in form %}
-      {% if not child.rendered %}
-        {{ form_row(child) }}
-      {% endif %}
-    {% endfor %}
-    {{ form_end(form) }}
-  </div>
-</div>
-
-{% if submitted %}
-  <div class="nowo-ui-flash nowo-ui-flash--info">
-    <strong>{{ 'demo_pages.common.submitted'|trans }}:</strong>
-    q = <code class="nowo-ui-code">{{ submitted.q }}</code>, category = <code class="nowo-ui-code">{{ submitted.category }}</code>
-  </div>
-{% endif %}
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.search.heading'|trans, kind: 'form'} %}
+        {% block section_body %}
+            {{ form_start(form, {attr: {id: 'demo-form', class: 'nowo-ui-form'}}) }}
+            <label for="{{ form.q.vars.id }}">{{ 'search_form.q.label'|trans }}</label>
+            <div role="group" aria-label="{{ 'demo_pages.search.heading'|trans }}">
+                {{ form_widget(form.q, { attr: { class: 'nowo-ui-input', 'aria-label': ('demo_pages.search.aria_query'|trans) } }) }}
+                <span>{{ 'demo_pages.search.in_word'|trans }}</span>
+                {{ form_widget(form.category, { attr: { class: 'nowo-ui-input', 'aria-label': ('demo_pages.search.aria_category'|trans) } }) }}
+            </div>
+            {{ form_errors(form.q) }}
+            {{ form_errors(form.category) }}
+            {% if form.category.vars.help is defined and form.category.vars.help %}
+                <p class="nowo-ui-muted">{{ form.category.vars.help }}</p>
+            {% endif %}
+            {# Rule 3 (REQ-TWIG-003): q and category are placed in the input group above; the loop renders the rest. #}
+            {% for child in form %}
+                {% if not child.rendered %}
+                    {{ form_row(child) }}
+                {% endif %}
+            {% endfor %}
+            {{ form_end(form) }}
+        {% endblock %}
+        {% block section_footer %}
+            <button type="submit" form="demo-form" class="nowo-ui-btn nowo-ui-btn--primary">{{ 'demo_pages.search.button_submit'|trans }}</button>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

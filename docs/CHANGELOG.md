@@ -74,6 +74,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Demo: runs in UiKit's demo platform shell (`nowo-tech/ui-kit-bundle` ^2.60); the demo's own header is gone and the pages use the shell page headers and section cards. The CSS in `assets/app.css` is removed (its rules are reported as UiKit gaps). Demo only, no bundle change.
+
 ### Demo
 
 - The demo is built on UiKit (REQ-DEMO-014 / REQ-DEMO-015): `templates/base.html.twig` is UiKit's admin layout with its default theme and a UiKit masthead (active item, locale switcher, theme toggle) instead of the Bootstrap CDN navbar, the pages use UiKit cards, buttons, flashes, wizard steps and locale tabs, FormKit uses `css_framework: none` on UiKit's form theme (`@NowoUiKit/form/nowo_ui_layout.html.twig`, also for the widget bundles and the Select All Choice theme), the help modal uses its self-contained `foundation` shell, and no Bootstrap CSS/JS is loaded from a CDN. The `bootstrap` demo profile is now `wide`. The demo requires `nowo-tech/ui-kit-bundle` `^2.53`. The demo's `stimulus_bootstrap.ts` no longer calls the webpack-only `require.context` (a console `ReferenceError` on every page under AssetMapper). No bundle runtime change.

@@ -1,6 +1,7 @@
 # UI (navbar, etc.) — German UI locale
 demo_nav:
   brand: 'Form Kit Demo'
+  home: Übersicht
   form_type: FormType
   controller_form: 'Formular im Controller'
   search: Suche

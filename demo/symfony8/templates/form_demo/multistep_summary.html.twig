@@ -2,24 +2,19 @@
 
 {% block title %}{{ 'demo_pages.multistep_summary.page_title'|trans }}{% endblock %}
 
-{% block body %}
-{% set locale = app.request.locale %}
-<div class="nowo-ui-page-header">
-  <h1 class="nowo-ui-page-header__title">{{ 'demo_pages.multistep_summary.heading'|trans }}</h1>
-  <a class="nowo-ui-btn nowo-ui-btn--sm nowo-ui-btn--outline" href="{{ path('form_demo_index', {_locale: locale}) }}">{{ 'demo_pages.common.back'|trans }}</a>
-</div>
+{% set demo_page = 'multistep_summary' %}
 
-<div class="nowo-ui-card">
-  <div class="nowo-ui-card__body">
-    <h2>{{ 'demo_pages.common.collected_data'|trans }}</h2>
-    <dl>
-      {% for key, value in wizard.collectedDataFlat %}
-        <dt class="nowo-ui-muted">{{ key }}</dt>
-        <dd>{{ value }}</dd>
-      {% endfor %}
-    </dl>
-    <hr>
-    <a href="{{ path('form_demo_multistep', {_locale: locale}) }}?reset=1" class="nowo-ui-btn nowo-ui-btn--outline">{{ 'demo_pages.common.start_over'|trans }}</a>
-  </div>
-</div>
+{% block body %}
+    {% embed '@NowoUiKit/demo_platform/_section.html.twig' with {title: 'demo_pages.common.collected_data'|trans, kind: 'detail'} %}
+        {% block section_body %}
+            <dl class="nowo-ui-detail-list">
+                {% for key, value in wizard.collectedDataFlat %}
+                    <div class="nowo-ui-detail-list__item"><dt class="nowo-ui-detail-list__term">{{ key }}</dt><dd class="nowo-ui-detail-list__value">{{ value }}</dd></div>
+                {% endfor %}
+            </dl>
+        {% endblock %}
+        {% block section_footer %}
+            <a href="{{ path('form_demo_multistep', {_locale: app.request.locale}) }}?reset=1" class="nowo-ui-btn nowo-ui-btn--outline">{{ 'demo_pages.common.start_over'|trans }}</a>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

@@ -10,8 +10,8 @@ export async function fillContactStep(page: Page): Promise<void> {
   await expect(page.locator('.nowo-ui-wizard-steps__item--active')).toContainText('Address');
 }
 
-/** Waits for the Symfony WebProfiler toolbar so it is part of the capture. */
-export async function waitForToolbar(page: Page): Promise<void> {
-  await expect(page.locator('.sf-toolbar .sf-toolbarreset').first()).toBeVisible({ timeout: 15_000 });
+/** The Symfony toolbar is not part of the demo platform: screenshots hide it. */
+export async function hideToolbar(page: Page): Promise<void> {
+  await page.addStyleTag({ content: '.sf-toolbar,.sf-minitoolbar,[id^="sfwdt"]{display:none!important}' });
   await page.waitForTimeout(300);
 }
