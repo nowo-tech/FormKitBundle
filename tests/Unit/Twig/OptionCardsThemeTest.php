@@ -156,10 +156,10 @@ final class OptionCardsThemeTest extends TestCase
         self::assertNull($inputs->eq(0)->attr('required'), 'checkbox groups are not browser-required');
     }
 
-    public function testStandaloneFieldPartialReadsChoiceAttrWithoutTheOption(): void
+    public function testStandaloneFieldPartialTakesColumnsAndVariantOverrides(): void
     {
         $this->requireUiKitPartial();
-        $form = $this->form(['ui_widget' => null, 'ui_widget_options' => [], 'choice_cards' => false, 'choice_translation_domain' => false, 'choice_attr' => ['Basic' => ['meta' => '$9', 'icon' => 'home'], 'Pro' => ['disabled' => true]], 'attr' => ['aria-label' => 'Own']]);
+        $form = $this->form(['choice_translation_domain' => false, 'choice_attr' => ['Basic' => ['meta' => '$9', 'icon' => 'home'], 'Pro' => ['disabled' => true]], 'attr' => ['aria-label' => 'Own']]);
         $c    = new Crawler($this->render($form, true, "{{ include('@NowoFormKitBundle/form/_option_cards_field.html.twig', {field: form.plan, columns: 4, variant: 'icon'}, with_context: false) }}"));
 
         self::assertStringContainsString('nowo-ui-option-cards--icon nowo-ui-option-cards--cols-4', (string) $c->filter('fieldset')->attr('class'));
@@ -168,6 +168,7 @@ final class OptionCardsThemeTest extends TestCase
         self::assertSame('$9', trim($c->filter('.nowo-ui-option-card__meta')->text()));
         self::assertNotNull($c->filter('input[value="pro"]')->attr('disabled'));
         self::assertNull($c->filter('input[value="basic"]')->attr('meta'), 'card keys are not printed on the input');
+        self::assertCount(1, $c->filter('.nowo-ui-option-card__icon'));
     }
 
     public function testFallsBackToFormKitCardsWithoutUiKit(): void

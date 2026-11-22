@@ -86,7 +86,8 @@ Release note: this minor needs UiKit 2.64.0 (the `option_cards` partial). The re
   the input's attributes; any other key (`disabled`, `data-*`) stays on the input. Texts are translated with the
   choice translation domain. The field label names the group (`aria-labelledby`). Cannot be combined with
   `choice_cards`. Without UiKit 2.64+ the field falls back to FormKit's own `choice_cards` markup.
-- `@NowoFormKitBundle/form/_option_cards_field.html.twig`: the same rendering over any expanded ChoiceType `FormView`
+- `@NowoFormKitBundle/form/_option_cards_field.html.twig`: hands the field's `FormView` to the UiKit partial (its
+  `options_meta` is built from the `choice_attr` card keys); usable on its own for a field with the option
   (`field`, optional `columns`, `variant`, `bundle`), and the Twig function `nowo_form_kit_ui_partial('option_cards')`
   (the UiKit template or null).
 

@@ -1183,15 +1183,16 @@ the selected state is CSS only. `choice_attr` keys: `description`, `meta` (right
 price), `icon` (a UiKit icon name, shown by the `icon` variant) and `badges` (a list of strings); they are removed from
 the input, every other key (`disabled`, `data-*`) stays on it. Texts use the field's `choice_translation_domain`. The
 field label names the group (`aria-labelledby`), so no legend is printed twice. Not combinable with `choice_cards`
-(that throws); without UiKit 2.64+ the field is drawn as the choice cards above. Outside a form theme, draw any
-expanded ChoiceType `FormView` with the partial:
+(that throws); without UiKit 2.64+ the field is drawn as the choice cards above. The field's `FormView` is handed to
+UiKit's `option_cards` partial (the controls are the form's own widgets, REQ-TWIG-005); the `choice_attr` card keys
+become its `options_meta`. Outside a form theme, draw a field that has `ui_widget: 'option_cards'` with:
 
 ```twig
 {{ include('@NowoFormKitBundle/form/_option_cards_field.html.twig', {field: form.plan, columns: 3, variant: 'icon'}, with_context: false) }}
 ```
 
-Per-card host extras (provider, model, "+N") are a UiKit feature: use its `option_cards` partial directly with the
-option `content` / `content_template`. Style it with the UiKit `--nowo-ui-option-card-*` tokens.
+Per-card host extras (provider, model, "+N") are a UiKit feature: use its `option_cards` partial directly with
+`options_meta` entries carrying `content` / `content_template`. Style it with the UiKit `--nowo-ui-option-card-*` tokens.
 
 ### Switch
 
