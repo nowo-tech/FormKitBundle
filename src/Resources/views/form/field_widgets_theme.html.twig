@@ -6,6 +6,7 @@
   fields without the options render exactly as before with any base theme (form_div_layout, bootstrap_5_layout,
   tailwind_2_layout, UiKit's nowo_ui_layout…):
   - `nowo_choice_cards_widget`: `choice_cards` on an expanded ChoiceType / EntityType (ChoiceCardsExtension);
+  - `nowo_option_cards_widget`: `ui_widget: 'option_cards'` on an expanded ChoiceType / EntityType (UiWidgetExtension, UiKit 2.64+ partial; the `nowo_choice_cards_widget` markup without UiKit);
   - `nowo_switch_row` / `nowo_switch_widget`: `switch` on a CheckboxType (SwitchExtension);
   - `nowo_char_counter_widget`: `char_counter` on a TextType / TextareaType (CharCounterExtension).
 
@@ -101,6 +102,18 @@
         {%- endif -%}
     </div>
 {%- endblock nowo_choice_card -%}
+
+{#- ===== Option cards (UiKit `option_cards` partial, 2.24) ===== -#}
+
+{#- The helper function lives in the included file, so this theme still compiles in an environment without it. -#}
+{%- block nowo_option_cards_widget -%}
+    {%- set _cards = include('@NowoFormKitBundle/form/_option_cards_field.html.twig', {field: form, fallback: false}, with_context: false)|trim -%}
+    {%- if _cards is not empty -%}
+        {{- _cards -}}
+    {%- else -%}
+        {{- block('nowo_choice_cards_widget') -}}
+    {%- endif -%}
+{%- endblock nowo_option_cards_widget -%}
 
 {#- ===== Switch ===== -#}
 

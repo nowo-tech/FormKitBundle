@@ -1,0 +1,60 @@
+{#
+  Option cards over an expanded ChoiceType (2.24): the FormView `field` handed to the UiKit `option_cards` partial
+  (UiKit 2.64+: the controls are the form's own radio / checkbox widgets inside labels in a fieldset, no JavaScript).
+  Used by `nowo_option_cards_widget` (the `ui_widget: 'option_cards'` option) and usable on its own for a field that
+  has that option:
+
+      {{ include('@NowoFormKitBundle/form/_option_cards_field.html.twig', {field: form.plan, columns: 3}, with_context: false) }}
+
+  Required:
+    - field    FormView of a ChoiceType with `expanded: true` and `ui_widget: 'option_cards'`
+  Optional (default: the field's `ui_widget_options`, else 2 / basic):
+    - columns  1-4
+    - variant  'basic' | 'icon'
+    - bundle   per-bundle theme exceptions of UiKit
+    - fallback bool, default true: without UiKit 2.64+ print form_widget(field); false prints nothing (the form theme
+               block then draws FormKit's own cards)
+
+  Per choice, the `choice_attr` keys `description`, `meta`, `icon` and `badges` (list of strings), already moved to
+  `child.vars.option_card` by the `ui_widget` option, become the UiKit `options_meta` entry of that choice value;
+  description, meta and badges are translated with the choice translation domain and label parameters. The title,
+  name, value, checked and disabled come from the form itself. The group is named by the field label
+  (`aria-labelledby` the `<label>` of the row), so no legend is printed, and the row prints errors and help.
+  Needs UiKit 2.64+ (`nowo_form_kit_ui_partial('option_cards')`); `nowo_option_cards_widget` falls back to FormKit's
+  own cards without it.
+#}
+{%- set _tpl = nowo_form_kit_ui_partial('option_cards') -%}
+{%- if _tpl -%}
+    {%- set _w = field.vars.ui_widget|default({}) -%}
+    {%- set _meta = {} -%}
+    {%- for _child in field -%}
+        {%- set _c = _child.vars -%}
+        {%- set _card = _c.option_card|default({}) -%}
+        {%- set _domain = _c.translation_domain -%}
+        {%- set _params = _c.label_translation_parameters|default({}) -%}
+        {%- set _badges = [] -%}
+        {%- for _b in _card.badges|default([]) -%}{%- set _badges = _badges|merge([_domain is same as(false) ? _b : _b|trans(_params, _domain)]) -%}{%- endfor -%}
+        {%- set _description = _card.description|default(null) -%}
+        {%- set _m = _card.meta|default(null) -%}
+        {%- set _meta = _meta|merge({(_c.value): {
+            description: _description is not empty ? (_domain is same as(false) ? _description : _description|trans(_params, _domain)) : null,
+            meta: _m is not empty ? (_domain is same as(false) ? _m : _m|trans(_params, _domain)) : null,
+            icon: _card.icon|default(null),
+            badges: _badges,
+        }}) -%}
+    {%- endfor -%}
+    {%- set _attr = field.vars.attr|default({}) -%}
+    {%- if _attr['aria-label'] is not defined and _attr['aria-labelledby'] is not defined and field.vars.choice_cards_label_id|default(null) -%}{%- set _attr = _attr|merge({'aria-labelledby': field.vars.choice_cards_label_id}) -%}{%- endif -%}
+    {{- include(_tpl, {
+        field: field,
+        options_meta: _meta,
+        columns: columns ?? _w.columns ?? 2,
+        variant: variant ?? _w.variant ?? 'basic',
+        legend: false,
+        errors: false,
+        attr: _attr,
+        bundle: bundle ?? null,
+    }, with_context: false) -}}
+{%- elseif fallback ?? true -%}
+    {{- form_widget(field) -}}
+{%- endif -%}

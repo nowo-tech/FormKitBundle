@@ -1110,6 +1110,7 @@ the option, and fields without it render byte for byte as before.
 | Option | Field types | Renders |
 |--------|-------------|---------|
 | `choice_cards` | `ChoiceType` with `expanded: true` and its subtypes (`EntityType`, `EnumType`…) | Each choice as a selectable card: title, optional description, icon or image |
+| `ui_widget: 'option_cards'` (2.24) | `ChoiceType` with `expanded: true` | UiKit option cards: clickable radio / checkbox cards (see [Option cards](#option-cards-uikit)) |
 | `switch` | `CheckboxType` | An on/off switch (`role="switch"`), sizes `sm` / `md` / `lg`, optional on/off icons |
 | `char_counter` | `TextType` and its subtypes (`TextareaType`, `EmailType`, `SearchType`…) | "42 / 160" under the field, limits taken from the `Length` constraint |
 
@@ -1159,6 +1160,39 @@ the CSS, so a click anywhere selects it) and the description linked with `aria-d
 `role="radiogroup"` (or `group`) and `aria-labelledby` pointing at the field label (the extension sets
 `label_attr.id`, default `<id>_label`, unless you set one or pass `attr.aria-label`). Arrow keys move between radios as
 usual. Without the CSS the cards degrade to a plain list of radios with labels.
+
+### Option cards (UiKit)
+
+```php
+$builder->add('plan', ChoiceType::class, [
+    'expanded'          => true,
+    'choices'           => ['plan.basic' => 'basic', 'plan.pro' => 'pro', 'plan.team' => 'team'],
+    'choice_attr'       => static fn (string $choice, string $key, string $value): array => match ($value) {
+        'basic' => ['meta' => 'plan.basic_price', 'description' => 'plan.basic_text', 'badges' => ['plan.popular']],
+        'team'  => ['meta' => 'plan.team_price', 'description' => 'plan.team_text', 'disabled' => true],
+        default => ['meta' => 'plan.pro_price', 'description' => 'plan.pro_text'],
+    },
+    'ui_widget'         => 'option_cards',
+    'ui_widget_options' => ['columns' => 3, 'variant' => 'basic'],   // 1-4; 'basic' | 'icon'
+]);
+```
+
+The same look as UiKit's `option_cards` partial (UiKit 2.64+): every card is a `<label>` around a native radio (or
+checkbox with `multiple: true`) inside a `<fieldset>`, so a click, the arrow keys and the post work without JavaScript;
+the selected state is CSS only. `choice_attr` keys: `description`, `meta` (right-aligned on the title row, e.g. a
+price), `icon` (a UiKit icon name, shown by the `icon` variant) and `badges` (a list of strings); they are removed from
+the input, every other key (`disabled`, `data-*`) stays on it. Texts use the field's `choice_translation_domain`. The
+field label names the group (`aria-labelledby`), so no legend is printed twice. Not combinable with `choice_cards`
+(that throws); without UiKit 2.64+ the field is drawn as the choice cards above. The field's `FormView` is handed to
+UiKit's `option_cards` partial (the controls are the form's own widgets, REQ-TWIG-005); the `choice_attr` card keys
+become its `options_meta`. Outside a form theme, draw a field that has `ui_widget: 'option_cards'` with:
+
+```twig
+{{ include('@NowoFormKitBundle/form/_option_cards_field.html.twig', {field: form.plan, columns: 3, variant: 'icon'}, with_context: false) }}
+```
+
+Per-card host extras (provider, model, "+N") are a UiKit feature: use its `option_cards` partial directly with
+`options_meta` entries carrying `content` / `content_template`. Style it with the UiKit `--nowo-ui-option-card-*` tokens.
 
 ### Switch
 
