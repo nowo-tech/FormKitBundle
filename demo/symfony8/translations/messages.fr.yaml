@@ -554,15 +554,15 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Téléphone international avec sélecteur de préfixe (<code>nowo-tech/phone-input-bundle</code>).'
   secret_password:
-    label: 'Password (toggle only)'
+    label: 'Mot de passe (affichage seul)'
     placeholder: ''
     help: 'Show/hide only — PasswordToggleBundle.'
   strength_only_password:
-    label: 'Password (strength only)'
+    label: 'Mot de passe (force seule)'
     placeholder: ''
     help: 'PasswordStrengthType with use_password_toggle => false.'
   combined_password:
-    label: 'Password (toggle + strength)'
+    label: 'Mot de passe (affichage + force)'
     placeholder: ''
     help: '<strong>Combined:</strong> PasswordStrengthType + use_password_toggle => true.'
   app_icon:
@@ -627,54 +627,54 @@ autocomplete_demo:
 # --- Fallback EN keys (demo completeness for new pages) ---
 build_time_conditional_demo:
   account_type:
-    label: Account type (fixed)
+    label: 'Type de compte (fixe)'
     placeholder: ""
-    help: 'Set via form option <code>account_mode</code> at build time (disabled in UI).'
+    help: 'Défini via l’option de formulaire <code>account_mode</code> à la construction (désactivé dans l’interface).'
   company_name:
-    label: Company name
-    placeholder: Acme Ltd
-    help: 'Added only when <code>account_mode === company</code>.'
+    label: 'Nom de l’entreprise'
+    placeholder: 'Acme SARL'
+    help: 'Ajouté uniquement lorsque <code>account_mode === company</code>.'
   first_name:
-    label: First name
-    placeholder: Jane
-    help: 'Added only when <code>account_mode === individual</code>.'
+    label: 'Prénom'
+    placeholder: 'Jeanne'
+    help: 'Ajouté uniquement lorsque <code>account_mode === individual</code>.'
   last_name:
-    label: Last name
+    label: 'Nom'
     placeholder: Doe
-    help: 'Added only when <code>account_mode === individual</code>.'
+    help: 'Ajouté uniquement lorsque <code>account_mode === individual</code>.'
 
 snake_case_kit_demo:
   full_name:
-    label: Full name
-    placeholder: Jane Doe
+    label: 'Nom complet'
+    placeholder: 'Jeanne Dupont'
     help: '<code>addTextField()</code> via <code>FormKitAbstractType</code>.'
   email_address:
-    label: Email
-    placeholder: you@example.com
+    label: 'E-mail'
+    placeholder: 'vous@exemple.com'
     help: '<code>addEmailField()</code>.'
   topic:
-    label: Topic
+    label: 'Sujet'
     placeholder: ""
-    help: '<code>buildFieldsFromArray()</code> with snake_case type <code>choice</code>.'
+    help: '<code>buildFieldsFromArray()</code> avec le type snake_case <code>choice</code>.'
   notes:
     label: Notes
-    placeholder: Optional notes
-    help: 'Snake_case type <code>textarea</code>.'
+    placeholder: 'Notes facultatives'
+    help: 'Type snake_case <code>textarea</code>.'
   priority:
-    label: Priority
+    label: 'Priorité'
     placeholder: ""
     help: '<code>addNamedField(..., ''integer'', …)</code>.'
 
 named_config_demo:
   title:
-    label: Title
-    placeholder: Large control title
-    help: 'Uses config profile <code>wide</code> (<code>nowo-ui-input--wide</code>).'
+    label: 'Titre'
+    placeholder: 'Titre avec grand champ'
+    help: 'Utilise le profil de configuration <code>wide</code> (<code>nowo-ui-input--wide</code>).'
   summary:
-    label: Summary
-    placeholder: Short summary
+    label: 'Résumé'
+    placeholder: 'Court résumé'
     help: '<code>#[FormKitConfig(''wide'')]</code>.'
   internal_code:
     label: Internal code
     placeholder: ""
-    help: 'Convention disabled with <code>label/placeholder/help =&gt; false</code>.'
+    help: 'Convention désactivée avec <code>label/placeholder/help =&gt; false</code>.'
