@@ -75,9 +75,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- CI: a new `release-gates` job runs `make rector-dry`, `validate-phpdoc`, `validate-translations` and `check-twig-extra` (full mode only, one matrix cell each), so a gate cannot fail only at release time. CI only, no change to the shipped bundle.
+
 ### Fixed
 
 - Demo: the German demo catalogue (`demo/symfony8/translations/messages.de.yaml`) still carried about 200 English texts (the contact, address, search and wizard forms, every demo page title, heading and introduction), and the French one about 30 (the conditional-fields, password and named-config demos). They are translated now. Demo only, no bundle change.
+- Rector (`LocallyCalledStaticMethodToNonStaticRector`): three private static helpers of the demo catalogue test are instance methods now. Tests only, no bundle change.
 
 ### Tests
 
