@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Table of contents
 
 - [[Unreleased]](#unreleased)
+- [[2.24.0] - 2026-11-22](#2240---2026-11-22)
 - [[2.23.0] - 2026-11-13](#2230---2026-11-13)
 - [[2.22.0] - 2026-11-11](#2220---2026-11-11)
 - [[2.21.0] - 2026-11-10](#2210---2026-11-10)
@@ -73,6 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [[1.0.0] - 2025-03-03](#100---2025-03-03)
 
 ## [Unreleased]
+
+## [2.24.0] - 2026-11-22
 
 Release note: this minor needs UiKit 2.64.0 (the `option_cards` partial). The release waits for the UiKit tag; then run
 `composer update nowo-tech/ui-kit-bundle` to refresh `composer.lock` (the floor in `composer.json` is already `^2.64`).
@@ -528,6 +531,7 @@ Locale tabs for translation entities, field_<locale> groups and TranslatableMapT
 
 - Dev lock: `symfony/asset` 7.4.8. Demo `symfony8` lock refreshed for the new bundle requirement.
 
+[2.24.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.24.0
 [2.23.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.23.0
 [2.22.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.22.0
 [2.21.0]: https://github.com/nowo-tech/FormKitBundle/releases/tag/v2.21.0
