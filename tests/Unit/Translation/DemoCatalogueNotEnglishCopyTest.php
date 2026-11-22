@@ -33,7 +33,7 @@ use const PREG_SPLIT_NO_EMPTY;
 final class DemoCatalogueNotEnglishCopyTest extends TestCase
 {
     /** English values that are identical in the language on purpose (product names, sample data). */
-    private const array ALLOWED_KEYS = [
+    private const ALLOWED_KEYS = [
         'demo_nav.brand',
         'data_transformers_demo.tags.placeholder',
         'demo_pages.dropzone.heading',
