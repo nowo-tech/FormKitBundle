@@ -1,0 +1,75 @@
+{#
+  Option cards over an expanded ChoiceType (2.24): the FormView `field` drawn by the UiKit `option_cards` partial
+  (UiKit 2.64+: native radio / checkbox inputs in labels in a fieldset, no JavaScript). Used by
+  `nowo_option_cards_widget` (the `ui_widget: 'option_cards'` option) and usable on its own:
+
+      {{ include('@NowoFormKitBundle/form/_option_cards_field.html.twig', {field: form.plan, columns: 3}, with_context: false) }}
+
+  Required:
+    - field    FormView of a ChoiceType with `expanded: true`
+  Optional (default: the field's `ui_widget_options`, else 2 / basic):
+    - columns  1-4
+    - variant  'basic' | 'icon'
+    - bundle   per-bundle theme exceptions of UiKit
+    - fallback bool, default true: without UiKit 2.64+ print form_widget(field); false prints nothing (the form theme
+               block then draws FormKit's own cards)
+
+  Per choice, `choice_attr` keys `description`, `meta`, `icon` and `badges` (list of strings) feed the card (read from
+  `child.vars.option_card` when the `ui_widget` option stripped them, else from the child's `attr`); `disabled` disables
+  the card; every other key stays on the input. Titles, descriptions, meta and badges are translated with the choice
+  translation domain and the label translation parameters. The group is named by the field label (`aria-labelledby`
+  the `<label>` of the row), so no legend is printed. Needs UiKit 2.64+ (`nowo_form_kit_ui_partial('option_cards')`);
+  `nowo_option_cards_widget` falls back to FormKit's own cards without it.
+#}
+{%- set _tpl = nowo_form_kit_ui_partial('option_cards') -%}
+{%- if _tpl -%}
+    {%- set _w = field.vars.ui_widget|default({}) -%}
+    {%- set _multiple = field.vars.multiple|default(false) -%}
+    {%- set _card_keys = ['description', 'meta', 'icon', 'badges'] -%}
+    {%- set _options = [] -%}
+    {%- for _child in field -%}
+        {%- set _c = _child.vars -%}
+        {%- set _raw = _c.attr|default({}) -%}
+        {%- set _card = {
+            description: _c.option_card.description ?? _raw.description ?? null,
+            meta: _c.option_card.meta ?? _raw.meta ?? null,
+            icon: _c.option_card.icon ?? _raw.icon ?? null,
+            badges: _c.option_card.badges ?? _raw.badges ?? [],
+        } -%}
+        {%- set _input_attr = _raw|filter((v, k) => k not in _card_keys and k != 'disabled') -%}
+        {%- if not _multiple and field.vars.required|default(false) -%}{%- set _input_attr = _input_attr|merge({required: true}) -%}{%- endif -%}
+        {%- set _domain = _c.translation_domain -%}
+        {%- set _params = _c.label_translation_parameters|default({}) -%}
+        {%- set _title = _c.label is same as(false) ? '' : (_domain is same as(false) ? _c.label : _c.label|trans(_params, _domain)) -%}
+        {%- set _badges = [] -%}
+        {%- for _b in _card.badges -%}{%- set _badges = _badges|merge([_domain is same as(false) ? _b : _b|trans(_params, _domain)]) -%}{%- endfor -%}
+        {%- set _description = _card.description -%}
+        {%- set _meta = _card.meta -%}
+        {%- set _options = _options|merge([{
+            value: _c.value,
+            title: _title,
+            description: _description is not empty ? (_domain is same as(false) ? _description : _description|trans(_params, _domain)) : null,
+            meta: _meta is not empty ? (_domain is same as(false) ? _meta : _meta|trans(_params, _domain)) : null,
+            icon: _card.icon,
+            badges: _badges,
+            checked: _c.checked,
+            disabled: _c.disabled or (_raw.disabled is defined and _raw.disabled is not same as(false) and _raw.disabled is not null),
+            input_attr: _input_attr,
+        }]) -%}
+    {%- endfor -%}
+    {%- set _attr = field.vars.attr|default({}) -%}
+    {%- if _attr['aria-label'] is not defined and _attr['aria-labelledby'] is not defined and field.vars.choice_cards_label_id|default(null) -%}{%- set _attr = _attr|merge({'aria-labelledby': field.vars.choice_cards_label_id}) -%}{%- endif -%}
+    {%- set _first = field|length > 0 ? field|first : null -%}
+    {{- include(_tpl, {
+        name: _first ? _first.vars.full_name : field.vars.full_name,
+        id: field.vars.id,
+        type: _multiple ? 'checkbox' : 'radio',
+        options: _options,
+        columns: columns ?? _w.columns ?? 2,
+        variant: variant ?? _w.variant ?? 'basic',
+        attr: _attr,
+        bundle: bundle ?? null,
+    }, with_context: false) -}}
+{%- elseif fallback ?? true -%}
+    {{- form_widget(field) -}}
+{%- endif -%}

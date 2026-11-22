@@ -74,6 +74,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Release note: this minor needs UiKit 2.64.0 (the `option_cards` partial). The release waits for the UiKit tag; then run
+`composer update nowo-tech/ui-kit-bundle` to refresh `composer.lock` (the floor in `composer.json` is already `^2.64`).
+
+### Added
+
+- **`ui_widget: 'option_cards'`** on `ChoiceType` with `expanded: true` (and `EntityType`, `EnumType`...): the choice is
+  drawn by the UiKit `option_cards` partial (clickable radio / checkbox cards over native inputs, no JavaScript). The
+  new `ui_widget_options` takes `columns` (1-4, default 2) and `variant` (`basic` | `icon`). Per-choice `choice_attr`
+  keys `description`, `meta` (e.g. a price), `icon` and `badges` (a list of strings) feed the card and are removed from
+  the input's attributes; any other key (`disabled`, `data-*`) stays on the input. Texts are translated with the
+  choice translation domain. The field label names the group (`aria-labelledby`). Cannot be combined with
+  `choice_cards`. Without UiKit 2.64+ the field falls back to FormKit's own `choice_cards` markup.
+- `@NowoFormKitBundle/form/_option_cards_field.html.twig`: the same rendering over any expanded ChoiceType `FormView`
+  (`field`, optional `columns`, `variant`, `bundle`), and the Twig function `nowo_form_kit_ui_partial('option_cards')`
+  (the UiKit template or null).
+
+### Changed
+
+- `nowo-tech/ui-kit-bundle` floor in `composer.json` (suggest and require-dev) raised to `^2.64`.
+
 ### Fixed
 
 - A new strict `TranslationCatalogueTest` fails on a non-en locale missing a key, on a non-en value identical to English (any length, placeholders included; values without letters are skipped) unless allow-listed per locale (brands, units, protocols, loanwords, true cognates), and on stale allow-list entries. No translation changed.

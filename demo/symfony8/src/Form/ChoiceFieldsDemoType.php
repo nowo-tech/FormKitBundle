@@ -105,6 +105,22 @@ final class ChoiceFieldsDemoType extends AbstractType
                 ],
             ],
         ]);
+        // 2.24: the same choice as UiKit option cards (ui_widget), with price, description and badges per choice.
+        $builder->add('billing', ChoiceType::class, $rowFull + [
+            'mapped'             => false,
+            'expanded'           => true,
+            'data'               => 'monthly',
+            'label'              => 'Billing',
+            'translation_domain' => false,
+            'choices'            => ['Monthly' => 'monthly', 'Yearly' => 'yearly', 'Lifetime' => 'lifetime'],
+            'choice_attr'        => static fn (string $choice, string $key, string $value): array => match ($value) {
+                'monthly' => ['meta' => '$9 / month', 'description' => 'Cancel at any time.'],
+                'yearly'  => ['meta' => '$90 / year', 'description' => 'Two months free.', 'badges' => ['Best value']],
+                default   => ['meta' => '$299', 'description' => 'Not available yet.', 'disabled' => true],
+            },
+            'ui_widget'         => 'option_cards',
+            'ui_widget_options' => ['columns' => 3],
+        ]);
         $builder->add('notifications', CheckboxType::class, $rowFull + [
             'mapped'    => false,
             'required'  => false,

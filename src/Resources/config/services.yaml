@@ -87,6 +87,9 @@ services:
 
   Nowo\FormKitBundle\Form\Extension\SwitchExtension: ~
 
+  # 2.24: ui_widget option (UiKit option_cards partial on an expanded ChoiceType).
+  Nowo\FormKitBundle\Form\Extension\UiWidgetExtension: ~
+
   Nowo\FormKitBundle\Form\Extension\CharCounterExtension:
     arguments:
       $metadataFactory: '@?validator'
@@ -113,3 +116,6 @@ services:
 
   # nowo_form_kit_help_modal_meta() / nowo_form_kit_help_modal_nonce() (twig/twig is a hard dependency).
   Nowo\FormKitBundle\Twig\HelpModalTwigExtension: ~
+
+  # nowo_form_kit_ui_partial() (2.24): the UiKit partial template, null without UiKit 2.64+.
+  Nowo\FormKitBundle\Twig\UiKitPartialTwigExtension: ~
