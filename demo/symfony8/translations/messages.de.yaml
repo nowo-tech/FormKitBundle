@@ -18,104 +18,104 @@ demo_nav:
   kit_api_patterns: 'Kit-API-Muster'
   nowo_special_fields: 'Nowo-Felder'
   ckeditor: CKEditor
-  ux_autocomplete: Autocomplete
+  ux_autocomplete: 'Autocomplete'
   multi_step: 'Mehrstufig'
   locale: Sprache
 
 demo_contact:
-  notice_contact: 'Please fill in your contact details below. All fields in this section are used to get in touch.'
-  terms_notice: 'You must accept the terms to continue.'
+  notice_contact: 'Bitte tragen Sie unten Ihre Kontaktdaten ein. Alle Felder in diesem Abschnitt werden für die Kontaktaufnahme verwendet.'
+  terms_notice: 'Sie müssen die Bedingungen akzeptieren, um fortzufahren.'
   full_name:
-    label: Full name
-    placeholder: Enter your full name
-    help: As shown on your ID.
+    label: 'Vollständiger Name'
+    placeholder: 'Geben Sie Ihren vollständigen Namen ein'
+    help: 'Wie in Ihrem Ausweis angegeben.'
   email_address:
-    label: Email address
-    placeholder: you@example.com
-    help: We will not share it.
+    label: 'E-Mail-Adresse'
+    placeholder: 'sie@beispiel.de'
+    help: 'Wir geben sie nicht weiter.'
   message:
-    label: Message
-    placeholder: Your message...
-    help: Optional.
+    label: 'Nachricht'
+    placeholder: 'Ihre Nachricht …'
+    help: 'Optional.'
   password:
-    label: Password
-    placeholder: Enter password
-    help: At least 8 characters.
+    label: 'Passwort'
+    placeholder: 'Passwort eingeben'
+    help: 'Mindestens 8 Zeichen.'
   website:
-    label: Website
+    label: 'Website'
     placeholder: https://example.com
-    help: Your personal or company URL.
+    help: 'Ihre private oder geschäftliche URL.'
   age:
     label: Age
     placeholder: "0"
-    help: Your age in years.
+    help: 'Ihr Alter in Jahren.'
   score:
-    label: Score
+    label: 'Bewertung'
     placeholder: "0.0"
-    help: A number between 0 and 10.
+    help: 'Eine Zahl zwischen 0 und 10.'
   accept_terms:
-    label: I accept the terms
+    label: 'Ich akzeptiere die Bedingungen'
     placeholder: ""
-    help: Required to continue.
+    help: 'Erforderlich, um fortzufahren.'
   topic:
-    label: Topic
-    placeholder: Choose one
-    help: What is your request about?
+    label: 'Thema'
+    placeholder: 'Bitte auswählen'
+    help: 'Worum geht es bei Ihrer Anfrage?'
   help_modal:
-    full_name_title: 'Full name'
-    full_name_content: '<p>Use your legal name as it appears on your ID or passport. The help icon next to the label opens this modal.</p>'
+    full_name_title: 'Vollständiger Name'
+    full_name_content: '<p>Verwenden Sie Ihren rechtlichen Namen, wie er in Ihrem Ausweis oder Reisepass steht. Das Hilfe-Symbol neben dem Label öffnet dieses Fenster.</p>'
 
 # Dropzone demo — keys: dropzone_demo.*
 dropzone_demo:
   document:
-    label: Upload a file
-    placeholder: Drag and drop a file or click to browse
-    help: Max size and allowed types depend on server config.
+    label: 'Datei hochladen'
+    placeholder: 'Datei hierher ziehen oder zum Durchsuchen klicken'
+    help: 'Maximale Größe und erlaubte Typen hängen von der Serverkonfiguration ab.'
 
 # Search form — keys: search_form.*
 search_form:
   q:
-    label: Search
-    placeholder: Type to search...
+    label: 'Suche'
+    placeholder: 'Suchbegriff eingeben …'
     help: ""
   category:
-    label: Category
-    placeholder: All categories
-    help: Filter by category.
+    label: 'Kategorie'
+    placeholder: 'Alle Kategorien'
+    help: 'Nach Kategorie filtern.'
 
 # Example form (card layout) — keys: example_form.*
 example_form:
   name:
-    label: Your name
-    placeholder: John Doe
+    label: 'Ihr Name'
+    placeholder: 'Max Mustermann'
     help: ""
   email:
-    label: Email
-    placeholder: john@example.com
+    label: 'E-Mail'
+    placeholder: 'max@beispiel.de'
     help: ""
   subject:
-    label: Subject
-    placeholder: What is this about?
+    label: 'Betreff'
+    placeholder: 'Worum geht es?'
     help: ""
   message:
-    label: Message
-    placeholder: Your message...
+    label: 'Nachricht'
+    placeholder: 'Ihre Nachricht …'
     help: ""
 
 # Form built in the controller — keys: controller_contact.*
 controller_contact:
   name:
-    label: Your name
-    placeholder: Enter your name
-    help: How we should call you.
+    label: 'Ihr Name'
+    placeholder: 'Geben Sie Ihren Namen ein'
+    help: 'Wie wir Sie ansprechen sollen.'
   email:
-    label: Email
-    placeholder: email@example.com
-    help: We will reply to this address.
+    label: 'E-Mail'
+    placeholder: 'email@beispiel.de'
+    help: 'Wir antworten an diese Adresse.'
   message:
-    label: Message
-    placeholder: Write your message...
-    help: Optional.
+    label: 'Nachricht'
+    placeholder: 'Schreiben Sie Ihre Nachricht …'
+    help: 'Optional.'
   notify_switch:
     label: E-Mail-Benachrichtigungen
     placeholder: ""
@@ -129,24 +129,24 @@ controller_contact:
     placeholder: ""
     help: '<code>addChoiceRadiosType()</code>.'
   budget_cents:
-    label: Budget
+    label: 'Budget'
     placeholder: ""
     help: '<code>addMoneyType()</code>.'
 
 # Nested form demo — keys: nested_form_demo.*
 nested_form_demo:
   full_name:
-    label: Full name
-    placeholder: Your name
+    label: 'Vollständiger Name'
+    placeholder: 'Ihr Name'
     help: ""
   email:
-    label: Email
-    placeholder: email@example.com
+    label: 'E-Mail'
+    placeholder: 'email@beispiel.de'
     help: ""
   address:
-    label: Address
+    label: 'Adresse'
     placeholder: ""
-    help: Nested AddressType form.
+    help: 'Eingebettetes AddressType-Formular.'
 
 # Data transformers demo — keys: data_transformers_demo.*
 data_transformers_demo:
@@ -240,144 +240,144 @@ ckeditor_demo:
 # Embedded AddressType — keys: address.*
 address:
   street:
-    label: Street
-    placeholder: Street name
+    label: 'Straße'
+    placeholder: 'Straßenname'
     help: ""
   number:
-    label: Number
+    label: 'Hausnummer'
     placeholder: "123"
     help: ""
   floor:
-    label: Floor
-    placeholder: Floor or door
+    label: 'Etage'
+    placeholder: 'Etage oder Tür'
     help: ""
   postal_code:
-    label: Postal code
+    label: 'Postleitzahl'
     placeholder: "01001"
     help: ""
   city:
-    label: City
-    placeholder: City name
+    label: 'Stadt'
+    placeholder: 'Name der Stadt'
     help: ""
   province:
-    label: Province
-    placeholder: Province or state
+    label: 'Provinz'
+    placeholder: 'Provinz oder Bundesland'
     help: ""
 
 # Multi-step wizard — keys: demo_wizard_<step>.* (see MultiStepFormBuilder)
 demo_wizard_contact:
   full_name:
-    label: Full name
-    placeholder: Your name
+    label: 'Vollständiger Name'
+    placeholder: 'Ihr Name'
     help: ""
   email:
-    label: Email
-    placeholder: email@example.com
+    label: 'E-Mail'
+    placeholder: 'email@beispiel.de'
     help: ""
 
 demo_wizard_address:
   street:
-    label: Street
-    placeholder: Street name
+    label: 'Straße'
+    placeholder: 'Straßenname'
     help: ""
   number:
-    label: Number
+    label: 'Hausnummer'
     placeholder: "123"
     help: ""
   floor:
-    label: Floor
-    placeholder: Floor or door
+    label: 'Etage'
+    placeholder: 'Etage oder Tür'
     help: ""
   postal_code:
-    label: Postal code
+    label: 'Postleitzahl'
     placeholder: "01001"
     help: ""
   city:
-    label: City
-    placeholder: City name
+    label: 'Stadt'
+    placeholder: 'Name der Stadt'
     help: ""
   province:
-    label: Province
-    placeholder: Province or state
+    label: 'Provinz'
+    placeholder: 'Provinz oder Bundesland'
     help: ""
 
 # Translations demo (A2lix) — keys: translations_demo.*
 translations_demo:
   translations:
-    label: Translations
+    label: 'Übersetzungen'
     placeholder: ""
     help: ""
 
 # Translation item — keys: translation_item.*
 translation_item:
   title:
-    label: Title
-    placeholder: Title in this language
+    label: 'Titel'
+    placeholder: 'Titel in dieser Sprache'
     help: ""
   description:
-    label: Description
-    placeholder: Description in this language
+    label: 'Beschreibung'
+    placeholder: 'Beschreibung in dieser Sprache'
     help: ""
 
 demo_wizard_nav:
-  contact: Contact
-  address: Address
-  confirm: Confirm
+  contact: 'Kontakt'
+  address: 'Adresse'
+  confirm: 'Bestätigen'
 
 demo_pages:
   layout:
-    default_title: 'Form Kit Bundle Demo'
+    default_title: 'Form-Kit-Bundle-Demo'
   common:
-    back: Back
-    submit: Submit
-    save: Save
-    submitted: Submitted
-    finish: Finish
-    next: Next
-    start_over: Start over
-    collected_data: 'Collected data'
-    bundle_usage: 'Bundle usage'
-    crop: Crop
+    back: 'Zurück'
+    submit: 'Absenden'
+    save: 'Speichern'
+    submitted: 'Gesendet'
+    finish: 'Abschließen'
+    next: 'Weiter'
+    start_over: 'Neu beginnen'
+    collected_data: 'Erfasste Daten'
+    bundle_usage: 'Verwendung des Bundles'
+    crop: 'Zuschneiden'
   index:
-    title: 'Form Kit Bundle Demo'
-    intro: 'Convention-based form options with flexible layouts. Each card links to a dedicated page with the form and an explanation of how it is built with the bundle.'
+    title: 'Form-Kit-Bundle-Demo'
+    intro: 'Konventionsbasierte Formularoptionen mit flexiblen Layouts. Jede Karte führt zu einer eigenen Seite mit dem Formular und einer Erklärung, wie es mit dem Bundle aufgebaut ist.'
   index_cards:
     form_type:
       title: FormType
-      description: '<code>DemoContactType</code> with <code>FormOptionsTrait</code>. Sections and grid layout.'
-      button: 'Open FormType'
+      description: '<code>DemoContactType</code> mit <code>FormOptionsTrait</code>. Abschnitte und Rasterlayout.'
+      button: 'FormType öffnen'
     controller_form:
-      title: 'Controller Form'
-      description: 'Built in the controller with <code>FormKitControllerTrait</code> (text, email, textarea, <strong>switch</strong>). Two-column layout.'
-      button: 'Open Controller Form'
+      title: 'Formular im Controller'
+      description: 'Im Controller mit <code>FormKitControllerTrait</code> aufgebaut (Text, E-Mail, Textbereich, <strong>Schalter</strong>). Zweispaltiges Layout.'
+      button: 'Controller-Formular öffnen'
     search:
-      title: 'Search Form'
-      description: 'Inline search bar: query + category filter. Convention <code>search_form.*</code>.'
-      button: 'Open Search'
+      title: 'Suchformular'
+      description: 'Suchleiste in einer Zeile: Suchbegriff + Kategoriefilter. Konvention <code>search_form.*</code>.'
+      button: 'Suche öffnen'
     example_form:
-      title: 'Example Form'
-      description: 'Card with grid: name, email, subject, message and submit actions.'
-      button: 'Open Example'
+      title: 'Beispielformular'
+      description: 'Karte mit Raster: Name, E-Mail, Betreff, Nachricht und Sende-Aktionen.'
+      button: 'Beispiel öffnen'
     dropzone:
       title: 'Dropzone (UX)'
-      description: 'Symfony UX Dropzone: drag-and-drop file upload.'
-      button: 'Open Dropzone'
+      description: 'Symfony UX Dropzone: Datei-Upload per Drag-and-drop.'
+      button: 'Dropzone öffnen'
     cropper:
       title: 'Cropper (UX)'
-      description: 'Symfony UX Cropper.js: crop an image with fixed aspect ratio.'
-      button: 'Open Cropper'
+      description: 'Symfony UX Cropper.js: ein Bild mit festem Seitenverhältnis zuschneiden.'
+      button: 'Cropper öffnen'
     translations:
-      title: Translations
-      description: 'Translatable fields per locale with tabs. One form_class per locale.'
-      button: 'Open Translations'
+      title: 'Übersetzungen'
+      description: 'Übersetzbare Felder je Sprache mit Tabs. Eine form_class pro Sprache.'
+      button: 'Übersetzungen öffnen'
     locale_tabs:
       title: 'Sprach-Tabs'
       description: 'Ein Tab pro Sprache: Übersetzungsentitäten, <code>feld_&lt;sprache&gt;</code>-Gruppen und eine JSON-Map (<code>TranslatableMapType</code>), gerendert von UiKit.'
       button: 'Sprach-Tabs öffnen'
     nested:
-      title: 'Nested Form'
-      description: 'Contact + embedded address. Form Kit conventions for nested types.'
-      button: 'Open Nested'
+      title: 'Verschachteltes Formular'
+      description: 'Kontakt + eingebettete Adresse. Form-Kit-Konventionen für verschachtelte Typen.'
+      button: 'Verschachteltes Formular öffnen'
     data_transformers:
       title: Datentransformatoren
       description: 'Geld, JSON, CSV, Bool und Schalter über Modell-Transformer von <code>FormOptionsTrait</code>.'
@@ -403,63 +403,63 @@ demo_pages:
       description: 'FOSCKEditorBundle (CKEditor 4): Rich-Text mit <code>addCKEditorField()</code> und benannten Toolbar-Konfigurationen.'
       button: CKEditor öffnen
     ux_autocomplete:
-      title: Autocomplete
+      title: 'Autocomplete'
       description: '<strong>Symfony UX Autocomplete</strong> (Tom Select): <code>ChoiceType</code> mit <code>autocomplete =&gt; true</code> und <code>addAutocompleteField()</code>.'
       button: Autocomplete öffnen
     multistep:
-      title: Multi-step
-      description: 'Wizard from array: contact → address → confirm. Session-based steps.'
-      button: 'Open Multi-step'
+      title: 'Mehrstufig'
+      description: 'Assistent aus einem Array: Kontakt → Adresse → Bestätigung. Schritte auf Sitzungsbasis.'
+      button: 'Mehrstufiges Formular öffnen'
     nowo_special_fields:
       title: 'Nowo-Spezialfelder'
       description: 'Ökosystem-Widgets: OTP, Telefon, Passwort mit Toggle/Stärke, Icon-Auswahl, Tiptap, CKEditor 5 — über <code>addWithDefaults()</code> und Form-Kit-Konventionen.'
       button: 'Nowo-Felder öffnen'
   form_type:
-    page_title: 'FormType Example - Form Kit Demo'
-    heading: 'FormType Example'
-    intro: 'Form defined in <code>App\Form\DemoContactType</code> with <code>FormOptionsTrait</code>. Layout: sections and two-column grid to show how the same form can be structured for clarity.'
-    usage_1: '<code>DemoContactType</code> uses <code>FormOptionsTrait</code> and <code>buildFormFromArray()</code>; <code>FormOptionsMerger</code> is injected by the bundle’s compiler pass.'
-    usage_2: 'Convention: labels, placeholders and help come from keys <code>demo_contact.field.label</code>, <code>.placeholder</code>, <code>.help</code> in the configured translation domain.'
-    usage_3: 'No need to configure each type by hand: one form type with the trait and translations handle the rest.'
+    page_title: 'FormType-Beispiel - Form-Kit-Demo'
+    heading: 'FormType-Beispiel'
+    intro: 'In <code>App\Form\DemoContactType</code> mit <code>FormOptionsTrait</code> definiertes Formular. Layout: Abschnitte und zweispaltiges Raster, um zu zeigen, wie dasselbe Formular übersichtlich strukturiert werden kann.'
+    usage_1: '<code>DemoContactType</code> verwendet <code>FormOptionsTrait</code> und <code>buildFormFromArray()</code>; <code>FormOptionsMerger</code> wird vom Compiler-Pass des Bundles injiziert.'
+    usage_2: 'Konvention: Labels, Platzhalter und Hilfetexte stammen aus den Schlüsseln <code>demo_contact.field.label</code>, <code>.placeholder</code>, <code>.help</code> in der konfigurierten Übersetzungsdomäne.'
+    usage_3: 'Keine manuelle Konfiguration jedes Typs nötig: ein Formulartyp mit dem Trait und den Übersetzungen erledigt den Rest.'
   controller_form:
-    page_title: 'Controller Form Example - Form Kit Demo'
-    heading: 'Controller Form Example'
+    page_title: 'Controller-Formular-Beispiel - Form-Kit-Demo'
+    heading: 'Controller-Formular-Beispiel'
     intro: 'Form built in <code>FormKitDemoController::createControllerForm()</code> with <code>FormKitControllerTrait</code> helpers (<code>addTextType</code>, …, <code>addSwitchType</code>). Same convention-based labels/placeholders; layout: two columns + full-width message + switch.'
-    usage_1: 'The controller injects <code>FormOptionsMerger</code> and <code>FormTypeMap</code> and calls <code>add*Type()</code> helpers (same merge as FormTypes with the trait).'
+    usage_1: 'Der Controller injiziert <code>FormOptionsMerger</code> und <code>FormTypeMap</code> und ruft die <code>add*Type()</code>-Helfer auf (gleiche Zusammenführung wie bei FormTypes mit dem Trait).'
     usage_2: 'Convention: keys <code>controller_contact.name</code>, <code>.email</code>, <code>.message</code>, <code>.notify_switch.*</code> for label/placeholder/help.'
-    usage_3: 'Useful when the form is built in the controller (no FormType class) but you want the same bundle conventions.'
+    usage_3: 'Nützlich, wenn das Formular im Controller aufgebaut wird (ohne FormType-Klasse), Sie aber dieselben Bundle-Konventionen nutzen möchten.'
   search:
-    page_title: 'Search Form - Form Kit Demo'
-    heading: 'Search Form'
-    intro: 'Inline search bar using Form Kit conventions (<code>search_form.*</code>). Same form, different layout: single bar with filter and action.'
+    page_title: 'Suchformular - Form-Kit-Demo'
+    heading: 'Suchformular'
+    intro: 'Suchleiste in einer Zeile nach den Form-Kit-Konventionen (<code>search_form.*</code>). Dasselbe Formular, anderes Layout: eine einzelne Leiste mit Filter und Aktion.'
     in_word: in
-    aria_query: 'Search query'
-    aria_category: Category
-    button_submit: Search
+    aria_query: 'Suchbegriff'
+    aria_category: 'Kategorie'
+    button_submit: 'Suchen'
   example:
-    page_title: 'Example Form - Form Kit Demo'
-    heading: 'Example Form'
-    intro: 'Card layout with grid: two columns for contact fields, full width for subject and message. Form Kit conventions (<code>example_form.*</code>).'
-    send: Send
-    send_copy: 'Send copy'
-    submitted_line: 'name = %name%, email = %email%, subject = %subject%'
+    page_title: 'Beispielformular - Form-Kit-Demo'
+    heading: 'Beispielformular'
+    intro: 'Kartenlayout mit Raster: zwei Spalten für die Kontaktfelder, volle Breite für Betreff und Nachricht. Form-Kit-Konventionen (<code>example_form.*</code>).'
+    send: 'Senden'
+    send_copy: 'Kopie senden'
+    submitted_line: 'Name = %name%, E-Mail = %email%, Betreff = %subject%'
   dropzone:
-    page_title: 'Dropzone - Form Kit Demo'
+    page_title: 'Dropzone - Form-Kit-Demo'
     heading: 'Dropzone (Symfony UX)'
-    intro: 'Uses the bundle with a <strong>custom type layer</strong>: <code>DropzoneFieldType</code> extends <code>AbstractFormKitWrappedType</code> and wraps UX Dropzone. Label, placeholder and help come from convention (<code>dropzone_demo.document.*</code>).'
-    default_image_heading: 'Default image (from public/images/demo-sample.jpg)'
-    demo_sample_alt: 'Demo sample'
-    upload_button: Upload
-    uploaded_prefix: Uploaded
+    intro: 'Nutzt das Bundle mit einer <strong>eigenen Typschicht</strong>: <code>DropzoneFieldType</code> erweitert <code>AbstractFormKitWrappedType</code> und kapselt UX Dropzone. Label, Platzhalter und Hilfetext stammen aus der Konvention (<code>dropzone_demo.document.*</code>).'
+    default_image_heading: 'Standardbild (aus public/images/demo-sample.jpg)'
+    demo_sample_alt: 'Demo-Beispiel'
+    upload_button: 'Hochladen'
+    uploaded_prefix: 'Hochgeladen'
   cropper:
-    page_title: 'Cropper - Form Kit Demo'
+    page_title: 'Cropper - Form-Kit-Demo'
     heading: 'Cropper (Symfony UX)'
-    intro: 'Symfony UX Cropper.js: crop an image with a fixed aspect ratio. Usable as <code>cropper</code> type in Form Kit’s FormTypeMap when the package is installed.'
-    sample_missing_title: 'Sample image missing.'
-    sample_missing_body: 'Place an image at <code>public/images/demo-sample.jpg</code> to try the cropper (e.g. copy any JPG there or run <code>cp public/images/demo-sample.png public/images/demo-sample.jpg</code> if you have a PNG).'
-    expected_path: 'Expected path:'
-    crop_submitted_title: 'Crop submitted.'
-    crop_submitted_body: 'In a real app you would save the cropped image via <code>$crop->getCroppedImage()</code> or <code>getCroppedThumbnail()</code>.'
+    intro: 'Symfony UX Cropper.js: ein Bild mit festem Seitenverhältnis zuschneiden. Als Typ <code>cropper</code> in der FormTypeMap von Form Kit nutzbar, wenn das Paket installiert ist.'
+    sample_missing_title: 'Beispielbild fehlt.'
+    sample_missing_body: 'Legen Sie ein Bild unter <code>public/images/demo-sample.jpg</code> ab, um den Cropper auszuprobieren (z. B. eine beliebige JPG-Datei dorthin kopieren oder <code>cp public/images/demo-sample.png public/images/demo-sample.jpg</code> ausführen, falls Sie ein PNG haben).'
+    expected_path: 'Erwarteter Pfad:'
+    crop_submitted_title: 'Zuschnitt gesendet.'
+    crop_submitted_body: 'In einer echten Anwendung würden Sie das zugeschnittene Bild über <code>$crop->getCroppedImage()</code> oder <code>getCroppedThumbnail()</code> speichern.'
   locale_tabs:
     page_title: 'Sprach-Tabs - Form Kit Demo'
     heading: 'Sprach-Tabs'
@@ -473,11 +473,11 @@ demo_pages:
     locale_pool_hint: 'Aktive Sprachen in dieser Session: %pool%.'
     reshuffle: 'Neue zufällige Auswahl'
   nested:
-    page_title: 'Nested Form - Form Kit Demo'
-    heading: 'Nested Form'
-    intro: 'Form with embedded nested form: contact (name, email) + address (street, number, floor, postal code, city, province). Same Form Kit conventions for parent and nested type.'
-    section_contact: Contact
-    section_address: Address
+    page_title: 'Verschachteltes Formular - Form-Kit-Demo'
+    heading: 'Verschachteltes Formular'
+    intro: 'Formular mit eingebettetem Unterformular: Kontakt (Name, E-Mail) + Adresse (Straße, Hausnummer, Etage, Postleitzahl, Stadt, Provinz). Dieselben Form-Kit-Konventionen für übergeordneten und verschachtelten Typ.'
+    section_contact: 'Kontakt'
+    section_address: 'Adresse'
   data_transformers:
     page_title: 'Datentransformatoren - Form Kit Demo'
     heading: Datentransformatoren
@@ -525,14 +525,14 @@ demo_pages:
     named_heading: 'Benannte Config (wide)'
     named_intro: 'Kontrollgröße mit dem Default-Profil vergleichen.'
   ckeditor:
-    page_title: 'CKEditor - Form Kit Demo'
+    page_title: 'CKEditor - Form-Kit-Demo'
     heading: CKEditor
     intro: 'Rich-Text mit <strong>FOSCKEditorBundle</strong> (CKEditor 4). Nutzen Sie <code>addCKEditorField()</code> / <code>addCKEditorFieldType()</code> für dieselben Form-Kit-Konventionen. Ausführen: <code>composer require friendsofsymfony/ckeditor-bundle</code> und <code>bin/console ckeditor:install</code>.'
     usage_1: 'Zwei Felder: Standardkonfiguration (<code>standard</code>-Toolbar) und zweite Konfiguration (<code>minimal</code> → <code>basic</code>-Toolbar) über <code>config_name</code>.'
     usage_2: 'CKEditor-Assets liegen unter <code>public/bundles/fosckeditor/</code> nach Installation und <code>assets:install</code>.'
     normalized_title: 'Gesendete Daten (normalisiert)'
   ux_autocomplete:
-    page_title: 'UX Autocomplete - Form Kit Demo'
+    page_title: 'UX Autocomplete - Form-Kit-Demo'
     heading: 'UX Autocomplete'
     intro: 'Live-<strong>Symfony UX Autocomplete</strong> (Tom Select) auf <code>ChoiceType</code>: lokale Auswahlmöglichkeiten mit Suche. Form Kit nutzt <code>addAutocompleteField($builder, ''name'', ChoiceType::class, [''autocomplete'' =&gt; true, …])</code> mit denselben Label-/Hilfe-Konventionen.'
     usage_1: 'Feld <code>topic</code> (optional): eine Auswahl aus einer kurzen Liste.'
@@ -540,12 +540,12 @@ demo_pages:
     usage_3: 'Für Ajax-Entity-Suche: Doctrine installieren und einen Typ mit <code>BaseEntityAutocompleteType</code> (<a href="https://symfony.com/bundles/ux-autocomplete/current/index.html" rel="noopener">Doku</a>); FQCN an <code>addAutocompleteField()</code> übergeben.'
     normalized_title: 'Gesendete Daten (normalisiert)'
   multistep:
-    page_title: 'Multi-step Form - Form Kit Demo'
-    heading: 'Multi-step Form'
-    intro: 'Wizard built from an array: contact → address → confirm. Same Form Kit conventions per step (<code>demo_wizard_contact.*</code>, <code>demo_wizard_address.*</code>).'
+    page_title: 'Mehrstufiges Formular - Form-Kit-Demo'
+    heading: 'Mehrstufiges Formular'
+    intro: 'Assistent aus einem Array aufgebaut: Kontakt → Adresse → Bestätigung. Dieselben Form-Kit-Konventionen je Schritt (<code>demo_wizard_contact.*</code>, <code>demo_wizard_address.*</code>).'
   multistep_summary:
-    page_title: 'Multi-step Summary - Form Kit Demo'
-    heading: 'Multi-step — Summary'
+    page_title: 'Mehrstufig, Zusammenfassung - Form-Kit-Demo'
+    heading: 'Mehrstufig — Zusammenfassung'
   nowo_special_fields:
     page_title: 'Nowo-Spezialfelder - Form Kit Demo'
     heading: 'Nowo-Spezialfelder'
@@ -565,15 +565,15 @@ nowo_special_fields_demo:
     placeholder: ''
     help: 'Internationale Nummer mit Vorwahlwahl (<code>nowo-tech/phone-input-bundle</code>).'
   secret_password:
-    label: 'Password (toggle only)'
+    label: 'Passwort (nur Umschalter)'
     placeholder: ''
     help: 'Show/hide only — PasswordToggleBundle.'
   strength_only_password:
-    label: 'Password (strength only)'
+    label: 'Passwort (nur Stärkeanzeige)'
     placeholder: ''
     help: 'PasswordStrengthType with use_password_toggle => false.'
   combined_password:
-    label: 'Password (toggle + strength)'
+    label: 'Passwort (Umschalter + Stärkeanzeige)'
     placeholder: ''
     help: '<strong>Combined:</strong> PasswordStrengthType + use_password_toggle => true.'
   app_icon:
@@ -638,54 +638,54 @@ autocomplete_demo:
 # --- Fallback EN keys (demo completeness for new pages) ---
 build_time_conditional_demo:
   account_type:
-    label: Account type (fixed)
+    label: 'Kontotyp (fest)'
     placeholder: ""
-    help: 'Set via form option <code>account_mode</code> at build time (disabled in UI).'
+    help: 'Beim Aufbau über die Formularoption <code>account_mode</code> gesetzt (in der Oberfläche deaktiviert).'
   company_name:
-    label: Company name
-    placeholder: Acme Ltd
-    help: 'Added only when <code>account_mode === company</code>.'
+    label: 'Firmenname'
+    placeholder: 'Muster GmbH'
+    help: 'Wird nur hinzugefügt, wenn <code>account_mode === company</code>.'
   first_name:
-    label: First name
-    placeholder: Jane
-    help: 'Added only when <code>account_mode === individual</code>.'
+    label: 'Vorname'
+    placeholder: 'Erika'
+    help: 'Wird nur hinzugefügt, wenn <code>account_mode === individual</code>.'
   last_name:
-    label: Last name
+    label: 'Nachname'
     placeholder: Doe
-    help: 'Added only when <code>account_mode === individual</code>.'
+    help: 'Wird nur hinzugefügt, wenn <code>account_mode === individual</code>.'
 
 snake_case_kit_demo:
   full_name:
-    label: Full name
-    placeholder: Jane Doe
-    help: '<code>addTextField()</code> via <code>FormKitAbstractType</code>.'
+    label: 'Vollständiger Name'
+    placeholder: 'Erika Mustermann'
+    help: '<code>addTextField()</code> über <code>FormKitAbstractType</code>.'
   email_address:
-    label: Email
-    placeholder: you@example.com
+    label: 'E-Mail'
+    placeholder: 'sie@beispiel.de'
     help: '<code>addEmailField()</code>.'
   topic:
-    label: Topic
+    label: 'Thema'
     placeholder: ""
-    help: '<code>buildFieldsFromArray()</code> with snake_case type <code>choice</code>.'
+    help: '<code>buildFieldsFromArray()</code> mit dem snake_case-Typ <code>choice</code>.'
   notes:
-    label: Notes
-    placeholder: Optional notes
-    help: 'Snake_case type <code>textarea</code>.'
+    label: 'Notizen'
+    placeholder: 'Optionale Notizen'
+    help: 'snake_case-Typ <code>textarea</code>.'
   priority:
-    label: Priority
+    label: 'Priorität'
     placeholder: ""
     help: '<code>addNamedField(..., ''integer'', …)</code>.'
 
 named_config_demo:
   title:
-    label: Title
-    placeholder: Large control title
-    help: 'Uses config profile <code>wide</code> (<code>nowo-ui-input--wide</code>).'
+    label: 'Titel'
+    placeholder: 'Titel mit großem Eingabefeld'
+    help: 'Nutzt das Konfigurationsprofil <code>wide</code> (<code>nowo-ui-input--wide</code>).'
   summary:
-    label: Summary
-    placeholder: Short summary
+    label: 'Zusammenfassung'
+    placeholder: 'Kurze Zusammenfassung'
     help: '<code>#[FormKitConfig(''wide'')]</code>.'
   internal_code:
-    label: Internal code
+    label: 'Interner Code'
     placeholder: ""
-    help: 'Convention disabled with <code>label/placeholder/help =&gt; false</code>.'
+    help: 'Konvention deaktiviert mit <code>label/placeholder/help =&gt; false</code>.'

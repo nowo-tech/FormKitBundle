@@ -75,6 +75,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Demo: the German demo catalogue (`demo/symfony8/translations/messages.de.yaml`) still carried about 200 English texts (the contact, address, search and wizard forms, every demo page title, heading and introduction), and the French one about 30 (the conditional-fields, password and named-config demos). They are translated now. Demo only, no bundle change.
+
+### Tests
+
+- A regression test checks that the de, es and fr demo catalogues have no English copies, apart from language-neutral values (product names, identifiers, one or two words).
+
 ## [2.24.0] - 2026-11-22
 
 Release note: this minor needs UiKit 2.64.0 (the `option_cards` partial). The release waits for the UiKit tag; then run
