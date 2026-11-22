@@ -2,8 +2,8 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/form-kit-bundle`  
-**Last audited**: 2026-11-17  
-**Audit command**: `find src -type f ! -name '*.test.ts' | wc -l` (105 production units; see [Coverage summary](#coverage-summary))
+**Last audited**: 2026-11-22  
+**Audit command**: `find src -type f ! -name '*.test.ts' | wc -l` (108 production units; see [Coverage summary](#coverage-summary))
 
 ## Symfony config
 
@@ -138,8 +138,10 @@
 | `Form/Extension/ChoiceCardsExtension.php` | `choice_cards` option ([spec 004](../004-field-widgets/spec.md)) | FR-FORM-022 |
 | `Form/Extension/SwitchExtension.php` | `switch` option ([spec 004](../004-field-widgets/spec.md)) | FR-FORM-022 |
 | `Form/Extension/CharCounterExtension.php` | `char_counter` option ([spec 004](../004-field-widgets/spec.md)) | FR-FORM-022 |
+| `Form/Extension/UiWidgetExtension.php` | `ui_widget` option (`option_cards`) on `ChoiceType` (2.24) | FR-FORM-023 |
 | `Resources/views/form/field_widgets_theme.html.twig` | Field widgets form theme | FR-FORM-022 |
 | `Resources/views/form/choice_blocks.html.twig` | Choice cards blocks | FR-FORM-022 |
+| `Resources/views/form/_option_cards_field.html.twig` | Expanded choice drawn with UiKit's `option_cards` partial (2.24); neutral cards without UiKit 2.64+ | FR-FORM-023 |
 | `Resources/public/field-widgets.css` | Field widgets styles | FR-FORM-022 |
 
 ## Help modal nonce
@@ -169,7 +171,8 @@
 
 Co-located Vitest files are **excluded** from the inventory (test code, not shipped behaviour; they are listed only for traceability):
 `Resources/assets/src/help-modal.test.ts` (FR-ASSET-001), `Resources/assets/src/logger.test.ts` (FR-ASSET-001),
-`Resources/assets/stimulus-peers/combobox_controller.test.ts` (FR-ASSET-003).
+`Resources/assets/stimulus-peers/combobox_controller.test.ts` (FR-ASSET-003), `Resources/assets/stimulus-peers/motion.test.ts` (FR-ASSET-003),
+`Resources/assets/enhancers/char-counter.test.ts` (FR-FORM-022).
 
 ## Translations
 
@@ -189,6 +192,7 @@ Co-located Vitest files are **excluded** from the inventory (test code, not ship
 | --- | --- | --- |
 | `Twig/CsrfActionFormExtension.php` | `csrf_action_form()` Twig function | FR-TWIG-002 |
 | `Twig/LocaleTabsTwigExtension.php` | `nowo_form_kit_locale_tabs()` / `nowo_form_kit_ui_kit_locale_tabs()` | FR-TWIG-003, FR-FORM-013 |
+| `Twig/UiKitPartialTwigExtension.php` | `nowo_form_kit_ui_partial(name)`: UiKit theme partial template or null (2.24) | FR-TWIG-004, FR-FORM-023 |
 
 ## Twig views
 
@@ -220,12 +224,12 @@ Co-located Vitest files are **excluded** from the inventory (test code, not ship
 | Form — static & translation types | 5 | 5 |
 | Form — multi-step wizard | 3 | 3 |
 | Ports (interfaces) | 9 | 9 |
-| Field options and widgets | 10 | 10 |
+| Field options and widgets | 12 | 12 |
 | Help modal nonce | 4 | 4 |
 | Frontend assets (incl. 2 build outputs) | 11 | 11 |
 | Translations | 7 | 7 |
-| Twig extensions | 2 | 2 |
+| Twig extensions | 3 | 3 |
 | Twig views | 9 | 9 |
-| **Total production sources** | **105** | **105** |
+| **Total production sources** | **108** | **108** |
 
-Excluded from the total: 3 co-located Vitest files (`*.test.ts`), so `find src -type f | wc -l` = 108 = 105 + 3.
+Excluded from the total: 5 co-located Vitest files (`*.test.ts`), so `find src -type f | wc -l` = 113 = 108 + 5.
