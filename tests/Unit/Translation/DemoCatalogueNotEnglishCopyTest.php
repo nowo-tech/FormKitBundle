@@ -53,13 +53,13 @@ final class DemoCatalogueNotEnglishCopyTest extends TestCase
     #[DataProvider('localeProvider')]
     public function demoMessagesAreNotEnglishCopies(string $locale): void
     {
-        $english = self::flatten(self::load('en'));
+        $english = self::flatten($this->load('en'));
         $copies  = [];
-        foreach (self::flatten(self::load($locale)) as $key => $value) {
+        foreach (self::flatten($this->load($locale)) as $key => $value) {
             if (($english[$key] ?? null) !== $value || in_array($key, self::ALLOWED_KEYS, true)) {
                 continue;
             }
-            if (!self::isLanguageNeutral($value)) {
+            if (!$this->isLanguageNeutral($value)) {
                 $copies[] = sprintf('%s: "%s"', $key, $value);
             }
         }
@@ -67,7 +67,7 @@ final class DemoCatalogueNotEnglishCopyTest extends TestCase
         self::assertSame([], $copies, sprintf("Untranslated (English) demo messages in %s:\n%s", $locale, implode("\n", $copies)));
     }
 
-    private static function isLanguageNeutral(string $value): bool
+    private function isLanguageNeutral(string $value): bool
     {
         $text  = (string) preg_replace('~<code>.*?</code>~s', '', $value);
         $words = preg_split('/\s+/', trim(strip_tags($text)), -1, PREG_SPLIT_NO_EMPTY) ?: [];
@@ -77,7 +77,7 @@ final class DemoCatalogueNotEnglishCopyTest extends TestCase
     }
 
     /** @return array<mixed> */
-    private static function load(string $locale): array
+    private function load(string $locale): array
     {
         $data = Yaml::parseFile(dirname(__DIR__, 3) . '/demo/symfony8/translations/messages.' . $locale . '.yaml');
         self::assertIsArray($data);
