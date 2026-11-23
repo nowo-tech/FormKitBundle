@@ -17,6 +17,7 @@ This document outlines the planned direction for Form Kit Bundle. Items are grou
   - [Generic types for common admin screens](#generic-types-for-common-admin-screens)
   - [Routed elsewhere](#routed-elsewhere)
 - [Non-goals](#non-goals)
+- [Requested for CrmKit (Beacon spec 254, 2026-11-23)](#requested-for-crmkit-beacon-spec-254-2026-11-23)
 
 ---
 
@@ -158,3 +159,19 @@ need a script ship as an optional Stimulus peer or IIFE (the first one, `char-co
 ---
 
 If you want to influence the roadmap, open an issue or a discussion in the project repository.
+
+## Requested for CrmKit (Beacon spec 254, 2026-11-23)
+
+Beacon spec 254 "CRM HubSpot parity" (owner decision D-20261123-11) and the owner's reuse rule of 2026-11-23 ("if a
+nowo bundle already does, or nearly does, a CRM capability, use it or extend it") send these pieces here instead of
+building CRM-only copies in CrmKitBundle. Each piece is opt-in, generic (no CRM dependency) and gets its own contract
+revision before it is built. Versions are planned next minors and move if this bundle releases something else first.
+Plan and reuse matrix: [CrmKitBundle docs/ROADMAP.md](https://github.com/nowo-tech/CrmKitBundle/blob/main/docs/ROADMAP.md#reuse-matrix).
+
+| Version | Piece | Used by |
+| --- | --- | --- |
+| 2.26.0 | **Honeypot field extension**: a hidden, label-less trap field, `autocomplete=off`, rejected silently server side, with the same answer as a success | CrmKit E-2 web forms; any public form |
+| 2.26.0 | **Embed mode for anonymous forms**: a signed, expiring form token bound to the form and an allowed-origins list, for forms embedded on another site by script or iframe (`stateless_csrf` relies on same-origin `Origin` / `Referer`, so it cannot cover them) | CrmKit E-2 |
+
+Reused as they are: `buildFormFromArray()` (forms defined as data) and `stateless_csrf` for same-origin anonymous
+forms. AltchaTypeBundle stays the proof-of-work field.
