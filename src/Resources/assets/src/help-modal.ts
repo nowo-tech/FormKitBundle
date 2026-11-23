@@ -44,8 +44,9 @@ export type HelpModalData = {
 
 declare const __FORM_KIT_HELP_MODAL_BUILD_TIME__: string;
 
+// Bare identifier on purpose: Vite `define` does not replace `globalThis.<name>` member accesses.
 const resolvedBuildTime =
-  (globalThis as Record<string, unknown>).__FORM_KIT_HELP_MODAL_BUILD_TIME__ as string | undefined;
+  typeof __FORM_KIT_HELP_MODAL_BUILD_TIME__ !== 'undefined' ? __FORM_KIT_HELP_MODAL_BUILD_TIME__ : undefined;
 
 /**
  * Diagnostics are off by default; set `window.NOWO_FORM_KIT_DEBUG = true` before the script loads to enable them.

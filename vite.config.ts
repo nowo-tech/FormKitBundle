@@ -8,18 +8,23 @@ import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 
+/** Every directory an entry bundles (help-modal: src/, char-counter: enhancers/). */
+const BUNDLED_SOURCE_DIRS = ['src/Resources/assets/src', 'src/Resources/assets/enhancers'];
+
 /**
  * Deterministic source hash: a hash of the TypeScript/CSS sources and pnpm-lock.yaml. It only changes when the code or
  * the dependencies change; it is the change detector of buildTimeLabel() below.
  */
-function sourceBuildId(dir: string): string {
-  const root = new URL(`${dir}/`, import.meta.url);
+function sourceBuildId(dirs: string[]): string {
   const hash = createHash('sha256');
+  for (const dir of dirs) {
+  const root = new URL(`${dir}/`, import.meta.url);
   const files = (readdirSync(root, { recursive: true }) as string[])
     .filter((file) => !file.includes('.test.') && statSync(new URL(file, root)).isFile())
     .sort();
   for (const file of files) {
-    hash.update(file).update(readFileSync(new URL(file, root)));
+    hash.update(`${dir}/${file}`).update(readFileSync(new URL(file, root)));
+  }
   }
   hash.update(readFileSync(new URL('pnpm-lock.yaml', import.meta.url)));
 
@@ -33,8 +38,8 @@ function sourceBuildId(dir: string): string {
  * differs, the new hash is stored with the current UTC minute. Commit `build-info.json` with the rebuilt assets: a CI
  * dist-freshness rebuild of a clean checkout then reproduces the same bytes, and fails visibly if it was forgotten.
  */
-function buildTimeLabel(dir: string): string {
-  const sourceHash = sourceBuildId(dir);
+function buildTimeLabel(dirs: string[]): string {
+  const sourceHash = sourceBuildId(dirs);
   const file = new URL('build-info.json', import.meta.url);
   let info: { sourceHash?: string; builtAt?: string } = {};
   try {
@@ -53,7 +58,7 @@ function buildTimeLabel(dir: string): string {
 
 const charCounter = defineConfig({
   define: {
-    __FORM_KIT_HELP_MODAL_BUILD_TIME__: JSON.stringify(buildTimeLabel('src/Resources/assets/src')),
+    __FORM_KIT_HELP_MODAL_BUILD_TIME__: JSON.stringify(buildTimeLabel(BUNDLED_SOURCE_DIRS)),
   },
   build: {
     outDir: 'src/Resources/public',
@@ -72,7 +77,7 @@ const charCounter = defineConfig({
 
 const helpModal = defineConfig({
   define: {
-    __FORM_KIT_HELP_MODAL_BUILD_TIME__: JSON.stringify(buildTimeLabel('src/Resources/assets/src')),
+    __FORM_KIT_HELP_MODAL_BUILD_TIME__: JSON.stringify(buildTimeLabel(BUNDLED_SOURCE_DIRS)),
   },
   build: {
     outDir: 'src/Resources/public',

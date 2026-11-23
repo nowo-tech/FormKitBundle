@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const ENTRIES = [
   ['./char-counter-entry', 'form-kit/char-counter'],
+  ['../src/help-modal', 'form-kit-help-modal'],
 ] as const;
 
 describe.each(ENTRIES)('%s', (entry, name) => {
