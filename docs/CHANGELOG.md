@@ -78,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - CI: a new `release-gates` job runs `make rector-dry`, `validate-phpdoc`, `validate-translations` and `check-twig-extra` (full mode only, one matrix cell each), so a gate cannot fail only at release time. CI only, no change to the shipped bundle.
+- **Console**: the script-loaded line of `help-modal.js` now reads `📦 [form-kit-help-modal] script loaded, build: 2026-11-23 14:05 UTC`: a readable UTC build time instead of the opaque source hash. The time comes from the committed `build-info.json` (`{sourceHash, builtAt}`): the source hash stays the change detector, `builtAt` is reused while the sources are unchanged and renewed only when they change, so rebuilding unchanged sources never rewrites the committed assets (no wall-clock stamp, no git date).
 
 ### Fixed
 
@@ -87,6 +88,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Tests
 
 - A regression test checks that the de, es and fr demo catalogues have no English copies, apart from language-neutral values (product names, identifiers, one or two words).
+
+### Added
+
+- **Console**: quiet switch for the script-loaded line: `<html data-nowo-console="quiet">` or `globalThis.NOWO_CONSOLE = 'quiet'` prints nothing. The default is unchanged.
 
 ## [2.24.0] - 2026-11-22
 
