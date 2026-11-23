@@ -47,6 +47,7 @@
   - [Bootstrap 5 example](#bootstrap-5-example)
   - [Tailwind CSS example](#tailwind-css-example)
 - [CSRF-only and GET filter forms](CSRF.md)
+- [Browser console](#browser-console)
 
 ## Usage strategies
 
@@ -1514,3 +1515,7 @@ Recommended Tailwind submit button:
   Save
 </button>
 ```
+
+## Browser console
+
+The bundle's script logs one line when it loads (`📦 [form-kit-help-modal] script loaded, build: 2026-11-23 14:05 UTC`) so a developer can tell which build a page runs. To silence it, set `<html data-nowo-console="quiet">` or `globalThis.NOWO_CONSOLE = 'quiet'` before the script loads; nothing is printed then. The default is unchanged.

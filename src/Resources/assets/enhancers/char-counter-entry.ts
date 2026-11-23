@@ -6,6 +6,13 @@
  */
 
 import { install, scan } from './char-counter';
+import { createBundleLogger } from '../src/logger';
+
+declare const __FORM_KIT_HELP_MODAL_BUILD_TIME__: string;
+
+createBundleLogger('form-kit/char-counter', {
+  buildTime: typeof __FORM_KIT_HELP_MODAL_BUILD_TIME__ !== 'undefined' ? __FORM_KIT_HELP_MODAL_BUILD_TIME__ : undefined,
+}).scriptLoaded();
 
 type CharCounterApi = { refresh(root?: ParentNode): void };
 
