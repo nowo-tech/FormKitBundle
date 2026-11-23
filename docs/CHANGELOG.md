@@ -76,6 +76,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Console**: `help-modal.js` now shows its build time. The script read `globalThis.__FORM_KIT_HELP_MODAL_BUILD_TIME__`, which Vite `define` does not replace, so the value was never injected; it now uses the bare identifier. The source hash in `build-info.json` also covers `enhancers/` (previously only `src/`), so changes there no longer keep a stale `builtAt`. A test checks that the built `help-modal.js` and `char-counter.js` contain the `builtAt` literal.
+
 ## [2.25.0] - 2026-11-23
 
 ### Changed
