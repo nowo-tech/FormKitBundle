@@ -145,6 +145,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 - **FR-TWIG-001**: Form renderer, static blocks, and framework-specific help-modal shells. `form_label_content` must treat `required` as optional (Submit/Button/Reset widgets do not define it) before appending `required_label_suffix`.
 - **FR-TWIG-003**: `LocaleTabsTwigExtension` registers `nowo_form_kit_locale_tabs(field, options)` (groups child views per locale in `children`, `entries` or `fields` mode, marks invalid leaves with `aria-invalid`) and `nowo_form_kit_ui_kit_locale_tabs()` (UiKit 2.5+ partial when installed, else null → neutral markup), configured by `nowo_form_kit.locale_tabs.*`.
 - **FR-TWIG-004**: `UiKitPartialTwigExtension` registers `nowo_form_kit_ui_partial(name)` (2.24): the template of a UiKit theme partial (today only `option_cards`, UiKit 2.64+) resolved through UiKit's `nowo_ui_partial`, or `null` when UiKit is missing or too old so the form theme falls back to the neutral markup. Stateless.
+- **FR-ASSET-004**: Each shipped script (`help-modal.js` as `form-kit-help-modal`, `char-counter.js` as `form-kit/char-counter`) prints one `📦 [name] script loaded, build: <date> UTC` console line through `logger.ts` (REQ-ASSETS-005); the label is injected by Vite as `__FORM_KIT_HELP_MODAL_BUILD_TIME__` from the committed `build-info.json` (`build-info.d.ts` types that import). `<html data-nowo-console="quiet">` or `globalThis.NOWO_CONSOLE = 'quiet'` silences it; level methods are no-ops unless debug is on.
 - **FR-BUILD-001**: `src/Resources/public/help-modal.js` is the committed Vite build output (IIFE, deterministic build id) of `src/Resources/assets/src/help-modal.ts` + `logger.ts`; it is rebuilt with `make assets` and never edited by hand.
 
 ### Security
@@ -160,7 +161,7 @@ Symfony bundle to **reduce repetitive form field options**: convention-based tra
 
 ## Success Criteria
 
-- **SC-001**: **105/105** production files mapped in [`code-inventory.md`](code-inventory.md) (`find src -type f ! -name '*.test.ts' | wc -l` = 105; the 3 co-located Vitest files are excluded).
+- **SC-001**: **109/109** production files mapped in [`code-inventory.md`](code-inventory.md) (`find src -type f ! -name '*.test.ts' | wc -l` = 109; the 8 co-located Vitest files are excluded).
 - **SC-002**: Config keys match [`docs/CONFIGURATION.md`](../../docs/CONFIGURATION.md).
 - **SC-003**: `composer qa` / CI green.
 - **SC-004**: Bound-builder helpers and `resolveFieldOptions` are covered by unit tests; conditional-field patterns are documented in [`docs/USAGE.md`](../../docs/USAGE.md) and demonstrated in demos.
