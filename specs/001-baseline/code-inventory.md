@@ -2,8 +2,8 @@
 
 **Baseline spec**: [`spec.md`](spec.md)  
 **Package**: `nowo-tech/form-kit-bundle`  
-**Last audited**: 2026-11-22  
-**Audit command**: `find src -type f ! -name '*.test.ts' | wc -l` (108 production units; see [Coverage summary](#coverage-summary))
+**Last audited**: 2026-11-27  
+**Audit command**: `find src -type f ! -name '*.test.ts' | wc -l` (109 production units; see [Coverage summary](#coverage-summary))
 
 ## Symfony config
 
@@ -158,7 +158,8 @@
 | Source file | Spec section | Requirement IDs |
 | --- | --- | --- |
 | `Resources/assets/src/help-modal.ts` | Help modal script (Vite entry) | FR-ASSET-001 |
-| `Resources/assets/src/logger.ts` | Frontend logger | FR-ASSET-001 |
+| `Resources/assets/src/logger.ts` | Frontend logger: `scriptLoaded()` banner with build label, quiet switch (`data-nowo-console`, `NOWO_CONSOLE`), debug-gated levels (REQ-ASSETS-005) | FR-ASSET-001, FR-ASSET-004 |
+| `Resources/assets/src/build-info.d.ts` | Ambient TypeScript declarations for the Vite imports `*?raw` and `*build-info.json` (`{ sourceHash, builtAt }`) used by the build-label injection; type-only, emits no code | FR-ASSET-004, FR-BUILD-001 |
 | `Resources/public/help-modal.js` | **Build output** of `help-modal.ts` + `logger.ts` (Vite IIFE, `vite.config.ts`) | FR-BUILD-001 |
 | `Resources/public/help-modal.css` | Help modal styles (hand-written, shipped as is) | FR-ASSET-001 |
 | `Resources/public/locale-tabs.css` | Optional locale tabs styles | FR-FORM-013 |
@@ -166,13 +167,13 @@
 | `Resources/assets/stimulus-peers/motion.ts` | Closing effect shared by the combobox peer ([spec 003](../003-combobox-peer/spec.md)) | FR-ASSET-003 |
 | `Resources/public/combobox.css` | Optional combobox list motion ([spec 003](../003-combobox-peer/spec.md)) | FR-ASSET-003 |
 | `Resources/assets/enhancers/char-counter.ts` | Character counter enhancer ([spec 004](../004-field-widgets/spec.md)) | FR-FORM-022 |
-| `Resources/assets/enhancers/char-counter-entry.ts` | Vite entry of the counter | FR-FORM-022 |
+| `Resources/assets/enhancers/char-counter-entry.ts` | Vite entry of the counter; logs the `form-kit/char-counter` script-loaded banner | FR-FORM-022, FR-ASSET-004 |
 | `Resources/public/char-counter.js` | **Build output** of the counter | FR-BUILD-001 |
 
 Co-located Vitest files are **excluded** from the inventory (test code, not shipped behaviour; they are listed only for traceability):
 `Resources/assets/src/help-modal.test.ts` (FR-ASSET-001), `Resources/assets/src/logger.test.ts` (FR-ASSET-001),
 `Resources/assets/stimulus-peers/combobox_controller.test.ts` (FR-ASSET-003), `Resources/assets/stimulus-peers/motion.test.ts` (FR-ASSET-003),
-`Resources/assets/enhancers/char-counter.test.ts` (FR-FORM-022).
+`Resources/assets/enhancers/char-counter.test.ts` (FR-FORM-022), `Resources/assets/enhancers/script-loaded.test.ts`, `Resources/assets/src/build-info.test.ts` and `Resources/assets/src/logger-quiet.test.ts` (FR-ASSET-004).
 
 ## Translations
 
@@ -226,10 +227,10 @@ Co-located Vitest files are **excluded** from the inventory (test code, not ship
 | Ports (interfaces) | 9 | 9 |
 | Field options and widgets | 12 | 12 |
 | Help modal nonce | 4 | 4 |
-| Frontend assets (incl. 2 build outputs) | 11 | 11 |
+| Frontend assets (incl. 2 build outputs) | 12 | 12 |
 | Translations | 7 | 7 |
 | Twig extensions | 3 | 3 |
 | Twig views | 9 | 9 |
-| **Total production sources** | **108** | **108** |
+| **Total production sources** | **109** | **109** |
 
-Excluded from the total: 5 co-located Vitest files (`*.test.ts`), so `find src -type f | wc -l` = 113 = 108 + 5.
+Excluded from the total: 8 co-located Vitest files (`*.test.ts`), so `find src -type f | wc -l` = 117 = 109 + 8.
