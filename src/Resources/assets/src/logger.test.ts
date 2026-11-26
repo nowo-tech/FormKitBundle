@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createBundleLogger, getLogger, setBundleLogger } from './logger';
 
+// REQ-ASSETS-005: every test starts with an empty once-guard registry.
+beforeEach(() => {
+  delete (globalThis as { __nowoScriptBannerNames?: unknown }).__nowoScriptBannerNames;
+});
+
 describe('logger', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -16,7 +21,7 @@ describe('logger', () => {
     noBuild.scriptLoaded();
     expect(console.log).toHaveBeenCalled();
 
-    const withBuild = createBundleLogger('form-kit-help-modal', {
+    const withBuild = createBundleLogger('form-kit-help-modal-build', {
       buildTime: '2026-03-30T10:00:00Z',
     });
     withBuild.scriptLoaded();
