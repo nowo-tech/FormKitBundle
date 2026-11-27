@@ -18,7 +18,7 @@ use function is_array;
 use function is_callable;
 use function is_string;
 use function json_encode;
-use function spl_object_hash;
+use function spl_object_id;
 
 use const JSON_UNESCAPED_UNICODE;
 
@@ -127,7 +127,7 @@ final class HelpModalExtension extends AbstractTypeExtension
 
         $modalId = isset($merged['id']) && is_string($merged['id'])
             ? $merged['id']
-            : 'nowo-help-modal-' . ($view->vars['id'] ?? spl_object_hash($form));
+            : 'nowo-help-modal-' . ($view->vars['id'] ?? spl_object_id($form));
 
         if (is_string($content)) {
             // JSON needs explicit string value.

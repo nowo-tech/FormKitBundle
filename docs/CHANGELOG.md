@@ -82,6 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - PHP 8.6: `composer.json` allows PHP below 8.7 (was below 8.6). CI adds a forward-compatibility workflow with a
   PHP 8.6 cell and a Symfony 8.2 cell (release candidates, allowed to fail until 8.2.0 is stable).
+- PHP 8.6: the help modal's fallback id uses `spl_object_id()` instead of `spl_object_hash()` (deprecated in PHP 8.6).
 
 ## [2.25.2] - 2026-11-26
 
